@@ -1,0 +1,330 @@
+.TH ctest 1 "January 10, 2007" "ctest 2.4-patch 6"
+.SH NAME
+.PP
+  ctest - Testing driver provided by CMake.
+.SH SYNOPSIS
+.PP
+  ctest [options]
+.SH DESCRIPTION
+.PP
+The "ctest" executable is the CMake test driver program.  CMake-generated build trees created for projects that use the ENABLE_TESTING and ADD_TEST commands have testing support.  This program will run the tests and report results.
+
+.SH OPTIONS
+.TP
+.B -C <cfg>, --build-config <cfg>
+Choose configuration to test.
+
+Some CMake-generated build trees can have multiple build configurations in the same tree.  This option can be used to specify which one should be tested.  Example configurations are "Debug" and "Release".
+
+.TP
+.B -V,--verbose
+Enable verbose output from tests.
+
+Test output is normally suppressed and only summary information is displayed.  This option will show all test output.
+
+.TP
+.B -VV,--extra-verbose
+Enable more verbose output from tests.
+
+Test output is normally suppressed and only summary information is displayed.  This option will show even more test output.
+
+.TP
+.B --debug
+Displaying more verbose internals of CTest.
+
+This feature will result in large number of output that is mostly useful for debugging dashboard problems.
+
+.TP
+.B -Q,--quiet
+Make ctest quiet.
+
+This option will suppress all the output. The output log file will still be generated if the --output-log is specified. Options such as --verbose, --extra-verbose, and --debug are ignored if --quiet is specified.
+
+.TP
+.B -O <file>, --output-log <file>
+Output to log file
+
+This option tells ctest to write all its output to a log file.
+
+.TP
+.B -N,--show-only
+Disable actual execution of tests.
+
+This option tells ctest to list the tests that would be run but not actually run them.  Useful in conjunction with the -R and -E options.
+
+.TP
+.B -R <regex>, --tests-regex <regex>
+Run tests matching regular expression.
+
+This option tells ctest to run only the tests whose names match the given regular expression.
+
+.TP
+.B -E <regex>, --exclude-regex <regex>
+Exclude tests matching regular expression.
+
+This option tells ctest to NOT run the tests whose names match the given regular expression.
+
+.TP
+.B -D <dashboard>, --dashboard <dashboard>
+Execute dashboard test
+
+This option tells ctest to perform act as a Dart client and perform a dashboard test. All tests are <Mode><Test>, where Mode can be Experimental, Nightly, and Continuous, and Test can be Start, Update, Configure, Build, Test, Coverage, and Submit.
+
+.TP
+.B -M <model>, --test-model <model>
+Sets the model for a dashboard
+
+This option tells ctest to act as a Dart client where the TestModel can be Experimental, Nightly, and Continuous. Combining -M and -T is similar to -D
+
+.TP
+.B -T <action>, --test-action <action>
+Sets the dashboard action to perform
+
+This option tells ctest to act as a Dart client and perform some action such as start, build, test etc. Combining -M and -T is similar to -D
+
+.TP
+.B --track <track>
+Specify the track to submit dashboard to
+
+Submit dashboard to specified track instead of default one. By default, the dashboard is submitted to Nightly, Experimental, or Continuous track, but by specifying this option, the track can be arbitrary.
+
+.TP
+.B -S <script>, --script <script>
+Execute a dashboard for a configuration
+
+This option tells ctest to load in a configuration script which sets a number of parameters such as the binary and source directories. Then ctest will do what is required to create and run a dashboard. This option basically sets up a dashboard and then runs ctest -D with the appropriate options.
+
+.TP
+.B -SP <script>, --script-new-process <script>
+Execute a dashboard for a configuration
+
+This option does the same operations as -S but it will do them in a seperate process. This is primarily useful in cases where the script may modify the environment and you do not want the modified enviroment to impact other -S scripts.
+
+.TP
+.B -A <file>, --add-notes <file>
+Add a notes file with submission
+
+This option tells ctest to include a notes file when submitting dashboard. 
+
+.TP
+.B -I [Start,End,Stride,test#,test#|Test file], --tests-information
+Run a specific number of tests by number.
+
+This option causes ctest to run tests starting at number Start, ending at number End, and incrementing by Stride. Any additional numbers after Stride are considered individual test numbers.  Start, End,or stride can be empty.  Optionally a file can be given that contains the same syntax as the command line.
+
+.TP
+.B -U, --union
+Take the Union of -I and -R
+
+When both -R and -I are specified by default the intersection of tests are run. By specifying -U the union of tests is run instead.
+
+.TP
+.B --interactive-debug-mode [0|1]
+Set the interactive mode to 0 or 1.
+
+This option causes ctest to run tests in either an interactive mode or a non-interactive mode. On Windows this means that in non-interactive mode, all system debug pop up windows are blocked. In dashboard mode (Experimental, Nightly, Continuous), the default is non-interactive.  When just running tests not for a dashboard the default is to allow popups and interactive debugging.
+
+.TP
+.B --build-and-test
+Configure, build and run a test.
+
+This option tells ctest to configure (i.e. run cmake on), build, and or execute a test. The configure and test steps are optional. The arguments to this command line are the source and binary directories. By default this will run CMake on the Source/Bin directories specified unless --build-nocmake is specified. Both --build-makeprogram and --build-generator MUST be provided to use --built-and-test. If --test-command is specified then that will be run after the build is complete. Other options that affect this mode are --build-target --build-nocmake, --build-run-dir, --build-two-config, --build-exe-dir, --build-project,--build-noclean, --build-options
+
+.TP
+.B --build-target
+Specify a specific target to build.
+
+This option goes with the --build-and-test option, if left out the all target is built.
+
+.TP
+.B --build-nocmake
+Run the build without running cmake first.
+
+Skip the cmake step.
+
+.TP
+.B --build-run-dir
+Specify directory to run programs from.
+
+Directory where programs will be after it has been compiled.
+
+.TP
+.B --build-two-config
+Run CMake twice
+
+.TP
+.B --build-exe-dir
+Specify the directory for the executable.
+
+.TP
+.B --build-generator
+Specify the generator to use.
+
+.TP
+.B --build-project
+Specify the name of the project to build.
+
+.TP
+.B --build-makeprogram
+Specify the make program to use.
+
+.TP
+.B --build-noclean
+Skip the make clean step.
+
+.TP
+.B --build-options
+Add extra options to the build step.
+
+This option must be the last option with the exception of --test-command
+
+.TP
+.B --test-command
+The test to run with the --build-and-test option.
+
+.TP
+.B --tomorrow-tag
+Nightly or experimental starts with next day tag.
+
+This is useful if the build will not finish in one day.
+
+.TP
+.B --ctest-config
+The configuration file used to initialize CTest state when submitting dashboards.
+
+This option tells CTest to use different initialization file instead of DartConfiguration.tcl. This way multiple initialization files can be used for example to submit to multiple dashboards.
+
+.TP
+.B --overwrite
+Overwrite CTest configuration option.
+
+By default ctest uses configuration options from configuration file. This option will overwrite the configuration option.
+
+.TP
+.B --extra-submit <file>[;<file>]
+Submit extra files to the dashboard.
+
+This option will submit extra files to the dashboard.
+
+.TP
+.B --force-new-ctest-process
+Run child CTest instances as new processes
+
+By default CTest will run child CTest instances within the same process. If this behavior is not desired, this argument will enforce new processes for child CTest processes.
+
+.TP
+.B --submit-index
+Submit individual dashboard tests with specific index
+
+This option allows performing the same CTest action (such as test) multiple times and submit all stages to the same dashboard (Dart2 required). Each execution requires different index.
+
+.TP
+.B --copyright [file]
+Print the CMake copyright and exit.
+
+If a file is specified, the copyright is written into it.
+
+.TP
+.B --help
+Print usage information and exit.
+
+Usage describes the basic command line interface and its options.
+
+.TP
+.B --help-full [file]
+Print full help and exit.
+
+Full help displays most of the documentation provided by the UNIX man page.  It is provided for use on non-UNIX platforms, but is also convenient if the man page is not installed.  If a file is specified, the help is written into it.
+
+.TP
+.B --help-html [file]
+Print full help in HTML format.
+
+This option is used by CMake authors to help produce web pages.  If a file is specified, the help is written into it.
+
+.TP
+.B --help-man [file]
+Print a UNIX man page and exit.
+
+This option is used by the cmake build to generate the UNIX man page.  If a file is specified, the help is written into it.
+
+.TP
+.B --version [file]
+Show program name/version banner and exit.
+
+If a file is specified, the version is written into it.
+
+.SH MODULES
+.PP
+The following modules are provided with CMake. They can be used with INCLUDE(ModuleName).
+
+.SH COPYRIGHT
+.PP
+Copyright (c) 2002 Kitware, Inc., Insight Consortium.  All rights reserved.
+
+.PP
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+.TP
+.B *
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+.TP
+.B *
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+.TP
+.B *
+The names of Kitware, Inc., the Insight Consortium, or the names of any consortium members, or of any contributors, may not be used to endorse or promote products derived from this software without specific prior written permission.
+
+.TP
+.B *
+Modified source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+
+.PP
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.SH SEE ALSO
+.PP
+.B cmake(1), ccmake(1)
+
+.PP
+The following resources are available to get help using CMake:
+
+.TP
+.B Home Page
+http://www.cmake.org
+
+The primary starting point for learning about CMake.
+
+.TP
+.B Frequently Asked Questions
+http://www.cmake.org/Wiki/CMake_FAQ
+
+A Wiki is provided containing answers to frequently asked questions. 
+
+.TP
+.B Online Documentation
+http://www.cmake.org/HTML/Documentation.html
+
+Links to available documentation may be found on this web page.
+
+.TP
+.B Mailing List
+http://www.cmake.org/HTML/MailingLists.html
+
+For help and discussion about using cmake, a mailing list is provided at cmake@cmake.org. The list is member-post-only but one may sign up on the CMake web page. Please first read the full documentation at http://www.cmake.org before posting questions to the list.
+
+.PP
+Summary of helpful links:
+
+
+  Home: http://www.cmake.org
+  Docs: http://www.cmake.org/HTML/Documentation.html
+  Mail: http://www.cmake.org/HTML/MailingLists.html
+  FAQ:  http://www.cmake.org/Wiki/CMake_FAQ
+
+.SH AUTHOR
+.PP
+This manual page was generated by the "--help-man" option.
+

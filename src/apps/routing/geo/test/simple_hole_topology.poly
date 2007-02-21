@@ -1,0 +1,16 @@
+<topology>
+    <polygon blocking="0" type="outer">
+        <vertex x="0" y="0"/>
+        <vertex x="100" y="0"/>
+        <vertex x="100" y="100"/>
+        <vertex x="0" y="100"/>
+    </polygon>
+
+    <polygon blocking="1" type="hole">
+        <vertex x="30" y="30"/>
+        <vertex x="50" y="30"/>
+        <vertex x="50" y="50"/>
+        <vertex x="30" y="50"/>
+    </polygon>
+
+ </topology>

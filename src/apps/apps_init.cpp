@@ -1,0 +1,26 @@
+/************************************************************************
+ ** This file is part of the network simulator Shawn.                  **
+ ** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
+ ** Shawn is free software; you can redistribute it and/or modify it   **
+ ** under the terms of the BSD License. Refer to the shawn-licence.txt **
+ ** file in the root of the Shawn source tree for further details.     **
+ ************************************************************************/
+
+#include "apps/apps_init.h"
+#include "../buildfiles/_apps_init_cmake.h"
+
+namespace shawn
+{
+	void init_apps( SimulationController& sc )
+	{
+		INIT_STATIC_APPS_MODULES;
+	}
+}
+
+/*-----------------------------------------------------------------------
+ * Source  $Source: /cvs/shawn/shawn/apps/apps_init.cpp,v $
+ * Version $Revision: 1.11 $
+ * Date    $Date: 2005/08/05 10:00:29 $
+ *-----------------------------------------------------------------------
+ * $Log: apps_init.cpp,v $
+ *-----------------------------------------------------------------------*/

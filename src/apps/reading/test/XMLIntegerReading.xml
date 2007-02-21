@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<reading type="simple" data="int">
+	<settings>
+		<setting name="interpolation" value="3"/>
+	</settings>
+	<readingvalues>
+		<time t_val="1.09042">
+			<value pos_x="3" pos_y="0" pos_z="0" val="16" duration="1.29958"/>
+			<value pos_x="2" pos_y="4" pos_z="6" val="10" duration="7.262"/>
+			<value pos_x="3" pos_y="5" pos_z="7" val="31" duration="1.48558"/>
+			<value pos_x="8" pos_y="9" pos_z="9" val="24" duration="5.70205"/>
+			<value pos_x="10" pos_y="9" pos_z="9" val="13" duration="2.12233"/>
+		</time>
+		<time t_val="2.88728">
+			<value pos_x="9" pos_y="9" pos_z="9" val="9" duration="2.9406"/>
+			<value pos_x="9" pos_y="8" pos_z="7" val="29" duration="1.80158"/>
+		</time>
+		<time t_val="6.25839">
+			<value pos_x="1" pos_y="2" pos_z="3" val="31" duration="4.8256"/>
+			<value pos_x="10" pos_y="10" pos_z="10" val="10" duration="3.31136"/>
+			<value pos_x="0" pos_y="0" pos_z="0" val="30" duration="1.72802"/>
+			<value pos_x="10" pos_y="14" pos_z="14" val="31" duration="3.97143"/>
+			<value pos_x="10" pos_y="15" pos_z="15" val="22" duration="4.16608"/>
+			<value pos_x="0" pos_y="2" pos_z="3" val="27" duration="2.85088"/>
+		</time>
+		<time t_val="9.47862">
+			<value pos_x="10" pos_y="15" pos_z="10" val="13" duration="2.31249"/>
+			<value pos_x="10" pos_y="15" pos_z="15" val="20" duration="2.80991"/>
+			<value pos_x="10" pos_y="15" pos_z="18" val="14" duration="5.71727"/>
+			<value pos_x="10" pos_y="15" pos_z="14" val="14" duration="3.48148"/>
+			<value pos_x="10" pos_y="15" pos_z="6" val="20" duration="3.39727"/>
+			<value pos_x="10" pos_y="15" pos_z="14" val="5" duration="5.37419"/>
+		</time>
+	</readingvalues>
+</reading>

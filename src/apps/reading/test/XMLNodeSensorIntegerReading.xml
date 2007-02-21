@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<reading type="simple" data="int">
+	<settings>
+	</settings>
+	<readingvalues>
+		<time t_val="1.12">
+			<node id="0" val="70" duration="5.1"/>
+			<node id="1" val="90" duration="4.0"/>
+			<node id="2" val="23" duration="3.654"/>
+			<node id="6" val="70" duration="5.7"/>
+			<node id="9" val="2" duration="4.53342324234234234254534"/>
+			<node id="10" val="23" duration="3.654"/>
+		</time>
+		<time t_val="2">
+			<node id="0" val="70" duration="1"/>
+			<node id="1" val="43" duration="2"/>
+			<node id="2" val="10" duration="3.654"/>
+			<node id="3" val="60" duration="4"/>
+			<node id="4" val="50" duration="1"/>
+		</time>
+		<time t_val="3.25839">
+			<node id="10" val="22" duration="6"/>
+			<node id="22" val="17" duration="5.5"/>
+			<node id="11" val="90" duration="3.654"/>
+		</time>
+		<time t_val="9.8">
+			<node id="1" val="30" duration="3"/>
+		</time>
+	</readingvalues>
+</reading> 
