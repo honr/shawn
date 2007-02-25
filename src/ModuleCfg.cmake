@@ -85,3 +85,37 @@
 	endif ( moduleInitFuncs )
 	
 	file( APPEND ${CMAKE_BINARY_DIR}/${outFileInit} "\n\n" )
+
+
+#=============
+# Check for a module depending on a library (e.g. Expat, CGAL..),
+# that is currently not specified 
+#=============
+
+	if ( moduleCfgs )
+	
+		set ( neededLibsMsg  )
+
+		foreach( moduleCfg ${moduleCfgs} )
+
+			set ( moduleLibs  )
+			include( ${moduleCfg} )
+			
+			if ( MODULE_${appsType}_${moduleName} AND moduleLibs )
+				foreach( moduleLib ${moduleLibs} )
+
+					string( TOUPPER ${moduleLib} moduleLibUpper )
+					if ( NOT LIB_PATH_${moduleLibUpper} )
+						set ( neededLibsMsg "${neededLibsMsg} Module '${moduleName}' needs library '${moduleLib}'\n" )
+					endif ( NOT LIB_PATH_${moduleLibUpper} )
+
+				endforeach( moduleLib )
+			endif ( MODULE_${appsType}_${moduleName} AND moduleLibs )
+			
+		endforeach( moduleCfg )
+
+		if ( neededLibsMsg )
+			message ( "Warning! The following modules depend on libraries that were not specified:\n\n${neededLibsMsg}\nPlease set the lib and include paths or deactivate the affected modules." )
+		endif ( neededLibsMsg )
+
+	endif ( moduleCfgs )
