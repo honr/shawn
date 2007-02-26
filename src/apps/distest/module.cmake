@@ -8,7 +8,7 @@
 
 # Default status (ON/OFF)
 
-	set ( moduleStatus ON )
+	set ( moduleStatus OFF )
 
 # List of libraries needed by this module, seperated by white space
 

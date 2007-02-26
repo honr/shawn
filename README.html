@@ -78,7 +78,13 @@
 	
 		&nbsp;&nbsp;&nbsp; 3.3 <a href="#Buildsystem_Options">Buildsystem Options</a><br>
 		&nbsp;&nbsp;&nbsp; 3.4 <a href="#Building_Shawn">Building Shawn</a><br>
-		&nbsp;&nbsp;&nbsp; 3.5 <a href="#Shawn_licence">Shawn licence</a><br>
+		&nbsp;&nbsp;&nbsp; 3.5 <a href="#Resetting_buildfiles">Resetting the buildfiles</a><br>
+
+	4. <a href="#Extending_Shawn">Extending Shawn</a><br>
+		&nbsp;&nbsp;&nbsp; 4.1 <a href="#Adding_module">Adding a new module</a><br>
+		&nbsp;&nbsp;&nbsp; 4.2 <a href="#module_cmake">The module configuration file <i>module.cmake</i></a><br>
+
+	5. <a href="#Shawn_licence">Shawn licence</a><br>
 </p>
 
 <br>
@@ -177,7 +183,12 @@
 			or "cmake_win.bat" (Windows). Do a "configure" (click on 
 			the button in Windows or pressing [c] under Linux/MacOSX)
 			everytime you changed an option to update the
-			buildsystem.
+			buildsystem.<br><br>
+			
+			Under Windows, be sure to set the "Where is the code:"
+			and the "Where to build the binaries:" text fields to the 
+			correct paths (e.g. <tt>c:\shawn\src</tt> and 
+			<tt>c:\shawn\buildfiles</tt>).
 		</p>
 	</li>
 	<li>
@@ -456,13 +467,159 @@
 	file "SHAWN.sln" and build the target "SHAWN".<br><br>
   
 	After the compilation process has finished, the executable is 
-	located in the "bin" directory by default.
-
+	located in the "buildfiles" directory (when compiling with Visual 
+	Studio, the binary is located in "buildfiles/debug" or 
+	"buildfiles/release" respectively).
 </p>
 
-<a name="Shawn_licence">
-<h3>3.5 Shawn licence</h3>
+<a name="Resetting_buildfiles">
+<h3>3.5 Resetting the buildfiles</h3>
 
+<p>
+
+	To reset the buildfiles (and to start from scratch building 
+	Shawn), that is, deleting all build/CMake configuration files, 
+	all compiled object files and eventually the Shawn executable, 
+	you just have to delete the content of the "buildfiles" 
+	directory.<br><br>
+	
+	Please note, if you checked this Shawn version out of a SVN
+	repository, you should not delete the (hidden) directory
+	"buildfiles/.svn".<br><br>
+	
+	If you want to just delete the CMake buildsystem without deleting
+	all compiled object files and the Shawn executable, choose the 
+	option 'Delete Cache' from the CMake interface.<br><br>
+</p>
+
+<br>
+
+<a name="Extending_Shawn">
+<h2>4. Extending Shawn</h2>
+
+<p>
+	Extending Shawn means adding a new module in the most cases. The 
+	following chapter describes, how to set up a new module and add
+	the files to the buildsystem by using the CMake interface.
+</p>
+
+<a name="Adding_module">
+<h3>4.1 Adding a new module</h3>
+
+<p>
+	With the CMake interface, you can easily add a new module to 
+	Shawn, following these steps:
+</p>
+
+	<ol>
+		<li>
+			<p>
+				Start "cmake_linux.sh" (Linux), "cmake_macosx.sh"
+				(MacOSX) or "cmake_win.bat" (Windows).
+			</p>
+		</li>
+		<li>
+			<p>
+				In the CMake window, you will see the option '<i>CREATE_NEW_MODEL</i>'.
+				Set it to 'ON' and do a configure-run by pressing [c] (Linux/MacOSX)
+				or by clicking on "Configure" (Windows).
+			</p>
+		</li>
+		<li>
+			<p>
+				Two new options will appear: '<i>NEW_MODULE_NAME</i>' and
+				'<i>NEW_MODULE_LIPDEP</i>'.<br><br>
+				
+				Set '<i>NEW_MODULE_NAME</i>' to the name of the new module. This string
+				specifies the path, the module name and the C++ namespace of the module
+				at the same time (the module name follows the same naming conventions like
+				a C++ class name, e.g. no white spaces are allowed).<br><br>
+				
+				The '<i>NEW_MODULE_LIPDEP</i>' option is a white space seperated list of
+				the libraries, this module depends on. For example, if the new module
+				needs the Expat and CGAL libs, set the option to "expat cgal" (without
+				the quotes).
+			</p>
+		</li>
+		<li>
+			<p>
+				By doing another configure-run (pressing [c] under Linux/MacOSX, or by
+				clicking on "Configure" under Windows), the new module will be created and
+				a message box informs you, where to find the new files.
+			</p>
+		</li>
+		<li>
+			<p>
+				In order to finally add the new files to the buildsystem, a last configure-run is
+				needed. After that, the module has been added and in the case, the
+				'CONFIGURE_APPS' option is 'ON', you should see the new module in the
+				CMake interface.
+			</p>
+		</li>
+	</ol>
+
+<p>
+	<b>Note:</b><br>
+	To add another module, just change the '<i>NEW_MODULE_NAME</i>' 
+	and '<i>NEW_MODULE_LIPDEP</i>' options and do two configure-runs
+	as described above.
+</p>
+
+
+<a name="module_cmake">
+<h3>4.2 The module configuration file <i>module.cmake</i></h3>
+
+<p>
+	Every single module (app) in Shawn has it's own module configuration
+	file, named "<i>module.cmake</i>" that is located in the appropriate
+	apps directory (e.g. src/apps/helloworld). This file defines the following
+	attributes:
+</p>
+	
+	<table border=0>
+	<tr>
+		<th>Attribute</th>
+		<th>Description</th>
+		<th>Example</th>
+	</tr>
+	<tr>
+		<td><tt>moduleName</tt></td>
+		<td>Defines the name of the module. It is recommended to use only uppercase.</td>
+		<td><tt>set ( moduleName HELLOWORLD )</tt></td>
+	</tr>
+	<tr>
+		<td><tt>moduleStatus</tt></td>
+		<td>
+			Defines the default status of this module.<br>ON means, the module is 
+			active and will be added to the buildsystem, OFF means, the module
+			will be ignored.
+		</td>
+		<td><tt>set ( moduleStatus ON )</tt></td>
+	</tr>
+	<tr>
+		<td><tt>moduleLibs</tt></td>
+		<td>
+			A white space seperated list of libraries, the module depends on.
+		</td>
+		<td><tt>set ( moduleLibs expat cgal )</tt>
+			<br>or<br>
+			<tt>set ( moduleLibs )</tt>
+			for no lib dependance.
+			</td>
+	</tr>
+	</table>
+
+<p>
+	<b>Note:</b><br>
+	The module name must correspond to the directory name of the 
+	module (not case sensitive). So the module with name "HELLOWORLD" 
+	must be located in a directory named "helloworld".
+</p>
+
+<br>
+
+<a name="Shawn_licence">
+<h2>5 Shawn licence</h2>
 
 <p>
 	<tt>

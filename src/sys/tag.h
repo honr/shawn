@@ -10,6 +10,7 @@
 #define __SHAWN_SYS_TAG_H
 
 #include "sys/tag_container.h"
+#include "shawn_config.h"
 
 #include <stdexcept>
 

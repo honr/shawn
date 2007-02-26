@@ -7,6 +7,8 @@
  ************************************************************************/
 
 #include "sys/util/string_conv.h"
+#include "shawn_config.h"
+
 #include <string>
 #include <stdexcept>
 

@@ -13,6 +13,8 @@
 #include <list>
 #include <stdexcept>
 
+#include "shawn_config.h"
+
 namespace shawn
 {
    

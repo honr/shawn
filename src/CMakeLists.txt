@@ -22,7 +22,7 @@
 # Set the default paths for binary and lib build
 #=============
 
-	get_filename_component( EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/../bin ABSOLUTE CACHE )
+	get_filename_component( EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/../buildfiles ABSOLUTE CACHE )
 	get_filename_component( LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/../lib ABSOLUTE CACHE )
 
 
@@ -68,31 +68,63 @@
 # Add include and library directories for the compiler/linker
 #=============
 
+#
+# Old default directories:
+#
+#	if ( WIN32 )
+#
+#		set ( DEFAULT_EXPAT_ROOT ../libs/expat-1.95.8 )
+#		set ( DEFAULT_CGAL_ROOT  ../libs/CGAL-3.1 )
+#
+#		set( LIB_PATH_EXPAT ${DEFAULT_EXPAT_ROOT}/StaticLibs CACHE PATH "Path to expat library" )
+#		set( LIB_PATH_CGAL ${DEFAULT_CGAL_ROOT}/lib/msvc7 CACHE PATH "Path to CGAL library" )
+#
+#       set( INCLUDE_PATH_EXPAT ${DEFAULT_EXPAT_ROOT}/source/lib CACHE PATH "Path to expat includes" )
+#       set( INCLUDE_PATH_CGAL ${DEFAULT_CGAL_ROOT}/include CACHE PATH "Path to CGAL includes" )
+#       set( INCLUDE_PATH_CGAL_COMPILER_CONFIG ${DEFAULT_CGAL_ROOT}/include/CGAL/config/msvc7 CACHE PATH "Path to CGAL compiler config" )
+#       set( INCLUDE_PATH_BOOST ../libs/boost CACHE PATH "Path to Boost include path" )
+#
+#	else ( WIN32 )
+#
+#		set ( DEFAULT_EXPAT_ROOT ../libs/expat-1.95.8 )
+#		set ( DEFAULT_CGAL_ROOT  ../libs/CGAL-3.1 )
+#
+#		set( LIB_PATH_EXPAT ${DEFAULT_EXPAT_ROOT}/.libs CACHE PATH "Path to expat library" )
+#		set( LIB_PATH_CGAL ${DEFAULT_CGAL_ROOT}/lib/i686_Linux-2.4.26-om_g++-3.3.5 CACHE PATH "Path to CGAL library" )
+#
+#       set( INCLUDE_PATH_EXPAT ${DEFAULT_EXPAT_ROOT}/lib CACHE PATH "Path to expat includes" )
+#       set( INCLUDE_PATH_CGAL ${DEFAULT_CGAL_ROOT}/include CACHE PATH "Path to CGAL includes" )
+#       set( INCLUDE_PATH_CGAL_COMPILER_CONFIG ${DEFAULT_CGAL_ROOT}/include/CGAL/config/i686_Linux-2.4.26-om_g++-3.3.5 CACHE PATH "Path to CGAL compiler config" )
+#       set( INCLUDE_PATH_BOOST ../libs/boost CACHE PATH "Path to Boost include path" )
+#
+#	endif ( WIN32 )
+
+
 	if ( WIN32 )
 
-		set ( DEFAULT_EXPAT_ROOT ../libs/expat-1.95.8 )
-		set ( DEFAULT_CGAL_ROOT  ../libs/CGAL-3.1 )
+		set ( DEFAULT_EXPAT_ROOT  )
+		set ( DEFAULT_CGAL_ROOT   )
 
-		set( LIB_PATH_EXPAT ${DEFAULT_EXPAT_ROOT}/StaticLibs CACHE PATH "Path to expat library" )
-		set( LIB_PATH_CGAL ${DEFAULT_CGAL_ROOT}/lib/msvc7 CACHE PATH "Path to CGAL library" )
+		set( LIB_PATH_EXPAT   CACHE PATH "Path to expat library" )
+		set( LIB_PATH_CGAL   CACHE PATH "Path to CGAL library" )
 
-        set( INCLUDE_PATH_EXPAT ${DEFAULT_EXPAT_ROOT}/source/lib CACHE PATH "Path to expat includes" )
-        set( INCLUDE_PATH_CGAL ${DEFAULT_CGAL_ROOT}/include CACHE PATH "Path to CGAL includes" )
-        set( INCLUDE_PATH_CGAL_COMPILER_CONFIG ${DEFAULT_CGAL_ROOT}/include/CGAL/config/msvc7 CACHE PATH "Path to CGAL compiler config" )
-        set( INCLUDE_PATH_BOOST ../libs/boost CACHE PATH "Path to Boost include path" )
+        set( INCLUDE_PATH_EXPAT   CACHE PATH "Path to expat includes" )
+        set( INCLUDE_PATH_CGAL   CACHE PATH "Path to CGAL includes" )
+        set( INCLUDE_PATH_CGAL_COMPILER_CONFIG   CACHE PATH "Path to CGAL compiler config" )
+        set( INCLUDE_PATH_BOOST   CACHE PATH "Path to Boost include path" )
 
 	else ( WIN32 )
 
-		set ( DEFAULT_EXPAT_ROOT ../libs/expat-1.95.8 )
-		set ( DEFAULT_CGAL_ROOT  ../libs/CGAL-3.1 )
+		set ( DEFAULT_EXPAT_ROOT  )
+		set ( DEFAULT_CGAL_ROOT   )
 
-		set( LIB_PATH_EXPAT ${DEFAULT_EXPAT_ROOT}/.libs CACHE PATH "Path to expat library" )
-		set( LIB_PATH_CGAL ${DEFAULT_CGAL_ROOT}/lib/i686_Linux-2.4.26-om_g++-3.3.5 CACHE PATH "Path to CGAL library" )
+		set( LIB_PATH_EXPAT   CACHE PATH "Path to expat library" )
+		set( LIB_PATH_CGAL   CACHE PATH "Path to CGAL library" )
 
-        set( INCLUDE_PATH_EXPAT ${DEFAULT_EXPAT_ROOT}/lib CACHE PATH "Path to expat includes" )
-        set( INCLUDE_PATH_CGAL ${DEFAULT_CGAL_ROOT}/include CACHE PATH "Path to CGAL includes" )
-        set( INCLUDE_PATH_CGAL_COMPILER_CONFIG ${DEFAULT_CGAL_ROOT}/include/CGAL/config/i686_Linux-2.4.26-om_g++-3.3.5 CACHE PATH "Path to CGAL compiler config" )
-        set( INCLUDE_PATH_BOOST ../libs/boost CACHE PATH "Path to Boost include path" )
+        set( INCLUDE_PATH_EXPAT   CACHE PATH "Path to expat includes" )
+        set( INCLUDE_PATH_CGAL   CACHE PATH "Path to CGAL includes" )
+        set( INCLUDE_PATH_CGAL_COMPILER_CONFIG   CACHE PATH "Path to CGAL compiler config" )
+        set( INCLUDE_PATH_BOOST   CACHE PATH "Path to Boost include path" )
 
 	endif ( WIN32 )
 
