@@ -211,9 +211,9 @@
 			set ( incorrectPaths "${incorrectPaths} [INCLUDE_PATH_CGAL_COMPILER_CONFIG] Can't find 'CGAL/compiler_config.h' in '${INCLUDE_PATH_CGAL_COMPILER_CONFIG}'\n" )
 		endif ( INCLUDE_PATH_CGAL_COMPILER_CONFIG AND NOT EXISTS ${INCLUDE_PATH_CGAL_COMPILER_CONFIG}/CGAL/compiler_config.h )
 
-		if ( INCLUDE_PATH_BOOST AND NOT EXISTS ${INCLUDE_PATH_BOOST}/include/boost.hpp )
-			set ( incorrectPaths "${incorrectPaths} [INCLUDE_PATH_BOOST] Can't find '/include/boost.hpp' in '${INCLUDE_PATH_BOOST}'\n" )
-		endif ( INCLUDE_PATH_BOOST AND NOT EXISTS ${INCLUDE_PATH_BOOST}/include/boost.hpp )
+		if ( INCLUDE_PATH_BOOST AND NOT EXISTS ${INCLUDE_PATH_BOOST}/boost/config.hpp )
+			set ( incorrectPaths "${incorrectPaths} [INCLUDE_PATH_BOOST] Can't find '/boost/config.hpp' in '${INCLUDE_PATH_BOOST}'\n" )
+		endif ( INCLUDE_PATH_BOOST AND NOT EXISTS ${INCLUDE_PATH_BOOST}/boost/config.hpp )
 		
 		if ( incorrectPaths )
 			message( "Warning! The following paths seem to be incorrect. Shawn can't be compiled/linked with incorrect lib or include paths:\n\n${incorrectPaths}" )
