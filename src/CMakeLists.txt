@@ -242,6 +242,12 @@
 	endif ( LEGACYAPPS_PATH )
 
 
+	# Add SHAWN flag, to distinguish code needed by Shawn from code
+	# that should be excluded, when an App is used by another program
+
+	add_definitions( -DSHAWN )
+
+
 #=============
 # Configure shawn apps modules
 #=============
