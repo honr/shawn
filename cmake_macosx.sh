@@ -1,2 +1,2 @@
 cd buildfiles
-../cmake/linux/bin/ccmake ../src
+../cmake/macosx/bin/ccmake ../src
