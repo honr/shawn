@@ -19,18 +19,20 @@
 
 using namespace std;
 
+#define NULLITER static_cast<list<unsigned char>::iterator>(0)
+
 namespace tcpip
 {
 
 	// ----------------------------------------------------------------------
 	Storage::Storage()
-		: pos_(0), iter_(0), iterEnd_(0)
+		: pos_(0), iter_(NULLITER), iterEnd_(NULLITER)
 	{
 	}
 
 	// ----------------------------------------------------------------------
 	Storage::Storage(unsigned char packet[], int length)
-		: pos_(0), iter_(0), iterEnd_(0)
+		: pos_(0)
 	{
 		if (length == -1) length = sizeof(packet) / sizeof(char);
 		
@@ -48,9 +50,9 @@ namespace tcpip
 	{
 		assert ( count >= 0 );
 	    
-		if (count != 1) iterEnd_ = 0;
+		if (count != 1) iterEnd_ = NULLITER;
 		pos_ += count;
-		if (iter_ == 0) iter_ = begin();
+		if (iter_ == NULLITER) iter_ = begin();
 		::advance(iter_, count);
 	}
 
@@ -59,7 +61,7 @@ namespace tcpip
 	{
 	    if (iterEnd_ == end())
 	    {
-		return (iter_ != 0 && iter_ != end());
+		return (iter_ != NULLITER && iter_ != end());
 	    } else {
 		bool v = (pos_ < size());
 		if (v) iterEnd_ = end();
@@ -72,30 +74,27 @@ namespace tcpip
 	{
 		this->clear();
 		pos_=0;
-		iter_ = 0;
+		iter_ = NULLITER;
 	}
 	// ----------------------------------------------------------------------
 	/**
 	* Reads a char form the array
 	* @return The read char (between 0 and 255)
 	*/
-	int Storage::readChar()	throw()
+	unsigned char Storage::readChar()	throw()
 	{
 		assert( valid_pos() );
-		//iterator it = begin();
-		//::advance(it, pos_);
-		//int hb = (int) *it;
-		if (iter_ == 0) iter_ = begin();
-		int hb = (int) *iter_;
+		if (iter_ == NULLITER) iter_ = begin();
+		unsigned char hb = *iter_;
 		advance(1);
-		return hb < 0 ? hb + 256 : hb;
+		return hb;
 	}
 
 	// ----------------------------------------------------------------------
 	/**
 	*
 	*/
-	void Storage::writeChar(char value) throw()
+	void Storage::writeChar(unsigned char value) throw()
 	{
 		push_back(value);
 		advance(1);
@@ -108,7 +107,7 @@ namespace tcpip
 	*/
 	int Storage::readByte()	throw()
 	{
-		return readChar();
+		return static_cast<int>(readChar());
 	}
 
 	// ----------------------------------------------------------------------
@@ -117,7 +116,7 @@ namespace tcpip
 	*/
 	void Storage::writeByte(int value) throw()
 	{
-		writeChar( (char) (value & 0xFF) );
+		writeChar( static_cast<unsigned char>(value & 0xFF) );
 	}
 
 	// ----------------------------------------------------------------------
@@ -126,7 +125,7 @@ namespace tcpip
 	*/
 	void Storage::writeByte(unsigned char value) throw()
 	{
-		writeChar( (char) (value) );
+		writeChar( value );
 	}
 
 	// -----------------------------------------------------------------------
@@ -165,22 +164,40 @@ namespace tcpip
 	*/
 	int Storage::readShort() throw()
 	{
-		int hb = readChar();
-		int lb = readChar();
-
-		int mult = ((int) (hb & 0x80)) > 0 ? -1 : 1;
-		int num = ((hb << 8) & 0xFF00) | (lb & 0x00FF);
-
-		if (mult < 0)
-			num = ((int) ((~num) & 0xFFFF)) + 1;
-		return mult * num;
-	}
+                short value = 0;
+                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+                short a = 0x0102;
+                unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
+                if (p_a[0] == 0x01) // big endian
+                {
+                        // network is big endian
+                        p_value[0] = readChar();
+                        p_value[1] = readChar();
+                } else {
+                        // network is big endian
+                        p_value[1] = readChar();
+                        p_value[0] = readChar();
+                }
+                return value;
+        }
 
 	// ----------------------------------------------------------------------
 	void Storage::writeShort( int value ) throw()
 	{
-		writeChar( (char) ((value >> 8 )& 0xFF) );
-		writeChar( (char) (value & 0xFF) );
+                short svalue = static_cast<short>(value);
+                unsigned char *p_svalue = reinterpret_cast<unsigned char*>(svalue);
+                short a = 0x0102;
+                unsigned char *p_a = reinterpret_cast<unsigned char*>(a);
+                if (p_a[0] == 0x01) // big endian
+                {
+                        // network is big endian
+                        writeChar(p_svalue[0]);
+                        writeChar(p_svalue[1]);
+                } else {
+                       // network is big endian
+                       writeChar(p_svalue[1]);
+                       writeChar(p_svalue[0]);
+                }
 	}
 
 	// ----------------------------------------------------------------------
@@ -194,26 +211,47 @@ namespace tcpip
 	*/
 	int Storage::readInt() throw()
 	{
-		int hb = readChar();
-		int lb1 = readChar();
-		int lb2 = readChar();
-		int lb3 = readChar();
-
-		int mult = ((int) (hb & 0x80)) > 0 ? -1 : 1;
-		int num = (hb << 24) | (lb1 << 16) | (lb2 << 8) | lb3;
-
-		if (mult < 0)
-			num = ((int) ((~num) & 0xFFFFFFFF)) + 1;
-		return mult * num;
+                int value = 0;
+                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+                short a = 0x0102;
+                unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
+                if (p_a[0] == 0x01) // big endian
+                {
+                        // network is big endian
+                        p_value[0] = readChar();
+                        p_value[1] = readChar();
+                        p_value[2] = readChar();
+                        p_value[3] = readChar();
+                } else {
+                        // network is big endian
+                        p_value[3] = readChar();
+                        p_value[2] = readChar();
+                        p_value[1] = readChar();
+                        p_value[0] = readChar();
+                }
+                return value;
 	}
 
 	// ----------------------------------------------------------------------
 	void Storage::writeInt( int value ) throw()
 	{
-		writeChar( (char) ((value >> 24 )& 0xFF) );
-		writeChar( (char) ((value >> 16 )& 0xFF) );
-		writeChar( (char) ((value >> 8 )& 0xFF) );
-		writeChar( (char) (value & 0xFF) );
+                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+                short a = 0x0102;
+                unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
+                if (p_a[0] == 0x01) // big endian
+                {
+                        // network is big endian
+                        writeChar(p_value[0]);
+                        writeChar(p_value[1]);
+                        writeChar(p_value[2]);
+                        writeChar(p_value[3]);
+                } else {
+                        // network is big endian
+                        writeChar(p_value[3]);
+                        writeChar(p_value[2]);
+                        writeChar(p_value[1]);
+                        writeChar(p_value[0]);
+                }
 	}
 
 	// ----------------------------------------------------------------------
@@ -227,30 +265,94 @@ namespace tcpip
 	*/
 	float Storage::readFloat() throw()
 	{
-		int b1 = readChar();
-		int b2 = readChar();
-		int b3 = readChar();
-		int b4 = readChar();
+                float value = 0;
+                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+                short a = 0x0102;
+                unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
+                if (p_a[0] == 0x01) // big endian
+                {
+                        // network is big endian
+                        p_value[0] = readChar();
+                        p_value[1] = readChar();
+                        p_value[2] = readChar();
+                        p_value[3] = readChar();
+                } else {
+                        // network is big endian
+                        p_value[3] = readChar();
+                        p_value[2] = readChar();
+                        p_value[1] = readChar();
+                        p_value[0] = readChar();
+                }
 
-		int intvalue = (b1 << 24) | (b2 << 16) | (b3 << 8) | b4;
-		float value;
-		memcpy(&value, &intvalue, 4);
+        return value;
 
-		return value;
 	}
 
 	// ----------------------------------------------------------------------
 	void Storage::writeFloat( float value ) throw()
 	{
-		int intvalue;
-		memcpy(&intvalue, &value, 4);
-		
-		writeChar( (char) ( (intvalue >> 24)& 0xFF)  );
-		writeChar( (char) ( (intvalue >> 16)& 0xFF)  );
-		writeChar( (char) ( (intvalue >> 8) & 0xFF ) );
-		writeChar( (char) ( (intvalue & 0xFF)) );
-	}
+                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+                short a = 0x0102;
+                unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
+                if (p_a[0] == 0x01) // big endian
+                {
+                        // network is big endian
+                        writeChar(p_value[0]);
+                        writeChar(p_value[1]);
+                        writeChar(p_value[2]);
+                        writeChar(p_value[3]);
+                } else {
+                        // network is big endian
+                        writeChar(p_value[3]);
+                        writeChar(p_value[2]);
+                        writeChar(p_value[1]);
+                        writeChar(p_value[0]);
+                }
+        }
+        // ----------------------------------------------------------------------
+        void Storage::writeDouble( double value ) throw ()
+	{
+                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+                short a = 0x0102;
+                unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
+                if (p_a[0] == 0x01) // big endian
+                {
+                        // network is big endian
+                        for (int i=0; i<8; ++i)
+			{
+                                writeChar(p_value[i]);
+                        }
+                } else {
+                        // network is big endian
+                        for (int i=7; i>=0; --i)
+	                {
+                                writeChar(p_value[i]);
+                        }
+                }
+        }
 
+        // ----------------------------------------------------------------------
+        double Storage::readDouble( ) throw ()
+	{
+                double value = 0;
+                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+                short a = 0x0102;
+                unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
+                if (p_a[0] == 0x01) // big endian
+                {
+                        // network is big endian
+                        for (int i=0; i<8; ++i)
+		        {
+                                p_value[i] = readChar();
+                        }
+                } else {
+                        // network is big endian
+                        for (int i=7; i>=0; --i) {
+                                p_value[i] = readChar();
+                        }
+                }
+                return value;
+        }
 }
 
 #endif // BUILD_TCPIP

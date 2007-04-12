@@ -40,8 +40,8 @@ public:
 
 	void reset();
 
-	virtual int readChar() throw();
-	virtual void writeChar(char) throw();
+	virtual unsigned char readChar() throw();
+	virtual void writeChar(unsigned char) throw();
 
 	virtual int readByte() throw();
 	virtual void writeByte(int) throw();
@@ -58,6 +58,10 @@ public:
 
 	virtual float readFloat() throw();
 	virtual void writeFloat( float ) throw();
+
+        virtual double readDouble() throw();
+        virtual void writeDouble( double ) throw();
+
 };
 
 } // namespace tcpip

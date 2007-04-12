@@ -221,7 +221,7 @@ namespace tcpip
 			// Initialize address/port structure
 			::memset(&self, 0, sizeof(self));
 			self.sin_family = AF_INET;
-			self.sin_port = ::htons(port_);
+			self.sin_port = htons(port_);
 			self.sin_addr.s_addr = INADDR_ANY;
 
 			// Assign a port number to the socket
