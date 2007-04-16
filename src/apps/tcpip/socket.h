@@ -10,15 +10,15 @@
 #define __SHAWN_APPS_TCPIP_SOCKET_H
 
 #ifdef SHAWN
+     #include <shawn_config.h>
      #include "../buildfiles/_apps_enable_cmake.h"
      #ifdef ENABLE_TCPIP
             #define BUILD_TCPIP
      #endif
+#else
+     #define BUILD_TCPIP
 #endif
 
-#ifndef SHAWN
-        #define BUILD_TCPIP
-#endif
 
 #ifdef BUILD_TCPIP
 

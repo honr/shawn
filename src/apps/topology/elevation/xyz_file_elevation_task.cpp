@@ -104,7 +104,8 @@ namespace topology
                                      scale_vec.x(),scale_vec.y(),scale_vec.z(),
                                      outn);
       }
-      catch( runtime_error& re ) {
+      catch( runtime_error& ) 
+	  {
          delete data;
          throw;
       }

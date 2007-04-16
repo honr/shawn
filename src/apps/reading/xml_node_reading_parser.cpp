@@ -116,7 +116,7 @@ namespace xmlreading
 		{
 			if(it->first == id)
 			{
-				if(it->second.first != value.first | it->second.second != value.second)
+				if(it->second.first != value.first || it->second.second != value.second)
 				{	
 					parser_readings_->erase(it);
 					parser_readings_->insert(new_reading);

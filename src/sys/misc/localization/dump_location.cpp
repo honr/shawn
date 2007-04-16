@@ -31,28 +31,18 @@ namespace shawn
    {
       require_world( sc );
 
-      std::string fname = 
-         sc.environment().required_string_param( "dloc_out_file");
-      dump_estimates_ = 
-         sc.environment().optional_int_param("dloc_print_estimates",1);
-      skip_unpositioned_ = 
-         sc.environment().optional_int_param("dloc_skip_unpositioned",0);
-      colsep_ = 
-         sc.environment().optional_string_param("dloc_col_sep","\t");
-      unpositioned_mark_ = sc.environment().
-         optional_string_param("dloc_unpositioned_mark",
-                               std::string("?")+colsep_+std::string("?")+colsep_+std::string("?"));
+      std::string fname  = sc.environment().required_string_param("dloc_out_file");
+      dump_estimates_    = sc.environment().optional_int_param("dloc_print_estimates", 1) != 0;
+      skip_unpositioned_ = sc.environment().optional_int_param("dloc_skip_unpositioned", 0) != 0;
+      colsep_            = sc.environment().optional_string_param("dloc_col_sep", "\t");
+      unpositioned_mark_ = sc.environment().optional_string_param("dloc_unpositioned_mark", 
+							std::string("?")+colsep_+std::string("?")+colsep_+std::string("?"));
 
       std::ofstream out( fname.c_str() );
       if( !out )
-         throw std::runtime_error(std::string("cannot write file '") +
-                                  fname +
-                                  std::string("'"));
+         throw std::runtime_error(std::string("cannot write file '") + fname + std::string("'"));
 
-      for( World::const_node_iterator
-              it    = sc.world().begin_nodes(),
-              endit = sc.world().end_nodes();
-           it != endit; ++it )
+      for( World::const_node_iterator it = sc.world().begin_nodes(), endit = sc.world().end_nodes(); it != endit; ++it )
          if( (!skip_unpositioned_) || (!dump_estimates_) || it->has_est_position() )
             {
                print_label(out,*it);

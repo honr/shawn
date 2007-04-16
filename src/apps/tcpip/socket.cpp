@@ -6,45 +6,44 @@
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 
-#include "socket.h"
+#ifdef SHAWN
+     #include <apps/tcpip/socket.h>
+	 #include <apps/tcpip/storage.h>
+     #include <sys/simulation/simulation_controller.h>
+#else
+	#include "socket.h"
+	#include "storage.h"
+#endif
 
 #ifdef BUILD_TCPIP
 
-#ifdef SHAWN
-       #include "sys/simulation/simulation_controller.h"
-
-       extern "C" void init_tcpip( shawn::SimulationController& sc )
-       {
-              // std::cout << "tcpip init" << std::endl;
-       }
-#endif
-
-
-#include "storage.h"
 
 #ifndef WIN32
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <errno.h>
-#include <fcntl.h>
-#endif
+	#include <sys/types.h>
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <netinet/tcp.h>
+	#include <arpa/inet.h>
+	#include <netdb.h>
+	#include <errno.h>
+	#include <fcntl.h>
+#else
+	#ifdef ERROR
+		#undef ERROR
+	#endif
 
-#ifdef WIN32
-#include <winsock2.h>
-#ifndef vsnprintf
-#define vsnprintf _vsnprintf
-#endif
+	#include <winsock2.h>
+
+	#ifndef vsnprintf
+		#define vsnprintf _vsnprintf
+	#endif
+
 #endif
 
 #include <cstdio>
 #include <cstring>
 #include <cstdarg>
 #include <assert.h>
-
 #include <string>
 #include <vector>
 #include <string>
@@ -52,6 +51,14 @@
 #include <string.h>
 
 using namespace std;
+
+
+#ifdef SHAWN
+    extern "C" void init_tcpip( shawn::SimulationController& sc )
+    {
+            // std::cout << "tcpip init" << std::endl;
+    }
+#endif
 
 namespace tcpip
 {
@@ -215,9 +222,16 @@ namespace tcpip
 				BailOnSocketError("tcpip::Socket::accept() @ socket");
 			
 			//"Address already in use" error protection
-			int* reuseaddr = new int(1);
-			setsockopt(server_socket_, SOL_SOCKET, SO_REUSEADDR, reuseaddr, sizeof(int));
-					
+			{
+				int reuseaddr = 1;
+
+				#ifdef WIN32
+					setsockopt(server_socket_, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuseaddr, sizeof(reuseaddr));
+				#else
+					setsockopt(server_socket_, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(reuseaddr));
+				#endif
+			}
+
 			// Initialize address/port structure
 			::memset(&self, 0, sizeof(self));
 			self.sin_family = AF_INET;
@@ -396,8 +410,8 @@ namespace tcpip
 		if( !datawaiting( socket_) )
 			return b;
 
-		unsigned char buf[bufSize];
-		int a = recv( socket_, (char*)buf, sizeof(buf), 0 );
+		unsigned char* buf = new unsigned char[bufSize];
+		int a = recv( socket_, (char*)buf, bufSize, 0 );
 
 		if( a < 0 )
 			BailOnSocketError( "tcpip::Socket::receive() @ recv" );
@@ -406,6 +420,7 @@ namespace tcpip
 		for(int i = 0; i < a; ++i)
 			b[i] = buf[i];
 
+		delete buf;
 		return b;
 	}
 

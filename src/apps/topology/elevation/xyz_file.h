@@ -8,6 +8,7 @@
 
 #ifndef __SHAWN_APPS_TOPOLOGY_ELEVATION_XYZ_FILE_H
 #define __SHAWN_APPS_TOPOLOGY_ELEVATION_XYZ_FILE_H
+#include <shawn_config.h>
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 

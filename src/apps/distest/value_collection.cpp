@@ -105,7 +105,6 @@ namespace distest
 				err = new multiset<float>();
 				assert( f.is_open() );
 				float val;
-				char c;
 				while ( f >> val) { err->insert(val); f.ignore();}
 				//cout << "nach reading aus dem file " << os.str() << endl << flush;
 				f.close();

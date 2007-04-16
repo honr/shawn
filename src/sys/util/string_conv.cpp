@@ -67,7 +67,7 @@ namespace shawn
       int intres = strtol( cstr, &errpt, 10 );
       
       if( (*cstr != 0) && (*errpt == 0) )
-         return intres;
+         return intres != 0;
 
       const BoolName* bn = bool_names_;
       while( !bn->first.empty() )

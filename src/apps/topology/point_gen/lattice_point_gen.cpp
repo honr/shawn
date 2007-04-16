@@ -40,7 +40,7 @@ namespace topology
       throw( std::runtime_error )
    {
       PointGenerator::pre_generate(sc,brh);
-	  spacing_ = sc.environment().optional_double_param("spacing", 1.0);
+	  spacing_ = (float) sc.environment().optional_double_param("spacing", 1.0);
 
       bbox_=extract_box(brh);
       check_fail_count_=true;
