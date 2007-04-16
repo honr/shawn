@@ -254,7 +254,7 @@
 
 	# create new module config header files
 	file( WRITE ../buildfiles/_apps_init_cmake.h "" )
-	file( WRITE ../buildfiles/_apps_enable_cmake.h "" )
+	file( WRITE ../buildfiles/_apps_enable_cmake.h "#include \"shawn_config.h\"\n" )
 
 	set( appsType APPS )
 	set( appsPath apps )
@@ -272,7 +272,7 @@
 
 		# create new module config header files
 		file( WRITE ../buildfiles/_legacyapps_init_cmake.h "" )
-		file( WRITE ../buildfiles/_legacyapps_enable_cmake.h "" )
+		file( WRITE ../buildfiles/_legacyapps_enable_cmake.h "#include \"shawn_config.h\"\n" )
 
 		set( appsType LEGACYAPPS )
 		set( appsPath ${LEGACYAPPS_PATH} )
