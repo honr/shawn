@@ -12,14 +12,11 @@
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task_keeper.h"
 
-
 #include "apps/topology/topology/rectangle_topology_task.h"
 #include "apps/topology/topology/cuboid_topology_task.h"
 #include "apps/topology/topology/topology_25d_task.h"
-
-
-//#include "apps/topology/topology/xml_polygon_topology_task.h"
-
+#include "apps/topology/topology/xml_polygon_topology_task.h"
+#include "apps/topology/topology/polygon_topology_postscript_task.h"
 
 #include <iostream>
 
@@ -34,7 +31,8 @@ namespace topology
      sc.simulation_task_keeper_w().add( new CuboidTopologyTask );
 	 sc.simulation_task_keeper_w().add( new Topology25DTask );
 	 
-	 //sc.simulation_task_keeper_w().add( new XMLPolygonTopologyTask );
+	 sc.simulation_task_keeper_w().add( new XMLPolygonTopologyTask );
+	 sc.simulation_task_keeper_w().add( new PolygonTopologyPostscriptTask );
   }
 
 }

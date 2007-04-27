@@ -11,7 +11,7 @@
 #include "sys/taggings/tag_factory_keeper.h"
 #include "sys/taggings/map_tags.h"
 #include "sys/simulation/simulation_controller.h"
-
+#include <iostream>
 
 namespace shawn
 {

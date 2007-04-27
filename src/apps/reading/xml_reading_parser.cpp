@@ -121,7 +121,7 @@ namespace xmlreading
 		{
 			if(it->first == v)
 			{
-				if(it->second.first != values.first | it->second.second != values.second)
+				if(it->second.first != values.first || it->second.second != values.second)
 				{	
 					parserreadings_->erase(it);
 					parserreadings_->insert(vec);

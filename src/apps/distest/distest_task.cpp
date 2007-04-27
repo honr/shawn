@@ -773,19 +773,19 @@ namespace distest
 										//cout << "container=" << container << " criteria=" << criteria << endl;
 
 										uniErr[container].set_file_handle_cache(fhc_);
-										uniErr[container].insert(container, "uni",(unidist-perfdist)/r);
+										uniErr[container].insert(container, "uni",float((unidist-perfdist)/r));
 										
 										bidiAvgErr[container].set_file_handle_cache(fhc_);
-										bidiAvgErr[container].insert(container, "avg", (bidiavgdist-perfdist)/r);
+										bidiAvgErr[container].insert(container, "avg", float((bidiavgdist-perfdist)/r));
 										
 										bidiAvg2Err[container].set_file_handle_cache(fhc_);
-										bidiAvg2Err[container].insert(container, "avg2", (bidiavg2dist-perfdist)/r);
+										bidiAvg2Err[container].insert(container, "avg2", float((bidiavg2dist-perfdist)/r));
 										
 										bidiMinErr[container].set_file_handle_cache(fhc_);
-										bidiMinErr[container].insert(container, "min", (bidimindist-perfdist)/r);
+										bidiMinErr[container].insert(container, "min", float((bidimindist-perfdist)/r));
 										
 										bidiMaxErr[container].set_file_handle_cache(fhc_);
-										bidiMaxErr[container].insert(container, "max", (bidimaxdist-perfdist)/r);
+										bidiMaxErr[container].insert(container, "max", float((bidimaxdist-perfdist)/r));
 										//edgeCount[neighborCount]++;
 
 

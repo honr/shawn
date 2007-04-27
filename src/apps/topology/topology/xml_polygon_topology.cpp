@@ -1,9 +1,9 @@
 /************************************************************************
  ** This file is part of the network simulator Shawn.                  **
- ** Copyright (C) 2004,2005 by  SwarmNet (www.swarmnet.de)             **
- **                         and SWARMS   (www.swarms.de)               **
+ ** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
  ** Shawn is free software; you can redistribute it and/or modify it   **
- ** under the terms of the GNU General Public License, version 2.      **
+ ** under the terms of the BSD License. Refer to the shawn-licence.txt **
+ ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
@@ -13,6 +13,7 @@
 #include "apps/topology/topology/xml_polygon_topology.h"
 #include "apps/topology/topology/polygon_topology_helpers.h"
 #include "sys/util/string_conv.h"
+#include "sys/simulation/simulation_controller.h"
 
 #include <CGAL/ch_graham_andrew.h>
 
@@ -34,6 +35,7 @@ namespace topology
         polygon_(NULL),
         outer_(NULL),
         polygon_count_(0),
+		tag_count_(0),
         create_outer_polygon_(false)
     {}
 
@@ -45,10 +47,11 @@ namespace topology
     // ----------------------------------------------------------------------
     void
         XMLPolygonTopology::
-        read( const string& filename, bool create_outer_polygon /* = false */)
+		read(shawn::SimulationController& sc, const string& filename, bool create_outer_polygon /* = false */)
         throw( runtime_error )
     {
         this->create_outer_polygon_ = create_outer_polygon;
+		set_tag_factory_keeper( sc.tag_factory_keeper_w() );
 
         if( create_outer_polygon_ ) {
             outer_ = new Polygon;
@@ -57,11 +60,11 @@ namespace topology
 
         set_document_uri(filename);
         parse();
-        
+
         if( create_outer_polygon_ )
             set_outer_polygon( topology::convex_hull(outer_->vertices_begin(), outer_->vertices_end()) );
 
-        cerr << "XMLPolygonTopology: Loaded " << polygon_count_ << " polygons" << endl;    
+        cerr << "XMLPolygonTopology: Loaded " << polygon_count_ << " polygons and " << tag_count_ << " tags" << endl;    
     }
 
     // ----------------------------------------------------------------------
@@ -76,7 +79,6 @@ namespace topology
         }
         else if( parsing_state_ == TopologyState && !strcmp("polygon", name) ) 
         {
-
             polygon_type_ = polygon_type(atts);
             parsing_state_ = PolygonState;
             polygon_ = new Polygon;
@@ -89,7 +91,16 @@ namespace topology
 
             if( create_outer_polygon_ && polygon_type_ != OuterType )
                 outer_->push_back( to_point(atts) );
-        }
+        } 
+		else if( parsing_state_ == PolygonState && !strcmp("tag", name) )
+		{
+			parsing_state_ = TagState;
+			handle_open_tag_tag(atts, tags(*polygon_));
+		}
+		else if( parsing_state_ == TagState && !strcmp("entry", name) )
+		{
+			handle_tag_entry(atts);
+		}
     }
 
     // ----------------------------------------------------------------------
@@ -126,6 +137,13 @@ namespace topology
 
             polygon_ = NULL;
         }
+		else if( parsing_state_ == TagState && !strcmp("tag", name) )
+		{
+			handle_close_tag_tag(NULL, tags(*polygon_));
+			parsing_state_ = PolygonState;
+			tag_count_++;
+		}
+
     }
 
     // ----------------------------------------------------------------------
@@ -163,25 +181,4 @@ namespace topology
 * Date    $Date: 2005/08/05 10:00:35 $
 *-----------------------------------------------------------------------
 * $Log: xml_polygon_topology.cpp,v $
-* Revision 1.2  2005/08/05 10:00:35  ali
-* 2005 copyright notice
-*
-* Revision 1.1  2005/07/31 17:01:42  ali
-* ported polygon stuff to new topo
-*
-* Revision 1.2  2005/03/02 10:04:28  pfister
-* Topology stuff updated and changes for the new config system
-*
-* Revision 1.1  2005/02/18 19:23:43  ali
-* utilized configbuilder, sys/worlds/topology became apps
-*
-* Revision 1.3  2005/02/07 15:15:36  pfister
-* *** empty log message ***
-*
-* Revision 1.2  2005/02/07 14:36:57  pfister
-* Support to read xml polygon files. Removed the Centerpoint xml parser dependency and the dom parser. Updated readme for windows.
-*
-* Revision 1.1  2005/02/06 16:57:08  ali
-* topology generation
-*
 *-----------------------------------------------------------------------*/

@@ -1,11 +1,10 @@
 /************************************************************************
- ** This file is part of the network simulator Shawn.                  **
- ** Copyright (C) 2004,2005 by  SwarmNet (www.swarmnet.de)             **
- **                         and SWARMS   (www.swarms.de)               **
- ** Shawn is free software; you can redistribute it and/or modify it   **
- ** under the terms of the GNU General Public License, version 2.      **
- ************************************************************************/
-
+** This file is part of the network simulator Shawn.                  **
+** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
+** Shawn is free software; you can redistribute it and/or modify it   **
+** under the terms of the BSD License. Refer to the shawn-licence.txt **
+** file in the root of the Shawn source tree for further details.     **
+************************************************************************/
 #ifndef __SHAWN_APPS_TOPOLOGY_XML_POLYGON_TOPOLOGY_TASK_H
 #define __SHAWN_APPS_TOPOLOGY_XML_POLYGON_TOPOLOGY_TASK_H
 
@@ -42,10 +41,4 @@ namespace topology
  * Date    $Date: 2005/08/05 10:00:36 $
  *-----------------------------------------------------------------------
  * $Log: xml_polygon_topology_task.h,v $
- * Revision 1.2  2005/08/05 10:00:36  ali
- * 2005 copyright notice
- *
- * Revision 1.1  2005/07/31 17:01:42  ali
- * ported polygon stuff to new topo
- *
  *-----------------------------------------------------------------------*/

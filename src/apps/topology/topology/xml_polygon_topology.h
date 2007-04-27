@@ -1,9 +1,9 @@
 /************************************************************************
  ** This file is part of the network simulator Shawn.                  **
- ** Copyright (C) 2004,2005 by  SwarmNet (www.swarmnet.de)             **
- **                         and SWARMS   (www.swarms.de)               **
+ ** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
  ** Shawn is free software; you can redistribute it and/or modify it   **
- ** under the terms of the GNU General Public License, version 2.      **
+ ** under the terms of the BSD License. Refer to the shawn-licence.txt **
+ ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 
 #ifndef __SHAWN_SYS_WORLDS_TOPOLOGY_POLYGON_XML_POLYGON_TOPOLOGY_H
@@ -13,9 +13,11 @@
 #include "shawn_config.h"
 #ifdef HAVE_CGAL
 
+#include "sys/cgal/types.h"
 #include "apps/topology/topology/polygon_topology.h"
 #include "sys/xml/sax_reader.h"
-#include "sys/cgal/types.h"
+#include "sys/tag_container.h"
+#include "sys/xml/tag_parser.h"
 
 #include <string>
 #include <stdexcept>
@@ -26,14 +28,16 @@ namespace topology
     /** Reads a XML polygon input file. The format of the file looks like:
     * <pre>
     * <topology>
-    * <polygon blocking="0" type="outer">
+    * <polygon type="outer">
+	*	  <!-- Here, all valid tags from shawn::Tag may be present -->
     *     <vertex x="2117.41163264478" y="8044.34768255157"/>
     *     <vertex x="2117.48762643993" y="8454.22570670335"/>
     *     <vertex x="3268.4534325899" y="8573.10638444706"/> 
     *     ...
     * </polygon>
     * ...
-    * <polygon blocking="0" type="hole">
+    * <polygon type="hole">
+	*	  <!-- Here, all valid tags from shawn::Tag may be present -->
     *     <vertex x="3287.62118775287" y="13646.0022118151"/>
     *     <vertex x="4862.11689576203" y="12958.9956104826"/>
     *     <vertex x="4293.52515754043" y="11767.3139256284"/>
@@ -48,14 +52,16 @@ namespace topology
     * around the vertices of the polygon.    
     */
     class XMLPolygonTopology
-        : public PolygonTopology, public shawn::xml::SAXReader
+        : public PolygonTopology, 
+    	  public shawn::xml::TagParser,
+		  public shawn::xml::SAXReader
     {
     public:
         XMLPolygonTopology();
         virtual ~XMLPolygonTopology();
 
         /** Parses the given xml file */
-        virtual void read( const std::string& filename, bool create_outer_polygon = false) throw( std::runtime_error );
+        virtual void read(shawn::SimulationController& sc, const std::string& filename, bool create_outer_polygon = false) throw( std::runtime_error );
     
     protected:
         enum ParsingState 
@@ -63,6 +69,7 @@ namespace topology
             UnknownState,    ///< No expected tag has been encoutered yet
             TopologyState,   ///< Inside a topology tag
             PolygonState,    ///< Inside a polygon tag
+            TagState,		 ///< Inside a shawn::Tag element
             DoneState        ///< Parsing has stopped
         };   
 
@@ -72,11 +79,20 @@ namespace topology
             OuterType   ///< Outer polygon
         };            
         
-        ParsingState parsing_state_;        ///< The current parsing state
-        PolygonType polygon_type_;          ///< The type of the currently read polygon
-        Polygon* polygon_; ///< The currently read polygon
-        Polygon* outer_;   ///< The outer polygon
+		/// The current parsing state in the XML file
+        ParsingState parsing_state_;        
+
+		/// The type of the currently read polygon
+        PolygonType polygon_type_;          
+
+		/// The currently read polygon
+        Polygon* polygon_; 
+
+		/// The outer polygon
+        Polygon* outer_;   
+
         int polygon_count_;
+        int tag_count_;
         bool create_outer_polygon_;
 
         /** Returns the polygon type based on the XML attributes
@@ -95,7 +111,6 @@ namespace topology
         
         /** */
         shawn::CGAL2D to_point(const char** atts) const throw(std::runtime_error);        
-        
     };
 
 }
@@ -109,25 +124,4 @@ namespace topology
 * Date    $Date: 2005/08/05 10:00:35 $
 *-----------------------------------------------------------------------
 * $Log: xml_polygon_topology.h,v $
-* Revision 1.2  2005/08/05 10:00:35  ali
-* 2005 copyright notice
-*
-* Revision 1.1  2005/07/31 17:01:42  ali
-* ported polygon stuff to new topo
-*
-* Revision 1.2  2005/03/02 10:04:28  pfister
-* Topology stuff updated and changes for the new config system
-*
-* Revision 1.1  2005/02/18 19:23:43  ali
-* utilized configbuilder, sys/worlds/topology became apps
-*
-* Revision 1.3  2005/02/11 15:45:47  pfister
-* *** empty log message ***
-*
-* Revision 1.2  2005/02/07 14:36:57  pfister
-* Support to read xml polygon files. Removed the Centerpoint xml parser dependency and the dom parser. Updated readme for windows.
-*
-* Revision 1.1  2005/02/06 16:57:08  ali
-* topology generation
-*
 *-----------------------------------------------------------------------*/

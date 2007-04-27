@@ -29,13 +29,9 @@ namespace shawn
       ///@name Public Types
       ///@{
       ///
-      typedef
-      std::map<std::string,RefcntPointer<Tag> >
-      TagMap;
+      typedef std::map<std::string, RefcntPointer<Tag> > TagMap;
       ///
-      typedef
-      TagMap::const_iterator
-      tag_iterator;
+      typedef TagMap::const_iterator tag_iterator;
       ///@}
 
 

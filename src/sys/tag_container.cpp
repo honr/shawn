@@ -9,7 +9,6 @@
 #include "sys/tag_container.h"
 #include "sys/tag.h"
 
-
 namespace shawn
 {
 
