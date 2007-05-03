@@ -5,6 +5,10 @@
 ** under the terms of the BSD License. Refer to the shawn-licence.txt **
 ** file in the root of the Shawn source tree for further details.     **
 ************************************************************************/
+#include "../buildfiles/_apps_enable_cmake.h"
+#ifdef ENABLE_TOPOLOGY
+#include "shawn_config.h"
+#ifdef HAVE_CGAL
 
 #include "apps/topology/comm_models/polygon_comm_model.h"
 #include "sys/node.h"
@@ -93,6 +97,9 @@ namespace topology
 	}
 
 }
+
+#endif
+#endif
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/comm_models/disk_graph_model.cpp,v $
