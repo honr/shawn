@@ -21,11 +21,20 @@ namespace routing
     namespace flood
     {
 
-        class FloodRoutingProtocolFactory : public routing::RoutingProtocolFactory
+        //-----------------------------------------------------------------------
+        /** Creates instances of the routing::flood::FloodRoutingProtocol.
+		  * This protocol does not require any parameterization
+          */        
+		class FloodRoutingProtocolFactory : public routing::RoutingProtocolFactory
         {
         public:
             virtual ~FloodRoutingProtocolFactory ();
+
+			///Creates an flooding instance with the given name. Also adds a default processor to the
+			///world (FloodRoutingProcessorFactory::PROCESSOR_NAME)
             virtual routing::RoutingProtocolBase* create(std::string name, shawn::SimulationController& ) throw();
+
+			///Returns "flood"
             virtual std::string name() const throw();
             virtual std::string description() const throw();
         };

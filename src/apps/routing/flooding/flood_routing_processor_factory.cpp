@@ -25,6 +25,7 @@ namespace routing
     {
         const std::string FloodRoutingProcessorFactory::PROCESSOR_NAME = "apps_routing_flood_processor";
 
+        // ----------------------------------------------------------------------
         void
             FloodRoutingProcessorFactory::
             register_factory( SimulationController& sc )
@@ -32,20 +33,26 @@ namespace routing
         {
             sc.processor_keeper_w().add( new FloodRoutingProcessorFactory );
         }
+
         // ----------------------------------------------------------------------
         FloodRoutingProcessorFactory::
             FloodRoutingProcessorFactory()
         {}
+
         // ----------------------------------------------------------------------
         FloodRoutingProcessorFactory::
             ~FloodRoutingProcessorFactory()
         {}
+
         // ----------------------------------------------------------------------
         std::string
             FloodRoutingProcessorFactory::
             name( void )
             const throw()
-        { return PROCESSOR_NAME; }
+        { 
+			return PROCESSOR_NAME; 
+		}
+
         // ----------------------------------------------------------------------
         std::string 
             FloodRoutingProcessorFactory::
@@ -54,6 +61,7 @@ namespace routing
         {
             return "Internal use for flood routing only";
         }
+
         // ----------------------------------------------------------------------
         shawn::Processor*
             FloodRoutingProcessorFactory::

@@ -77,7 +77,9 @@ namespace routing
             //Insert the node in the list of visited nodes
             fri.been_there_.insert(&owner);
 
-            //Pass the packaged -original- message to this node
+            //All nodes within the flood limit are receivers of the original message.
+			//Therefore pass the packaged -original- message to this node (but only if this
+			//if not the originating node)
 			if( fri.initial_sender() != owner )
 				owner.receive( fri.message() );
 

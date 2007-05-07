@@ -26,6 +26,10 @@ namespace routing
     namespace flood 
     {
 
+        //-----------------------------------------------------------------------
+        /** Creates instances of the internal routing::flood::FloodRoutingProcessor, should
+		  * not be used by externally.
+          */        
         class FloodRoutingProcessorFactory
             : public shawn::ProcessorFactory
         {
@@ -34,10 +38,15 @@ namespace routing
             virtual ~FloodRoutingProcessorFactory();
 
             virtual std::string name( void ) const throw();
-            virtual std::string description( void ) const throw();
+            
+			virtual std::string description( void ) const throw();
+
             virtual shawn::Processor* create( void ) throw();
 
+			///Registers this factory with the corresponding keeper
             static void register_factory( shawn::SimulationController& ) throw();
+
+			///The name of this processor factory
             static const std::string PROCESSOR_NAME;
         };
     }

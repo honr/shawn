@@ -30,6 +30,7 @@ namespace routing
         {
         public:
 		  FloodRoutingProcessor();
+
 		  ///Invoked externally when a messages is rxed
           virtual bool process_message( const shawn::ConstMessageHandle& ) throw();
         };
