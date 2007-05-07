@@ -5,21 +5,16 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #ifndef __SHAWN_APPS_ROUTING_GEO_ROUTING_PROTOCOL_H
 #define __SHAWN_APPS_ROUTING_GEO_ROUTING_PROTOCOL_H
-
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_ROUTING
 
 #include "apps/routing/geo/geo_routing.h"
-
 #include "apps/routing/routing.h"
 #include "sys/misc/observable.h"
-
 #include "sys/vec.h"
 #include "sys/node.h"
-
 #include <string>
 #include <set>
 
@@ -40,12 +35,13 @@ namespace routing
           *      std::string routing_prot_name = sc.environment().optional_string_param("my_app_routing", "geo");
           *      RoutingProtocolBaseHandle rph = routing::routing_protocol_keeper_w(sc).find_w(routing_prot_name);
           *      assert(rph.is_not_null());
-          *      GeoRoutingProtocol* = routing_prot_ = dynamic_cast<GeoRoutingProtocol*> (rph.get());
+          *      GeoRoutingProtocol* routing_prot_ = dynamic_cast<GeoRoutingProtocol*> (rph.get());
           *      assert(routing_prot_ != NULL);
           * </pre>
           */
-        class GeoRoutingProtocol : public routing::RoutingProtocol<GeoRoutingAddress>, 
-                                   public shawn::Observable<GeoRoutingObserver>
+        class GeoRoutingProtocol 
+			: public routing::RoutingProtocol<GeoRoutingAddress>, 
+              public shawn::Observable<GeoRoutingObserver>
         {
         protected:
             //---------------------------------------------------------------------

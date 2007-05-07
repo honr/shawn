@@ -217,20 +217,20 @@ namespace routing
             
             << "/msgpathstyle {" << endl
             << " [ ] 0 setdash " << endl
-            << "  .3 setgray" << endl
-            << "  1 setlinewidth" << endl
+            << " 1 0.6 0 setrgbcolor" << endl
+            << "  1.5 setlinewidth" << endl
             << "} bind def" << endl
             
             << "/edgestyle {" << endl
             << " [ ] 0 setdash " << endl
-            << "  .3 setgray" << endl
+            << "  .5 setgray" << endl
             << "  1 setlinewidth" << endl
             << "} bind def" << endl
             
             << "/lightedgestyle {" << endl
             << " [ ] 0 setdash " << endl
             << "  .9 setgray" << endl
-            << "  0.15 setlinewidth" << endl
+            << "  0.3 setlinewidth" << endl
             << "} bind def" << endl
    
             << "/lightlightstyle {" << endl
@@ -248,7 +248,7 @@ namespace routing
             << "/spstyle {" << endl
             << " 0.5 setlinewidth  " << endl 
             << " [3 3] 0 setdash " << endl 
-            << " 0.1 setlinewidth " << endl 
+            << " 1 setlinewidth " << endl 
             << " 1 0 0 setrgbcolor " << endl
             << "} bind def" << endl
             

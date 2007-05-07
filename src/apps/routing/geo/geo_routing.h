@@ -5,10 +5,8 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #ifndef __SHAWN_APPS_ROUTING_GEO_ROUTING_H
 #define __SHAWN_APPS_ROUTING_GEO_ROUTING_H
-
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_ROUTING
 
@@ -20,7 +18,6 @@
 #include <set>
 
 #define GEO_DEBUGLEVEL 1
-
 #ifdef GEO_DEBUGLEVEL 
 #define GEO_DEBUG(level, x) if ((level) <= (GEO_DEBUGLEVEL)) cout << "GeoRoutingProcessor: " << x << endl;
 #else

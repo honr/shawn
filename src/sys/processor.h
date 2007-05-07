@@ -52,110 +52,128 @@ namespace shawn
             Sleeping, ///< message reception stopped, but work() continues
             Inactive  ///< nonrevertable death
          };
-
       
       ///@name construction / destruction
       ///@{
-      ///
-      Processor();
-      ///
-      virtual ~Processor();
+		///
+		Processor();
+		///
+		virtual ~Processor();
       ///@}
 
 
       ///@name node membership
       ///@{
-      /** called by Node when processor gets added */
-      virtual void set_owner( Node& ) throw();
-      /** \return const Node that contains this Processor */
-      virtual const Node& owner( void ) const throw();
-      /** \return writable Node that contains this Processor */
-      virtual Node& owner_w( void ) throw();
+
+		/** called by Node when processor gets added */
+		virtual void set_owner( Node& ) throw();
+
+		/** \return const Node that contains this Processor */
+		virtual const Node& owner( void ) const throw();
+
+		/** \return writable Node that contains this Processor */
+		virtual Node& owner_w( void ) throw();
+
       ///@}
 
       ///@name processor interface
       ///@{
-      /** This method is called \em once for every Processor that is
-       *  contained in one special node, which is chosen arbitrarily. It
-       *  can be identified by Node::is_special_node() 
-       *
-       *  It is called before boot() occurs. A Processor whose special_boot()
-       *  is called will still get a boot() afterwards.
-       */
-      virtual void special_boot( void ) throw();
-      /** This method is called once for every Processor before the
-       *  simulation starts (and again, if the simulation is reset)
-       */
-      virtual void boot( void ) throw();
-      /** This method is called if a Node receives a Message that is
-       *  to be processed. Overload this method in derived
-       *  Processors to produce specific protocols/algorithms.
-       *
-       *  \return \c true iff the Processor recognizes the passed
-       *  message to be of "his own type". This makes the Node stop
-       *  processing the message by passing it to all his Processors.
-       */
-      virtual bool process_message( const ConstMessageHandle& ) throw();
-      /** Called once in each simulation round. Used for periodic tasks
-       *  like collecting sensor values and generating messages if someting
-       *  interesting has happened.
-       */
-      virtual void work( void ) throw();
+
+		/** This method is called \em once for every Processor that is
+		*  contained in one special node, which is chosen arbitrarily. It
+		*  can be identified by Node::is_special_node() 
+		*
+		*  It is called before boot() occurs. A Processor whose special_boot()
+		*  is called will still get a boot() afterwards.
+		*/
+		virtual void special_boot( void ) throw();
+
+		/** This method is called once for every Processor before the
+		*  simulation starts (and again, if the simulation is reset)
+		*/
+		virtual void boot( void ) throw();
+
+		/** This method is called if a Node receives a Message that is
+		*  to be processed. Overload this method in derived
+		*  Processors to produce specific protocols/algorithms.
+		*
+		*  \return \c true iff the Processor recognizes the passed
+		*  message to be of "his own type". This makes the Node stop
+		*  processing the message by passing it to all his Processors.
+		*/
+		virtual bool process_message( const ConstMessageHandle& ) throw();
+
+		/** Called once in each simulation round. Used for periodic tasks
+		*  like collecting sensor values and generating messages if someting
+		*  interesting has happened.
+		*/
+		virtual void work( void ) throw();
+
       ///@}
 
 
       ///@name misc access
       ///@{
-      /** \return the containing Node's id number
-       *  \sa Node::id()  */
-      virtual int id( void ) const throw();
-      /** \return the state of the Processor
-       *  \sa set_state() */
-      virtual ProcessorState
-      state( void )
-         const throw();
-      /** \return the current iteration round */
-      virtual int
-      simulation_round( void )
-         const throw();
-      /** to be implemented */
-      virtual void sync_to_tags( TagContainer& ) throw();
-      /** to be implemented */
-      virtual void sync_from_tags( const TagContainer& ) throw( std::runtime_error );
+
+		/** \return the containing Node's id number
+		*  \sa Node::id()  */
+		virtual int id( void ) const throw();
+
+		/** \return the state of the Processor
+		*  \sa set_state() */
+		virtual ProcessorState state( void ) const throw();
+
+		/** \return 
+		*  \sa set_auto_terminate() */
+		bool auto_terminate( void ) const throw();
+
+		/** \return the current iteration round */
+		virtual int simulation_round( void ) const throw();
+
+		/** to be implemented */
+		virtual void sync_to_tags( TagContainer& ) throw();
+
+		/** to be implemented */
+		virtual void sync_from_tags( const TagContainer& ) throw( std::runtime_error );
+
       ///@}
 
    protected:
 
       ///@name Message sending
       ///@{
-      /** enqueues a message for sending. Because the message is
-       *  passed as a handle (see refcnt_pointer), a construct like
-       *  \code
-       *  send( new MyCoolMessage(1,2,3,4) );
-       *  \endcode
-       *  is fine. Whether a message is broadcast or
-       *  unicast is decided by Message::is_unicast(). 
-       */
-      virtual void
-      send( const MessageHandle& )
-         throw();
-      ///@}
 
-      ///@name Message sending
-      ///@{
-      /** Sets the state of the processor, where
-       *  - Processor::Active   denotes the usual state
-       *  - Processor::Sleeping stops message reception, but work() continues
-       *  - Processor::Inactive is final
-       */
-      virtual void
-      set_state( const ProcessorState& )
-         throw();
+		/** Enqueues a message for sending. Because the message is
+		*  passed as a handle (see refcnt_pointer), a construct like
+		*  \code
+		*  send( new MyCoolMessage(1,2,3,4) );
+		*  \endcode
+		*  is fine. Whether a message is broadcast or
+		*  unicast is decided by Message::is_unicast(). 
+		*/
+		virtual void send( const MessageHandle& ) throw();
+	///@}
+
+	///@name State management
+	///@{
+
+		/** Sets the state of the processor, where
+		*  - Processor::Active   denotes the usual state
+		*  - Processor::Sleeping stops message reception, but work() continues
+		*  - Processor::Inactive is final
+		*/
+		virtual void set_state( const ProcessorState& ) throw();
+
+		/** Sets the state of the processor, where
+		*/
+		void set_auto_terminate( bool enable ) throw();
+
       ///@}
 
    private:
       Node*          owner_;
       ProcessorState state_;
+	  bool			 auto_terminate_;
    };
 
 

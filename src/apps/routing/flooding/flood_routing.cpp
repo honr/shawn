@@ -78,16 +78,15 @@ namespace routing
             fri.been_there_.insert(&owner);
 
             //Pass the packaged -original- message to this node
-            owner.receive( fri.message() );
+			if( fri.initial_sender() != owner )
+				owner.receive( fri.message() );
 
             //Continue the flood wave if the hop limit is not reached
             if( frm.hopsremain_ > 0 )
-	    {
-		    routing::RoutedMessageInfo* rmi = &(frm.info());
-		    shawn::MessageHandle rmh = fri.message();
-		    FloodRoutingMessage* nfrm = new FloodRoutingMessage(rmh, rmi, frm.hopsremain_ - 1 );
-		    owner.send( nfrm );
-	    }
+			{
+				routing::RoutedMessageInfo* rmi = &(frm.info());
+				owner.send( new FloodRoutingMessage(fri.message(), rmi, frm.hopsremain_ - 1 ) );
+			}
 
             return true;
         }

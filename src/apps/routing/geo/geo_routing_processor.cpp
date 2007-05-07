@@ -35,6 +35,11 @@ namespace routing
             boot() 
             throw()
         {
+			//Enable the feature to terminate the current node when all other (non-autoterminate)
+			//processors are inactive.
+			set_auto_terminate(true);
+
+			//
             GEO_DEBUG(3, "GeoRoutingProcessor::boot[Node "<< owner().label() <<" ]: Initializing node"); 
             shawn::World& w = owner_w().world_w();
             
@@ -79,6 +84,10 @@ namespace routing
             for(shawn::Node::adjacency_iterator nit = current.begin_adjacent_nodes_w(), nend = current.end_adjacent_nodes_w(); nit!=nend; ++nit)
             {
                 shawn::Node& nb = (*nit);
+
+				if( nb == current )
+					continue;
+
                 shawn::Vec npos = node_pos(nb);
                 double dist = (npos - dest).euclidean_norm();
 

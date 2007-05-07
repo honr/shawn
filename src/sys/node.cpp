@@ -187,22 +187,18 @@ namespace shawn
    step( void )
       throw()
    {
-      //cout << "STEP id=" << id() << endl;
 
-      while( !new_processors_.empty() )
-         {
-            if( is_special_node() )
-               new_processors_.front()->special_boot();
-            new_processors_.front()->boot();
-            new_processors_.pop();
-         }
+	   while( !new_processors_.empty() )
+	   {
+		   if( is_special_node() )
+			   new_processors_.front()->special_boot();
+		   new_processors_.front()->boot();
+		   new_processors_.pop();
+	   }
 
-      for( ProcessorList::iterator
-              it    = processors_.begin(),
-              endit = processors_.end();
-           it != endit; ++it )
-         if( (**it).state() != Processor::Inactive )
-            (**it).work();
+	   for( ProcessorList::iterator it = processors_.begin(), endit = processors_.end(); it != endit; ++it )
+		   if( (**it).state() != Processor::Inactive )
+			   (**it).work();
    }
    // ----------------------------------------------------------------------
    void
@@ -210,10 +206,7 @@ namespace shawn
    receive( const ConstMessageHandle& cmh )
       throw()
    {
-      for( ProcessorList::iterator
-              it    = processors_.begin(),
-              endit = processors_.end();
-           it != endit; ++it )
+      for( ProcessorList::iterator it = processors_.begin(), endit = processors_.end(); it != endit; ++it )
          if( (**it).state() == Processor::Active )
             if( (**it).process_message(cmh) )
                return;
@@ -268,26 +261,35 @@ namespace shawn
    state( void )
       const throw()
    {
-      bool have_act   = false;
-      bool have_sleep = false;
+	   bool have_act   = false;
+	   bool have_sleep = false;
 
-      for( ProcessorList::const_iterator it=processors_.begin(), endit=processors_.end(); it!=endit; ++it)
-         switch( (**it).state() )
-            {
-            case Processor::Active:
-               have_act   = true; break;
-            case Processor::Sleeping:
-               have_sleep = true; break;
-            default:
-               ;
-            }
-      
-      if( have_act )
-         return Processor::Active;
-      else if( have_sleep )
-         return Processor::Sleeping;
-      else
-         return Processor::Inactive;
+	   for( ProcessorList::const_iterator it=processors_.begin(), endit=processors_.end(); it!=endit; ++it)
+	   {
+		   //Only look at processors that will not auto_terminate with others
+		   if( !(**it).auto_terminate() )
+		   {
+			   switch( (**it).state() )
+			   {
+			   case Processor::Active:
+				   have_act = true; 
+				   break;
+
+			   case Processor::Sleeping:
+				   have_sleep = true; 
+				   break;
+
+			   default:
+				   ;
+			   }
+		   }
+	   }
+	   if( have_act )
+		   return Processor::Active;
+	   else if( have_sleep )
+		   return Processor::Sleeping;
+	   else
+		   return Processor::Inactive;
    }
    // ----------------------------------------------------------------------
 /*   void

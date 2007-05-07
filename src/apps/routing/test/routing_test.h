@@ -5,22 +5,21 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #ifndef __SHAWN_APPS_ROUTING_TEST_ROUTING_TEST_H
 #define __SHAWN_APPS_ROUTING_TEST_ROUTING_TEST_H
-
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_ROUTING
 
 #include "apps/routing/dummy/dummy_routing.h"
 #include "apps/routing/flooding/flood_routing.h"
+#include "apps/routing/test/routing_test_postscript.h"
 #include "sys/processors/processor_factory.h"
 #include "sys/processor.h"
 #include "sys/processors/processor_keeper.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/message.h"
-
 #include <set>
+#include <string>
 
 namespace routing 
 {
@@ -31,14 +30,17 @@ namespace routing
         : public shawn::Message
     {
     public:
-        RoutingTestMessage() {}
+		const shawn::Node& source_;
+		RoutingTestMessage(const shawn::Node& source) : source_(source) {}
         virtual ~RoutingTestMessage() {}
     };
 
     /**
     *
     */
-    class RoutingTestProcessor : public shawn::Processor, public shawn::ProcessorFactory
+    class RoutingTestProcessor 
+		: public shawn::Processor, 
+		  public shawn::ProcessorFactory
     {
     public:
         RoutingTestProcessor();
@@ -46,6 +48,7 @@ namespace routing
         virtual void routed_send( shawn::MessageHandle ) throw();
 
         //Processor
+        virtual void boot( void ) throw();
         virtual void special_boot( void ) throw();
         virtual bool process_message( const shawn::ConstMessageHandle& ) throw();
         virtual void work( void ) throw();
@@ -69,9 +72,13 @@ namespace routing
         }
 
     private:
+        int eval_round_;
         int last_time_of_receive_;
-        std::set<const shawn::Node*> neighbours_;
         RoutingProtocolBase* routing_prot_;
+		RoutingTestPostscript* ps_;
+		std::set<shawn::ConstMessageHandle> rx_this_round_;
+		bool draw_topology_;
+		bool verbose_;
     };
 
 }

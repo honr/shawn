@@ -141,7 +141,7 @@ namespace routing
             work( void )
             throw()
         {
-            set_state( Inactive );
+            //set_state( Inactive );
         }
 
         // ----------------------------------------------------------------------
@@ -174,8 +174,11 @@ namespace routing
 
                 //Start a new page if necessary
                 if( need_new_page ) { ps.end_page(); ps.start_page(); }  else need_new_page = true;
+                
+                //Draw all nodes 
+                ps.draw_nodes(sc.world().begin_nodes(), sc.world().end_nodes());
 
-                //Draw destination area
+				//Draw destination area
                 if(draw_dest_area)
                 {
                     shawn::Vec p  = ps.pos2ps(trace.destination().destination());
@@ -195,9 +198,6 @@ namespace routing
                     
                     ps.custom( oss.str() );
                 }
-                
-                //Draw all nodes 
-                ps.draw_nodes(sc.world().begin_nodes(), sc.world().end_nodes());
                 
                 //Shortest path
                 if( shortest_path )

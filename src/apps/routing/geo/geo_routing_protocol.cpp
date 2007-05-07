@@ -66,12 +66,13 @@ namespace routing
             throw( std::runtime_error )
         {
             GEO_DEBUG(1, "GeoRoutingProtocol::send_to: Send requested: sender["<< sender.label() <<"]");
+
+			//Inform the observers of this routing process
             for(ObserverIterator it = observers_begin(), end = observers_end(); it!=end; ++it)
-            {
-                GEO_DEBUG(2, "GeoRoutingProtocol::send_to: Informing observer");
                 (**it).geo_routing_send_to(sender, msg, address);
-            }
-            
+ 
+			//Construct the envelope message that will contain the original message as well
+			//as the address information
             GeoRoutingInfo* ri = new GeoRoutingInfo(*this, msg, sender, address, sender.current_time(), sender.simulation_round());
             GeoRoutingMessage* geomsg = new GeoRoutingMessage(ri);
             GeoRoutingProcessor* p = sender.get_processor_of_type_w<GeoRoutingProcessor>();
@@ -79,13 +80,11 @@ namespace routing
             
             shawn::Node* next = p->next_hop(address);
             if( next != NULL )
-            {
                 next->receive(geomsg);
-            }
             else
-            {
-                GEO_DEBUG(1, "GeoRoutingProtocol::send_to: No next hop found, message dropped");
-            }
+            { 
+				GEO_DEBUG(1, "GeoRoutingProtocol::send_to: No next hop found, message dropped"); 
+			}
         }
 
         //-----------------------------------------------------------------------
@@ -97,11 +96,14 @@ namespace routing
             bool message_handled = false;
             
             GEO_DEBUG(2, "GeoRoutingProtocol::process_message: receiver["<< receiver.label() <<"]");
+			
+			//Notify the observers of this routing process
             for(ObserverIterator it = observers_begin(), end = observers_end(); it!=end; ++it)
-            {
                 (**it).geo_routing_process(receiver, rmsg, rinfo);
-            }
             
+			//Check if we are a receiver for this special message
+			//If yes, pass the original message to the receiver of this routing message
+			//If not, search a potential next hop
             if( is_receiver(receiver, rinfo.destination()) )
             {
                 GEO_DEBUG(1, "GeoRoutingProtocol::process_message: Node is receiver["<< receiver.label() <<"]");
