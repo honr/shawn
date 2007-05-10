@@ -37,8 +37,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/comm_models/communication_models_init.cpp,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2006/07/12 10:28:22 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: communication_models_init.cpp,v $
  *-----------------------------------------------------------------------*/

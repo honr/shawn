@@ -32,8 +32,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/elevation/elevation_init.cpp,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2005/08/05 10:00:34 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: elevation_init.cpp,v $
  *-----------------------------------------------------------------------*/

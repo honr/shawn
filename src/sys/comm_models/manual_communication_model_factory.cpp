@@ -53,8 +53,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/comm_models/manual_communication_model_factory.cpp,v $
-* Version $Revision: 1.1 $
-* Date    $Date: 2005/08/12 12:39:59 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: manual_communication_model_factory.cpp,v $
  *-----------------------------------------------------------------------*/

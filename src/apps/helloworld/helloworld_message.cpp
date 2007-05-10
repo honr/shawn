@@ -26,8 +26,8 @@ namespace helloworld
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/helloworld/helloworld_message.cpp,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2005/08/05 10:00:29 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: helloworld_message.cpp,v $
  *-----------------------------------------------------------------------*/

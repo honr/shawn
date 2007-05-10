@@ -22,8 +22,8 @@ extern "C" void init_helloworld( shawn::SimulationController& sc )
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/helloworld/helloworld_init.cpp,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:29 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: helloworld_init.cpp,v $
  *-----------------------------------------------------------------------*/

@@ -35,7 +35,7 @@ namespace topology
 	protected:
 		virtual void write_header(shawn::SimulationController& sc, std::ostream& out);
 		virtual void paint(shawn::SimulationController& sc, PolygonTopology& p, std::ostream& out);
-		virtual void draw(PolygonTopology::Polygon& p, shawn::SimulationController& sc, std::ostream& out);
+		virtual void draw(const PolygonTopology::Polygon& p, shawn::SimulationController& sc, std::ostream& out);
 		shawn::Vec pos2ps( const shawn::Vec& v ) const throw();
 		double scale(double d)  const throw();
 
@@ -53,8 +53,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/topology/topology/xml_polygon_topology_task.h,v $
-* Version $Revision: 1.2 $
-* Date    $Date: 2005/08/05 10:00:36 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: xml_polygon_topology_task.h,v $
 *-----------------------------------------------------------------------*/

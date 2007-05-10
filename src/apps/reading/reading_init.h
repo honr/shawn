@@ -24,6 +24,6 @@ extern "C" void init_reading( shawn::SimulationController& );
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/reading/reading_init.h,v $
-* Version $Revision: 1.3 $
-* Date    $Date: 2006/04/13 17:30:35 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------*/

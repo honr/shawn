@@ -84,8 +84,8 @@ namespace shawn{
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/misc/random/weibull_random_variable.h,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:40 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: weibull_random_variable.h,v $
  *-----------------------------------------------------------------------*/

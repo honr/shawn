@@ -195,15 +195,15 @@ namespace shawn
       ///@name Node Neighborhood access
       ///@{
       ///
-	  const_adjacency_iterator begin_adjacent_nodes( CommunicationDirection d = CD_BIDI ) const throw();
+	  const_adjacency_iterator begin_adjacent_nodes( EdgeModel::CommunicationDirection d = EdgeModel::CD_BIDI ) const throw();
       ///
       const_adjacency_iterator end_adjacent_nodes( void ) const throw();
       ///
-      adjacency_iterator begin_adjacent_nodes_w( CommunicationDirection d = CD_BIDI ) throw();
+      adjacency_iterator begin_adjacent_nodes_w( EdgeModel::CommunicationDirection d = EdgeModel::CD_BIDI ) throw();
       ///
       adjacency_iterator end_adjacent_nodes_w( void ) throw();
       ///Size of the one hop neighborhood (not counting the 0-hop neighborhood)
-	  int degree( CommunicationDirection d = CD_BIDI ) const throw();
+	  int degree( EdgeModel::CommunicationDirection d = EdgeModel::CD_BIDI ) const throw();
       /** Makes the node store all neighborhoods up to size mindist.
        *  works currently only for mindist == 0 or 1.
        */
@@ -223,9 +223,9 @@ namespace shawn
       ///
       //virtual void add_neighbour( Node& ) throw();
       ///
-      NeighborhoodHandle neighborhood_w( int maxdist, CommunicationDirection d = CD_BIDI ) throw();
+      NeighborhoodHandle neighborhood_w( int maxdist, EdgeModel::CommunicationDirection d = EdgeModel::CD_BIDI ) throw();
       ///
-      NeighborhoodConstHandle neighborhood( int maxdist, CommunicationDirection d = CD_BIDI ) const throw();
+      NeighborhoodConstHandle neighborhood( int maxdist, EdgeModel::CommunicationDirection d = EdgeModel::CD_BIDI ) const throw();
 
 	  ///@}
 	  //---------------------------------------------------------------------
@@ -252,9 +252,9 @@ namespace shawn
 	 ///This returns an upper bound of hops, which are needed for this node component coverage. 
 	 ///@}
   
-	  std::set<const Node*> get_adjacent_nodes( CommunicationDirection d = CD_BIDI ) const;
+	  std::set<const Node*> get_adjacent_nodes( EdgeModel::CommunicationDirection d = EdgeModel::CD_BIDI ) const;
 
-	  std::set<Node*> get_adjacent_nodes_w( CommunicationDirection d = CD_BIDI );
+	  std::set<Node*> get_adjacent_nodes_w( EdgeModel::CommunicationDirection d = EdgeModel::CD_BIDI );
 
    protected:
 
@@ -300,8 +300,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/node.h,v $
- * Version $Revision: 1.26 $
- * Date    $Date: 2006/04/25 13:28:29 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: node.h,v $
  *-----------------------------------------------------------------------*/

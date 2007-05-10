@@ -102,8 +102,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/comm_models/permalink_communication_model.cpp,v $
-* Version $Revision: 1.3 $
-* Date    $Date: 2006/05/04 12:24:06 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: permalink_communication_model.cpp,v $
  *-----------------------------------------------------------------------*/

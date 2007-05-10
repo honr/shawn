@@ -53,8 +53,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/simulation/shawn_simulation_controller.h,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2006/02/04 20:20:05 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: shawn_simulation_controller.h,v $
  *-----------------------------------------------------------------------*/

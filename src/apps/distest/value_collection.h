@@ -159,8 +159,8 @@ namespace distest
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/distest/value_collection.h,v $
-* Version $Revision: 1.2 $
-* Date    $Date: 2006/04/19 15:34:17 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: value_collection.h,v $
  *-----------------------------------------------------------------------*/

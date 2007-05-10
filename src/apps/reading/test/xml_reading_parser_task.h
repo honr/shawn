@@ -83,7 +83,7 @@ namespace reading
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/test/xml_reading_parser_task.h,v $
- * Version $Revision: 1.6 $
- * Date    $Date: 2006/05/16 11:16:33 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------*/
 

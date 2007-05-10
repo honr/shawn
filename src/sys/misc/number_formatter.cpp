@@ -61,8 +61,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/misc/number_formatter.cpp,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/09/14 10:56:30 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: number_formatter.cpp,v $
  *-----------------------------------------------------------------------*/

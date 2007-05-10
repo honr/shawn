@@ -112,8 +112,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/transm_models/chainable_transmission_model.h,v $
-* Version $Revision: 1.3 $
-* Date    $Date: 2005/08/30 20:30:53 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: chainable_transmission_model.h,v $
  *-----------------------------------------------------------------------*/

@@ -94,8 +94,8 @@ namespace reading
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/reading/randomheat_reading.h,v $
-* Version $Revision: 1.4 $
-* Date    $Date: 2006/08/31 21:03:14 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: randomheat_reading.h,v $
  *-----------------------------------------------------------------------*/

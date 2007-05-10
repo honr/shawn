@@ -41,8 +41,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/comm_models/stochastic_comm_model_factory.h,v $
- * Version $Revision: 1.1 $
- * Date    $Date: 2006/03/14 09:34:50 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: stochastic_comm_model_factory.h,v $
  *-----------------------------------------------------------------------*/

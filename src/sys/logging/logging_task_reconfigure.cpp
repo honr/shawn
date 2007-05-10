@@ -267,8 +267,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/logging/logging_task_reconfigure.cpp,v $
- * Version $Revision: 1.7 $
- * Date    $Date: 2006/06/07 20:07:31 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: logging_task_reconfigure.cpp,v $
  *-----------------------------------------------------------------------*/

@@ -175,8 +175,8 @@ namespace distest
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/distest/multihop_distest_task.h,v $
-* Version $Revision: 1.2 $
-* Date    $Date: 2006/04/18 14:00:50 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: multihop_distest_task.h,v $
  *-----------------------------------------------------------------------*/

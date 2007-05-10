@@ -88,8 +88,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/misc/static_node_array.h,v $
- * Version $Revision: 1.7 $
- * Date    $Date: 2007/01/02 15:37:20 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: static_node_array.h,v $
  *-----------------------------------------------------------------------*/

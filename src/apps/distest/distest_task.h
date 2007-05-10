@@ -119,8 +119,8 @@ namespace distest
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/distest/distest_task.h,v $
-* Version $Revision: 1.12 $
-* Date    $Date: 2006/04/18 14:00:50 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: distest_task.h,v $
  *-----------------------------------------------------------------------*/

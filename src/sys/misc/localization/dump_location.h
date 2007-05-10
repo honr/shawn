@@ -46,8 +46,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/misc/localization/dump_location.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:39 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: dump_location.h,v $
  *-----------------------------------------------------------------------*/

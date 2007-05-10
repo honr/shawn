@@ -51,8 +51,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/generator/populate_task.h,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2006/04/19 11:03:16 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: populate_task.h,v $
  *-----------------------------------------------------------------------*/

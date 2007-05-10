@@ -71,8 +71,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/simulation/simulation_task.h,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2006/01/20 10:05:42 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: simulation_task.h,v $
  *-----------------------------------------------------------------------*/

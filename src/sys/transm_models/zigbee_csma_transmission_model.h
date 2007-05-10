@@ -321,8 +321,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/transm_models/zigbee_csma_transmission_model.h,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:44 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: zigbee_csma_transmission_model.h,v $
  *-----------------------------------------------------------------------*/

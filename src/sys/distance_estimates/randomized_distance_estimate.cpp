@@ -140,8 +140,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/distance_estimates/randomized_distance_estimate.cpp,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2005/08/05 10:00:38 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: randomized_distance_estimate.cpp,v $
  *-----------------------------------------------------------------------*/

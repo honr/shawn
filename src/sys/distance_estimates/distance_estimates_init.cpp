@@ -28,8 +28,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/distance_estimates/distance_estimates_init.cpp,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2005/08/05 10:00:37 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: distance_estimates_init.cpp,v $
  *-----------------------------------------------------------------------*/

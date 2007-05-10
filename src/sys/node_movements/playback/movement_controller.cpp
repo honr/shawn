@@ -162,8 +162,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/node_movements/playback/movement_controller.cpp,v $
- * Version $Revision: 1.6 $
- * Date    $Date: 2006/11/17 08:59:44 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
 * $Log: movement_controller.cpp,v $
  *-----------------------------------------------------------------------*/

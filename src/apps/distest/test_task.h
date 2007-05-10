@@ -47,7 +47,7 @@ typedef std::vector< std::vector<int> > INTMatrix;
 			throw( std::runtime_error );
     virtual void paint_scene(DIPostscriptWriter& psc, Node& n1, Node& n2 ) throw( std::runtime_error );
     virtual void paint_nodes(DIPostscriptWriter& psc ) throw( std::runtime_error );
-	virtual void paint_neighbors(DIPostscriptWriter& psc, Node& n, CommunicationDirection d ) throw( std::runtime_error );
+	virtual void paint_neighbors(DIPostscriptWriter& psc, Node& n, shawn::EdgeModel::CommunicationDirection d ) throw( std::runtime_error );
 
 	  virtual void run( shawn::SimulationController& sc ) throw( std::runtime_error );
 	virtual std::string getIdString( const shawn::SimulationController& sc ) const throw();

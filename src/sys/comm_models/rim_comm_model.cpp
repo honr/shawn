@@ -454,8 +454,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/comm_models/rim_comm_model.cpp,v $
-* Version $Revision: 1.9 $
-* Date    $Date: 2006/04/19 15:45:28 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: rim_comm_model.cpp,v $
  *-----------------------------------------------------------------------*/

@@ -41,8 +41,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/comm_models/rim_comm_model_factory.h,v $
- * Version $Revision: 1.1 $
- * Date    $Date: 2005/08/12 12:39:59 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: rim_comm_model_factory.h,v $
  *-----------------------------------------------------------------------*/

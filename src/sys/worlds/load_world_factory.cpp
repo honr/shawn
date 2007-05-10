@@ -241,8 +241,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/worlds/load_world_factory.cpp,v $
-* Version $Revision: 1.15 $
-* Date    $Date: 2006/04/06 11:02:47 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: load_world_factory.cpp,v $
  *-----------------------------------------------------------------------*/

@@ -43,8 +43,8 @@ namespace reading
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/reading_keeper.h,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2006/04/19 12:13:47 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: reading_keeper.h,v $
  *-----------------------------------------------------------------------*/

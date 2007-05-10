@@ -54,8 +54,8 @@ namespace localization
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/localization/messages/distance/localization_gpsfree_lcs_messages.cpp,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:30 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: localization_gpsfree_lcs_messages.cpp,v $
  *-----------------------------------------------------------------------*/

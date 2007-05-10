@@ -89,8 +89,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/edge_models/fast_list_edge_model.cpp,v $
-* Version $Revision: 1.6 $
-* Date    $Date: 2007/01/02 15:37:20 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: fast_list_edge_model.cpp,v $
  *-----------------------------------------------------------------------*/

@@ -89,8 +89,8 @@
  
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/test/sensor_changed_task.cpp,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2006/08/31 21:02:26 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: sensor_changed_task.cpp,v $
  *-----------------------------------------------------------------------*/

@@ -134,8 +134,8 @@ namespace reading
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/simple_reading.h,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2006/04/19 12:13:47 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: simple_reading.h,v $
  *-----------------------------------------------------------------------*/

@@ -38,8 +38,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/transm_models/random_drop_transmission_model_factory.h,v $
-* Version $Revision: 1.2 $
-* Date    $Date: 2005/08/05 10:00:43 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: random_drop_transmission_model_factory.h,v $
  *-----------------------------------------------------------------------*/

@@ -83,8 +83,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/node_movements/playback/movement_controller.h,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:41 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: movement_controller.h,v $
  *-----------------------------------------------------------------------*/

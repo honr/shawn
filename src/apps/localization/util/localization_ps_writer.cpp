@@ -438,8 +438,8 @@ namespace localization
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/localization/util/localization_ps_writer.cpp,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2007/01/02 15:38:49 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: localization_ps_writer.cpp,v $
  *-----------------------------------------------------------------------*/

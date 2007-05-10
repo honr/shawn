@@ -72,8 +72,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/topology/polygon_topology_helpers.cpp,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:35 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: polygon_topology_helpers.cpp,v $
  * Revision 1.2  2005/08/05 10:00:35  ali

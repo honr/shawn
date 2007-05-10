@@ -94,8 +94,8 @@ namespace helloworld
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/helloworld/helloworld_processor.cpp,v $
- * Version $Revision: 1.7 $
- * Date    $Date: 2006/12/21 12:34:14 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: helloworld_processor.cpp,v $
  *-----------------------------------------------------------------------*/

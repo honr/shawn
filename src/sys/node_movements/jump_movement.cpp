@@ -125,8 +125,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/node_movements/jump_movement.cpp,v $
-* Version $Revision: 1.9 $
-* Date    $Date: 2006/11/23 12:36:25 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: jump_movement.cpp,v $
  *-----------------------------------------------------------------------*/

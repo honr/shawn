@@ -33,8 +33,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/transm_models/aloha_transmission_model_factory.h,v $
-* Version $Revision: 1.2 $
-* Date    $Date: 2005/08/05 10:00:43 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: aloha_transmission_model_factory.h,v $
  *-----------------------------------------------------------------------*/

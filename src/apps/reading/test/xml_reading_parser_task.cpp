@@ -121,7 +121,7 @@ namespace reading
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/test/xml_reading_parser_task.cpp,v $
- * Version $Revision: 1.6 $
- * Date    $Date: 2007/01/16 16:24:02 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------*/
  

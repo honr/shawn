@@ -167,8 +167,8 @@ namespace localization
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/localization/modules/refinement/localization_iter_lateration_module.h,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2005/08/05 10:00:32 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: localization_iter_lateration_module.h,v $
  *-----------------------------------------------------------------------*/

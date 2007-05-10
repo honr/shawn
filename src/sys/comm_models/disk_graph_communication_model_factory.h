@@ -41,8 +41,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/comm_models/disk_graph_communication_model_factory.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2006/07/12 10:28:22 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: disk_graph_communication_model_factory.h,v $
  *-----------------------------------------------------------------------*/

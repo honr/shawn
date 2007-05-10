@@ -38,12 +38,8 @@ namespace shawn
       throw()
    {
       assert( data_.empty() ); // otherwise dup init()
-      for( World::const_node_iterator
-              it    = world().begin_nodes(),
-              endit = world().end_nodes();
-           it != endit;
-           ++it )
-         encounter( world().edge_model().nof_adjacent_nodes(*it, CD_BIDI) );
+      for( World::const_node_iterator it = world().begin_nodes(), endit = world().end_nodes(); it != endit; ++it)
+		encounter( world().edge_model().nof_adjacent_nodes(*it, EdgeModel::CD_BIDI) );
    }
    // ----------------------------------------------------------------------
    const World&
@@ -132,8 +128,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/misc/degree/degree_histogram.cpp,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2006/04/19 12:02:01 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: degree_histogram.cpp,v $
  *-----------------------------------------------------------------------*/

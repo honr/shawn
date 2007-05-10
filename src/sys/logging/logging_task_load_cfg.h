@@ -65,8 +65,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/logging/logging_task_load_cfg.h,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:39 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: logging_task_load_cfg.h,v $
  *-----------------------------------------------------------------------*/

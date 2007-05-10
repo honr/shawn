@@ -73,8 +73,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/misc/degree/degree_sequences.cpp,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:39 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: degree_sequences.cpp,v $
  *-----------------------------------------------------------------------*/

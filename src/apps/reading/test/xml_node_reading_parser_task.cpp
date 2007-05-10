@@ -92,7 +92,7 @@ namespace reading
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/test/xml_node_reading_parser_task.cpp,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2006/05/16 11:16:33 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------*/
  

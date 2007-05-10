@@ -24,8 +24,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/topology/topology_topology_init.h,v $
- * Version $Revision: 1.1 $
- * Date    $Date: 2005/12/02 09:57:55 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: topology_topology_init.h,v $
  *-----------------------------------------------------------------------*/

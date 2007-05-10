@@ -36,8 +36,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/processors/processor_factory.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:41 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: processor_factory.h,v $
  *-----------------------------------------------------------------------*/

@@ -266,8 +266,8 @@ int main( int argc, char *argv[] )
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/frontend/console/con_main.cpp,v $
-* Version $Revision: 1.15 $
-* Date    $Date: 2006/12/02 09:18:33 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: con_main.cpp,v $
  *-----------------------------------------------------------------------*/

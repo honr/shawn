@@ -383,8 +383,8 @@ namespace localization
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/localization/neighborhood/localization_local_coordinate_system.cpp,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:32 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: localization_local_coordinate_system.cpp,v $
  *-----------------------------------------------------------------------*/

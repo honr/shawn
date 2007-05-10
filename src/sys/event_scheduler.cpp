@@ -230,8 +230,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/event_scheduler.cpp,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2007/01/18 13:17:42 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: event_scheduler.cpp,v $
  *-----------------------------------------------------------------------*/

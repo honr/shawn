@@ -18,8 +18,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/node_movements/movement_observer.cpp,v $
-* Version $Revision: 1.1 $
-* Date    $Date: 2005/08/16 15:45:18 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: movement_observer.cpp,v $
  *-----------------------------------------------------------------------*/

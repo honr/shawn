@@ -349,8 +349,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/node_movements/playback/ns2_node_movement_creator.cpp,v $
-* Version $Revision: 1.13 $
-* Date    $Date: 2006/11/23 12:44:22 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: ns2_node_movement_creator.cpp,v $
  *-----------------------------------------------------------------------*/

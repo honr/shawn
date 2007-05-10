@@ -133,8 +133,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/point_gen/lattice_point_gen.cpp,v $
- * Version $Revision: 1.6 $
- * Date    $Date: 2006/04/19 11:03:16 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: lattice_point_gen.cpp,v $
  *-----------------------------------------------------------------------*/

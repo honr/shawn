@@ -29,8 +29,8 @@ extern "C" void init_distest( shawn::SimulationController& sc )
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/distest/distest_init.cpp,v $
- * Version $Revision: 1.6 $
- * Date    $Date: 2006/03/07 08:06:40 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: distest_init.cpp,v $
  *-----------------------------------------------------------------------*/

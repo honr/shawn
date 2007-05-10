@@ -28,8 +28,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/taggings/tag_factory_keeper.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:42 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: tag_factory_keeper.h,v $
  *-----------------------------------------------------------------------*/

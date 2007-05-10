@@ -335,8 +335,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/simulation/simulation_environment.cpp,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2005/08/05 10:00:42 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: simulation_environment.cpp,v $
  *-----------------------------------------------------------------------*/

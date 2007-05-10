@@ -159,8 +159,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/misc/random/normal_random_variable.cpp,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:40 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: normal_random_variable.cpp,v $
  *-----------------------------------------------------------------------*/

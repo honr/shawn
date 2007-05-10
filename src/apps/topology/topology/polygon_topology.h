@@ -26,6 +26,7 @@ namespace topology
    public:
       typedef CGAL::Polygon_2<shawn::CGALKernel> Polygon;
       typedef std::vector<Polygon*> PolygonVector;
+      typedef const std::vector<Polygon*> ConstPolygonVector;
 	  typedef std::map<Polygon*, shawn::TagContainer*> PolygonTagMap;
 
       PolygonTopology();
@@ -44,9 +45,12 @@ namespace topology
       // passed polygon must be is_simple() !
       virtual void add_hole_polygon( Polygon& ) throw();
 
-      virtual Polygon& outer();
-      virtual PolygonVector& holes();
-	  virtual shawn::TagContainer& tags(Polygon& polygon);
+      virtual Polygon& outer_w() const;
+
+	  virtual ConstPolygonVector& holes() const;
+      virtual PolygonVector& holes_w();
+
+	  virtual shawn::TagContainer& tags_w(Polygon& polygon);
       
    private:
       Polygon*      outer_;
@@ -62,8 +66,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/topology/polygon_topology.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:35 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: polygon_topology.h,v $
  *-----------------------------------------------------------------------*/

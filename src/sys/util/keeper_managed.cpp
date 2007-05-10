@@ -19,8 +19,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/util/keeper_managed.cpp,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:44 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: keeper_managed.cpp,v $
  *-----------------------------------------------------------------------*/

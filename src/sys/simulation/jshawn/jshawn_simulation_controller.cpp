@@ -59,8 +59,8 @@ namespace shawn
 }
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/simulation/jshawn/jshawn_simulation_controller.cpp,v $
-* Version $Revision: 1.2 $
-* Date    $Date: 2006/01/20 10:05:42 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: jshawn_simulation_controller.cpp,v $
  *-----------------------------------------------------------------------*/

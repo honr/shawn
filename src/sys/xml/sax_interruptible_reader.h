@@ -78,8 +78,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/xml/sax_interruptible_reader.h,v $
-* Version $Revision: 1.2 $
-* Date    $Date: 2006/03/31 14:37:55 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: sax_interruptible_reader.h,v $
  *-----------------------------------------------------------------------*/

@@ -319,8 +319,8 @@ namespace distest {
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/distest/distest_postscript_writer.cpp,v $
-* Version $Revision: 1.4 $
-* Date    $Date: 2007/01/02 15:38:41 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: distest_postscript_writer.cpp,v $
  *-----------------------------------------------------------------------*/

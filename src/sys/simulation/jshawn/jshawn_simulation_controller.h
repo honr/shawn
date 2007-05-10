@@ -35,8 +35,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/simulation/jshawn/jshawn_simulation_controller.h,v $
- * Version $Revision: 1.1 $
- * Date    $Date: 2006/01/18 14:13:42 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: jshawn_simulation_controller.h,v $
  *-----------------------------------------------------------------------*/

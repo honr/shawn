@@ -50,8 +50,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/taggings/taggings_init.cpp,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2005/08/16 10:55:02 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: taggings_init.cpp,v $
  *-----------------------------------------------------------------------*/

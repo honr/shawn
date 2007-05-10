@@ -44,8 +44,8 @@ namespace localization
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/localization/messages/position/localization_gpsfree_ncs_extended_messages.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:31 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: localization_gpsfree_ncs_extended_messages.h,v $
  *-----------------------------------------------------------------------*/

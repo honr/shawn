@@ -69,8 +69,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/misc/os/load_plugin_task.h,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2006/04/25 07:32:04 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: load_plugin_task.h,v $
  *-----------------------------------------------------------------------*/

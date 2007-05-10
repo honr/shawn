@@ -51,8 +51,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/simulation/simulation_task.cpp,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2006/01/20 10:05:42 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: simulation_task.cpp,v $
  *-----------------------------------------------------------------------*/

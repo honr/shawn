@@ -55,8 +55,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/taggings/node_reference_tag.h,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:42 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: node_reference_tag.h,v $
  *-----------------------------------------------------------------------*/

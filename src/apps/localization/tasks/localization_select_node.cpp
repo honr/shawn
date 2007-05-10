@@ -89,8 +89,8 @@ namespace localization
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/localization/tasks/localization_select_node.cpp,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:32 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: localization_select_node.cpp,v $
  *-----------------------------------------------------------------------*/

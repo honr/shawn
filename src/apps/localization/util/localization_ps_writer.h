@@ -79,8 +79,8 @@ namespace localization
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/localization/util/localization_ps_writer.h,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2007/01/02 15:38:49 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: localization_ps_writer.h,v $
  *-----------------------------------------------------------------------*/

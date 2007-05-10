@@ -17,7 +17,7 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/xml_node_sensor.cpp,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2006/04/19 14:18:59 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------*/
 

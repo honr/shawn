@@ -233,8 +233,8 @@ namespace shawn {
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/simulation/jshawn/jshawn_n_dimensional_result.h,v $
-* Version $Revision: 1.9 $
-* Date    $Date: 2006/07/31 12:46:09 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: jshawn_n_dimensional_result.h,v $
  *-----------------------------------------------------------------------*/

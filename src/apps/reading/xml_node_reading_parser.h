@@ -126,7 +126,7 @@ namespace xmlreading
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/reading/xml_node_reading_parser.h,v $
-* Version $Revision: 1.4 $
-* Date    $Date: 2006/07/31 11:42:09 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------*/
 

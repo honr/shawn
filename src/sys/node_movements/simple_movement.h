@@ -51,8 +51,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/node_movements/simple_movement.h,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2005/08/08 17:46:16 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: simple_movement.h,v $
  *-----------------------------------------------------------------------*/

@@ -99,7 +99,7 @@ namespace shawn
       public:
          typedef AbstractIteratorHelper<NodeType> base_type;
          GridIteratorHelper( const GridEdgeModel&,
-							 CommunicationPattern<NodeType>& p,
+							 EdgeModel::CommunicationDirection dir,
                              NodeType&,
                              int x_begin, int x_end,
                              int y_begin, int y_end );
@@ -540,8 +540,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/edge_models/grid_edge_model.h,v $
- * Version $Revision: 1.13 $
- * Date    $Date: 2007/01/02 15:37:20 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: grid_edge_model.h,v $
  *-----------------------------------------------------------------------*/

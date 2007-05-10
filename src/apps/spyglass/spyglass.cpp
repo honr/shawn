@@ -156,8 +156,8 @@ namespace spyglass
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/spyglass/spyglass.cpp,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2005/08/09 10:57:03 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: spyglass.cpp,v $
  *-----------------------------------------------------------------------*/

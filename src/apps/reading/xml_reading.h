@@ -460,7 +460,7 @@ namespace xmlreading
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/xml_reading.h,v $
- * Version $Revision: 1.8 $
- * Date    $Date: 2006/07/31 11:42:09 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------*/
 

@@ -108,8 +108,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/node_movements/linear_movement.h,v $
- * Version $Revision: 1.6 $
- * Date    $Date: 2006/04/25 13:28:29 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: linear_movement.h,v $
  *-----------------------------------------------------------------------*/

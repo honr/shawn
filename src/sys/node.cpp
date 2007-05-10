@@ -599,7 +599,7 @@ namespace shawn
    // ----------------------------------------------------------------------
   NeighborhoodHandle 
 	  Node::
-	  neighborhood_w( int maxdist, CommunicationDirection direction )
+	  neighborhood_w( int maxdist, EdgeModel::CommunicationDirection direction )
       throw()
   {
 	NeighborhoodHandle newhood = new Neighborhood;
@@ -633,7 +633,7 @@ namespace shawn
   // ----------------------------------------------------------------------
   NeighborhoodConstHandle
 	  Node::
-	  neighborhood( int maxdist, CommunicationDirection direction)
+	  neighborhood( int maxdist, EdgeModel::CommunicationDirection direction)
 	  const throw()
   {
 	NeighborhoodConstHandle newhood = new NeighborhoodConst;
@@ -678,7 +678,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    int
    Node::
-   degree( CommunicationDirection d )
+   degree( EdgeModel::CommunicationDirection d )
       const throw()
    {
       //ABORT_NOT_IMPLEMENTED;
@@ -756,7 +756,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    Node::const_adjacency_iterator
    Node::
-   begin_adjacent_nodes( CommunicationDirection d )
+   begin_adjacent_nodes( EdgeModel::CommunicationDirection d )
       const throw()
    { return world().edge_model().begin_adjacent_nodes(*this, d); }
    // ----------------------------------------------------------------------
@@ -768,7 +768,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    Node::adjacency_iterator
    Node::
-   begin_adjacent_nodes_w( CommunicationDirection d )
+   begin_adjacent_nodes_w( EdgeModel::CommunicationDirection d )
       throw()
    { return world_w().edge_model_w().begin_adjacent_nodes_w(*this, d); }
    // ----------------------------------------------------------------------
@@ -780,7 +780,7 @@ namespace shawn
 
    // ----------------------------------------------------------------------
 	std::set<const Node*> 
-		Node::get_adjacent_nodes( CommunicationDirection d ) const
+		Node::get_adjacent_nodes( EdgeModel::CommunicationDirection d ) const
 	{
 			set<const Node*> neighbors;
 			for(shawn::Node::const_adjacency_iterator itnb = begin_adjacent_nodes(d), end = end_adjacent_nodes(); itnb != end; ++itnb) {
@@ -792,7 +792,7 @@ namespace shawn
 
    // ----------------------------------------------------------------------
 	std::set<Node*> 
-		Node::get_adjacent_nodes_w( CommunicationDirection d )
+		Node::get_adjacent_nodes_w( EdgeModel::CommunicationDirection d )
 	{
 			set<Node*> neighbors;
 			for(shawn::Node::adjacency_iterator itnb = begin_adjacent_nodes_w(d), end = end_adjacent_nodes_w(); itnb != end; ++itnb) {
@@ -806,8 +806,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/node.cpp,v $
- * Version $Revision: 1.38 $
- * Date    $Date: 2007/01/02 15:37:20 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: node.cpp,v $
  *-----------------------------------------------------------------------*/

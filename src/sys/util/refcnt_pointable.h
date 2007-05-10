@@ -30,8 +30,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/util/refcnt_pointable.h,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:44 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: refcnt_pointable.h,v $
  *-----------------------------------------------------------------------*/

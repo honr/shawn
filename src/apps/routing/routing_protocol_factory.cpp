@@ -21,8 +21,8 @@ namespace routing {
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/routing/routing_protocol_factory.cpp,v $
-* Version $Revision: 1.1 $
-* Date    $Date: 2005/10/11 15:24:21 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: routing_protocol_factory.cpp,v $
  *-----------------------------------------------------------------------*/

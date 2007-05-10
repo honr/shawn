@@ -137,8 +137,8 @@ namespace localization
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/localization/modules/distance/localization_dv_hop_module.h,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2005/08/05 10:00:31 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: localization_dv_hop_module.h,v $
  *-----------------------------------------------------------------------*/

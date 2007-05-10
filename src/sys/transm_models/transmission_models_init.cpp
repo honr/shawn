@@ -44,8 +44,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/transm_models/transmission_models_init.cpp,v $
- * Version $Revision: 1.7 $
- * Date    $Date: 2005/08/30 20:30:54 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: transmission_models_init.cpp,v $
  *-----------------------------------------------------------------------*/

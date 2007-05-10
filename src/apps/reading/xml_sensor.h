@@ -413,7 +413,7 @@ namespace xmlreading
  
  /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/xml_sensor.h,v $
- * Version $Revision: 1.7 $
- * Date    $Date: 2006/05/16 11:20:46 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------*/
 

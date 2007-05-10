@@ -23,8 +23,8 @@ extern "C" void init_exampletask( shawn::SimulationController& sc )
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/exampletask/exampletask_init.cpp,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:29 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: exampletask_init.cpp,v $
  *-----------------------------------------------------------------------*/

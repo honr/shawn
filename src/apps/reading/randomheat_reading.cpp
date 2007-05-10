@@ -92,8 +92,8 @@
  
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/reading/randomheat_reading.cpp,v $
-* Version $Revision: 1.3 $
-* Date    $Date: 2006/04/13 17:30:35 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: randomheat_reading.cpp,v $
  *-----------------------------------------------------------------------*/

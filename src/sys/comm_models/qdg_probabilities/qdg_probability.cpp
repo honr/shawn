@@ -19,8 +19,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/comm_models/qdg_probabilities/qdg_probability.cpp,v $
- * Version $Revision: 1.1 $
- * Date    $Date: 2006/07/12 10:37:57 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: qdg_probability.cpp,v $
  *-----------------------------------------------------------------------*/

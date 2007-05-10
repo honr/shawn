@@ -81,8 +81,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/comm_models/rim_comm_model_factory.cpp,v $
-* Version $Revision: 1.6 $
-* Date    $Date: 2006/04/18 14:00:50 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: rim_comm_model_factory.cpp,v $
  *-----------------------------------------------------------------------*/

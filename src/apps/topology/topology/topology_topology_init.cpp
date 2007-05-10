@@ -40,8 +40,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/topology/topology_topology_init.cpp,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/12/02 10:05:26 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: topology_topology_init.cpp,v $
  *-----------------------------------------------------------------------*/

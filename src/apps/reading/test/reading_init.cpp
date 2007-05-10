@@ -44,7 +44,7 @@ extern "C" void init_reading_test( shawn::SimulationController& sc )
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/test/reading_init.cpp,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2006/07/31 11:42:09 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------*/
  

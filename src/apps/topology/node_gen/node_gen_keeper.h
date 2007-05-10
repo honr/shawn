@@ -36,8 +36,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/node_gen/node_gen_keeper.h,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:34 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: node_gen_keeper.h,v $
  *-----------------------------------------------------------------------*/

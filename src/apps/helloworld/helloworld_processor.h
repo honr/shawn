@@ -41,8 +41,8 @@ namespace helloworld
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/helloworld/helloworld_processor.h,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2005/08/05 10:00:29 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: helloworld_processor.h,v $
  *-----------------------------------------------------------------------*/

@@ -534,7 +534,7 @@ namespace distest
 			for( shawn::World::const_node_iterator it = w.begin_nodes(), end = w.end_nodes(); it != end; ++it)
 			{
 				const shawn::Node& nb = *it;
-				for(shawn::Node::const_adjacency_iterator nit = nb.begin_adjacent_nodes(CD_BIDI), nend = nb.end_adjacent_nodes(); nit!=nend; ++nit)
+				for(shawn::Node::const_adjacency_iterator nit = nb.begin_adjacent_nodes(EdgeModel::CD_BIDI), nend = nb.end_adjacent_nodes(); nit!=nend; ++nit)
 				{
 //					if( nde.estimate_distance(nb, *nit, result ) ) {
 //					if( perfect_de_->estimate_distance(nb, *nit, result ) && result < 5 ) {

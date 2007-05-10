@@ -117,8 +117,8 @@ namespace routing
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/routing/flooding/flood_routing.cpp,v $
-* Version $Revision: 1.2 $
-* Date    $Date: 2005/10/12 09:24:58 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: flood_routing.cpp,v $
  *-----------------------------------------------------------------------*/

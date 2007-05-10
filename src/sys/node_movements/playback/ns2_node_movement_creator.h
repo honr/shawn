@@ -86,8 +86,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/node_movements/playback/ns2_node_movement_creator.h,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2006/11/17 08:59:44 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: ns2_node_movement_creator.h,v $
  *-----------------------------------------------------------------------*/

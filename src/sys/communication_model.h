@@ -105,8 +105,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/communication_model.h,v $
-* Version $Revision: 1.5 $
-* Date    $Date: 2005/08/12 12:39:58 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: communication_model.h,v $
  *-----------------------------------------------------------------------*/

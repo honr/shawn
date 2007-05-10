@@ -65,8 +65,8 @@ extern "C" void init_routing( shawn::SimulationController& sc )
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/routing/routing_init.cpp,v $
-* Version $Revision: 1.3 $
-* Date    $Date: 2007/01/16 15:55:11 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: routing_init.cpp,v $
  *-----------------------------------------------------------------------*/

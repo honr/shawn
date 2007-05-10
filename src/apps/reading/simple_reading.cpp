@@ -17,8 +17,8 @@ namespace reading
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/simple_reading.cpp,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2006/08/31 21:02:26 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: simple_reading.cpp,v $
  *-----------------------------------------------------------------------*/

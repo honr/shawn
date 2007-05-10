@@ -151,8 +151,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/node_gen/default_node_gen.cpp,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2006/04/19 11:03:16 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: default_node_gen.cpp,v $
  *-----------------------------------------------------------------------*/

@@ -48,7 +48,7 @@ namespace xmlreading
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/reading/xml_node_sensor_base.h,v $
-* Version $Revision: 1.5 $
-* Date    $Date: 2006/05/19 11:27:16 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------*/
 

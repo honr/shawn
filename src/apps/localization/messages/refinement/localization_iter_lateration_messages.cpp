@@ -56,8 +56,8 @@ namespace localization
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/localization/messages/refinement/localization_iter_lateration_messages.cpp,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:31 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: localization_iter_lateration_messages.cpp,v $
  *-----------------------------------------------------------------------*/

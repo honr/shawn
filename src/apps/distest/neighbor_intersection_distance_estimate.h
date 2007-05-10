@@ -137,8 +137,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/distest/neighbor_intersection_distance_estimate.h,v $
- * Version $Revision: 1.12 $
- * Date    $Date: 2006/04/19 15:34:17 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: neighbor_intersection_distance_estimate.h,v $
  *-----------------------------------------------------------------------*/

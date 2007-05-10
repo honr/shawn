@@ -79,8 +79,8 @@ enum Color { grey, red, green, blue, yellow, orange, black, pink};
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/distest/distest_postscript_writer.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2007/01/02 15:38:41 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: distest_postscript_writer.h,v $
  *-----------------------------------------------------------------------*/

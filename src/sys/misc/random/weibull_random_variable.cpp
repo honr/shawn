@@ -197,8 +197,8 @@ namespace shawn{
 }
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/misc/random/weibull_random_variable.cpp,v $
-* Version $Revision: 1.5 $
-* Date    $Date: 2006/04/19 15:34:17 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: weibull_random_variable.cpp,v $
  *-----------------------------------------------------------------------*/

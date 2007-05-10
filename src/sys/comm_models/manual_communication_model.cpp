@@ -112,8 +112,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/comm_models/manual_communication_model.cpp,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2006/03/07 08:06:40 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: manual_communication_model.cpp,v $
  *-----------------------------------------------------------------------*/

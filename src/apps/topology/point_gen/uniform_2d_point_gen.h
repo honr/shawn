@@ -36,8 +36,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/point_gen/uniform_2d_point_gen.h,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2006/04/19 11:03:16 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: uniform_2d_point_gen.h,v $
  *-----------------------------------------------------------------------*/

@@ -84,8 +84,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/comm_models/manual_communication_model.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:37 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: manual_communication_model.h,v $
  *-----------------------------------------------------------------------*/

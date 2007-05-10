@@ -21,8 +21,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/simulation/simulation_task_keeper.cpp,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2005/08/05 10:00:42 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: simulation_task_keeper.cpp,v $
  *-----------------------------------------------------------------------*/

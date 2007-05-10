@@ -54,8 +54,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/misc/os/sys_resources.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:40 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: sys_resources.h,v $
  *-----------------------------------------------------------------------*/

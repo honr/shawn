@@ -20,8 +20,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/node_movements/node_movements_init.h,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/08 17:46:16 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
 
  *-----------------------------------------------------------------------*/

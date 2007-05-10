@@ -24,8 +24,8 @@ extern "C" void init_spyglass( shawn::SimulationController& );
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/spyglass/spyglass_init.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:33 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: spyglass_init.h,v $
  *-----------------------------------------------------------------------*/

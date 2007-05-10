@@ -28,8 +28,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/edge_models/edge_models_init.cpp,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2005/08/05 10:00:38 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: edge_models_init.cpp,v $
  *-----------------------------------------------------------------------*/

@@ -141,8 +141,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/util/handle_keeper.h,v $
- * Version $Revision: 1.7 $
- * Date    $Date: 2005/08/05 10:00:44 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: handle_keeper.h,v $
  *-----------------------------------------------------------------------*/

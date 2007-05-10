@@ -71,8 +71,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/simulation/environment_config_loader.h,v $
-* Version $Revision: 1.1 $
-* Date    $Date: 2005/08/16 10:55:02 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: environment_config_loader.h,v $
  *-----------------------------------------------------------------------*/

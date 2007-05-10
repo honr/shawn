@@ -94,8 +94,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/node_movements/no_movement.cpp,v $
- * Version $Revision: 1.8 $
- * Date    $Date: 2006/04/25 14:17:53 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: no_movement.cpp,v $
  *-----------------------------------------------------------------------*/

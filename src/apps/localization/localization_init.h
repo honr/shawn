@@ -22,8 +22,8 @@ extern "C" void init_localization( shawn::SimulationController& );
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/localization/localization_init.h,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2005/08/05 10:00:30 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: localization_init.h,v $
  *-----------------------------------------------------------------------*/

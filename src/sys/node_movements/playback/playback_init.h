@@ -24,8 +24,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/node_movements/playback/playback_init.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:41 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: playback_init.h,v $
  *-----------------------------------------------------------------------*/

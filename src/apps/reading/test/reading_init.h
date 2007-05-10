@@ -23,6 +23,6 @@ extern "C" void init_reading_test( shawn::SimulationController& );
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/reading/test/reading_init.h,v $
-* Version $Revision: 1.1 $
-* Date    $Date: 2006/04/13 16:05:51 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------*/

@@ -44,8 +44,8 @@ namespace shawn
     
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/misc/node_change_listener.h,v $
- * Version $Revision: 1.1 $
- * Date    $Date: 2007/01/02 15:37:20 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: node_change_listener.h,v $
  *-----------------------------------------------------------------------*/

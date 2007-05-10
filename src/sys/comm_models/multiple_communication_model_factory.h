@@ -41,8 +41,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/comm_models/multiple_communication_model_factory.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/16 10:56:05 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: multiple_communication_model_factory.h,v $
  *-----------------------------------------------------------------------*/

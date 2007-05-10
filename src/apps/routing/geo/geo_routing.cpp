@@ -49,8 +49,8 @@ namespace routing
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/routing/geo/geo_routing.cpp,v $
-* Version $Revision: 1.1 $
-* Date    $Date: 2007/01/16 15:58:07 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: geo_routing.cpp,v $
  *-----------------------------------------------------------------------*/

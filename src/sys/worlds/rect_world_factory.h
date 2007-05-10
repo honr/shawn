@@ -40,8 +40,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/worlds/rect_world_factory.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:45 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: rect_world_factory.h,v $
  *-----------------------------------------------------------------------*/

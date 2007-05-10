@@ -545,8 +545,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/simulation/basic_tasks.cpp,v $
- * Version $Revision: 1.22 $
- * Date    $Date: 2005/09/14 14:59:20 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: basic_tasks.cpp,v $
  *-----------------------------------------------------------------------*/

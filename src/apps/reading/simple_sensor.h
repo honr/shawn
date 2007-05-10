@@ -307,7 +307,7 @@ namespace reading
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/reading/simple_sensor.h,v $
-* Version $Revision: 1.6 $
-* Date    $Date: 2006/07/31 11:42:09 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------*/
 

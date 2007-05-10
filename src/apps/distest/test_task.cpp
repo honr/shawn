@@ -251,7 +251,7 @@ namespace distest
 
 	void
         TestTask::
-		paint_neighbors(DIPostscriptWriter& psc, Node& n, CommunicationDirection d )
+		paint_neighbors(DIPostscriptWriter& psc, Node& n, EdgeModel::CommunicationDirection d )
         throw( std::runtime_error )
     {
 			Vec v;
@@ -282,8 +282,8 @@ namespace distest
 		
 //		psc->procircle3(v, 10, false );
 
-		paint_neighbors( psc, n1, CD_IN );
-		paint_neighbors( psc, n2, CD_IN );
+		paint_neighbors( psc, n1, EdgeModel::CD_IN );
+		paint_neighbors( psc, n2, EdgeModel::CD_IN );
 
 		paint_rim (psc, *rim, n1 );
 		paint_rim (psc, *rim, n2 );
@@ -1078,18 +1078,18 @@ const World& w = sc.world();
 		
 		for( shawn::World::const_node_iterator it = sc.world().begin_nodes(), endit = sc.world().end_nodes();it != endit; ++it) {
 		cout << "node " << it->label()<<": "<< endl;
-		for(shawn::Node::const_adjacency_iterator itnb = it->begin_adjacent_nodes(CD_BIDI), end = it->end_adjacent_nodes(); itnb != end; ++itnb) {
+		for(shawn::Node::const_adjacency_iterator itnb = it->begin_adjacent_nodes(EdgeModel::CD_BIDI), end = it->end_adjacent_nodes(); itnb != end; ++itnb) {
 			cout << "BIDI node " << itnb->label()  << endl;
 		}
-		for(shawn::Node::const_adjacency_iterator itnb = it->begin_adjacent_nodes(CD_OUT), end = it->end_adjacent_nodes(); itnb != end; ++itnb) {
+		for(shawn::Node::const_adjacency_iterator itnb = it->begin_adjacent_nodes(EdgeModel::CD_OUT), end = it->end_adjacent_nodes(); itnb != end; ++itnb) {
 			cout << "OUT node " << itnb->label()  << endl;
 
 		}
-		for(shawn::Node::const_adjacency_iterator itnb = it->begin_adjacent_nodes(CD_IN), end = it->end_adjacent_nodes(); itnb != end; ++itnb) {
+		for(shawn::Node::const_adjacency_iterator itnb = it->begin_adjacent_nodes(EdgeModel::CD_IN), end = it->end_adjacent_nodes(); itnb != end; ++itnb) {
 			cout << "IN node " << itnb->label()  << endl;
 
 		}
-		for(shawn::Node::const_adjacency_iterator itnb = it->begin_adjacent_nodes(CD_ANY), end = it->end_adjacent_nodes(); itnb != end; ++itnb) {
+		for(shawn::Node::const_adjacency_iterator itnb = it->begin_adjacent_nodes(EdgeModel::CD_ANY), end = it->end_adjacent_nodes(); itnb != end; ++itnb) {
 			cout << "ANY node " << itnb->label()  << endl;
 
 		}
@@ -1828,8 +1828,8 @@ NodeFinder nf(&(sc.world_w()));
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/distest/test_task.cpp,v $
-* Version $Revision: 1.12 $
-* Date    $Date: 2006/05/04 12:24:06 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: test_task.cpp,v $
  *-----------------------------------------------------------------------*/

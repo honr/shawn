@@ -51,7 +51,7 @@ namespace xmlreading
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/reading/xml_reading_base.h,v $
-* Version $Revision: 1.5 $
-* Date    $Date: 2006/05/16 11:20:46 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------*/
 

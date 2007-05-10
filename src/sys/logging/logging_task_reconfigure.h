@@ -118,8 +118,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/logging/logging_task_reconfigure.h,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2005/09/29 18:00:49 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: logging_task_reconfigure.h,v $
  *-----------------------------------------------------------------------*/

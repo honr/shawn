@@ -52,8 +52,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/misc/random/constant_edge_random.h,v $
- * Version $Revision: 1.1 $
- * Date    $Date: 2006/07/12 10:34:58 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: constant_edge_random.h,v $
  *-----------------------------------------------------------------------*/

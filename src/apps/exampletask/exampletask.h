@@ -38,8 +38,8 @@ namespace exampletask
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/exampletask/exampletask.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:29 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: exampletask.h,v $
  *-----------------------------------------------------------------------*/

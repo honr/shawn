@@ -48,8 +48,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/point_gen/point_gen_init.cpp,v $
- * Version $Revision: 1.7 $
- * Date    $Date: 2005/08/24 09:45:28 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: point_gen_init.cpp,v $
  *-----------------------------------------------------------------------*/

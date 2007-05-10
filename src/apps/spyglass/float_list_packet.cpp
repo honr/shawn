@@ -65,8 +65,8 @@ namespace spyglass
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/spyglass/float_list_packet.cpp,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2006/04/25 13:28:29 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: float_list_packet.cpp,v $
  *-----------------------------------------------------------------------*/

@@ -391,8 +391,8 @@ namespace shawn
 
 
 										
-			set<const Node*> source_neighbors = source.get_adjacent_nodes(CD_IN);
-			set<const Node*> target_neighbors = target.get_adjacent_nodes(CD_IN);
+			set<const Node*> source_neighbors = source.get_adjacent_nodes(EdgeModel::CD_IN);
+			set<const Node*> target_neighbors = target.get_adjacent_nodes(EdgeModel::CD_IN);
 
 			sourceSize = source_neighbors.size();
 			if (source_neighbors.find( &source ) != source_neighbors.end() ) sourceSize -= from_subtractor;
@@ -818,8 +818,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/distest/neighbor_intersection_distance_estimate.cpp,v $
-* Version $Revision: 1.16 $
-* Date    $Date: 2006/05/04 12:24:06 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: neighbor_intersection_distance_estimate.cpp,v $
  *-----------------------------------------------------------------------*/

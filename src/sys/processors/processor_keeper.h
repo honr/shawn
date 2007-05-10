@@ -36,8 +36,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/processors/processor_keeper.h,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:41 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: processor_keeper.h,v $
  *-----------------------------------------------------------------------*/

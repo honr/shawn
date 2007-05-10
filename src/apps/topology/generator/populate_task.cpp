@@ -117,8 +117,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/generator/populate_task.cpp,v $
- * Version $Revision: 1.6 $
- * Date    $Date: 2006/04/19 11:03:16 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: populate_task.cpp,v $
  *-----------------------------------------------------------------------*/

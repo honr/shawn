@@ -169,8 +169,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/xml/sax_interruptible_reader.cpp,v $
-* Version $Revision: 1.2 $
-* Date    $Date: 2006/04/07 15:22:56 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: sax_interruptible_reader.cpp,v $
  *-----------------------------------------------------------------------*/

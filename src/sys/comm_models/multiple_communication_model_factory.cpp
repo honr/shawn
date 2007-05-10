@@ -84,8 +84,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/comm_models/multiple_communication_model_factory.cpp,v $
-* Version $Revision: 1.3 $
-* Date    $Date: 2005/08/19 12:49:03 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: multiple_communication_model_factory.cpp,v $
  *-----------------------------------------------------------------------*/

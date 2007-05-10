@@ -32,8 +32,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/misc/random/task_create_normal.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:40 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: task_create_normal.h,v $
  *-----------------------------------------------------------------------*/

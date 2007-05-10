@@ -88,8 +88,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/node_movements/jump_movement.h,v $
-* Version $Revision: 1.7 $
-* Date    $Date: 2006/11/23 12:36:25 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: jump_movement.h,v $
  *-----------------------------------------------------------------------*/

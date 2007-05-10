@@ -80,8 +80,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/worlds/save_world_task.h,v $
-* Version $Revision: 1.6 $
-* Date    $Date: 2005/08/16 10:55:02 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: save_world_task.h,v $
  *-----------------------------------------------------------------------*/

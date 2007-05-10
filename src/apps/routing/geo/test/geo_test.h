@@ -143,8 +143,8 @@ namespace routing
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/routing/geo/test/geo_test.h,v $
-* Version $Revision: 1.1 $
-* Date    $Date: 2007/01/16 15:58:08 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: geo_test.h,v $
  *-----------------------------------------------------------------------*/

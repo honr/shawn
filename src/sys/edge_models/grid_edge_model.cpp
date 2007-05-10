@@ -27,11 +27,11 @@ namespace shawn
    template<typename NodeType, typename NodeSetIterator>
    shawn::GridEdgeModel::GridIteratorHelper<NodeType, NodeSetIterator>::
    GridIteratorHelper( const GridEdgeModel& em,
-							 CommunicationPattern<NodeType>& p,
+							 EdgeModel::CommunicationDirection dir,
                              NodeType& n,
                              int x_begin, int x_end,
                              int y_begin, int y_end )
-      : AbstractIteratorHelper<NodeType>(p),
+      : AbstractIteratorHelper<NodeType>(dir),
 	    edge_model_   ( em ),
         node_         ( n ),
         x_begin_      ( x_begin ),
@@ -46,7 +46,7 @@ namespace shawn
    template<typename NodeType, typename NodeSetIterator>
    shawn::GridEdgeModel::GridIteratorHelper<NodeType, NodeSetIterator>::
    GridIteratorHelper( const GridIteratorHelper& o )
-      : AbstractIteratorHelper<NodeType>(o.pattern_),
+      : AbstractIteratorHelper<NodeType>(o.direction_),
 	    edge_model_   ( o.edge_model_   ),
         node_         ( o.node_         ),
         x_begin_      ( o.x_begin_      ),
@@ -97,48 +97,36 @@ namespace shawn
    init( void )
       throw()
    {
-//	  std::cout << " gem.init 1" << std::endl << std::flush;
-      advance_if_infeasible();
-//	  std::cout << " gem.init 2" << std::endl << std::flush;
-	  while (it_ != end_it_) 
-//             (!(*pattern_)(node_,**it_)))
-//			 (!edge_model_.are_adjacent(node_,**it_)) )
-         {
-//	  std::cout << " gem.init 3" << std::endl << std::flush;
-//	  std::cout << " node_: " << node_.id() << std::endl << std::flush;
-//	  std::cout << " *it_: " << *it_ << std::endl << std::flush;
-	 // std::cout << " pattern_: " << pattern_ << std::endl << std::flush;
-//	  std::cout << " pattern_type: " << pattern_.name() << std::endl << std::flush;
-
-
-            if ((base_type::pattern_)(node_, *(*it_))) break;
-//	  std::cout << " gem.init 4" << std::endl << std::flush;
-			 ++it_;
-//	  std::cout << " gem.init 5" << std::endl << std::flush;
-            advance_if_infeasible();
-//	  std::cout << " gem.init 6" << std::endl << std::flush;
-         }
+		advance_if_infeasible();
+		while (it_ != end_it_) 
+		{
+			
+			if (edge_model_.are_adjacent(node_, **it_, direction_)) 
+				break;
+			++it_;
+			advance_if_infeasible();
+		}
    }
+
    // ----------------------------------------------------------------------
-   template<typename NodeType,
-            typename NodeSetIterator>
-   void
-   shawn::GridEdgeModel::GridIteratorHelper<NodeType,NodeSetIterator>::
-   next( void )
-      throw()
+	template<typename NodeType, typename NodeSetIterator>
+	void
+	   shawn::GridEdgeModel::GridIteratorHelper<NodeType,NodeSetIterator>::
+	   next( void )
+	   throw()
    {
-//	  std::cout << " gem.next begin" << std::endl << std::flush;
-      if( it_ != end_it_ )
-         { ++it_; init(); }
-//	  std::cout << " gem.next end" << std::endl << std::flush;
+		if( it_ != end_it_ )
+		{ 
+			++it_; 
+			init(); 
+		}
    }
    // ----------------------------------------------------------------------
-   template<typename NodeType,
-            typename NodeSetIterator>
-   NodeType*
-   shawn::GridEdgeModel::GridIteratorHelper<NodeType,NodeSetIterator>::
-   current( void )
-      const throw()
+	template<typename NodeType, typename NodeSetIterator>
+		NodeType*
+		shawn::GridEdgeModel::GridIteratorHelper<NodeType,NodeSetIterator>::
+		current( void )
+		const throw()
    {
       if( it_ == end_it_ )
          return NULL;
@@ -300,11 +288,8 @@ namespace shawn
       const throw()
    {
       const Vec& pos = v.real_position();
-      return new
-         GridIteratorHelper<const Node,const_node_set_iterator>
-         ( *this, 
-		   *(get_communication_pattern(d)),
-		   v, 
+      return new GridIteratorHelper<const Node,const_node_set_iterator>
+         ( *this, d, v, 
            clipped_cell_x( pos.x()-trans_range_-closeness_distance_-.0001 ),
            clipped_cell_x( pos.x()+trans_range_+closeness_distance_+.0001 )+1,
            clipped_cell_y( pos.y()-trans_range_-closeness_distance_-.0001 ),
@@ -327,13 +312,12 @@ namespace shawn
       const Vec& pos = v.real_position();
       return new
          GridIteratorHelper<Node,const_node_set_iterator>
-         ( *this, 
-		   *(get_communication_pattern_w(d)),
-		   v, 
+         ( *this, d, v, 
            clipped_cell_x( pos.x()-trans_range_-closeness_distance_-.0001 ),
            clipped_cell_x( pos.x()+trans_range_+closeness_distance_+.0001 )+1,
            clipped_cell_y( pos.y()-trans_range_-closeness_distance_-.0001 ),
-           clipped_cell_y( pos.y()+trans_range_+closeness_distance_+.0001 )+1 );
+		   clipped_cell_y( pos.y()+trans_range_+closeness_distance_+.0001 )+1
+		 );
    }
    // ----------------------------------------------------------------------
    EdgeModel::adjacency_iterator
@@ -867,8 +851,8 @@ GridEdgeModel::debug_dump( void )
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/edge_models/grid_edge_model.cpp,v $
- * Version $Revision: 1.20 $
- * Date    $Date: 2007/01/02 15:37:20 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: grid_edge_model.cpp,v $
  *-----------------------------------------------------------------------*/

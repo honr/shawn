@@ -25,8 +25,8 @@ extern "C" void init_topology( shawn::SimulationController& );
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/topology_init.h,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2005/08/05 10:00:33 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: topology_init.h,v $
  *-----------------------------------------------------------------------*/

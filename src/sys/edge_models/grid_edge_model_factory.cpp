@@ -54,8 +54,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/edge_models/grid_edge_model_factory.cpp,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:38 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: grid_edge_model_factory.cpp,v $
  *-----------------------------------------------------------------------*/

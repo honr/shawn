@@ -242,8 +242,8 @@ namespace shawn {
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/comm_models/rim_comm_model.h,v $
- * Version $Revision: 1.8 $
- * Date    $Date: 2006/03/31 09:19:30 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: rim_comm_model.h,v $
  *-----------------------------------------------------------------------*/

@@ -697,7 +697,7 @@ namespace distest
 						continue;
 
 
-					neighborCount = (*it).degree(CD_IN);
+					neighborCount = (*it).degree(EdgeModel::CD_IN);
 					all_count+= 1.0;
 					densities += neighborCount;
 					if (neighborCount > max_dens) max_dens = neighborCount;
@@ -718,7 +718,7 @@ namespace distest
 					if( out_of_bounds(ll, ur, *it ) && exclude_border) //TODO: Zum initialen Testen muss nachher raus
 						continue;
 
-					neighborCount = (*it).degree(CD_IN);
+					neighborCount = (*it).degree(EdgeModel::CD_IN);
 					/*
 					all_count+= 1.0;
 					densities += neighborCount;
@@ -834,8 +834,8 @@ namespace distest
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/distest/distest_task.cpp,v $
-* Version $Revision: 1.18 $
-* Date    $Date: 2006/05/04 12:24:06 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: distest_task.cpp,v $
  *-----------------------------------------------------------------------*/

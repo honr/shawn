@@ -177,8 +177,8 @@ namespace shawn
 }
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/simulation/shawn_simulation_controller.cpp,v $
- * Version $Revision: 1.6 $
- * Date    $Date: 2006/11/30 15:33:22 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: shawn_simulation_controller.cpp,v $
  *-----------------------------------------------------------------------*/

@@ -97,8 +97,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/transmission_model.h,v $
-* Version $Revision: 1.4 $
-* Date    $Date: 2005/08/05 10:00:37 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: transmission_model.h,v $
  *-----------------------------------------------------------------------*/

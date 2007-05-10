@@ -58,8 +58,8 @@ namespace routing
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/routing/geo/test/geo_postscript.h,v $
-* Version $Revision: 1.1 $
-* Date    $Date: 2007/01/16 15:58:07 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: geo_postscript.h,v $
 *-----------------------------------------------------------------------*/

@@ -45,8 +45,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/topology/cuboid_topology.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:35 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: cuboid_topology.h,v $
  *-----------------------------------------------------------------------*/

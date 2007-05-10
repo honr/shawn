@@ -92,7 +92,7 @@
  
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/test/reading_changed_task.cpp,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2006/04/19 12:13:47 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------*/
 

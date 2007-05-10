@@ -74,8 +74,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/transm_models/task_chain_transm_model.cpp,v $
-* Version $Revision: 1.2 $
-* Date    $Date: 2005/08/05 10:00:44 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: task_chain_transm_model.cpp,v $
  *-----------------------------------------------------------------------*/

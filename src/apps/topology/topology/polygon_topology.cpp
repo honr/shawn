@@ -96,7 +96,7 @@ namespace topology
 	// ----------------------------------------------------------------------
 	shawn::TagContainer& 
 		PolygonTopology::
-		tags(Polygon& polygon)
+		tags_w(Polygon& polygon)
 	{
 		if(tags_.find(&polygon) == tags_.end() )
 			tags_[&polygon] = new TagContainer();
@@ -135,16 +135,26 @@ namespace topology
 	// ----------------------------------------------------------------------
 	Polygon& 
 		PolygonTopology::
-		outer()
+		outer_w()
+		const
 	{
 		assert (outer_ != NULL); 
 		return *outer_;
 	}
 
 	// ----------------------------------------------------------------------
-	PolygonTopology::PolygonVector& 
+	PolygonTopology::ConstPolygonVector& 
 		PolygonTopology::
 		holes()
+		const
+	{
+		return holes_;
+	}
+
+	// ----------------------------------------------------------------------
+	PolygonTopology::PolygonVector& 
+		PolygonTopology::
+		holes_w()
 	{
 		return holes_;
 	}
@@ -155,8 +165,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/topology/topology/polygon_topology.cpp,v $
-* Version $Revision: 1.2 $
-* Date    $Date: 2005/08/05 10:00:35 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: polygon_topology.cpp,v $
 *-----------------------------------------------------------------------*/

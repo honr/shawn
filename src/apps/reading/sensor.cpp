@@ -27,8 +27,8 @@ namespace reading
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/sensor.cpp,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2006/05/16 11:20:46 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------*/
  
  

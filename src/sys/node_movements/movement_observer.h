@@ -56,8 +56,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/node_movements/movement_observer.h,v $
-* Version $Revision: 1.4 $
-* Date    $Date: 2005/08/16 15:52:54 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: movement_observer.h,v $
  *-----------------------------------------------------------------------*/

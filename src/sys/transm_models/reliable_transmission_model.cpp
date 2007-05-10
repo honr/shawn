@@ -120,8 +120,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/transm_models/reliable_transmission_model.cpp,v $
-* Version $Revision: 1.8 $
-* Date    $Date: 2005/12/01 14:27:46 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: reliable_transmission_model.cpp,v $
  *-----------------------------------------------------------------------*/

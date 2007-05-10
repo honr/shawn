@@ -91,8 +91,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/comm_models/disk_graph_model.h,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/05 10:00:37 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: disk_graph_model.h,v $
  *-----------------------------------------------------------------------*/

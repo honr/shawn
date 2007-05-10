@@ -28,7 +28,7 @@ namespace shawn
       public:
          typedef AbstractIteratorHelper<NodeType> base_type;
          LazyIteratorHelper( const LazyEdgeModel&,
-                             CommunicationPattern<NodeType>& p,
+			 EdgeModel::CommunicationDirection dir,
                              NodeType&,
                              const WorldNodeIterator&,
                              const WorldNodeIterator& );
@@ -93,8 +93,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/edge_models/lazy_edge_model.h,v $
- * Version $Revision: 1.10 $
- * Date    $Date: 2007/01/02 15:37:20 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: lazy_edge_model.h,v $
  *-----------------------------------------------------------------------*/

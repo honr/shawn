@@ -136,8 +136,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/taggings/node_reference_tag.cpp,v $
- * Version $Revision: 1.5 $
- * Date    $Date: 2005/08/05 10:00:42 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: node_reference_tag.cpp,v $
  *-----------------------------------------------------------------------*/

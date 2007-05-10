@@ -254,9 +254,8 @@ public:
       /// returns NULL if none found, does *not* check for duplicates!
       const Node* find_node_by_label( const std::string& ) const throw();
       ///
-      inline const_adjacency_iterator
-		  begin_adjacent_nodes( const Node& v, CommunicationDirection d = CD_BIDI)
-         const throw()
+      inline const_adjacency_iterator begin_adjacent_nodes
+		  ( const Node& v, EdgeModel::CommunicationDirection d = EdgeModel::CD_BIDI) const throw()
       { return edge_model().begin_adjacent_nodes(v, d); }
       ///
       inline const_adjacency_iterator
@@ -265,7 +264,7 @@ public:
       { return edge_model().end_adjacent_nodes(v); }
       ///
       inline adjacency_iterator
-      begin_adjacent_nodes_w( Node& v, CommunicationDirection d = CD_BIDI )
+		  begin_adjacent_nodes_w( Node& v, EdgeModel::CommunicationDirection d = EdgeModel::CD_BIDI )
          throw()
       { return edge_model_w().begin_adjacent_nodes_w(v, d); }
       ///
@@ -365,8 +364,8 @@ public:
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/world.h,v $
- * Version $Revision: 1.21 $
- * Date    $Date: 2007/01/02 15:37:20 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: world.h,v $
  *-----------------------------------------------------------------------*/

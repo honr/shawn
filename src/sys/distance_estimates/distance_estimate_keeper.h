@@ -32,8 +32,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/distance_estimates/distance_estimate_keeper.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:37 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: distance_estimate_keeper.h,v $
  *-----------------------------------------------------------------------*/

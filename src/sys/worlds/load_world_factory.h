@@ -165,8 +165,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/worlds/load_world_factory.h,v $
-* Version $Revision: 1.9 $
-* Date    $Date: 2005/08/26 10:23:52 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: load_world_factory.h,v $
  *-----------------------------------------------------------------------*/

@@ -95,7 +95,7 @@ namespace topology
 		else if( parsing_state_ == PolygonState && !strcmp("tag", name) )
 		{
 			parsing_state_ = TagState;
-			handle_open_tag_tag(atts, tags(*polygon_));
+			handle_open_tag_tag(atts, tags_w(*polygon_));
 		}
 		else if( parsing_state_ == TagState && !strcmp("entry", name) )
 		{
@@ -139,7 +139,7 @@ namespace topology
         }
 		else if( parsing_state_ == TagState && !strcmp("tag", name) )
 		{
-			handle_close_tag_tag(NULL, tags(*polygon_));
+			handle_close_tag_tag(NULL, tags_w(*polygon_));
 			parsing_state_ = PolygonState;
 			tag_count_++;
 		}
@@ -177,8 +177,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/topology/topology/xml_polygon_topology.cpp,v $
-* Version $Revision: 1.2 $
-* Date    $Date: 2005/08/05 10:00:35 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: xml_polygon_topology.cpp,v $
 *-----------------------------------------------------------------------*/

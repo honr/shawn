@@ -109,8 +109,8 @@ namespace topology
 
 		//Topology
 		{
-			draw(p.outer(), sc, out);
-			for(PolygonTopology::PolygonVector::iterator it = p.holes().begin(), end = p.holes().end(); it!=end; ++it)
+			draw(p.outer_w(), sc, out);
+			for(PolygonTopology::PolygonVector::iterator it = p.holes_w().begin(), end = p.holes_w().end(); it!=end; ++it)
 				draw(**it, sc, out);
 		}
 
@@ -141,7 +141,7 @@ namespace topology
 	// ----------------------------------------------------------------------
 	void
 		PolygonTopologyPostscriptTask::
-		draw(PolygonTopology::Polygon& p, shawn::SimulationController& sc, ostream& out)
+		draw(const PolygonTopology::Polygon& p, shawn::SimulationController& sc, ostream& out)
 	{
 		for(CGAL::Polygon_2<shawn::CGALKernel>::Edge_const_iterator it = p.edges_begin(), end = p.edges_end(); it!=end; ++it)
 		{
@@ -208,8 +208,8 @@ namespace topology
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/topology/topology/xml_polygon_topology_task.cpp,v $
-* Version $Revision: 1.3 $
-* Date    $Date: 2006/04/19 11:03:16 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: xml_polygon_topology_task.cpp,v $
 *-----------------------------------------------------------------------*/

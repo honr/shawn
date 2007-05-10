@@ -80,8 +80,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/node_movements/simple_movement.cpp,v $
-* Version $Revision: 1.5 $
-* Date    $Date: 2005/08/09 09:51:23 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: simple_movement.cpp,v $
  *-----------------------------------------------------------------------*/

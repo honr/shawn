@@ -55,8 +55,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/transm_models/reliable_transmission_model_factory.cpp,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2005/08/19 12:22:01 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: reliable_transmission_model_factory.cpp,v $
  *-----------------------------------------------------------------------*/

@@ -59,8 +59,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/taggings/tag_factory.cpp,v $
- * Version $Revision: 1.3 $
- * Date    $Date: 2005/08/16 10:55:02 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: tag_factory.cpp,v $
  *-----------------------------------------------------------------------*/

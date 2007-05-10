@@ -44,8 +44,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/transm_models/stats_chain_transmission_model_dump.h,v $
- * Version $Revision: 1.1 $
- * Date    $Date: 2005/08/30 20:30:54 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: stats_chain_transmission_model_dump.h,v $
  *-----------------------------------------------------------------------*/

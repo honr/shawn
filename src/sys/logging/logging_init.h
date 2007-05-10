@@ -21,8 +21,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/logging/logging_init.h,v $
- * Version $Revision: 1.2 $
- * Date    $Date: 2005/08/05 10:00:39 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: logging_init.h,v $
  *-----------------------------------------------------------------------*/

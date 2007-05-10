@@ -211,8 +211,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/sys/misc/skipnull_iterator.h,v $
- * Version $Revision: 1.1 $
- * Date    $Date: 2007/01/02 15:37:20 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: skipnull_iterator.h,v $
  *-----------------------------------------------------------------------*/

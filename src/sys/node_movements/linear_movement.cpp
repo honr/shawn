@@ -277,8 +277,8 @@ namespace shawn
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/node_movements/linear_movement.cpp,v $
-* Version $Revision: 1.15 $
-* Date    $Date: 2006/11/17 08:59:44 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: linear_movement.cpp,v $
  *-----------------------------------------------------------------------*/

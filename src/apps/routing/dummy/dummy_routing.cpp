@@ -56,8 +56,8 @@ namespace routing
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/routing/dummy/dummy_routing.cpp,v $
-* Version $Revision: 1.1 $
-* Date    $Date: 2005/10/11 15:24:21 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: dummy_routing.cpp,v $
  *-----------------------------------------------------------------------*/

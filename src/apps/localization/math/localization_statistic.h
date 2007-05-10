@@ -113,8 +113,8 @@ namespace localization
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/localization/math/localization_statistic.h,v $
- * Version $Revision: 1.4 $
- * Date    $Date: 2005/08/05 10:00:30 $
+ * Version $Revision$
+ * Date    $Date$
  *-----------------------------------------------------------------------
  * $Log: localization_statistic.h,v $
  *-----------------------------------------------------------------------*/

@@ -83,8 +83,8 @@ namespace shawn
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/comm_models/permalink_communication_model.h,v $
-* Version $Revision: 1.1 $
-* Date    $Date: 2005/08/16 10:56:05 $
+* Version $Revision$
+* Date    $Date$
 *-----------------------------------------------------------------------
 * $Log: permalink_communication_model.h,v $
  *-----------------------------------------------------------------------*/
