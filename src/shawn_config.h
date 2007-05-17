@@ -11,12 +11,19 @@
 
 //----Visual Studio and WIN32 specific-------
 #ifdef WIN32
-//Disable warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
-#pragma warning( disable : 4290 )
-//Disable warning C4511: Copy constructor could not be generated
-#pragma warning( disable : 4511 )
-//Disable warning C4311: 'variable' : pointer truncation from 'type' to 'type'. A 64-bit pointer was truncated to a 32-bit int or 32-bit long.
-#pragma warning( disable : 4311 )
+
+	//Disable warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+	#pragma warning( disable : 4290 )
+
+	//Disable warning C4511: Copy constructor could not be generated
+	#pragma warning( disable : 4511 )
+
+	//Disable warning C4311: 'variable' : pointer truncation from 'type' to 'type'. A 64-bit pointer was truncated to a 32-bit int or 32-bit long.
+	#pragma warning( disable : 4311 )
+
+	//Disable warning C4996: "This function or variable may be unsafe. Consider using _controlfp_s instead"
+	#pragma warning( disable : 4996 )
+
 #endif
 //-----------
 
