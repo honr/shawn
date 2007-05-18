@@ -50,6 +50,7 @@ namespace topology
 	  virtual ConstPolygonVector& holes() const;
       virtual PolygonVector& holes_w();
 
+	  virtual const shawn::TagContainer* tags(Polygon& polygon) const;
 	  virtual shawn::TagContainer& tags_w(Polygon& polygon);
       
    private:

@@ -94,6 +94,19 @@ namespace topology
 	}
 
 	// ----------------------------------------------------------------------
+	const shawn::TagContainer*
+		PolygonTopology::
+		tags(Polygon& polygon) 
+		const
+	{
+		if(tags_.find(&polygon) == tags_.end() )
+			return NULL;
+
+		PolygonTagMap& m = *((PolygonTagMap*)(&tags_));//Fieser Hack...
+		return m[&(Polygon&)polygon];
+	}
+
+	// ----------------------------------------------------------------------
 	shawn::TagContainer& 
 		PolygonTopology::
 		tags_w(Polygon& polygon)
