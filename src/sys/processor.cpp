@@ -115,7 +115,7 @@ namespace shawn
 	bool
 		Processor::
 		auto_terminate(void)
-		const
+		const throw()
 	{
 		return auto_terminate_;
 	}

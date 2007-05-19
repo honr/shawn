@@ -33,11 +33,11 @@ namespace shawn
 	public:
 		/**
 		  */
-		typedef enum CommunicationDirection 
+		enum CommunicationDirection 
 		{
 			CD_IN = 0, CD_OUT, CD_BIDI, CD_ANY, 
 			CD___DO_NOT_USE_COUNT__ ///Always leave this at the end. Used to count the elements of this enum
-		} CommunicationDirection;
+		};
 
 		//---------------------------------------------------------------------
 		/**

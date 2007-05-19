@@ -41,7 +41,7 @@ namespace shawn
 		init( void )
 		throw()
 	{
-		while( (world_it_!=world_end_it_) && !edge_model_.are_adjacent(node_, *world_it_, direction_))
+		while( (world_it_!=world_end_it_) && !edge_model_.are_adjacent(node_, *world_it_, base_type::direction_))
 			++world_it_;
 	}
 
@@ -79,7 +79,7 @@ namespace shawn
 		const throw()
 	{
 		return new LazyEdgeModel::LazyIteratorHelper<NodeType,WorldNodeIterator>
-					(edge_model_, direction_, node_, world_it_, world_end_it_ );
+         (edge_model_, base_type::direction_, node_, world_it_, world_end_it_ );
 	}
 
 	// ----------------------------------------------------------------------

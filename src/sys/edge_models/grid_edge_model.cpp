@@ -101,7 +101,7 @@ namespace shawn
 		while (it_ != end_it_) 
 		{
 			
-			if (edge_model_.are_adjacent(node_, **it_, direction_)) 
+			if (edge_model_.are_adjacent(node_, **it_, base_type::direction_)) 
 				break;
 			++it_;
 			advance_if_infeasible();

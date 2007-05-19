@@ -9,6 +9,8 @@
 #define __SHAWN_SYS_EDGE_MODELS_LIST_EDGE_MODEL_H
 
 #include "sys/edge_models/manual_edge_model.h"
+#include "sys/util/refcnt_pointer.h"
+#include "sys/util/refcnt_pointable.h"
 #include <sys/misc/dynamic_node_array.h>
 #include <set>
 
@@ -24,14 +26,16 @@ namespace shawn
 		: public ManualEdgeModel
 	{
 	public:
-
+      DECLARE_HANDLES(NodeInfo);
 		//---------------------------------------------------------------------
 		/** Store the communication relation to one single other node in memory. For each communication
 		  * pattern, a boolean value is stored. Whenever you change the CD_IN or CD_OUT property, invoke 
 		  * update() to reflect the changes to CD_ANY and CD_BIDI
 		  */
-		typedef struct NodeInfo
+		class NodeInfo
+         : public RefcntPointable
 		{ 
+      public:
 			///The neighboring node
 			Node* node_;
 			///For each communication direction, one boolean value
@@ -44,9 +48,10 @@ namespace shawn
 				for(int i = 0; i < CD___DO_NOT_USE_COUNT__; ++i) 
 					comm_dir_[i] = false; 
 			}
+         virtual ~NodeInfo();
 
 			///Comparison function for std::set, uses ONLY the node pointer to compare two instances
-			bool operator==(const struct NodeInfo& o) { return node_ == o.node_; }
+			bool operator==(const NodeInfo& o) { return node_ == o.node_; }
 
 			///Update the CD_ANY and CD_BIDI state based on CD_IN and CD_OUT
 			void update() 
@@ -54,8 +59,12 @@ namespace shawn
 				comm_dir_[CD_ANY]  = comm_dir_[CD_IN] || comm_dir_[CD_OUT];
 				comm_dir_[CD_BIDI] = comm_dir_[CD_IN] && comm_dir_[CD_OUT];    
 			}
-
-		} NodeInfo;
+		};
+      struct NodeInfoSort
+      { bool operator() ( const NodeInfoHandle& n1, const NodeInfoHandle& n2 )
+         { return n1->node_ < n2->node_; }
+      };
+      typedef std::set<NodeInfoHandle,NodeInfoSort> NodeInfoSet;
 
 	public:
 
@@ -98,7 +107,9 @@ namespace shawn
 		};
 
 	public:
-		
+
+      ///
+      ListEdgeModel();
 		///
 		virtual ~ListEdgeModel();
 
@@ -153,7 +164,7 @@ namespace shawn
 
 	private:
 		///
-		DynamicNodeArray< std::set< ListEdgeModel::NodeInfo > >*  neighbors_;
+		DynamicNodeArray<NodeInfoSet>*  neighbors_;
 
 	};
 
