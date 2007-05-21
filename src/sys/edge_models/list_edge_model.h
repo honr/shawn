@@ -19,23 +19,24 @@ namespace shawn
 
 	//---------------------------------------------------------------------
 	/** This edge model stores all neighborhood information in memory. Hence, it offers an impressive
-	  * message dispatching and topology lookup speed but consumes quite some memory compared to e.g. the
-	  * LazyEdgeModel.
-	  */
+	* message dispatching and topology lookup speed but consumes quite some memory compared to e.g. the
+	* LazyEdgeModel.
+	*/
 	class ListEdgeModel
 		: public ManualEdgeModel
 	{
 	public:
-      DECLARE_HANDLES(NodeInfo);
+		DECLARE_HANDLES(NodeInfo);
+
 		//---------------------------------------------------------------------
 		/** Store the communication relation to one single other node in memory. For each communication
-		  * pattern, a boolean value is stored. Whenever you change the CD_IN or CD_OUT property, invoke 
-		  * update() to reflect the changes to CD_ANY and CD_BIDI
-		  */
+		* pattern, a boolean value is stored. Whenever you change the CD_IN or CD_OUT property, invoke 
+		* update() to reflect the changes to CD_ANY and CD_BIDI
+		*/
 		class NodeInfo
-         : public RefcntPointable
+			: public RefcntPointable
 		{ 
-      public:
+		public:
 			///The neighboring node
 			Node* node_;
 			///For each communication direction, one boolean value
@@ -48,7 +49,7 @@ namespace shawn
 				for(int i = 0; i < CD___DO_NOT_USE_COUNT__; ++i) 
 					comm_dir_[i] = false; 
 			}
-         virtual ~NodeInfo();
+			virtual ~NodeInfo();
 
 			///Comparison function for std::set, uses ONLY the node pointer to compare two instances
 			bool operator==(const NodeInfo& o) { return node_ == o.node_; }
@@ -60,17 +61,26 @@ namespace shawn
 				comm_dir_[CD_BIDI] = comm_dir_[CD_IN] && comm_dir_[CD_OUT];    
 			}
 		};
-      struct NodeInfoSort
-      { bool operator() ( const NodeInfoHandle& n1, const NodeInfoHandle& n2 )
-         { return n1->node_ < n2->node_; }
-      };
-      typedef std::set<NodeInfoHandle,NodeInfoSort> NodeInfoSet;
+
+		//---------------------------------------------------------------------
+		/// Helper class to sort containers with NodeInfoHandle / NodeInfo* instances.
+		struct NodeInfoSort
+		{ 
+			///Compares two NodeInfoHandle / NodeInfo* instances using the member node_
+			bool operator() ( const NodeInfoHandle& n1, const NodeInfoHandle& n2 ) const
+			{ 
+				return n1->node_ < n2->node_; 
+			}
+		};
+
+		///
+		typedef std::set<NodeInfoHandle, NodeInfoSort> NodeInfoSet;
 
 	public:
 
 		//---------------------------------------------------------------------
 		/** Iterator helper used by the edge model to iterate over neighborhoods.
-		  */
+		*/
 		template<typename NodeType, typename NodeHoodIt> 
 		class ListIteratorHelper
 			: public AbstractIteratorHelper<NodeType>
@@ -80,13 +90,13 @@ namespace shawn
 			///
 			typedef AbstractIteratorHelper<NodeType> base_type;
 
-			/**
-			  * @param lm The list model that created this iterator helper
-			  * @param dir Communication direction that this iterator will deliver
-			  * @param n The node of which the neighbors shall be returned
-			  * @param s The start iterator of the list edge models internal data structure containing the complete node neighborhood
-			  * @param e The end iterator of the list edge models internal data structure containing the complete node neighborhood
-			  */
+			/** Creates a new iterator helper instance for use with the EdgeModel
+			* @param lm The list model that created this iterator helper
+			* @param dir Communication direction that this iterator will deliver
+			* @param n The node of which the neighbors shall be returned
+			* @param s The start iterator of the list edge models internal data structure containing the complete node neighborhood
+			* @param e The end iterator of the list edge models internal data structure containing the complete node neighborhood
+			*/
 			ListIteratorHelper( const ListEdgeModel& lm, EdgeModel::CommunicationDirection dir, NodeType& n, NodeHoodIt s, NodeHoodIt e );
 
 			virtual ~ListIteratorHelper();
@@ -108,8 +118,8 @@ namespace shawn
 
 	public:
 
-      ///
-      ListEdgeModel();
+		///
+		ListEdgeModel();
 		///
 		virtual ~ListEdgeModel();
 

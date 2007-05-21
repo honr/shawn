@@ -16,33 +16,27 @@ using namespace std;
 
 namespace shawn
 {
-	// ----------------------------------------------------------------------
-	/// Compares two ListEdgeModel::NodeInfo instances using the Node* node_ member
-	bool operator<(const struct ListEdgeModel::NodeInfo& a, const struct ListEdgeModel::NodeInfo& b) 
-	{ 
-		return a.node_ < b.node_; 
-	}
 
 	// ----------------------------------------------------------------------
 	template<typename NodeType, typename NodeHoodIt>
-	shawn::ListEdgeModel::ListIteratorHelper<NodeType, NodeHoodIt>::
-	ListIteratorHelper( const ListEdgeModel& em, EdgeModel::CommunicationDirection dir, NodeType& n, NodeHoodIt it, NodeHoodIt endit )
+		shawn::ListEdgeModel::ListIteratorHelper<NodeType, NodeHoodIt>::
+		ListIteratorHelper( const ListEdgeModel& em, EdgeModel::CommunicationDirection dir, NodeType& n, NodeHoodIt it, NodeHoodIt endit )
 		: AbstractIteratorHelper<NodeType>(dir),
-		  edge_model_( em ),
-  		  hood_it_( it ),
-		  hood_end_it_( endit ),
-		  node_( n )
+		edge_model_( em ),
+		hood_it_( it ),
+		hood_end_it_( endit ),
+		node_( n )
 	{}
 
 	// ----------------------------------------------------------------------
 	template<typename NodeType, typename NodeHoodIt>
-	shawn::ListEdgeModel::ListIteratorHelper<NodeType, NodeHoodIt>::
+		shawn::ListEdgeModel::ListIteratorHelper<NodeType, NodeHoodIt>::
 		~ListIteratorHelper()
 	{}
 
 	// ----------------------------------------------------------------------
 	template<typename NodeType, typename NodeHoodIt>
-	void
+		void
 		shawn::ListEdgeModel::ListIteratorHelper<NodeType, NodeHoodIt>::
 		init( void )
 		throw()
@@ -58,7 +52,7 @@ namespace shawn
 
 	// ----------------------------------------------------------------------
 	template<typename NodeType, typename NodeHoodIt>
-	void
+		void
 		shawn::ListEdgeModel::ListIteratorHelper<NodeType, NodeHoodIt>::
 		next( void )
 		throw()
@@ -73,7 +67,7 @@ namespace shawn
 
 	// ----------------------------------------------------------------------
 	template<typename NodeType, typename NodeHoodIt>
-	NodeType*
+		NodeType*
 		shawn::ListEdgeModel::ListIteratorHelper<NodeType, NodeHoodIt>::
 		current( void )
 		const throw()
@@ -86,7 +80,7 @@ namespace shawn
 
 	// ----------------------------------------------------------------------
 	template<typename NodeType,	typename NodeHoodIt>
-	shawn::EdgeModel::AbstractIteratorHelper<NodeType>*
+		shawn::EdgeModel::AbstractIteratorHelper<NodeType>*
 		shawn::ListEdgeModel::ListIteratorHelper<NodeType,NodeHoodIt>::
 		clone( void )
 		const throw()
@@ -102,24 +96,24 @@ namespace shawn
 	// ----------------------------------------------------------------------
 	template class shawn::ListEdgeModel::ListIteratorHelper<const Node, shawn::ListEdgeModel::NodeInfoSet::const_iterator>;
 
-   // ----------------------------------------------------------------------
-   ListEdgeModel::NodeInfo::~NodeInfo()
-   {}
+	// ----------------------------------------------------------------------
+	ListEdgeModel::NodeInfo::~NodeInfo()
+	{}
 
 
 
-   // ----------------------------------------------------------------------
-   ListEdgeModel::
-   ListEdgeModel()
-      : neighbors_( NULL )
-   {}
+	// ----------------------------------------------------------------------
+	ListEdgeModel::
+		ListEdgeModel()
+		: neighbors_( NULL )
+	{}
 	// ----------------------------------------------------------------------
 	ListEdgeModel::
 		~ListEdgeModel()
 	{
-      if( neighbors_ != NULL )
-         delete neighbors_;
-   }
+		if( neighbors_ != NULL )
+			delete neighbors_;
+	}
 	// ----------------------------------------------------------------------
 	void
 		ListEdgeModel::
@@ -127,8 +121,8 @@ namespace shawn
 		throw()
 	{
 		EdgeModel::set_world(w);
-      if( neighbors_ != NULL )
-         delete neighbors_;
+		if( neighbors_ != NULL )
+			delete neighbors_;
 		neighbors_ = new DynamicNodeArray<NodeInfoSet>(w);
 	}
 
@@ -227,7 +221,7 @@ namespace shawn
 
 		return EdgeModel::const_adjacency_iterator( 
 			new ListEdgeModel::ListIteratorHelper<const Node, NodeInfoSet::const_iterator>
-					( *this, d, v,  s.begin(), s.end() ) );
+			( *this, d, v,  s.begin(), s.end() ) );
 	}
 
 	// ----------------------------------------------------------------------
@@ -250,7 +244,7 @@ namespace shawn
 
 		return EdgeModel::adjacency_iterator
 			( new ListEdgeModel::ListIteratorHelper<Node, NodeInfoSet::iterator >
-				( *this, d, v, s.begin(), s.end() ) );
+			( *this, d, v, s.begin(), s.end() ) );
 	}
 
 	// ----------------------------------------------------------------------
@@ -264,12 +258,12 @@ namespace shawn
 
 	// ----------------------------------------------------------------------
 	ListEdgeModel::NodeInfo&
-   ListEdgeModel::
-   node_info(Node& u, Node& v)
+		ListEdgeModel::
+		node_info(Node& u, Node& v)
 	{
 		assert( neighbors_ != NULL );
 		NodeInfoSet& l = (*neighbors_)[u];
-      NodeInfoHandle seek=new NodeInfo; seek->node_=&v;
+		NodeInfoHandle seek=new NodeInfo; seek->node_=&v;
 		NodeInfoSet::iterator pos = l.find(seek);
 		if( pos == l.end() ) 
 		{
@@ -303,21 +297,18 @@ namespace shawn
 
 	// ----------------------------------------------------------------------
 	void
-   ListEdgeModel::
-   node_removed(Node& node)
+		ListEdgeModel::
+		node_removed(Node& node)
 		throw()
 	{
 		assert( neighbors_ != NULL );
 
-      NodeInfo ni;
-      ni.node_ = &node;
-      NodeInfoHandle nih(&ni);
+		NodeInfo ni;
+		ni.node_ = &node;
+		NodeInfoHandle nih(&ni);
 
 		//Remove the node from the neighbor lists of all other nodes
-		for( adjacency_iterator 
-              it  = begin_adjacent_nodes_w(node), 
-              end = end_adjacent_nodes_w(node);
-           it!=end; ++it )
+		for( adjacency_iterator  it  = begin_adjacent_nodes_w(node),  end = end_adjacent_nodes_w(node); it!=end; ++it )
 			(*neighbors_)[*it].erase( nih );
 
 		//Delete the entry of the node itself
