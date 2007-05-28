@@ -119,6 +119,17 @@ namespace topology
             parsing_state_ = TopologyState;
             polygon_count_++;
 
+            if( !polygon_->is_simple() )
+               {
+                  throw std::runtime_error("Polygon is not simple");
+               }
+
+            
+#if 0
+            I disabled this one here. If the input to a program is not valid, it should
+               not simply make up fantasy data instead. The convex hull looks like a 
+               particularily bad choice for ``auto-repair'' to me. -- ali
+
             //If the input polygon is not simple, a convex hull around the polygons
             //vertices is created instead
             if( ! polygon_->is_simple() ) 
@@ -127,6 +138,7 @@ namespace topology
                 delete polygon_;
                 polygon_ = &pnew;
             }
+#endif
 
             //Add the polygon to the list of polygons depending on the type specified in the 
             //opening 'polygon' xml tag before

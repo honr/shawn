@@ -134,26 +134,41 @@ namespace shawn
 	{
 		//TODO: Could possible also work with SimpleMovement by returning single-point boxes and repairing neighborhoods
 		assert( dynamic_cast<const NoMovement*>(&v.movement()) != NULL );
+      neighbors_->node_added(v);
+
+		if( communication_model().is_status_available_on_construction() )
+			add_node_neighbors(v,pos,velo);
+
 		return Box::INFINITE_3D_SPACE;
 	}
 
 	// ----------------------------------------------------------------------  
-	void
-		ListEdgeModel::
-		node_added(Node& n)
-		throw()
-	{
-		//Must be done here, because the edge model's node_added is always called before the dynamic node array
-		neighbors_->node_added(n);
-		//Add all neighbors of the node to our internal list
-		add_node_neighbors(n);
-	}
+ 	void
+   ListEdgeModel::
+ 		node_added(Node& n)
+ 		throw()
+   {}
+//
+//  This is not the correct point to determine the neighborhood. The
+//  only correct method for initialization is observer_initial_zone() ---
+//  which is called *BEFORE* node_added() (from Node::init())
+//  Also, when changing something here: The FastListEdgeModel works
+//  by overriding certain methods of this class; make sure to update
+//  that as well!
+//  [ali]
+//
+// 	{
+// 		//Must be done here, because the edge model's node_added is always called before the dynamic node array
+// 		neighbors_->node_added(n);
+// 		//Add all neighbors of the node to our internal list
+// 		add_node_neighbors(n);
+// 	}
 
 
 	// ----------------------------------------------------------------------
 	void
 		ListEdgeModel::
-		add_node_neighbors(Node& v)
+		add_node_neighbors(Node& v, const Vec& pos, const Vec& velo)
 		throw()
 	{
 		//For all nodes in the world. Please note that both directions must be checked here because a node
@@ -163,18 +178,28 @@ namespace shawn
 		{
 			//Check if u->v can communicate unidirectional
 			if( communication_model().can_communicate_uni(v, *it) )
-				add_edge(v, *it);
+				add_dedge(v, *it);
 
 			//Check if v->u can communicate unidirectional
 			if( communication_model().can_communicate_uni(*it, v) )
-				add_edge(*it, v);
+				add_dedge(*it, v);
 		}
 	}
-
+   // ----------------------------------------------------------------------
+   void
+   ListEdgeModel::
+   add_edge( Node& u, Node& v )
+      throw()
+   {
+      if( communication_model().can_communicate_uni(u,v) )
+         add_dedge(u,v);
+      if( communication_model().can_communicate_uni(v,u) )
+         add_dedge(v,u);
+   }
 	// ----------------------------------------------------------------------
 	void
 		ListEdgeModel::
-		add_edge( Node& u, Node& v )
+		add_dedge( Node& u, Node& v )
 		throw()
 	{
 		//u -> v: Set the OUTgoing link and update the CD_ANY and CD_BIDI state

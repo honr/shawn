@@ -36,7 +36,7 @@ namespace shawn
       ~StaticNodeArray()
       { delete [] data_; }
 
-      reference operator [] ( const Node& v ) throw()
+      inline reference operator [] ( const Node& v ) throw()
       {
          assert( world_.node_count() == size_ );
          assert( v.id() >= 0 );
@@ -44,15 +44,24 @@ namespace shawn
          return data_[v.id()];
       }
 
-      const_reference operator [] ( const Node& v ) const throw()
+      inline const_reference operator [] ( const Node& v ) const throw()
       {
          assert( world_.node_count() == size_ );
          assert( v.id() >= 0 );
          assert( v.id() < size_ );
          return data_[v.id()];
       }
+      
+      inline const_reference operator() ( const Node& v ) const throw()
+      { return operator[](v); }
 
-      void clear_to( const value_type& val ) throw()
+      inline void set( const Node& v, const_reference val ) throw()
+      { operator[](v) = val; }
+
+      inline const_reference get( const Node& v ) const throw()
+      { return operator[](v); }
+
+      inline void clear_to( const value_type& val ) throw()
       { std::fill( data_, data_+size_, val ); }
 
       virtual void node_added( Node& v ) throw()
@@ -72,9 +81,7 @@ namespace shawn
 
       virtual bool invalidate( void ) throw()
       {
-         data_->clear();
-         world_=NULL;
-		 return false;		 
+         return false;		 
       }
 
    private:

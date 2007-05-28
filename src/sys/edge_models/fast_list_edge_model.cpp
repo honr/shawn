@@ -31,7 +31,7 @@ namespace shawn
 		add_node_neighbors( Node& v, const Vec& pos, const Vec& velo )
 		throw()
 	{
-//		std::cout << " flem.begin" << std::endl << std::flush;
+      //		std::cout << " flem.begin" << std::endl << std::flush;
 
 		grid_model_->observer_initial_zone(v, pos, velo);
 		for( GridEdgeModel::adjacency_iterator

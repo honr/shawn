@@ -379,7 +379,7 @@ namespace xmlreading
 		///@}
 		///@name NodeSensor method
 		///@{
-		ValueType XMLDoubleReading::value( const shawn::Vec& v ) const throw()
+		ValueType value( const shawn::Vec& v ) const throw()
 		
 		{
 			std::string s = "";

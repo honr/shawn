@@ -131,6 +131,11 @@ namespace shawn
 		*/
 		virtual void add_edge( Node&, Node& ) throw();
 
+		/** Do not use directly -- use add_edge() of the communication
+		*  model, which should be a ManualEdgeCommunicationModel
+		*/
+		virtual void add_dedge( Node&, Node& ) throw();
+
 		///Called by the World whenever a node has been added
 		virtual void node_added( Node& ) throw();
 
@@ -170,7 +175,7 @@ namespace shawn
 		ListEdgeModel::NodeInfo& node_info(Node& u, Node& v);
 
 		///	
-		virtual void add_node_neighbors( Node& v) throw();
+		virtual void add_node_neighbors( Node& v, const Vec& pos, const Vec& velo) throw();
 
 	private:
 		///
