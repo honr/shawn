@@ -61,7 +61,9 @@ namespace topology
         virtual ~XMLPolygonTopology();
 
         /** Parses the given xml file */
-        virtual void read(shawn::SimulationController& sc, const std::string& filename, bool create_outer_polygon = false) throw( std::runtime_error );
+        virtual void read(shawn::SimulationController& sc, const std::string& filename, 
+					bool create_outer_polygon = false, bool fix_non_simple_polygons = false) 
+					throw( std::runtime_error );
     
     protected:
         enum ParsingState 
@@ -94,6 +96,7 @@ namespace topology
         int polygon_count_;
         int tag_count_;
         bool create_outer_polygon_;
+		bool fix_non_simple_polygons_;
 
         /** Returns the polygon type based on the XML attributes
           * @return Polygon type

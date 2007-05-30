@@ -1,10 +1,10 @@
 /************************************************************************
- ** This file is part of the network simulator Shawn.                  **
- ** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
- ** Shawn is free software; you can redistribute it and/or modify it   **
- ** under the terms of the BSD License. Refer to the shawn-licence.txt **
- ** file in the root of the Shawn source tree for further details.     **
- ************************************************************************/
+** This file is part of the network simulator Shawn.                  **
+** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
+** Shawn is free software; you can redistribute it and/or modify it   **
+** under the terms of the BSD License. Refer to the shawn-licence.txt **
+** file in the root of the Shawn source tree for further details.     **
+************************************************************************/
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 #include "shawn_config.h"
@@ -27,71 +27,74 @@ using namespace std;
 namespace topology
 {
 
-   // ----------------------------------------------------------------------
-    XMLPolygonTopology::
-        XMLPolygonTopology()
-        : parsing_state_(UnknownState),
-        polygon_type_(HoleType),
-        polygon_(NULL),
-        outer_(NULL),
-        polygon_count_(0),
+	// ----------------------------------------------------------------------
+	XMLPolygonTopology::
+		XMLPolygonTopology()
+		: parsing_state_(UnknownState),
+		polygon_type_(HoleType),
+		polygon_(NULL),
+		outer_(NULL),
+		polygon_count_(0),
 		tag_count_(0),
-        create_outer_polygon_(false)
-    {}
+		create_outer_polygon_(false),
+		fix_non_simple_polygons_(false)
+	{}
 
-    // ----------------------------------------------------------------------
-    XMLPolygonTopology::
-        ~XMLPolygonTopology()
-    {}
+	// ----------------------------------------------------------------------
+	XMLPolygonTopology::
+		~XMLPolygonTopology()
+	{}
 
-    // ----------------------------------------------------------------------
-    void
-        XMLPolygonTopology::
-		read(shawn::SimulationController& sc, const string& filename, bool create_outer_polygon /* = false */)
-        throw( runtime_error )
-    {
-        this->create_outer_polygon_ = create_outer_polygon;
+	// ----------------------------------------------------------------------
+	void
+		XMLPolygonTopology::
+		read(shawn::SimulationController& sc, const string& filename, bool create_outer_polygon /* = false */, bool fix_non_simple_polygons /* = false */)
+		throw( runtime_error )
+	{
+		create_outer_polygon_ = create_outer_polygon;
+		fix_non_simple_polygons_ = fix_non_simple_polygons;
+
 		set_tag_factory_keeper( sc.tag_factory_keeper_w() );
 
-        if( create_outer_polygon_ ) {
-            outer_ = new Polygon;
-            cerr << "XMLPolygonTopology: Will create outer convex hull polygon" << endl;
-        }
+		if( create_outer_polygon_ ) {
+			outer_ = new Polygon;
+			cerr << "XMLPolygonTopology: Will create outer convex hull polygon" << endl;
+		}
 
-        set_document_uri(filename);
-        parse();
+		set_document_uri(filename);
+		parse();
 
-        if( create_outer_polygon_ )
-            set_outer_polygon( topology::convex_hull(outer_->vertices_begin(), outer_->vertices_end()) );
+		if( create_outer_polygon_ )
+			set_outer_polygon( topology::convex_hull(outer_->vertices_begin(), outer_->vertices_end()) );
 
-        cerr << "XMLPolygonTopology: Loaded " << polygon_count_ << " polygons and " << tag_count_ << " tags" << endl;    
-    }
+		cerr << "XMLPolygonTopology: Loaded " << polygon_count_ << " polygons and " << tag_count_ << " tags" << endl;    
+	}
 
-    // ----------------------------------------------------------------------
-    void
-        XMLPolygonTopology::
-        handle_start_element(const char *name, const char **atts) 
-        throw(std::runtime_error)
-    {
-      if( parsing_state_ == UnknownState && !strcmp("topology", name) )
-        {
-            parsing_state_ = TopologyState;
-        }
-        else if( parsing_state_ == TopologyState && !strcmp("polygon", name) ) 
-        {
-            polygon_type_ = polygon_type(atts);
-            parsing_state_ = PolygonState;
-            polygon_ = new Polygon;
-        } 
-        else if( parsing_state_ == PolygonState && !strcmp("vertex", name) ) 
-        {
-            assert( polygon_ != NULL );
+	// ----------------------------------------------------------------------
+	void
+		XMLPolygonTopology::
+		handle_start_element(const char *name, const char **atts) 
+		throw(std::runtime_error)
+	{
+		if( parsing_state_ == UnknownState && !strcmp("topology", name) )
+		{
+			parsing_state_ = TopologyState;
+		}
+		else if( parsing_state_ == TopologyState && !strcmp("polygon", name) ) 
+		{
+			polygon_type_ = polygon_type(atts);
+			parsing_state_ = PolygonState;
+			polygon_ = new Polygon;
+		} 
+		else if( parsing_state_ == PolygonState && !strcmp("vertex", name) ) 
+		{
+			assert( polygon_ != NULL );
 
-            polygon_->push_back( to_point(atts) );
+			polygon_->push_back( to_point(atts) );
 
-            if( create_outer_polygon_ && polygon_type_ != OuterType )
-                outer_->push_back( to_point(atts) );
-        } 
+			if( create_outer_polygon_ && polygon_type_ != OuterType )
+				outer_->push_back( to_point(atts) );
+		} 
 		else if( parsing_state_ == PolygonState && !strcmp("tag", name) )
 		{
 			parsing_state_ = TagState;
@@ -101,54 +104,49 @@ namespace topology
 		{
 			handle_tag_entry(atts);
 		}
-    }
+	}
 
-    // ----------------------------------------------------------------------
-    void
-        XMLPolygonTopology::
-        handle_end_element(const char *name) 
-        throw(std::runtime_error)
-    {
-       if( parsing_state_ == TopologyState && !strcmp("topology", name) )
-        {
-            parsing_state_ = DoneState;
-        }
-        else if( parsing_state_ == PolygonState && !strcmp("polygon", name) ) 
-        {
-            assert( polygon_ != NULL );
-            parsing_state_ = TopologyState;
-            polygon_count_++;
+	// ----------------------------------------------------------------------
+	void
+		XMLPolygonTopology::
+		handle_end_element(const char *name) 
+		throw(std::runtime_error)
+	{
+		if( parsing_state_ == TopologyState && !strcmp("topology", name) )
+		{
+			parsing_state_ = DoneState;
+		}
+		else if( parsing_state_ == PolygonState && !strcmp("polygon", name) ) 
+		{
+			assert( polygon_ != NULL );
+			parsing_state_ = TopologyState;
+			polygon_count_++;
 
-            if( !polygon_->is_simple() )
-               {
-                  throw std::runtime_error("Polygon is not simple");
-               }
+			//If fix_non_simple_polygons_ is set and the input polygon is not simple, 
+			//a convex hull around the polygons vertices is created instead
+			if( (!polygon_->is_simple()) && fix_non_simple_polygons_ ) 
+			{
+				cerr << "XMLPolygonTopology: Warning: Polygon is not simple, creating conex hull instead" << endl;    
+				Polygon& pnew = topology::convex_hull(polygon_->vertices_begin(), polygon_->vertices_end());
+				delete polygon_;
+				polygon_ = &pnew;
+			}
 
-            
-#if 0
-            I disabled this one here. If the input to a program is not valid, it should
-               not simply make up fantasy data instead. The convex hull looks like a 
-               particularily bad choice for ``auto-repair'' to me. -- ali
+			//Add the polygon to the list of polygons depending on the type specified in the 
+			//opening 'polygon' xml tag before
+			if( HoleType == polygon_type_ )
+			{
+				cerr << "XMLPolygonTopology: Info: Loaded hole polygon" << endl;    
+				add_hole_polygon( *polygon_  );
+			}
+			else if( OuterType == polygon_type_ && !create_outer_polygon_ )
+			{
+				cerr << "XMLPolygonTopology: Info: Loaded outer polygon" << endl;    
+				set_outer_polygon( *polygon_  );
+			}
 
-            //If the input polygon is not simple, a convex hull around the polygons
-            //vertices is created instead
-            if( ! polygon_->is_simple() ) 
-            {
-                Polygon& pnew = topology::convex_hull(polygon_->vertices_begin(), polygon_->vertices_end());
-                delete polygon_;
-                polygon_ = &pnew;
-            }
-#endif
-
-            //Add the polygon to the list of polygons depending on the type specified in the 
-            //opening 'polygon' xml tag before
-            if( HoleType == polygon_type_ )
-                add_hole_polygon( *polygon_  );
-            else if( OuterType == polygon_type_ && !create_outer_polygon_ )
-                set_outer_polygon( *polygon_  );
-
-            polygon_ = NULL;
-        }
+			polygon_ = NULL;
+		}
 		else if( parsing_state_ == TagState && !strcmp("tag", name) )
 		{
 			handle_close_tag_tag(NULL, tags_w(*polygon_));
@@ -156,33 +154,33 @@ namespace topology
 			tag_count_++;
 		}
 
-    }
+	}
 
-    // ----------------------------------------------------------------------
-    CGAL2D 
-        XMLPolygonTopology::
-        to_point(const char** atts) 
-        const throw(std::runtime_error)
-    {
-        double x = conv_string_to_double( attribute("x", atts, "0.0") );
-        double y = conv_string_to_double( attribute("y", atts, "0.0") );
-        return CGAL2D(x,y);
-    }
-    
-    // ----------------------------------------------------------------------
-    XMLPolygonTopology::PolygonType
-        XMLPolygonTopology::
-        polygon_type(const char** atts) 
-        throw(runtime_error)
-    {       
-        if(!strcmp( attribute("type", atts, "unknown") , "outer"))
-            return OuterType;
+	// ----------------------------------------------------------------------
+	CGAL2D 
+		XMLPolygonTopology::
+		to_point(const char** atts) 
+		const throw(std::runtime_error)
+	{
+		double x = conv_string_to_double( attribute("x", atts, "0.0") );
+		double y = conv_string_to_double( attribute("y", atts, "0.0") );
+		return CGAL2D(x,y);
+	}
 
-        if(!strcmp( attribute("type", atts, "unknown") , "hole"))
-            return HoleType;
+	// ----------------------------------------------------------------------
+	XMLPolygonTopology::PolygonType
+		XMLPolygonTopology::
+		polygon_type(const char** atts) 
+		throw(runtime_error)
+	{       
+		if(!strcmp( attribute("type", atts, "unknown") , "outer"))
+			return OuterType;
 
-        throw runtime_error("Polygon type unknown");
-    }
+		if(!strcmp( attribute("type", atts, "unknown") , "hole"))
+			return HoleType;
+
+		throw runtime_error("Polygon type unknown");
+	}
 
 }
 #endif

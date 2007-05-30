@@ -50,8 +50,11 @@ namespace topology
 		const throw()
 	{ 
 		return "Creates a 2D polygonal topology named $name from file $file. "
-			"The optional parameter create_outer_hull (or for compatibility xml_create_outer_hull)"
-			"creates the outer polygon automatically.";
+			"The optional parameter $create_outer_hull (or for compatibility $xml_create_outer_hull) "
+			"creates the outer polygon automatically. "
+			"In addition, $fix_non_simple_polygons will create an convex hull around non simple polygons. "
+			"A simple polygon is a polygon which its sides do not intersect."
+			;
 	}
 
 	// ----------------------------------------------------------------------
@@ -69,10 +72,12 @@ namespace topology
 			bool create_outer = 
 				sc.environment().optional_bool_param("xml_create_outer_hull", false) ||
 				sc.environment().optional_bool_param("create_outer_hull", false);
+			
+			bool fix_non_simple_polygons = sc.environment().optional_bool_param("fix_non_simple_polygons", false);
 
 			XMLPolygonTopology* p = new XMLPolygonTopology;
 			p->set_name(n);
-			p->read(sc, f, create_outer);
+			p->read(sc, f, create_outer, fix_non_simple_polygons);
 			topology_keeper_w(sc).add(p);
 
 		#endif
