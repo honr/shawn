@@ -8,6 +8,7 @@
 
 #include "sys/node_movements/jump_movement.h"
 
+
 namespace shawn
 {
     JumpMovement::
@@ -111,8 +112,22 @@ namespace shawn
 
         set_position(newpos);
     }
+
     // ----------------------------------------------------------------------
-	void 
+	
+	 void 
+		JumpMovement::
+		set_dimensions(Vec* newpos) 
+	{
+		set_dimension(JumpMovement::X,newpos->x());
+		set_dimension(JumpMovement::Y,newpos->y());
+		set_dimension(JumpMovement::Z,newpos->z());
+	    
+    }
+
+ // ----------------------------------------------------------------------
+	
+	 void 
 		JumpMovement::
 		boxes_changed() 
 		throw()

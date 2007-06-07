@@ -73,6 +73,12 @@ namespace shawn
         /** This method sets one Dimension (X,Y or Z) that is to be replaced
         */
         virtual void set_dimension(Dimension, double);
+		 
+		  /** This method alters whole position vector (X,Y or Z) 
+        */
+
+		  virtual void set_dimensions(Vec* newpos);
+
 	protected:
 		virtual void boxes_changed() throw();
 
