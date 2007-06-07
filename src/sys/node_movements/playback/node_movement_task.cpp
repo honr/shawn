@@ -12,8 +12,8 @@
 #include "sys/node_movements/playback/movement_controller.h"
 #include "sys/node_movements/playback/node_movement_creator.h"
 #include "sys/node_movements/playback/ns2_node_movement_creator.h"
+#include "sys/node_movements/playback/tag_node_movement_creator.h"
 #include "sys/event_scheduler.h"
-
 #include <string>
 
 namespace shawn
@@ -21,7 +21,7 @@ namespace shawn
 
     SimulationTaskNodeMovement::
         SimulationTaskNodeMovement()
-    {}
+	 {}
     // ----------------------------------------------------------------------
     SimulationTaskNodeMovement::
         ~SimulationTaskNodeMovement()
@@ -30,22 +30,30 @@ namespace shawn
     void
         SimulationTaskNodeMovement::
         run( SimulationController& sc )
-        throw( std::runtime_error )
-    {
-
-	if (&(sc.world_w().movement_controller_w()) != NULL) {
+        throw(std::runtime_error )
+	 {
+		 
+		if (&(sc.world_w().movement_controller_w()) != NULL) 
+		{
 	   if (sc.environment_w().optional_string_param("mode", "")=="ns2_parsefile")
-	   {
-	      NS2NodeMovementCreator * ns2nmc = new NS2NodeMovementCreator(sc);
-	      sc.world_w().movement_controller_w().set_node_movement_creator(ns2nmc);
-	      sc.world_w().movement_controller_w().start();
-	   }
-           else
-           {
-              WARN(sc.logger(), "No NodeMovementCreator Set");
-           }
+		{
+		    NS2NodeMovementCreator * ns2nmc = new NS2NodeMovementCreator(sc);
+		    sc.world_w().movement_controller_w().set_node_movement_creator(ns2nmc);
+		     sc.world_w().movement_controller_w().start();
+		}
+		else if(sc.environment_w().optional_string_param("mode","")=="tag_movement")
+		{
+			
+			TagNodeMovementCreator * tagnmc =new TagNodeMovementCreator(sc);
+			 sc.world_w().movement_controller_w().set_node_movement_creator(tagnmc);
+		     sc.world_w().movement_controller_w().start();
+		}
+		else
+		{
+        WARN(sc.logger(), "No NodeMovementCreator Set");
+      }
 	}
-    }
+   }
     // ----------------------------------------------------------------------
     std::string
         SimulationTaskNodeMovement::

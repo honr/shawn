@@ -17,6 +17,7 @@
 #include <cmath>
 
 
+
 namespace shawn
 {
     MovementController::MovementController(SimulationController& sc) :
@@ -46,17 +47,18 @@ namespace shawn
 
    void MovementController::timeout_action()
    {
+		
 
       if (movement_info_ != NULL)
       {
          DEBUG(sc_->logger(), "MovementController::timeout_action() setting a delayed node movement");
+			NodeMovement* n =movement_info_->node_movement();
          movement_info_->node()->set_movement(movement_info_->node_movement());
          command_nr_++;
       }
-
-      movement_info_ = nmc_->next_movement();
-
-      if (movement_info_ != NULL)
+		movement_info_ = nmc_->next_movement();
+	      
+		if (movement_info_ != NULL)
          {
 
 // if ( movement_info_->node()->id() == 0 )

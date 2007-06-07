@@ -32,6 +32,9 @@ namespace shawn
 
         ///@name task implementation
         ///@{
+		  /**
+		  * Creates either movement from a ns2 file, a xml File or creats no movement 
+		  */
         virtual void run( SimulationController& ) throw( std::runtime_error );
         virtual std::string name( void ) const throw();
         virtual std::string description( void ) const throw();
