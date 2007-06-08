@@ -73,7 +73,7 @@ namespace shawn
 		 *
        */
 
-		virtual shawn::MovementInfo *next_movement(void);
+		virtual shawn::MovementInfo *next_movement(void) throw( std::runtime_error );
 	
 		/** This method causes the NodeMovementCreator to start movements
        *  from the beginning.
