@@ -12,6 +12,7 @@
 
 #include <map>
 #include <string>
+#include <stdexcept>
 #include "sys/util/refcnt_pointer.h"
 #include "sys/util/refcnt_pointable.h"
 #include "sys/util/defutils.h"
@@ -62,6 +63,26 @@ namespace shawn
       virtual RefcntPointer<const Tag> find_tag( const std::string& ) const throw();
       /// NULL if nonex
       virtual RefcntPointer<Tag> find_tag_w( const std::string& ) throw();
+      ///
+      template<typename T> inline const T* find_typed_tag( const std::string& t ) const throw( std::runtime_error )
+      {
+         RefcntPointer<const Tag> cth = find_tag(t);
+         if( cth.is_null() ) return NULL;
+         const T* dc = dynamic_cast<const T*>(cth.get());
+         if( dc==NULL )
+            throw std::runtime_error(std::string("Tag '")+t+std::string("' has wrong type"));
+         return dc;
+      }
+      ///
+      template<typename T> inline T* find_typed_tag_w( const std::string& t ) throw( std::runtime_error )
+      {
+         RefcntPointer<Tag> th = find_tag_w(t);
+         if( th.is_null() ) return NULL;
+         T* dc = dynamic_cast<T*>(th.get());
+         if( dc==NULL )
+            throw std::runtime_error(std::string("Tag '")+t+std::string("' has wrong type"));
+         return dc;
+      }
       ///
       virtual tag_iterator begin_tags( void ) const throw();
       ///

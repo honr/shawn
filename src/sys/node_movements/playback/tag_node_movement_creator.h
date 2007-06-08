@@ -73,7 +73,7 @@ namespace shawn
 		 *
        */
 
-		virtual shawn::MovementInfo *shawn::NodeMovementCreator::next_movement(void);
+		virtual shawn::MovementInfo *next_movement(void);
 	
 		/** This method causes the NodeMovementCreator to start movements
        *  from the beginning.
