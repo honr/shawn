@@ -29,8 +29,7 @@ TagNodeMovementCreator::~TagNodeMovementCreator(void)
 }
 
 
-MovementInfo* TagNodeMovementCreator::
-next_movement()
+MovementInfo* TagNodeMovementCreator::next_movement()
 	throw( std::runtime_error )
 {
 	double min=numeric_limits<double>::max();
