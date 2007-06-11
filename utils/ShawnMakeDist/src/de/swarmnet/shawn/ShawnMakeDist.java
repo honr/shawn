@@ -240,7 +240,7 @@ public class ShawnMakeDist
 	{
 		System.out.println(
 			"ShawnMakeDist usage:\n" +  
-			"   java MakeDist <shawn root dir> [<out dir>]\n\n" +
+			"   java -jar ShawnMakeDist.jar <shawn root dir> [<out dir>]\n\n" +
 	
 			"   <shawn source dir>  The directory of the Shawn source tree.\n" +
 			"   <out dir>           Optional. Output directory for package.\n\n" +
