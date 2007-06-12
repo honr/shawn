@@ -232,11 +232,11 @@ public:
       ///
       inline int node_count( void ) const throw()
       { return valid_node_cnt_; }
-      ///
-// Removed due to the node removement. Don't use it (only used in one tusapps-class).
-// Instead, use begin_nodes, because iterating 
-//       inline int max_node_id( void ) const throw()
-//       { return node_count()-1; }
+      /// returns the size of the node ID space, i.e.,
+      /// all nodes have an ID in the range [0...node_id_space_size()-1]
+      /// used in DynamicNodeArray and StaticNodeArray
+      inline int node_id_space_size( void ) const throw()
+      { return nodes_.size(); }
       ///
       node_iterator begin_nodes_w( void ) throw();
       ///

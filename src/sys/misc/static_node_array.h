@@ -30,7 +30,7 @@ namespace shawn
       
       StaticNodeArray( const World& w )
          : world_ ( w ),
-           size_  ( w.node_count() ),
+           size_  ( w.node_id_space_size() ),
            data_  ( new value_type[size_] )
       {}
       ~StaticNodeArray()
@@ -38,7 +38,7 @@ namespace shawn
 
       inline reference operator [] ( const Node& v ) throw()
       {
-         assert( world_.node_count() == size_ );
+         assert( world_.node_id_space_size() == size_ );
          assert( v.id() >= 0 );
          assert( v.id() < size_ );
          return data_[v.id()];
@@ -46,7 +46,7 @@ namespace shawn
 
       inline const_reference operator [] ( const Node& v ) const throw()
       {
-         assert( world_.node_count() == size_ );
+         assert( world_.node_id_space_size() == size_ );
          assert( v.id() >= 0 );
          assert( v.id() < size_ );
          return data_[v.id()];

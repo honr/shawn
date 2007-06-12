@@ -36,7 +36,7 @@ namespace shawn
 		*/
 		DynamicNodeArray( World& w )
 			: world_ ( &w ),
-			data_  ( w.node_count() )
+			data_  ( w.node_id_space_size() )
 		{
 			w.add_node_change_listener(*this);
 		}
