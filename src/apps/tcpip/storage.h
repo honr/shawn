@@ -12,7 +12,7 @@
 #ifndef __SHAWN_APPS_TCPIP_STORAGE_H
 #define __SHAWN_APPS_TCPIP_STORAGE_H
 
-#include "socket.h"
+//#include "socket.h"
 
 #ifdef BUILD_TCPIP
 
@@ -75,10 +75,10 @@ public:
         virtual void writeDouble( double ) throw();
 
 	// Some enabled functions of the underlying std::list
-	int size() { return static_cast<int>(std::list<unsigned char>::size()); }
+	int size() const { return static_cast<int>(std::list<unsigned char>::size()); }
 
-	std::list<unsigned char>::const_iterator begin() { return std::list<unsigned char>::begin(); }
-	std::list<unsigned char>::const_iterator end() { return std::list<unsigned char>::end(); }
+	std::list<unsigned char>::const_iterator begin() const { return std::list<unsigned char>::begin(); }
+	std::list<unsigned char>::const_iterator end() const { return std::list<unsigned char>::end(); }
 
 };
 

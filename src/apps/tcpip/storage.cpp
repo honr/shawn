@@ -92,7 +92,7 @@ namespace tcpip
 	// ----------------------------------------------------------------------
 	void Storage::reset()
 	{
-		this->clear();
+		std::list<unsigned char>::clear();
 		pos_=0;
 		iterValid_ = false;
 		iterEndValid_ = false;

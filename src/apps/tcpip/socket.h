@@ -22,6 +22,13 @@
 
 #ifdef BUILD_TCPIP
 
+// Get Storage
+#ifdef SHAWN
+	#include <apps/tcpip/storage.h>
+#else
+	#include "storage.h"
+#endif
+
 #ifdef SHAWN
      namespace shawn
       { class SimulationController; }
@@ -71,10 +78,10 @@ namespace tcpip
 
 		void connect() throw( SocketException );
 		void accept() throw( SocketException );
-		void send( std::vector<unsigned char> ) throw( SocketException );
-		void sendExact( std::list<unsigned char> ) throw( SocketException );
+		void send( const std::vector<unsigned char> ) throw( SocketException );
+		void sendExact( const Storage & ) throw( SocketException );
 		std::vector<unsigned char> receive( int bufSize = 2048 ) throw( SocketException );
-		bool receiveExact( std::list<unsigned char> &) throw( SocketException );
+		bool receiveExact( Storage &) throw( SocketException );
 		void close();
 		int port();
 		void set_blocking(bool) throw( SocketException );

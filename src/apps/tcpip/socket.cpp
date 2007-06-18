@@ -8,11 +8,9 @@
 
 #ifdef SHAWN
 	#include <apps/tcpip/socket.h>
-	#include <apps/tcpip/storage.h>
 	#include <sys/simulation/simulation_controller.h>
 #else
 	#include "socket.h"
-	#include "storage.h"
 #endif
 
 #ifdef BUILD_TCPIP
@@ -382,7 +380,7 @@ namespace tcpip
 
 	void
 		Socket::
-		sendExact( std::list<unsigned char> b)
+		sendExact( const Storage &b)
 		throw( SocketException )
 	{
 		int length = static_cast<int>(b.size());
@@ -429,7 +427,7 @@ namespace tcpip
 
 	bool
 		Socket::
-		receiveExact( std::list<unsigned char> &msg )
+		receiveExact( Storage &msg )
 		throw( SocketException )
 	{
 		/* receive length of vector */
@@ -445,14 +443,14 @@ namespace tcpip
 		
 		/* receive vector */
 		int n = NN;
-		msg.clear();
+		msg.reset();
 		while (n>0)
 		{
 			vector<unsigned char> rcv = receive(n);
 			vector<unsigned char>::iterator iter = rcv.begin();
 			while (iter != rcv.end())
 			{
-				msg.push_back(*iter);
+				msg.writeChar(*iter);
 				++iter;
 				--n;
 			}
