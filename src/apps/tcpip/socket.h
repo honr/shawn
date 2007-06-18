@@ -30,6 +30,8 @@
      extern "C" void init_tcpip( shawn::SimulationController& );
 #endif
 
+// Disable exception handling warnings
+#pragma warning( disable : 4290 )
 
 #include <string>
 #include <map>

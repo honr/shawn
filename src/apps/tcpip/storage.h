@@ -27,9 +27,9 @@ class Storage: private std::list<unsigned char>
 private:
 	unsigned int pos_;
 	bool iterValid_;
-	std::list<unsigned char>::iterator iter_;
+	std::list<unsigned char>::const_iterator iter_;
 	bool iterEndValid_;
-	std::list<unsigned char>::iterator iterEnd_;
+	std::list<unsigned char>::const_iterator iterEnd_;
 
 	// sortation of bytes forwards or backwards?
 	bool bigEndian_;
@@ -73,6 +73,12 @@ public:
 
         virtual double readDouble() throw();
         virtual void writeDouble( double ) throw();
+
+	// Some enabled functions of the underlying std::list
+	int size() { return static_cast<int>(std::list<unsigned char>::size()); }
+
+	std::list<unsigned char>::const_iterator begin() { return std::list<unsigned char>::begin(); }
+	std::list<unsigned char>::const_iterator end() { return std::list<unsigned char>::end(); }
 
 };
 

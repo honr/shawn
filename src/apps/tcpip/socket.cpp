@@ -7,9 +7,9 @@
  ************************************************************************/
 
 #ifdef SHAWN
-     #include <apps/tcpip/socket.h>
-	 #include <apps/tcpip/storage.h>
-     #include <sys/simulation/simulation_controller.h>
+	#include <apps/tcpip/socket.h>
+	#include <apps/tcpip/storage.h>
+	#include <sys/simulation/simulation_controller.h>
 #else
 	#include "socket.h"
 	#include "storage.h"
@@ -217,7 +217,7 @@ namespace tcpip
 			struct sockaddr_in self;
 
 			//Create the server socket
-			server_socket_ = socket( AF_INET, SOCK_STREAM, 0 );
+			server_socket_ = static_cast<int>(socket( AF_INET, SOCK_STREAM, 0 ));
 			if( server_socket_ < 0 )
 				BailOnSocketError("tcpip::Socket::accept() @ socket");
 			
@@ -250,7 +250,7 @@ namespace tcpip
 			set_blocking(blocking_);
 		}
 
-		socket_ = ::accept(server_socket_, (struct sockaddr*)&client_addr, &addrlen);
+		socket_ = static_cast<int>(::accept(server_socket_, (struct sockaddr*)&client_addr, &addrlen));
 
 		if( socket_ > 0 )
 		{
@@ -303,7 +303,7 @@ namespace tcpip
 		address.sin_port = htons( port_ );
 		address.sin_addr.s_addr = addr.s_addr;
 
-		socket_ = socket( AF_INET, SOCK_STREAM, 0 );
+		socket_ = static_cast<int>(socket( AF_INET, SOCK_STREAM, 0 ));
 		if( socket_ < 0 )
 			BailOnSocketError("tcpip::Socket::connect() @ socket");
 
@@ -353,16 +353,16 @@ namespace tcpip
 		if( socket_ < 0 )
 			return;
 
-		int numbytes = b.size();
+		size_t numbytes = b.size();
 		unsigned char *buf = new unsigned char[numbytes];
 		unsigned char *buf_ = buf;
-		for(int i = 0; i < numbytes; ++i)
+		for(size_t i = 0; i < numbytes; ++i)
 			buf[i] = b[i];
 
 		while( numbytes > 0 )
 		{
 #ifdef WIN32
-			int n = ::send( socket_, (const char*)buf, numbytes, 0 );
+			int n = ::send( socket_, (const char*)buf, static_cast<int>(numbytes), 0 );
 #else
 			int n = ::send( socket_, buf, numbytes, 0 );
 #endif
@@ -385,7 +385,7 @@ namespace tcpip
 		sendExact( std::list<unsigned char> b)
 		throw( SocketException )
 	{
-		int length = b.size();
+		int length = static_cast<int>(b.size());
 		Storage length_storage;
 		length_storage.writeInt(length);
 		vector<unsigned char> msg;
@@ -439,7 +439,7 @@ namespace tcpip
 			vector<unsigned char> rcv = receive(4 - length_storage.size());
 			for (vector<unsigned char>::iterator iter=rcv.begin(); 
 				iter != rcv.end(); 
-				length_storage.push_back(*iter++)); 
+				length_storage.writeChar(*iter++)); 
 		}
 		int NN = length_storage.readInt();
 		
