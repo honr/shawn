@@ -22,20 +22,32 @@
 namespace tcpip
 {
 
-class Storage: public std::list<unsigned char>
+class Storage: private std::list<unsigned char>
 {
 private:
 	unsigned int pos_;
+	bool iterValid_;
 	std::list<unsigned char>::iterator iter_;
+	bool iterEndValid_;
 	std::list<unsigned char>::iterator iterEnd_;
+
+	// sortation of bytes forwards or backwards?
+	bool bigEndian_;
 	
+//	void advance(int);
 
 public:
+
+	/// Standard Constructor
 	Storage();
+
+	/// Constructor, that fills the storage with an cahr array. If length is -1, the whole array is handed over
 	Storage(unsigned char[], int length=-1);
+
+
+	// Destructor
 	virtual ~Storage();
 
-	void advance(int);
 	bool valid_pos();
 
 	void reset();
