@@ -182,7 +182,7 @@ namespace tcpip
 	* specification, it must have been split by its row byte representation
 	* with MSBF-order
 	*
-	* @return the unspoiled integer value (between -32767 and 32768)
+	* @return the unspoiled integer value (between -32768 and 32767)
 	*/
 	int Storage::readShort() throw()
 	{
@@ -204,8 +204,12 @@ namespace tcpip
 	// ----------------------------------------------------------------------
 	void Storage::writeShort( int value ) throw()
 	{
-                short svalue = static_cast<short>(value);
-                unsigned char *p_svalue = reinterpret_cast<unsigned char*>(svalue);
+		assert(value >= -32768 && value <= 32767);
+
+		short svalue = static_cast<short>(value);
+		//assert(svalue == value);
+
+                unsigned char *p_svalue = reinterpret_cast<unsigned char*>(&svalue);
                 if (bigEndian_)
                 {
                         // network is big endian
@@ -225,7 +229,7 @@ namespace tcpip
 	* specification, it must have been split by its row byte representation
 	* with MSBF-order
 	*
-	* @return the unspoiled integer value (between -2.147.483.647 and 2.147.483.648)
+	* @return the unspoiled integer value (between -2.147.483.648 and 2.147.483.647)
 	*/
 	int Storage::readInt() throw()
 	{

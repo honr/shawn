@@ -12,7 +12,16 @@
 #ifndef __SHAWN_APPS_TCPIP_STORAGE_H
 #define __SHAWN_APPS_TCPIP_STORAGE_H
 
-//#include "socket.h"
+#ifdef SHAWN
+     #include <shawn_config.h>
+     #include "../buildfiles/_apps_enable_cmake.h"
+     #ifdef ENABLE_TCPIP
+            #define BUILD_TCPIP
+     #endif
+#else
+     #define BUILD_TCPIP
+#endif
+
 
 #ifdef BUILD_TCPIP
 
