@@ -25,33 +25,39 @@ namespace shawn
 {
 	/// This class provides an implementation of the NodeMovementCreator
    /** This NodeMovementCreator reads input from a xml file containing movement of different nodes adhering from 
-     * xml standard. The following syntax can be parsed: 
-	  * <tag type="group" name="movement">
-     *           <tag type="double" name="time0" value="double value" > <-- These "time tags" need unique names within a node -->
-     *             <tag type="group" name="jump">
-     *               <tag type="double" name="x-pos" value="double value"/>
-     *               <tag type="double" name="y-pos" value="double value"/>
-     *               <tag type="double" name="z-pos" value="double value"/>
-     *             </tag>
-     *           </tag>
+     * xml standard. The following syntax can be parsed:
+	  * <ul>
+	  * <li><tag type="group" name="movement"> </li>
+	  *		<ul>
+     *       <li><tag type="double" name="time0" value="double value" > <-- These "time tags" need unique names within a node --> </li>
+     *        <li> <tag type="group" name="jump"> </li>
+			 <ul>
+     *		<li>     <tag type="double" name="x-pos" value="double value"/> </li>
+     *      <li>     <tag type="double" name="y-pos" value="double value"/> </li>
+     *      <li>     <tag type="double" name="z-pos" value="double value"/> </li>
+     *      </ul>  <li>     </tag> </li>
+     *      </ul><li> </tag></li>
 	  *			 ...
-	  *				<tag type="double" name="time" value="double value" >
-     *            <tag type="group" name="linear">
-     *               <tag type="double" name="x-pos" value="double value"/>
-     *               <tag type="double" name="y-pos" value="double value"/>
-     *               <tag type="double" name="z-pos" value="double value"/>
-	  *					<!-- You can choose from one of the following opportunities -->
-	  *					<!-- 1. -->
-     *               <tag type="double" name="arrival time" value="double value" />
-	  *					<!-- 2. -->
-	  *					<tag type="double" name="velocity" value="double value" />
-	  *					<!-- 3. -->
-	  *					<tag type="double" name="duration" value="double value" />
-	  *
-     *             </tag>
-     *           </tag>
-	  *			</tag>
-	  *
+	  *		<li>	<tag type="double" name="time" value="double value" > </li>
+     *      <li>  <tag type="group" name="linear"> </li>
+     *      <ul><li> <tag type="double" name="x-pos" value="double value"/> </li>
+     *          <li> <tag type="double" name="y-pos" value="double value"/></li>
+     *          <li> <tag type="double" name="z-pos" value="double value"/></li>
+	  *			 <li>	<!-- You can choose from one of the following opportunities --> </li>
+	  *			 <li>	<!-- 1. -->  </li>
+     *          <li> <tag type="double" name="arrival time" value="double value" />  </li>
+	  *			 <li>	<!-- 2. -->    </li>
+	  *			 <li>	<tag type="double" name="velocity" value="double value" />  </li>
+	  *			 <li>	<!-- 3. --></li>
+	  *			 <li>		<tag type="double" name="duration" value="double value" /> </li>
+	  *	
+     *            <li> </tag></li>
+	  *         </ul>
+     *          <li> </tag> </li>
+	  *			
+	  *			<li></tag> </li>
+	  *		</ul>
+	  * /// <ul> and <li> Tags are only created for doxygen documentation 
      */
 	class TagNodeMovementCreator:
 		public NodeMovementCreator
