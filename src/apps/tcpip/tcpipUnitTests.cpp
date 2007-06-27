@@ -4,6 +4,8 @@
  * Author: Axel Wegener
  */
 
+#ifndef SHAWN
+
 #include "MiniCppUnit.hxx"
 #include "storage.h"
 //#include "socket.h"
@@ -162,3 +164,5 @@ public:
 };
 
 REGISTER_FIXTURE( tcpipUnitTests );
+
+#endif
