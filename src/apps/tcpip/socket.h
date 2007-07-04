@@ -38,7 +38,9 @@
 #endif
 
 // Disable exception handling warnings
-#pragma warning( disable : 4290 )
+#ifdef WIN32
+	#pragma warning( disable : 4290 )
+#endif
 
 #include <string>
 #include <map>

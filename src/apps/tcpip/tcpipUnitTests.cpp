@@ -24,6 +24,7 @@ public:
 		TEST_CASE( testStorageFloat );
 		TEST_CASE( testStorageDouble );
 		TEST_CASE( testStorageMixed );
+		TEST_CASE( testStorageEmpty );
 	}
 	
 	void testStorageChar()
@@ -158,6 +159,12 @@ public:
 		ASSERT_EQUALS( d1, s1.readDouble() ); 
 		ASSERT_EQUALS( "\0", s1.readString() );
 		ASSERT_EQUALS( 42, s1.readShort() ); 
+		ASSERT_EQUALS( false, s1.valid_pos() );
+	}
+
+	void testStorageEmpty()
+	{
+		tcpip::Storage s1;
 		ASSERT_EQUALS( false, s1.valid_pos() );
 	}
 

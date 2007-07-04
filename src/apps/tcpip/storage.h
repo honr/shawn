@@ -84,7 +84,7 @@ public:
         virtual void writeDouble( double ) throw();
 
 	// Some enabled functions of the underlying std::list
-	int size() const { return static_cast<int>(std::list<unsigned char>::size()); }
+	unsigned int size() const { return static_cast<unsigned int>(std::list<unsigned char>::size()); }
 
 	std::list<unsigned char>::const_iterator begin() const { return std::list<unsigned char>::begin(); }
 	std::list<unsigned char>::const_iterator end() const { return std::list<unsigned char>::end(); }
