@@ -71,6 +71,8 @@ namespace tcpip
 	// ----------------------------------------------------------------------
 	bool Storage::valid_pos()
 	{
+		if (size() == 0) return false;
+
 		// Check iterator iterEnd_ for validity
 		if ( !iterEndValid_ )
 		{
@@ -81,7 +83,7 @@ namespace tcpip
 		// Check Iterator iter_ for validity
 		if ( !iterValid_ ) 
 		{
-			iter_ = begin();
+			iter_ = std::list<unsigned char>::begin();
 			for (unsigned int i = 0; i < pos_ || iter_ == iterEnd_; ++i) ++iter_;
 			iterValid_ = true;
 		}

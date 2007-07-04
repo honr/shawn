@@ -24,6 +24,7 @@ public:
 		TEST_CASE( testStorageFloat );
 		TEST_CASE( testStorageDouble );
 		TEST_CASE( testStorageMixed );
+		TEST_CASE( testStorageReset );
 		TEST_CASE( testStorageEmpty );
 	}
 	
@@ -147,7 +148,6 @@ public:
 		tcpip::Storage s1;
        
 		double d1 = 0.000002;
-		double d2 = 0.000001;
 
 		s1.writeFloat(0.0);
 		s1.writeDouble(d1);
@@ -160,6 +160,39 @@ public:
 		ASSERT_EQUALS( "\0", s1.readString() );
 		ASSERT_EQUALS( 42, s1.readShort() ); 
 		ASSERT_EQUALS( false, s1.valid_pos() );
+	}
+
+	void testStorageReset()
+	{
+		tcpip::Storage s1;
+       
+		double d1 = 0.000002;
+
+		s1.reset();
+		ASSERT_EQUALS( false, s1.valid_pos() );
+
+		s1.writeFloat(0.0);
+		s1.writeDouble(d1);
+		s1.writeString("\0");
+		s1.writeShort(42);
+
+		ASSERT_EQUALS( true, s1.valid_pos() );
+		s1.reset();
+		ASSERT_EQUALS( false, s1.valid_pos() );
+
+		s1.writeString("Test");
+
+		ASSERT_EQUALS( true, s1.valid_pos() );
+		ASSERT_EQUALS( "Test", s1.readString() ); 
+		ASSERT_EQUALS( false, s1.valid_pos() );
+
+		s1.reset();
+		ASSERT_EQUALS( 0, s1.size() );
+	}
+
+	void testSocketConnect()
+	{
+		
 	}
 
 	void testStorageEmpty()
