@@ -43,7 +43,8 @@ private:
 	// sortation of bytes forwards or backwards?
 	bool bigEndian_;
 	
-//	void advance(int);
+	/// Used in constructors to initialize local variables
+	void init();
 
 public:
 
@@ -52,7 +53,6 @@ public:
 
 	/// Constructor, that fills the storage with an cahr array. If length is -1, the whole array is handed over
 	Storage(unsigned char[], int length=-1);
-
 
 	// Destructor
 	virtual ~Storage();

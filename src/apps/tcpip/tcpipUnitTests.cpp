@@ -11,6 +11,7 @@
 //#include "socket.h"
 #include <math.h>
 
+
 class tcpipUnitTests : public TestFixture<tcpipUnitTests>
 {
 public:
@@ -25,7 +26,8 @@ public:
 		TEST_CASE( testStorageDouble );
 		TEST_CASE( testStorageMixed );
 		TEST_CASE( testStorageReset );
-		TEST_CASE( testStorageEmpty );
+		TEST_CASE( testStorageValidPos );
+		TEST_CASE( testStorageLoadCharArray )
 	}
 	
 	void testStorageChar()
@@ -187,7 +189,7 @@ public:
 		ASSERT_EQUALS( false, s1.valid_pos() );
 
 		s1.reset();
-		ASSERT_EQUALS( 0, s1.size() );
+		ASSERT( 0 == s1.size() );
 	}
 
 	void testSocketConnect()
@@ -195,11 +197,37 @@ public:
 		
 	}
 
-	void testStorageEmpty()
+	void testStorageValidPos()
 	{
 		tcpip::Storage s1;
 		ASSERT_EQUALS( false, s1.valid_pos() );
+
+		tcpip::Storage s2;
+		s2.writeFloat(1.0);
+		ASSERT_EQUALS( true, s2.valid_pos() );
+		
+		s2.reset();
+		ASSERT_EQUALS( false, s2.valid_pos() );
 	}
+	
+  void testStorageLoadCharArray()
+  {
+    tcpip::Storage sHallo;
+    sHallo.writeString("Hallo du!");
+
+    unsigned char cBuffer[100];
+    unsigned int i=0;
+    while ( sHallo.valid_pos() && i < sizeof(cBuffer) )
+    {
+      cBuffer[i] = sHallo.readChar();
+      i++;
+    }
+
+		tcpip::Storage s1(cBuffer, i);
+
+		ASSERT_EQUALS( "Hallo du!", s1.readString() );
+
+  }
 
 };
 

@@ -27,21 +27,11 @@ namespace tcpip
 	// ----------------------------------------------------------------------
 	Storage::Storage()
 	{
-		// Initialize local variables
-		pos_=0;
-		iter_ = begin();
-		iterEnd_ = end();
-		iterValid_ = iterEndValid_ = (size() > 0);
-
-                short a = 0x0102;
-                unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
-                bigEndian_ = (p_a[0] == 0x01); // big endian?
-
+		init();
 	}
 
 	// ----------------------------------------------------------------------
 	Storage::Storage(unsigned char packet[], int length)
-		: pos_(0)
 	{
 		// Length is calculated, if -1, or given
 		if (length == -1) length = sizeof(packet) / sizeof(char);
@@ -49,8 +39,20 @@ namespace tcpip
 		// Get the content
 		for(int i = 0; i < length; ++i) push_back(packet[i]);
 
-		// Initialize other local variables
-		Storage();
+		init();
+	}
+
+	// ----------------------------------------------------------------------
+	void Storage::init()
+	{
+		// Initialize local variables
+		pos_=0;
+		iterValid_ = iterEndValid_ = false;
+		valid_pos();
+
+                short a = 0x0102;
+                unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
+                bigEndian_ = (p_a[0] == 0x01); // big endian?
 	}
 
 	// ----------------------------------------------------------------------
@@ -84,7 +86,13 @@ namespace tcpip
 		if ( !iterValid_ ) 
 		{
 			iter_ = std::list<unsigned char>::begin();
-			for (unsigned int i = 0; i < pos_ || iter_ == iterEnd_; ++i) ++iter_;
+			unsigned int i = 0;
+			while ( i < pos_ 
+				&& iter_ != iterEnd_)
+			{
+				++i;
+				++iter_;
+			}
 			iterValid_ = true;
 		}
 
