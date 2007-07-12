@@ -233,9 +233,22 @@ namespace localization
    {
       return state_ == il_finished;
    }
+    // ----------------------------------------------------------------------
+	void
+	LocalizationIterLaterationModule::
+	rollback( void )
+		throw()
+	{
+		state_ = il_init;
+         last_useful_msg_ = 0;
+         iteration_cnt_ = 0;
+         sound_ = false;
+	}
 
 }// namespace localization
+
 #endif
+
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/localization/modules/refinement/localization_iter_lateration_module.cpp,v $
  * Version $Revision$
