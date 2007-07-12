@@ -12,6 +12,7 @@
 #include "sys/misc/localization/localization_processor_type.h"
 #include "sys/world.h"
 #include "sys/vec.h"
+#include "sys/taggings/basic_tags.h"
 
 
 namespace shawn
@@ -27,7 +28,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    void
    SimulationTaskLocalizationAnchorPlacement::
-   run( SimulationController& sc ) 
+   run( SimulationController& sc )
       throw( std::runtime_error )
    {
       require_world(sc);
@@ -46,7 +47,9 @@ namespace shawn
          anchor_cnt = outer_grid( sc, anchor_cnt );
       else if ( pl_type_ == "random" )
          ;
-      else
+      else if( pl_type_=="tag")
+		  anchor_cnt=tag(sc);
+	  else
          throw std::runtime_error( "Invalid value for 'anchor_placement'" );
 
       random_set( sc, anchor_cnt );
@@ -62,7 +65,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    std::string
    SimulationTaskLocalizationAnchorPlacement::
-   description( void ) 
+   description( void )
       const throw()
    {
       return std::string( "places anchors on geometric figures" );
@@ -84,6 +87,7 @@ namespace shawn
       return pl_type_;
    }
    // ----------------------------------------------------------------------
+
    int
    SimulationTaskLocalizationAnchorPlacement::
    outer_grid( SimulationController& sc, int anchor_cnt )
@@ -112,6 +116,8 @@ namespace shawn
       return anchor_cnt;
    }
    // ----------------------------------------------------------------------
+
+
    int
    SimulationTaskLocalizationAnchorPlacement::
    inner_grid( SimulationController& sc, int anchor_cnt )
@@ -140,6 +146,8 @@ namespace shawn
       return anchor_cnt;
    }
    // ----------------------------------------------------------------------
+
+
    void
    SimulationTaskLocalizationAnchorPlacement::
    random_set( SimulationController& sc, int anchor_cnt )
@@ -189,7 +197,34 @@ namespace shawn
 
       if ( best ) best->set_proc_type( LocalizationProcessorType::anchor );
    }
+   // ----------------------------------------------------------------------
+int
+	SimulationTaskLocalizationAnchorPlacement::
+	tag(SimulationController& sc)
+	   throw()
+	{
+		std::cout<< sc.world().node_count()<<std::endl;
+		int cnt = 0;
+      LocalizationProcessorType *lpt;
 
+      for ( World::node_iterator
+               it = sc.world_w().begin_nodes_w();
+               it != sc.world_w().end_nodes_w();
+					++it )
+					{
+						lpt = it->get_processor_of_type_w<LocalizationProcessorType>() ;
+						const BoolTag* bool_tag = dynamic_cast<const BoolTag*>( it->find_tag("anchor").get() );
+						if(( bool_tag!= NULL ) &&
+							( bool_tag->value() ) &&
+							 ( lpt!= NULL ) &&
+							 (!lpt->is_anchor()) )
+								{
+									lpt->set_proc_type( LocalizationProcessorType::anchor );
+									++cnt;
+								}
+					}
+			return cnt;
+	}
 }
 
 /*-----------------------------------------------------------------------

@@ -115,6 +115,13 @@ namespace shawn
          throw();
       ///@}
 
+		virtual int tag(SimulationController& sc) throw();
+		/** This method passes all nodes in the topology and sets those with an 
+		*	 "Anchor-Tag" to an anchor. 
+		* 
+		* \param SimulationController allows access to nodes in topology
+		* \return Number of placed anchors
+		*/
 
    private:
 
@@ -127,10 +134,4 @@ namespace shawn
 }
 
 #endif
-/*-----------------------------------------------------------------------
- * Source  $Source: /cvs/shawn/shawn/sys/misc/localization/localization_anchor_placement.h,v $
- * Version $Revision$
- * Date    $Date$
- *-----------------------------------------------------------------------
- * $Log: localization_anchor_placement.h,v $
- *-----------------------------------------------------------------------*/
+
