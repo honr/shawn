@@ -229,7 +229,7 @@ namespace localization
    bool
    LocalizationIterLaterationModule::
    finished( void )
-      throw()
+      throw() 
    {
       return state_ == il_finished;
    }
