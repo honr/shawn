@@ -163,9 +163,11 @@ namespace localization
             if ( (*it).has_est_position() )
             {
                setcolor( grey );
-               circle( pos.x(), pos.y(), 1.5, true );
+               //circle( pos.x(), pos.y(), 1.5, true );
+					circle( pos.x(),  pageSize->y() - pos.y(), 1.5, true );
                Vec est_pos = ( (*it).est_position() * fac ) + *addvec;
-               line( pos.x(), pos.y(), est_pos.x(), est_pos.y() );
+					// line( pos.x(),pos.y(), est_pos.x(), est_pos.y() );
+               line( pos.x(), pageSize->y() - pos.y(), est_pos.x(), pageSize->y() - est_pos.y() );
 
                stroke();
                //setcolor( green );
@@ -174,7 +176,8 @@ namespace localization
             else
             {
                setcolor( red );
-               circle( pos.x(), pos.y(), 1.5, true );
+               //circle( pos.x(), pos.y(), 1.5, true );
+					circle( pos.x(),  pageSize->y() - pos.y(), 1.5, true );
             }
          }
 
@@ -214,8 +217,8 @@ namespace localization
             {
                setcolor( grey );
                Vec est_pos = ( (*it).est_position() * fac ) + *addvec;
-               circle( est_pos.x(), est_pos.y(), 1.5, true );
-
+               //circle( est_pos.x(), est_pos.y(), 1.5, true );
+					circle( est_pos.x(), pageSize->y() - est_pos.y(), 1.5, true );
                stroke();
             }
          }
@@ -247,8 +250,8 @@ namespace localization
          {
             setcolor( grey );
             Vec real_pos = ( (*it).real_position() * fac ) + *addvec;
-            circle( real_pos.x(), real_pos.y(), 1.5, true );
-
+         //   circle( real_pos.x(), real_pos.y(), 1.5, true );
+				circle( real_pos.x(), pageSize->y() - real_pos.y(), 1.5, true );
             stroke();
          }
 
@@ -278,7 +281,8 @@ namespace localization
          if ( lproc->is_anchor() )
          {
             setcolor( black );
-            circle( pos.x(), pos.y(), 2, true );
+            //circle( pos.x(), pos.y(), 2, true );
+				circle( pos.x(), pageSize->y() - pos.y(), 2, true );
          }
       }
    }
