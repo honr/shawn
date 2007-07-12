@@ -43,7 +43,7 @@ namespace shawn
 	* 
 	* <pre>
 	* <scenario>
-	*   <snapshot time="0">
+	*   <snapshot id="0">
 	*     <world>
 	*       <!-- Size hint for a common communication range in the world -->
 	*       <!-- This is NOT the actual communication range -->
@@ -79,6 +79,9 @@ namespace shawn
 	*   </snapshot>
 	* </scenario>
 	* </pre>
+	*
+	*	Expected call in .conf File:
+	*	load_world world_in_file="Filename.xml" processors="Processortype" snapshot=0
 	*/
 	class LoadWorldFactory : 
 		public shawn::xml::SAXSimpleSkipReader, 
@@ -163,10 +166,3 @@ namespace shawn
 #endif
 #endif
 
-/*-----------------------------------------------------------------------
-* Source  $Source: /cvs/shawn/shawn/sys/worlds/load_world_factory.h,v $
-* Version $Revision$
-* Date    $Date$
-*-----------------------------------------------------------------------
-* $Log: load_world_factory.h,v $
- *-----------------------------------------------------------------------*/
