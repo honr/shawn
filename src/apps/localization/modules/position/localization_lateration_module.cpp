@@ -67,6 +67,13 @@ namespace localization
       return state_ == lat_finished;
    }
 
+	void  LocalizationLaterationModule::
+		rollback(void)
+		throw()
+	{
+		state_ = lat_wait;	
+	}
+
 }// namespace localization
 #endif
 /*-----------------------------------------------------------------------

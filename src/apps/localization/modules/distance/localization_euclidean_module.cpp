@@ -90,7 +90,7 @@ namespace localization
       // received and state is set to 'broadcast'.
       if ( state_ == eu_wait && simulation_round() - last_useful_msg_ > observer().idle_time() )
          state_ = eu_broadcast;
-
+ 
       // broadcast collected information
       if ( state_ == eu_broadcast )
          broadcast_neighborhood();
@@ -103,6 +103,16 @@ namespace localization
    {
       return state_ == eu_finished;
    }
+
+	void
+	LocalizationEuclideanModule::
+	rollback( void )
+		throw()
+	{
+			state_ = eu_init;
+         last_useful_msg_ = 0;
+         col_measure_ = 0;
+	}
    // ----------------------------------------------------------------------
    bool
    LocalizationEuclideanModule::

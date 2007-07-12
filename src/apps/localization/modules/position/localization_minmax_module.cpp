@@ -55,7 +55,13 @@ namespace localization
    {
       return state_ == minmax_finished;
    }
-
+	void
+	LocalizationMinMaxModule::
+	rollback( void )
+		throw()
+	{
+   state_ = minmax_wait;
+	}
 }// namespace localization
 #endif
 /*-----------------------------------------------------------------------

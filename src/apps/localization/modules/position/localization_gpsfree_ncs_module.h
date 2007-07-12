@@ -68,6 +68,8 @@ namespace localization
       virtual bool finished( void ) throw();
       ///@}
 
+		virtual void rollback( void ) throw();
+
 
    protected:
 

@@ -128,7 +128,12 @@ namespace localization
    {
       return state_ == sd_finished;
    }
-
+	void LocalizationSumDistModule::
+	rollback( void )
+		throw()
+	{
+		state_ = sd_init;
+	}
 }// namespace localization
 #endif
 /*-----------------------------------------------------------------------

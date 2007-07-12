@@ -53,9 +53,7 @@ namespace localization
    rollback( void )
       throw()
    {
-      WARN( owner().logger(),
-         node().label() << ": In this module rollback is not implemented yet. So nothing has been done." );
-   }
+	}
    // ----------------------------------------------------------------------
    void
    LocalizationModule::

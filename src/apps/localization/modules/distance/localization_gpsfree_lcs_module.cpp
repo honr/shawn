@@ -113,6 +113,16 @@ namespace localization
       return state_ == gflcs_finished;
    }
    // ----------------------------------------------------------------------
+	void
+	LocalizationGPSfreeLCSModule::
+	rollback( void )
+		throw()
+	{
+		state_  = gflcs_init;
+      last_useful_msg_ = 0;
+	}
+
+   // ----------------------------------------------------------------------
    bool
    LocalizationGPSfreeLCSModule::
    process_gpsfree_lcs_init_message( const LocalizationGPSfreeLCSInitMessage& lgflcsim )

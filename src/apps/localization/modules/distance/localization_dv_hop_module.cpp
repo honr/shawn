@@ -226,6 +226,18 @@ namespace localization
    {
       return state_ == dvh_finished;
    }
+   // ----------------------------------------------------------------------
+	void
+   LocalizationDVhopModule::
+   rollback( void )
+      throw()
+   {
+		  state_  = dvh_init;
+         last_useful_msg_ = 0;
+         avg_hop_dist_ = UNKNOWN_AVG_HOP_DIST;
+        hop_sum_ = 0;
+         hop_cnt_ = 0;
+	}
 
 }// namespace localization
 #endif

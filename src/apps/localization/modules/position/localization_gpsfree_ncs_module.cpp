@@ -108,6 +108,19 @@ namespace localization
    {
       return state_ == gfncs_finished;
    }
+	 
+	void
+	LocalizationGPSfreeNCSModule::
+	rollback( void )
+		throw()
+	{
+		state_ = gfncs_init;
+		root_node_ = false;
+		computed_ncs_ = false;
+		last_useful_msg_ = 0;
+	}
+
+
    // ----------------------------------------------------------------------
    bool
    LocalizationGPSfreeNCSModule::
