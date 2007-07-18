@@ -111,12 +111,28 @@ namespace tcpip
 	Socket::
 		~Socket()
 	{
-		//Close first an existing client connection, then an server socket
+		// Close first an existing client connection ...
 		close();
 #ifdef WIN32
 		instance_count_--;
 #endif
-		close();
+
+		// ... then the server socket
+		if( server_socket_ >= 0 )
+		{
+#ifdef WIN32
+			::closesocket( server_socket_ );
+#else
+			::close( server_socket_ );
+#endif
+			server_socket_ = -1;
+		}
+
+#ifdef WIN32
+		if( server_socket_ == -1 && socket_ == -1 
+		    && init_windows_sockets_ && instance_count_ == 0 )
+				WSACleanup();
+#endif
 	}
 
 	// ----------------------------------------------------------------------
@@ -224,24 +240,26 @@ namespace tcpip
 				int reuseaddr = 1;
 
 				#ifdef WIN32
-					setsockopt(server_socket_, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuseaddr, sizeof(reuseaddr));
+					//setsockopt(server_socket_, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuseaddr, sizeof(reuseaddr));
+					// No address reuse in Windows!!!
 				#else
 					setsockopt(server_socket_, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(reuseaddr));
 				#endif
 			}
 
 			// Initialize address/port structure
-			::memset(&self, 0, sizeof(self));
+			memset(&self, 0, sizeof(self));
 			self.sin_family = AF_INET;
 			self.sin_port = htons(port_);
-			self.sin_addr.s_addr = INADDR_ANY;
+			self.sin_addr.s_addr = htonl(INADDR_ANY);
 
 			// Assign a port number to the socket
-			if ( ::bind(server_socket_, (struct sockaddr*)&self, sizeof(self)) != 0 )
+			if ( bind(server_socket_, (struct sockaddr*)&self, sizeof(self)) != 0 )
 				BailOnSocketError("tcpip::Socket::accept() Unable to create listening socket");
 
+
 			// Make it a "listening socket"
-			if ( ::listen(server_socket_, 10) != 0 )
+			if ( listen(server_socket_, 10) == -1 )
 				BailOnSocketError("tcpip::Socket::accept() Unable to listen on server socket");
 
 			// Make the newly created socket blocking or not
@@ -270,7 +288,7 @@ namespace tcpip
 #ifdef WIN32
 			ULONG NonBlock = blocking_ ? 0 : 1;
 		    if (ioctlsocket(server_socket_, FIONBIO, &NonBlock) == SOCKET_ERROR)
-				BailOnSocketError("tcpip::Socket::accept() Unable to initialize non blocking I/O");
+				BailOnSocketError("tcpip::Socket::set_blocking() Unable to initialize non blocking I/O");
 #else
 			long arg = fcntl(server_socket_, F_GETFL, NULL);
 			if (blocking_)
@@ -314,6 +332,7 @@ namespace tcpip
 		Socket::
 		close()
 	{
+		// Close client-connection 
 		if( socket_ >= 0 )
 		{
 #ifdef WIN32
@@ -324,22 +343,6 @@ namespace tcpip
 
 			socket_ = -1;
 		}
-		else if( server_socket_ >= 0 )
-		{
-#ifdef WIN32
-			::closesocket( server_socket_ );
-#else
-			::close( server_socket_ );
-#endif
-			server_socket_ = -1;
-		}
-
-#ifdef WIN32
-		if( server_socket_ == -1 && socket_ == -1 )
-			if( init_windows_sockets_ && instance_count_ == 1 )
-				WSACleanup();
-#endif
-
 	}
 
 	// ----------------------------------------------------------------------
@@ -418,7 +421,7 @@ namespace tcpip
 		for(int i = 0; i < a; ++i)
 			b[i] = buf[i];
 
-		delete buf;
+		delete[] buf;
 		return b;
 	}
 
@@ -556,4 +559,3 @@ namespace tcpip
 *-----------------------------------------------------------------------
 * $Log: $
 *-----------------------------------------------------------------------*/
-
