@@ -73,7 +73,7 @@ namespace tcpip
 		port_( port ),
 		socket_(-1),
 		server_socket_(-1),
-		blocking_(false)
+		blocking_(true)
 	{
 		init();
 	}
@@ -84,7 +84,8 @@ namespace tcpip
 		: host_(""),
 		port_( port ),
 		socket_(-1),
-		server_socket_(-1)
+		server_socket_(-1),
+		blocking_(true)
 	{
 		init();
 	}
