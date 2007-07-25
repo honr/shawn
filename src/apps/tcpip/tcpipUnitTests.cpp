@@ -4,7 +4,7 @@
  * Author: Axel Wegener
  */
 
-#ifndef SHAWN
+#ifdef UNITTESTS
 
 #include "MiniCppUnit.hxx"
 #include "storage.h"
