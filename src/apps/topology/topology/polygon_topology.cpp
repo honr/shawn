@@ -98,10 +98,13 @@ namespace topology
 		PolygonTopology::
 		tags(Polygon& polygon) 
 		const
-	{
-		if(tags_.find(&polygon) == tags_.end() )
+		{
+		if(tags_.find(&polygon) == tags_.end() ){
+			std::cerr << "No tags found for polygon!" << std::endl;
 			return NULL;
+			}
 
+			
 		PolygonTagMap& m = *((PolygonTagMap*)(&tags_));//Fieser Hack...
 		return m[&(Polygon&)polygon];
 	}
@@ -110,10 +113,9 @@ namespace topology
 	shawn::TagContainer& 
 		PolygonTopology::
 		tags_w(Polygon& polygon)
-	{
+	{ 
 		if(tags_.find(&polygon) == tags_.end() )
 			tags_[&polygon] = new TagContainer();
-
 		assert( tags_.find(&polygon) != tags_.end() );
 		return *tags_[&polygon];
 	}
