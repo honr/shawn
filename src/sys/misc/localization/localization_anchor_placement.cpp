@@ -38,21 +38,19 @@ namespace shawn
       pl_type_ = sc.world().simulation_controller().environment().
          required_string_param( "anchor_placement" );
       int anchor_cnt = anchor_cnt_;
-
-      if ( anchor_cnt <= 0 ) return;
+      if ( anchor_cnt < 0 ) return;
 
       if ( pl_type_ == "inner_grid" )
          anchor_cnt = inner_grid( sc, anchor_cnt );
       else if ( pl_type_ == "outer_grid" )
          anchor_cnt = outer_grid( sc, anchor_cnt );
-      else if ( pl_type_ == "random" )
-         ;
+      else if ( pl_type_ == "random" );
       else if( pl_type_=="tag")
 		  anchor_cnt=tag(sc);
 	  else
          throw std::runtime_error( "Invalid value for 'anchor_placement'" );
 
-      random_set( sc, anchor_cnt );
+     // random_set( sc, anchor_cnt );
    }
    // ----------------------------------------------------------------------
    std::string
@@ -215,12 +213,12 @@ int
 						lpt = it->get_processor_of_type_w<LocalizationProcessorType>() ;
 						const BoolTag* bool_tag = dynamic_cast<const BoolTag*>( it->find_tag("anchor").get() );
 						if(( bool_tag!= NULL ) &&
-							( bool_tag->value() ) &&
-							 ( lpt!= NULL ) &&
-							 (!lpt->is_anchor()) )
+							( bool_tag->value() ) &&  
+							( !lpt->is_anchor() ) &&
+							 ( lpt!= NULL ) )
 								{
-									lpt->set_proc_type( LocalizationProcessorType::anchor );
 									++cnt;
+									lpt->set_proc_type( LocalizationProcessorType::anchor );
 								}
 					}
 			return cnt;
