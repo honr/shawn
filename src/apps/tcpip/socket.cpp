@@ -467,7 +467,7 @@ namespace tcpip
 	bool 
 		Socket::
 		has_client_connection() 
-		const throw()
+		const
 	{
 		return socket_ > 0;
 	}

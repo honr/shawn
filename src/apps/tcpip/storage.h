@@ -57,7 +57,8 @@ public:
 	// Destructor
 	virtual ~Storage();
 
-	bool valid_pos();
+	virtual bool valid_pos();
+	virtual unsigned int position() const;
 
 	void reset();
 
@@ -86,8 +87,9 @@ public:
 	// Some enabled functions of the underlying std::list
 	unsigned int size() const { return static_cast<unsigned int>(std::list<unsigned char>::size()); }
 
-	std::list<unsigned char>::const_iterator begin() const { return std::list<unsigned char>::begin(); }
-	std::list<unsigned char>::const_iterator end() const { return std::list<unsigned char>::end(); }
+	typedef Storage::const_iterator const_iterator;
+	Storage::const_iterator begin() const { return std::list<unsigned char>::begin(); }
+	Storage::const_iterator end() const { return std::list<unsigned char>::end(); }
 
 };
 

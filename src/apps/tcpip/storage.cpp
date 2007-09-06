@@ -60,17 +60,6 @@ namespace tcpip
 	{}
 
 	// ----------------------------------------------------------------------
-/*	void Storage::advance(int count)
-	{
-		assert ( count >= 0 );
-	    
-		if (count != 1) iterEndValid_ = false;
-		pos_ += count;
-		if (iterValid_ == false) iter_ = begin();
-		::advance(iter_, count);
-	}
-*/
-	// ----------------------------------------------------------------------
 	bool Storage::valid_pos()
 	{
 		if (size() == 0) return false;
@@ -97,6 +86,14 @@ namespace tcpip
 		}
 
 		return (iter_ != iterEnd_);
+	}
+
+	// ----------------------------------------------------------------------
+	unsigned int Storage::position() const
+	{
+		// pos_ contains everytime the correct position, 
+		// even if iterValid == false
+		return pos_;
 	}
 
 	// ----------------------------------------------------------------------

@@ -74,12 +74,21 @@ namespace tcpip
 	{
 		friend class Response;
 	public:
+		/// Constructor that prepare to connect to host:port 
 		Socket(std::string host, int port);
+		
+		/// Constructor that prepare for accepting a connection on given port
 		Socket(int port);
+
+		/// Destructor
 		~Socket();
 
+		/// Connects to host_:port_
 		void connect() throw( SocketException );
+
+		/// Wait for a incoming connection to port_
 		void accept() throw( SocketException );
+
 		void send( const std::vector<unsigned char> ) throw( SocketException );
 		void sendExact( const Storage & ) throw( SocketException );
 		std::vector<unsigned char> receive( int bufSize = 2048 ) throw( SocketException );
@@ -88,7 +97,7 @@ namespace tcpip
 		int port();
 		void set_blocking(bool) throw( SocketException );
 		bool is_blocking() throw();
-		bool has_client_connection() const throw();
+		bool has_client_connection() const;
 
 	private:
 		void init();
