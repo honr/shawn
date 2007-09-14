@@ -40,11 +40,16 @@ namespace shawn
    // ----------------------------------------------------------------------
    TransmissionModel*
    CsmaTransmissionModelFactory::
-   create( const SimulationController& )
+   create( const SimulationController& sc)
       throw()
-   {
-      return new CsmaTransmissionModel;
+   {	
+	
+		int bandwidth =sc.environment().required_int_param( "bandwidth");
+		double backoff = sc.environment().required_double_param( "backoff");
+		double sending_jitter = sc.environment().optional_double_param( "jitter",0.0);
+      return new CsmaTransmissionModel(bandwidth,backoff,sending_jitter);
    }
+	
 
 }
 

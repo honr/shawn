@@ -15,7 +15,6 @@
 #include "sys/util/refcnt_pointer.h"
 #include "sys/util/defutils.h"
 
-
 namespace shawn
 {
    class TransmissionModel;
