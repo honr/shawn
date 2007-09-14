@@ -47,8 +47,8 @@ public:
       : public RefcntPointable
    {
    public:
-      EventTag();
-      virtual ~EventTag();
+	   EventTag() {};
+	   virtual ~EventTag() {};
    };
    ///   
    class EventInfo

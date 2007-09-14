@@ -170,7 +170,15 @@ namespace shawn
    GridEdgeModel::
    ~GridEdgeModel()
    {
-      //cout << __FILE__<<__LINE__<<" cleanup!" <<endl;
+      delete[] node_cells_;	
+	  
+	  for (int j = 0; j < y_size(); j++){
+			for (int i = 0; i < x_size(); i++){
+			  if (is_initialized_cell(i,j)) delete cell_data_[j][i];
+		  }
+		  delete[] cell_data_[j];
+	  }
+	  delete[] cell_data_;
    }
 
 
