@@ -11,12 +11,15 @@
 
 #include "apps/helloworld/helloworld_init.h"
 #include "apps/helloworld/helloworld_processor_factory.h"
+#include "apps/helloworld/helloworld_random_processor_factory.h"
 #include "sys/simulation/simulation_controller.h"
 
 extern "C" void init_helloworld( shawn::SimulationController& sc )
 {
    std::cout << "helloworld init" << std::endl;
    helloworld::HelloworldProcessorFactory::register_factory(sc);
+	helloworld::HelloworldRandomProcessorFactory::register_factory(sc);
+
 }
 
 #endif

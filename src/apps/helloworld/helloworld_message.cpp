@@ -16,6 +16,11 @@ namespace helloworld
    HelloworldMessage::
    HelloworldMessage()
    {}
+	HelloworldMessage::
+   HelloworldMessage(int size)
+   {
+	 setSize(size);}
+
    // ----------------------------------------------------------------------
    HelloworldMessage::
    ~HelloworldMessage()

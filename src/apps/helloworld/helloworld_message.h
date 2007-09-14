@@ -23,6 +23,7 @@ namespace helloworld
    {
    public:
       HelloworldMessage();
+		HelloworldMessage(int);
       virtual ~HelloworldMessage();
    };
 
