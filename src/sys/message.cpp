@@ -16,7 +16,8 @@ namespace shawn
    Message()
       : source_      ( NULL ),
         stamp_round_ ( -1 ),
-        stamp_time_  ( -1.0 )
+        stamp_time_  ( -1.0 ),
+		  size_ ( 1 )
    {}
    // ----------------------------------------------------------------------
    Message::
@@ -106,7 +107,11 @@ namespace shawn
    Message::
    size( void )
       const throw()
-   { return 1; }
+   { return size_; }
+	void Message::setSize(int size){
+		size_=size;
+		}
+
 
 }
 

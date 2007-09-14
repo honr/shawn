@@ -110,12 +110,14 @@ namespace shawn
       ///
       virtual int size( void ) const throw();
       ///@}
+		virtual void setSize( int )throw();
 
    private:
 
       mutable Node* source_;
       int stamp_round_;
       double stamp_time_;
+		int size_;
    };
 
 
