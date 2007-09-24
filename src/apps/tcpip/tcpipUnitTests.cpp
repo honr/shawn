@@ -27,7 +27,9 @@ public:
 		TEST_CASE( testStorageMixed );
 		TEST_CASE( testStorageReset );
 		TEST_CASE( testStorageValidPos );
-		TEST_CASE( testStorageLoadCharArray )
+		TEST_CASE( testStorageLoadCharArray );
+		TEST_CASE( testStorageCharToInt );
+		TEST_CASE( testStorageByteShortInt );
 	}
 	
 	void testStorageChar()
@@ -50,13 +52,36 @@ public:
 		tcpip::Storage s1;
        
 		s1.writeByte(0);
-		s1.writeByte(255);
-		s1.writeByte('}');
-
+		s1.writeByte(-128);
+		s1.writeByte(127);
+/*
+		bool err = false;
+		try
+		{
+			s1.writeByte(128);
+		}
+		catch (std::invalid_argument e)
+		{
+			err = true;
+		}
+		catch ( ... ) {}
+		if (!err) FAIL("Storage::writeByte allowed an input value of 128");
+		
+		err = false;
+		try
+		{
+			s1.writeByte(-129);
+		}
+		catch (std::invalid_argument e)
+		{
+			err = true;
+		}
+		if (!err) FAIL("Storage::writeByte allowed an input value of -129");
+*/		
 		ASSERT_EQUALS( true, s1.valid_pos() );
-		ASSERT( s1.readByte() == 0 ); 
-		ASSERT( s1.readByte() == 255 ); 
-		ASSERT( s1.readByte() == 125 );
+		ASSERT_EQUALS( 0, s1.readByte() ); 
+		ASSERT_EQUALS( -128, s1.readByte() ); 
+		ASSERT_EQUALS( 127, s1.readByte() );
 		ASSERT_EQUALS( false, s1.valid_pos() );
 	}
 
@@ -228,7 +253,96 @@ public:
 		ASSERT_EQUALS( "Hallo du!", s1.readString() );
 
   }
+  void testStorageCharToInt()
+  {
+    tcpip::Storage s;
+	
+	ASSERT_EQUALS(0, (int)s.position());
+	ASSERT_EQUALS(0, (int)s.size());
 
+	s.writeChar(0);
+	ASSERT_EQUALS(0, (int)s.position());
+	ASSERT_EQUALS(1, (int)s.size());
+
+	s.writeChar(0);
+	ASSERT_EQUALS(0, (int)s.position());
+	ASSERT_EQUALS(2, (int)s.size());
+
+	s.writeChar(0);
+	ASSERT_EQUALS(0, (int)s.position());
+	ASSERT_EQUALS(3, (int)s.size());
+
+	s.writeChar(4);
+	ASSERT_EQUALS(0, (int)s.position());
+	ASSERT_EQUALS(4, (int)s.size());
+	
+	int n = s.readInt();
+	
+	ASSERT_EQUALS(4, (int)s.position());
+	ASSERT_EQUALS(4, (int)s.size());
+	ASSERT_EQUALS(4, n);
+	
+	s.reset();
+
+	ASSERT_EQUALS(0, (int)s.position());
+	ASSERT_EQUALS(0, (int)s.size());
+
+	s.writeChar(0);
+	ASSERT_EQUALS(0, (int)s.position());
+	ASSERT_EQUALS(1, (int)s.size());
+
+	s.writeChar(0);
+	ASSERT_EQUALS(0, (int)s.position());
+	ASSERT_EQUALS(2, (int)s.size());
+
+	s.writeChar(0);
+	ASSERT_EQUALS(0, (int)s.position());
+	ASSERT_EQUALS(3, (int)s.size());
+
+	s.writeChar(4);
+	ASSERT_EQUALS(0, (int)s.position());
+	ASSERT_EQUALS(4, (int)s.size());
+	
+	n = s.readInt();
+	
+	ASSERT_EQUALS(4, (int)s.position());
+	ASSERT_EQUALS(4, (int)s.size());
+	ASSERT_EQUALS(4, n);
+
+  }
+  
+  void testStorageByteShortInt()
+  {
+    tcpip::Storage s;
+	return;
+	try {
+//	s.writeByte(-128);
+	s.writeByte(127);
+	
+//	ASSERT_EQUALS(-128, s.readByte());
+	ASSERT_EQUALS(127, s.readByte());
+	
+	}
+	catch (std::string s)
+	{
+		std::cerr << s << std::endl;
+	}
+
+	/*	int max = 255;
+	int min = 0;
+	
+	byte b;
+	int i;
+	
+	b = (byte) min;
+	i = b;
+	ASSERT_EQUALS(0, i);
+
+	b = (byte) max;
+	i = b;
+	ASSERT_EQUALS(255, i);
+  */
+  }
 };
 
 REGISTER_FIXTURE( tcpipUnitTests );

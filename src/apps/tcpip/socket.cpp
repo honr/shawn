@@ -41,7 +41,6 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdarg>
-#include <assert.h>
 #include <string>
 #include <vector>
 #include <string>
@@ -75,6 +74,7 @@ namespace tcpip
 		server_socket_(-1),
 		blocking_(true)
 	{
+		verbose_ = false;
 		init();
 	}
 
@@ -217,7 +217,7 @@ namespace tcpip
 		accept()
 		throw( SocketException )
 	{
-		if( socket_ > 1 )
+		if( socket_ >= 0 )
 			return;
 
 		struct sockaddr_in client_addr;
@@ -269,7 +269,7 @@ namespace tcpip
 
 		socket_ = static_cast<int>(::accept(server_socket_, (struct sockaddr*)&client_addr, &addrlen));
 
-		if( socket_ > 0 )
+		if( socket_ >= 0 )
 		{
 			int x = 1;
 			setsockopt(socket_, IPPROTO_TCP, TCP_NODELAY, (const char*)&x, sizeof(x));
@@ -320,7 +320,7 @@ namespace tcpip
 		address.sin_port = htons( port_ );
 		address.sin_addr.s_addr = addr.s_addr;
 
-		socket_ = static_cast<int>(socket( AF_INET, SOCK_STREAM, 0 ));
+		socket_ = static_cast<int>(socket( PF_INET, SOCK_STREAM, 0 ));
 		if( socket_ < 0 )
 			BailOnSocketError("tcpip::Socket::connect() @ socket");
 
@@ -352,14 +352,27 @@ namespace tcpip
 		send( std::vector<unsigned char> b) 
 		throw( SocketException )
 	{
-		if( socket_ < 0 )
-			return;
+		if( socket_ < 0 ) return;
 
 		size_t numbytes = b.size();
 		unsigned char *buf = new unsigned char[numbytes];
 		unsigned char *buf_ = buf;
+
 		for(size_t i = 0; i < numbytes; ++i)
+		{
 			buf[i] = b[i];
+		}
+
+		if (verbose_) 
+		{
+			cerr << "Send " << numbytes << " bytes via tcpip::Socket: [";
+			for(size_t i = 0; i < numbytes; ++i)
+			{
+				buf[i] = b[i];
+				cerr << " " << (int)b[i] << " ";
+			}
+			cerr << "]" << endl;
+		}
 
 		while( numbytes > 0 )
 		{
@@ -389,7 +402,7 @@ namespace tcpip
 	{
 		int length = static_cast<int>(b.size());
 		Storage length_storage;
-		length_storage.writeInt(length);
+		length_storage.writeInt(length + 4);
 		vector<unsigned char> msg;
 		msg.insert(msg.end(), length_storage.begin(), length_storage.end());
 		msg.insert(msg.end(), b.begin(), b.end());
@@ -415,12 +428,24 @@ namespace tcpip
 		unsigned char* buf = new unsigned char[bufSize];
 		int a = recv( socket_, (char*)buf, bufSize, 0 );
 
-		if( a < 0 )
+		if( a <= 0 )
 			BailOnSocketError( "tcpip::Socket::receive() @ recv" );
 
 		b.resize(a);
 		for(int i = 0; i < a; ++i)
+		{
 			b[i] = buf[i];
+		}
+
+		if (verbose_) 
+		{
+			cerr << "Rcvd "  << a <<  " bytes via tcpip::Socket: [";
+			for(int i = 0; i < a; ++i)
+			{
+				cerr << " " << (int)b[i] << " ";
+			}
+			cerr << "]" << endl;
+		}
 
 		delete[] buf;
 		return b;
@@ -435,30 +460,55 @@ namespace tcpip
 		throw( SocketException )
 	{
 		/* receive length of vector */
-		Storage length_storage;
-		while (length_storage.size()<4)
-		{
-			vector<unsigned char> rcv = receive(4 - length_storage.size());
-			for (vector<unsigned char>::iterator iter=rcv.begin(); 
-				iter != rcv.end(); 
-				length_storage.writeChar(*iter++)); 
-		}
-		int NN = length_storage.readInt();
+		unsigned char* bufLength = new unsigned char[4];
+		int bytesRead = 0;
+		int readThisTime = 0;
 		
-		/* receive vector */
-		int n = NN;
-		msg.reset();
-		while (n>0)
+		while (bytesRead<4)
 		{
-			vector<unsigned char> rcv = receive(n);
-			vector<unsigned char>::iterator iter = rcv.begin();
-			while (iter != rcv.end())
-			{
-				msg.writeChar(*iter);
-				++iter;
-				--n;
-			}
+			readThisTime = recv( socket_, bufLength + bytesRead, 4-bytesRead, 0 );
+
+			if( readThisTime <= 0 )
+				BailOnSocketError( "tcpip::Socket::receive() @ recv" );
+
+			bytesRead += readThisTime;
 		}
+		Storage length_storage(bufLength,4);
+		int NN = length_storage.readInt() - 4;
+
+		/* receive vector */
+		unsigned char* buf = new unsigned char[NN];
+		bytesRead = 0;
+		readThisTime = 0;
+		
+		while (bytesRead<NN)
+		{
+			readThisTime = recv( socket_, buf + bytesRead, NN-bytesRead, 0 );
+
+			if( readThisTime <= 0 )
+				BailOnSocketError( "tcpip::Socket::receive() @ recv" );
+
+			bytesRead += readThisTime;
+		}
+		msg.reset();
+		msg.writePacket(buf, NN);
+		
+		if (verbose_)
+		{
+			cerr << "Rcvd Storage with "  << 4 + NN <<  " bytes via tcpip::Socket: [";
+			for (int i=0; i < 4; ++i)
+			{
+				cerr << " " << (int)bufLength[i] << " ";
+			}
+			for (int i=0; i < NN; ++i)
+			{
+				cerr << " " << (int)buf[i] << " ";
+			}
+			cerr << "]" << endl;
+		}
+
+		delete[] buf;
+		delete[] bufLength;
 		return true;
 	}
 	
@@ -469,7 +519,7 @@ namespace tcpip
 		has_client_connection() 
 		const
 	{
-		return socket_ > 0;
+		return socket_ >= 0;
 	}
 
 	// ----------------------------------------------------------------------

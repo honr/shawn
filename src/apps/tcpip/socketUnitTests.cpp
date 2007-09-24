@@ -97,8 +97,8 @@ public:
 		try {
 			server_socket_.receiveExact(received_message);
 
-			ASSERT_EQUALS( static_cast<unsigned int>(TEST_CHAR), 
-						   static_cast<unsigned int>(received_message.readChar()) );
+			ASSERT_EQUALS( static_cast<int>(TEST_CHAR), 
+						   static_cast<int>(received_message.readChar()) );
 			ASSERT_EQUALS( TEST_STRING, received_message.readString() );
 			ASSERT_EQUALS( TEST_SHORT, received_message.readShort() );
 			ASSERT_EQUALS( TEST_INT, received_message.readInt() );

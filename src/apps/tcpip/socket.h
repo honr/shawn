@@ -55,19 +55,23 @@ struct in_addr;
 namespace tcpip
 {
 
-	class SocketException
+	class SocketException: public std::exception
 	{
 	private:
 		std::string what_;
 	public:
-		SocketException( std::string what ) 
-			: what_(what)
+		SocketException( std::string what ) throw() 
 		{
+			what_ = what;
 			//std::cerr << "tcpip::SocketException: " << what << std::endl << std::flush;
 		}
-		std::string what() const{ 
-			return what_; 
+
+		virtual const char* what() const throw()
+		{
+			return what_.c_str();
 		}
+
+		~SocketException() throw() {}
 	};
 
 	class Socket
@@ -99,6 +103,10 @@ namespace tcpip
 		bool is_blocking() throw();
 		bool has_client_connection() const;
 
+		// If verbose, each send and received data is written to stderr
+		bool verbose() { return verbose_; }
+		void set_verbose(bool newVerbose) { verbose_ = newVerbose; }
+
 	private:
 		void init();
 		void BailOnSocketError( std::string ) const throw( SocketException );
@@ -113,6 +121,8 @@ namespace tcpip
 		int socket_;
 		int server_socket_;
 		bool blocking_;
+
+		bool verbose_;
 #ifdef WIN32
 		static bool init_windows_sockets_;
 		static bool windows_sockets_initialized_;

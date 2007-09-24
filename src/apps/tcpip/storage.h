@@ -25,20 +25,30 @@
 
 #ifdef BUILD_TCPIP
 
-#include <list>
+#include <vector>
 #include <string>
+#include <stdexcept>
 
 namespace tcpip
 {
 
-class Storage: private std::list<unsigned char>
+class Storage
 {
+
+public:
+	typedef std::vector<unsigned char> StorageType;
+
 private:
+	StorageType store;
+
 	unsigned int pos_;
 	bool iterValid_;
-	std::list<unsigned char>::const_iterator iter_;
+//	std::list<unsigned char>::const_iterator iter_;
 	bool iterEndValid_;
-	std::list<unsigned char>::const_iterator iterEnd_;
+//	std::list<unsigned char>::const_iterator iterEnd_;
+
+	StorageType::const_iterator iter_;
+	StorageType::const_iterator iterEnd_;
 
 	// sortation of bytes forwards or backwards?
 	bool bigEndian_;
@@ -51,7 +61,7 @@ public:
 	/// Standard Constructor
 	Storage();
 
-	/// Constructor, that fills the storage with an cahr array. If length is -1, the whole array is handed over
+	/// Constructor, that fills the storage with an char array. If length is -1, the whole array is handed over
 	Storage(unsigned char[], int length=-1);
 
 	// Destructor
@@ -67,7 +77,10 @@ public:
 
 	virtual int readByte() throw();
 	virtual void writeByte(int) throw();
-	virtual void writeByte(unsigned char) throw();
+//	virtual void writeByte(unsigned char) throw();
+
+	virtual int readUnsignedByte() throw();
+	virtual void writeUnsignedByte(int) throw();
 
 	virtual std::string readString() throw();
 	virtual void writeString(std::string s) throw();
@@ -81,15 +94,16 @@ public:
 	virtual float readFloat() throw();
 	virtual void writeFloat( float ) throw();
 
-        virtual double readDouble() throw();
-        virtual void writeDouble( double ) throw();
+    virtual double readDouble() throw();
+    virtual void writeDouble( double ) throw();
+
+	virtual void writePacket(unsigned char* packet, int length);
 
 	// Some enabled functions of the underlying std::list
-	unsigned int size() const { return static_cast<unsigned int>(std::list<unsigned char>::size()); }
+	int size() const { return store.size(); }
 
-	typedef Storage::const_iterator const_iterator;
-	Storage::const_iterator begin() const { return std::list<unsigned char>::begin(); }
-	Storage::const_iterator end() const { return std::list<unsigned char>::end(); }
+	StorageType::const_iterator begin() const { return store.begin(); }
+	StorageType::const_iterator end() const { return store.end(); }
 
 };
 

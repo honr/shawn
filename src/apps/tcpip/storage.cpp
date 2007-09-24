@@ -14,7 +14,7 @@
 
 #ifdef BUILD_TCPIP
 
-#include <assert.h>
+#include <iostream>
 
 
 using namespace std;
@@ -34,13 +34,15 @@ namespace tcpip
 	Storage::Storage(unsigned char packet[], int length)
 	{
 		// Length is calculated, if -1, or given
-		if (length == -1) length = sizeof(packet) / sizeof(char);
+		if (length == -1) length = sizeof(packet) / sizeof(unsigned char);
 		
+		store.reserve(length);
 		// Get the content
-		for(int i = 0; i < length; ++i) push_back(packet[i]);
+		for(int i = 0; i < length; ++i) store.push_back(packet[i]);
 
 		init();
 	}
+
 
 	// ----------------------------------------------------------------------
 	void Storage::init()
@@ -50,9 +52,9 @@ namespace tcpip
 		iterValid_ = iterEndValid_ = false;
 		valid_pos();
 
-                short a = 0x0102;
-                unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
-                bigEndian_ = (p_a[0] == 0x01); // big endian?
+        short a = 0x0102;
+        unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
+        bigEndian_ = (p_a[0] == 0x01); // big endian?
 	}
 
 	// ----------------------------------------------------------------------
@@ -67,14 +69,14 @@ namespace tcpip
 		// Check iterator iterEnd_ for validity
 		if ( !iterEndValid_ )
 		{
-			iterEnd_ = end();
+			iterEnd_ = store.end();
 			iterEndValid_ = true;
 		}
 
 		// Check Iterator iter_ for validity
 		if ( !iterValid_ ) 
 		{
-			iter_ = std::list<unsigned char>::begin();
+			iter_ = store.begin();
 			unsigned int i = 0;
 			while ( i < pos_ 
 				&& iter_ != iterEnd_)
@@ -99,7 +101,7 @@ namespace tcpip
 	// ----------------------------------------------------------------------
 	void Storage::reset()
 	{
-		std::list<unsigned char>::clear();
+		store.clear();
 		pos_=0;
 		iterValid_ = false;
 		iterEndValid_ = false;
@@ -112,9 +114,11 @@ namespace tcpip
 	*/
 	unsigned char Storage::readChar()	throw()
 	{
-		assert( valid_pos() );
-
-		unsigned char hb = *iter_;
+		if ( !valid_pos() )
+		{
+			throw  std::invalid_argument("Storage::readChar(): invalid position");
+		}
+		char hb = *iter_;
 		++iter_;
 		++pos_;
 		return hb;
@@ -126,17 +130,19 @@ namespace tcpip
 	*/
 	void Storage::writeChar(unsigned char value) throw()
 	{
-		push_back(value);
+		store.push_back(value);
 	}
 
 	// ----------------------------------------------------------------------
 	/**
 	* Reads a byte form the array
-	* @return The read byte (between 0 and 255)
+	* @return The read byte (between -128 and 127)
 	*/
 	int Storage::readByte()	throw()
 	{
-		return static_cast<int>(readChar());
+		int i = static_cast<int>(readChar());
+		if (i < 128) return i; 
+		else return (i - 256);
 	}
 
 	// ----------------------------------------------------------------------
@@ -145,16 +151,34 @@ namespace tcpip
 	*/
 	void Storage::writeByte(int value) throw()
 	{
-		writeChar( static_cast<unsigned char>(value & 0xFF) );
+		if (value < -128 || value > 127)
+		{
+			throw std::invalid_argument("Storage::writeByte(): Invalid value, not in [-128, 127]");
+		}
+		writeChar( static_cast<unsigned char>( (value+256) % 256 ) );
+	}
+
+	// ----------------------------------------------------------------------
+	/**
+	* Reads an unsigned byte form the array
+	* @return The read byte (between 0 and 255)
+	*/
+	int Storage::readUnsignedByte()	throw()
+	{
+		return static_cast<int>(readChar());
 	}
 
 	// ----------------------------------------------------------------------
 	/**
 	*
 	*/
-	void Storage::writeByte(unsigned char value) throw()
+	void Storage::writeUnsignedByte(int value) throw()
 	{
-		writeChar( value );
+		if (value < 0 || value > 255)
+		{
+			throw std::invalid_argument("Storage::writeUnsignedByte(): Invalid value, not in [0, 255]");
+		}
+		writeChar( static_cast<unsigned char>( value ));
 	}
 
 	// -----------------------------------------------------------------------
@@ -211,7 +235,10 @@ namespace tcpip
 	// ----------------------------------------------------------------------
 	void Storage::writeShort( int value ) throw()
 	{
-		assert(value >= -32768 && value <= 32767);
+		if (value < -32768 || value > 32767)
+		{
+			throw std::invalid_argument("Storage::writeShort(): Invalid value, not in [-32768, 32767]");
+		}
 
 		short svalue = static_cast<short>(value);
 		//assert(svalue == value);
@@ -370,6 +397,14 @@ namespace tcpip
                 }
                 return value;
         }
+
+        // ----------------------------------------------------------------------
+		void Storage::writePacket(unsigned char* packet, int length)
+		{
+			store.reserve(length);
+			for(int i = 0; i < length; ++i) store.push_back(packet[i]);
+			init();
+		}
 }
 
 #endif // BUILD_TCPIP
