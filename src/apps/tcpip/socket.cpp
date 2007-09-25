@@ -466,7 +466,7 @@ namespace tcpip
 		
 		while (bytesRead<4)
 		{
-			readThisTime = recv( socket_, bufLength + bytesRead, 4-bytesRead, 0 );
+			readThisTime = recv( socket_, (char*)(bufLength + bytesRead), 4-bytesRead, 0 );
 
 			if( readThisTime <= 0 )
 				BailOnSocketError( "tcpip::Socket::receive() @ recv" );
@@ -483,7 +483,7 @@ namespace tcpip
 		
 		while (bytesRead<NN)
 		{
-			readThisTime = recv( socket_, buf + bytesRead, NN-bytesRead, 0 );
+			readThisTime = recv( socket_, (char*)(buf + bytesRead), NN-bytesRead, 0 );
 
 			if( readThisTime <= 0 )
 				BailOnSocketError( "tcpip::Socket::receive() @ recv" );
