@@ -87,6 +87,7 @@ namespace tcpip
 		server_socket_(-1),
 		blocking_(true)
 	{
+		verbose_ = false;
 		init();
 	}
 
