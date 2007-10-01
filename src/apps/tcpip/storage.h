@@ -99,6 +99,8 @@ public:
 
 	virtual void writePacket(unsigned char* packet, int length);
 
+	virtual void writeStorage(tcpip::Storage& store);
+
 	// Some enabled functions of the underlying std::list
 	int size() const { return store.size(); }
 

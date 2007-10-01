@@ -399,11 +399,20 @@ namespace tcpip
         }
 
         // ----------------------------------------------------------------------
+
 		void Storage::writePacket(unsigned char* packet, int length)
 		{
 			store.reserve(length);
 			for(int i = 0; i < length; ++i) store.push_back(packet[i]);
-			init();
+			//init();
+		}
+
+        // ----------------------------------------------------------------------
+
+		void Storage::writeStorage(tcpip::Storage& store)
+		{
+			while (store.valid_pos())
+				writeChar( store.readChar() );
 		}
 }
 
