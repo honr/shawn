@@ -134,7 +134,6 @@ namespace shawn
 
 	void CsmaTransmissionModel::
 		listening(csma_msg* msg) throw(){
-
 			double nextFreeTime=world().current_time();
 			bool sending = false;
 			//All neighbors are checked here
@@ -187,7 +186,7 @@ namespace shawn
 					MessageList::iterator iter = m->begin();
 					//Here all messages of one node is checked
 					for(; iter!=m->end();++iter){
-						// First conditionckecks if a node not adjacent to the sender is delivering a msg. to target at the moment 
+						// First condition ckecks if a node not adjacent to the sender is delivering a msg. to target at the moment 
 						// as well as if sender and receiver are delivering at the same moment.
 						// This procedure correlates with reality. Both nodes are sending and cannot "hear" the other one
 						if((msg->deliver_time >= (*iter)->deliver_time && msg->deliver_time <= (*iter)->deliver_time + (*iter)->duration_) )
