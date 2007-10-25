@@ -638,7 +638,8 @@ namespace distest
 				}else
 				
 				if (cmf_type == "vector") {
-				
+					std::string fname = sc.environment().optional_string_param("file","");
+					if(strcmp(fname.c_str(),"")==0){
 					vector<double> v(200);
 					for (int i = 0; i<200;i++) {
 						if (could[i]+couldnot[i]>0)
@@ -650,6 +651,12 @@ namespace distest
 					for (int i = 0; i<200;i++) {
 						could[i]=0;
 						couldnot[i]=0;
+					} 
+					}
+					else
+					{ 
+				      std::vector<double> v=readVector(fname);
+					  cmf = new VectorCommunicationModelFunction(v);
 					}
 				} else
 				if (cmf_type == "linear") {
@@ -659,6 +666,7 @@ namespace distest
 					cout << "ERROR: no valid CommunicationModelFunction type specified" << endl << flush;
 					assert ( false );
 				}
+				
 				nptr->setCommunicationModelFunction( cmf );
 				nptr->gnuplotEstimationTable();
 				cmf->gnuplot3D( "gnuplot3D.txt", false, 0.0 );
@@ -812,7 +820,7 @@ namespace distest
 				std::string filename = sc.environment().required_string_param("file_name");
 				if (filename != "") writeStats( filename );
 			}
-
+			
 		}
 
 		// ----------------------------------------------------------------------
@@ -827,8 +835,22 @@ namespace distest
 				return true;
 
 			return false;
-
-
+		}
+		std::vector<double>
+			DistanceEstimateTask::
+			readVector(std::string& fname) throw(std::runtime_error)
+		{
+			ifstream in(fname.c_str());
+			if( !in )
+				throw std::runtime_error(string("cannot load file ")+fname);
+			std::vector<double> v;
+			double value = 0;
+			in >>value;
+			while(in >>  value){
+				v.push_back(value);
+			}
+		in.close();
+		return v;
 		}
 }
 #endif

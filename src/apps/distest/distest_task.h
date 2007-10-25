@@ -104,7 +104,8 @@ namespace distest
 
 	  virtual void run( shawn::SimulationController& sc )
          throw( std::runtime_error );
-
+	  virtual std::vector<double> readVector(std::string&)
+		  throw( std::runtime_error );
         bool out_of_bounds(shawn::Vec& ll, shawn::Vec& ur, const shawn::Node& node) throw();
 		FileHandleCache *fhc_;
 		int could[200];
