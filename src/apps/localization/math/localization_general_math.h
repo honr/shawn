@@ -68,8 +68,7 @@ namespace localization
     *  \result angle
     */
    double normalize_angle( double ) throw();
-
-
+ 
 }// namespace localization
 #endif
 #endif

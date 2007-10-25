@@ -85,7 +85,6 @@ namespace localization
 
       return angle;
    }
-
 }// namespace localization
 #endif
 /*-----------------------------------------------------------------------

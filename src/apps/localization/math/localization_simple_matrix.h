@@ -10,6 +10,8 @@
 
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_LOCALIZATION
+#include "sys/util/refcnt_pointer.h"
+#include "sys/util/refcnt_pointable.h"
 
 #include <vector>
 #include <stdexcept>
@@ -34,6 +36,7 @@ namespace localization
 
    template<class T>
    class SimpleMatrix
+	   : public shawn::RefcntPointable
    {
 
    public:
@@ -91,12 +94,41 @@ namespace localization
          throw()
       { return lsm * value; }
 
+	   inline SimpleMatrix<T>& operator-= (
+         const SimpleMatrix<T>& )
+         throw( SimpleMatrixError );
+      ///
+      inline friend SimpleMatrix<T> operator-(
+         const SimpleMatrix<T>& lsm1, const SimpleMatrix<T>& lsm2 )
+         throw( SimpleMatrixError )
+      {
+         SimpleMatrix<T> tmp( lsm1 );
+         tmp -= lsm2;
+
+         return tmp;
+      }
+	  inline SimpleMatrix<T>& operator+= (
+         const SimpleMatrix<T>& )
+         throw( SimpleMatrixError );
+      ///
+      inline friend SimpleMatrix<T> operator+(
+         const SimpleMatrix<T>& lsm1, const SimpleMatrix<T>& lsm2 )
+         throw( SimpleMatrixError )
+      {
+         SimpleMatrix<T> tmp( lsm1 );
+         tmp += lsm2;
+
+         return tmp;
+      }
+      ///
       ///
       SimpleMatrix<T> transposed( void ) const throw();
       ///
       double det( void ) const throw();
       ///
       SimpleMatrix<T> inverse( void ) const throw();
+
+	  SimpleMatrix<T> covariance ( void ) const throw();
 
       ///
       inline size_t row_cnt( void ) const throw();
@@ -246,6 +278,48 @@ namespace localization
 
       return *this;
    }
+// ----------------------------------------------------------------------
+      template<class T>
+   SimpleMatrix<T>&
+   SimpleMatrix<T>::
+   operator+=( const SimpleMatrix& lsm )
+      throw( SimpleMatrixError )
+   {
+	   if ( cols_ != lsm.col_cnt() || rows_ != lsm.row_cnt() )
+         throw SimpleMatrixError( "addition failed" );
+
+      SimpleMatrix<T> tmp( rows_,cols_);
+
+      for ( size_t i = 0; i < rows_; i++ )
+         for ( size_t j = 0; j < cols_; j++ )
+         {
+            tmp(i,j) = at(i,j) + lsm(i,j);
+         }
+
+      *this = tmp;
+      return *this;
+   }
+   // ----------------------------------------------------------------------
+      template<class T>
+   SimpleMatrix<T>&
+   SimpleMatrix<T>::
+   operator-=( const SimpleMatrix& lsm )
+      throw( SimpleMatrixError )
+   {
+       if ( cols_ != lsm.col_cnt() || rows_ != lsm.row_cnt() )
+         throw SimpleMatrixError( "subtraction failed" );
+
+      SimpleMatrix<T> tmp( rows_,cols_);
+
+      for ( size_t i = 0; i < rows_; i++ )
+         for ( size_t j = 0; j < cols_; j++ )
+         {
+            tmp(i,j) = at(i,j) - lsm(i,j);
+         }
+
+      *this = tmp;
+      return *this;
+   }
    // ----------------------------------------------------------------------
    template<class T>
    SimpleMatrix<T>
@@ -268,30 +342,67 @@ namespace localization
    det( void )
       const throw()
    {
-      assert( rows_ == 2 && cols_ == 2);
-
+      //assert( rows_ == 2 && cols_ == 2);
+	if( rows_ == 2 && cols_ == 2)
       return at(0,0) * at(1,1) - at(0,1) * at(1,0);
+	 if( rows_ == 3 && cols_ == 3)
+		 return ((at(0,0)*at(1,1)*at(2,2)) + (at(0,1)*at(1,2)*at(2,0)) +
+		 (at(0,2)*at(1,0)*at(2,1)) - (at(0,2)*at(1,1)*at(2,0)) -
+		 (at(0,0)*at(1,2)*at(2,1)) - (at(0,1)*at(1,0)*at(2,2)));
+	 else 
+		 return 0;
+
    }
    // ----------------------------------------------------------------------
    template<class T>
    SimpleMatrix<T>
+	   SimpleMatrix<T>::
+	   inverse( void )
+	   const throw()
+   {
+	 //  assert( rows_ == 2 && cols_ == 2 && det() != 0 );
+		
+	   SimpleMatrix<T> tmp( *this );
+	   if(rows_ == 2 && cols_ == 2 && det() != 0){ 
+	   
+		T save = tmp(0,0);
+	   tmp(0,0) = tmp(1,1);
+	   tmp(1,1) = save;
+
+	   tmp(0,1) *= -1;
+	   tmp(1,0) *= -1;
+
+	   tmp *= ( 1/det() );
+	   }
+	   else if( (rows_ == 3 && cols_ == 3 && det() != 0))
+	   {
+		tmp(0,0) = at(1,1)*at(2,2) - at(1,2)* at(2,1);
+	    tmp(0,1) = at(0,2)*at(2,1) - at(0,1)* at(2,2);
+		tmp(0,2) = at(0,1)*at(1,2) - at(0,2)* at(1,1);
+		tmp(1,0) = at(1,2)*at(2,0) - at(1,0)* at(2,2);
+		tmp(1,1) = at(0,0)*at(2,2) - at(0,2)* at(2,0);
+		tmp(1,2) = at(0,2)*at(1,0) - at(0,0)* at(1,2);
+		tmp(2,0) = at(1,0)*at(2,1) - at(1,1)* at(2,0);
+		tmp(2,1) = at(0,1)*at(2,0) - at(0,0)* at(2,1);
+		tmp(2,2) = at(0,0)*at(1,1) - at(0,1)* at(1,0);
+		tmp *= 1/det();
+	   }
+	
+
+	   return tmp;
+   }
+
+      template<class T>
+   SimpleMatrix<T>
    SimpleMatrix<T>::
-   inverse( void )
+   covariance( void )
       const throw()
    {
-      assert( rows_ == 2 && cols_ == 2 && det() != 0 );
-
       SimpleMatrix<T> tmp( *this );
 
-      T save = tmp(0,0);
-      tmp(0,0) = tmp(1,1);
-      tmp(1,1) = save;
-
-      tmp(0,1) *= -1;
-      tmp(1,0) *= -1;
-
-      tmp *= ( 1/det() );
-
+	  tmp=tmp.transposed();
+	  tmp*= *this; 
+	  tmp=tmp.inverse();
       return tmp;
    }
    // ----------------------------------------------------------------------

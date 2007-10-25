@@ -15,7 +15,6 @@
 #include "apps/localization/neighborhood/localization_neighborhood.h"
 #include "apps/localization/util/localization_defutils.h"
 
-
 namespace localization
 {
 

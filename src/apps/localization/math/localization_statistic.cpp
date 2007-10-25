@@ -141,8 +141,9 @@ namespace localization
                it = stat.values_.begin();
                it != stat.values_.end();
                ++it )
-         os << *it << "\t";
-
+         //os << *it << "\t";
+		 os<<*it<< "; ";
+		os<<std::endl;
       return os;
    }
 

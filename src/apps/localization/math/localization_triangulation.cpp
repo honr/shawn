@@ -111,24 +111,28 @@ namespace localization
          m_a(row,0) = 2 * ( (*it)->pos().x() - x_1 ) * confidence;
          m_a(row,1) = 2 * ( (*it)->pos().y() - y_1 ) * confidence;
 
-         m_b(row,0) =
+       m_b(row,0) =
             ( SQR( (*it)->pos().x() ) - SQR( x_1 )
                + SQR( (*it)->pos().y() ) - SQR( y_1 )
                + SQR( d_1 )
                - SQR( (*it)->distance() ) )
             * confidence;
-
-         row++;
+//	   std::cout << "distanz von Knoten"<<  <<"geschätzt: " << (*
+/*		 m_b(row,0) = 
+			 ( SQR( (*it)->pos().x() -  x_1 )
+               + SQR( (*it)->pos().y() - y_1 )
+               + SQR( d_1 )
+               - SQR( (*it)->distance() ) ) *  0.5;
+*/         row++;
       }
 
       if ( ( m_a.transposed() * m_a ).det() == 0 )
          return false;
-
       // solve Ax = b
       m_x = ( m_a.transposed() * m_a ).inverse()
          * ( m_a.transposed() * m_b );
 
-      pos = Vec( m_x(0,0), m_x(1,0) );
+      pos = Vec( m_x(0,0), m_x(1,0));
 
       return true;
    }
