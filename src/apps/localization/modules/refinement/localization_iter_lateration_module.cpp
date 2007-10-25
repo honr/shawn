@@ -159,7 +159,7 @@ namespace localization
    LocalizationIterLaterationModule::
    iter_lateration_step( void )
       throw()
-   {
+   { 
       if ( state_ == il_finished || !sound_ )
          return;
 
@@ -169,15 +169,14 @@ namespace localization
 
       neighborhood_w().reassign_twins( twin_measure_ * observer().comm_range() );
 
-      if ( neighborhood().confident_neighbor_cnt() < min_confident_nbrs_ )
+	  if ( neighborhood().confident_neighbor_cnt() < min_confident_nbrs_ )
          return;
 
       Vec est_pos;
       NeighborInfoList neighbors;
-
       collect_neighbors( neighborhood(), lat_confident, neighbors );
 
-      // try to update position. if lateration fails, confidence is set to 0,
+	  // try to update position. if lateration fails, confidence is set to 0,
       // else position is updated and confidence is set to average of all
       // neighbor confidences
       if ( est_pos_lateration( neighbors, est_pos, lat_confident, false ) &&
@@ -215,10 +214,10 @@ namespace localization
          }
 
          node_w().set_est_position( est_pos );
-      }
+	  }
       else
       {
-         if ( observer().confidence() == 0 ) return;
+	     if ( observer().confidence() == 0 ) return;
          set_confidence( 0 );
          node_w().clear_est_position();
       }
