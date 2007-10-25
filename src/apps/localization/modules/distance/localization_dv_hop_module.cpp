@@ -123,9 +123,11 @@ namespace localization
       last_useful_msg_ = simulation_round();
 
       // calculate distance and build average hop distance to anchor
-      double distance = euclidean_distance(
-         anchor.real_position(),
-         node().real_position() );
+
+	double distance= euclidean_distance(
+		  ((anchor.has_est_position())?(anchor.est_position()):(anchor.real_position())),
+		  ((node().has_est_position())?(node().est_position()):(node().real_position()))
+		  );
       double avg_hop_dist = distance / (ldvhm.hop_count() + 1);
 
       // build average hop distance of all known anchors

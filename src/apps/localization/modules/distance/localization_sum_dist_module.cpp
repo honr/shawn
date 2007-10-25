@@ -83,7 +83,7 @@ namespace localization
 
       const Node& source = lsdm.source();
       const Node& anchor = lsdm.anchor();
-      Vec anchor_pos = lsdm.anchor().real_position();
+	  Vec anchor_pos = (lsdm.anchor().has_est_position())?(lsdm.anchor().est_position()):(lsdm.anchor().real_position());
       double rcvd_path = lsdm.path_length();
       rcvd_path += estimate_distance( lsdm.source(), node() );
 
