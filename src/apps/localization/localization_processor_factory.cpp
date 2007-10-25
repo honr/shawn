@@ -67,8 +67,9 @@ namespace localization
       throw()
    {
       LocalizationProcessor* lp = new LocalizationProcessor;
-      if( create_anchors_ )
+	  if( create_anchors_ ){
          lp->set_proc_type( LocalizationProcessor::anchor );
+	  }
       return lp;
    }
 
