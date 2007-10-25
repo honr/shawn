@@ -187,6 +187,34 @@ namespace localization
          }
    }
    // ----------------------------------------------------------------------
+ void
+   LocalizationObserver::
+   fill_stat_abs_anchor_distance(
+         LocalizationStatistic& stat_abs_err)
+      const throw()
+   {
+      for ( localization::ConstNeighborhoodIterator
+               it = owner().neighborhood_.begin_neighborhood();
+               it != owner().neighborhood_.end_neighborhood();
+               ++it )
+         if ( it->second->is_anchor() && it->second->has_distance() )
+         {
+            double real_dist = euclidean_distance(
+               owner().owner().real_position(),
+               it->second->node().real_position() );
+
+//TODO: Remove this unfortunate solution, because it is just an actually
+//       work-around to compare the results with the paper of K. Langendoen.
+//
+//       Comment by the author:
+//       The simulations have been done (and saved) without the following
+//       check, too. They are just a little bit worse than the ones of
+//       K. Langendoen, but the tendency is almost the same.
+            if ( real_dist >= 1 )
+               stat_abs_err += abs( ( it->second->distance() - real_dist ));
+         }
+   }
+   // ----------------------------------------------------------------------
    void
    LocalizationObserver::
    fill_stat_rel_neighbor_distance(
@@ -207,6 +235,26 @@ namespace localization
             stat_real_err += ( ( it->second->distance() - real_dist ) / real_dist );
             stat_comm_err += ( ( it->second->distance() - real_dist ) / comm_range() );
          }
+   }
+   // ----------------------------------------------------------------------
+   void
+   LocalizationObserver::
+   fill_stat_abs_neighbor_distance(
+         LocalizationStatistic& stat_abs_err)
+      const throw()
+   {
+      for ( localization::ConstNeighborhoodIterator
+               it = owner().neighborhood_.begin_neighborhood();
+               it != owner().neighborhood_.end_neighborhood();
+               ++it )
+         if ( !it->second->is_anchor() && it->second->has_distance() )
+         {
+            double real_dist = euclidean_distance(
+               owner().owner().real_position(),
+               it->second->node().real_position() );
+
+            stat_abs_err += ( ( it->second->distance() - real_dist ) );
+		 }
    }
 
 }// namespace localization

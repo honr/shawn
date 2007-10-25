@@ -101,6 +101,9 @@ namespace localization
             LocalizationStatistic&,
             LocalizationStatistic& )
          const throw();
+	  virtual void fill_stat_abs_anchor_distance(
+            LocalizationStatistic&)
+         const throw();
       /** Fills the given \ref LocalizationStatistic "LocalizationStatistics"
        *  with information about estimated neighbor distances.
        *  \param LocalizationStatistic relative to the real distance
@@ -111,7 +114,9 @@ namespace localization
             LocalizationStatistic& )
          const throw();
       ///@}
-
+	  virtual void fill_stat_abs_neighbor_distance(
+            LocalizationStatistic& )
+         const throw();
 
    private:
 
