@@ -28,9 +28,9 @@ namespace localization
 
    ///@name localization processor parameters
    ///@{
-   const std::string DIST_ALGOS[] = { "euclidean", "dv_hop", "sum_dist", "gpsless_lcs" };
-   const std::string POS_ALGOS[] = { "lateration", "min_max", "gpsless_ncs", "gpsless_ncs_extended" };
-   const std::string REF_ALGOS[] = { "none", "iterative_lateration" };
+   const std::string DIST_ALGOS[] = { "euclidean", "dv_hop", "sum_dist", "gpsless_lcs","test" };
+   const std::string POS_ALGOS[] = { "lateration", "min_max", "gpsless_ncs", "gpsless_ncs_extended","DLS" };
+   const std::string REF_ALGOS[] = { "none", "iterative_lateration","iDLS" };
    ///@}
 
 
@@ -138,6 +138,9 @@ namespace localization
        *  \sa shawn::Processor::boot()
        */
       virtual void boot( void ) throw();
+
+	  virtual void special_boot( void ) throw();
+
       /** At first, this method checks, if the message should gone lost.
        *  If not, message is forwarded to
        *  \ref LocalizationModule "distance and refinement module".
@@ -189,9 +192,9 @@ namespace localization
 
    private:
 
-      enum DistanceAlgorithm { euclidean, dv_hop, sum_dist, gpsless_lcs };
-      enum PositionAlgorithm { lateration, min_max, gpsless_ncs, gpsless_ncs_extended };
-      enum RefinementAlgorithm { none, iter_lateration };
+      enum DistanceAlgorithm { euclidean, dv_hop, sum_dist, gpsless_lcs, test};
+      enum PositionAlgorithm { lateration, min_max, gpsless_ncs, gpsless_ncs_extended,DLS };
+      enum RefinementAlgorithm { none, iter_lateration,iDLS };
 
       enum LocalizationPhase { distance, position, refinement };
 
@@ -200,6 +203,7 @@ namespace localization
       PositionAlgorithm pos_algo_;
       RefinementAlgorithm ref_algo_;
       LocalizationPhase phase_;
+	  bool isServer_;
 
       double startup_anchor_frac_;
 
@@ -228,6 +232,9 @@ namespace localization
 
       friend class LocalizationObserver;
       friend class LocalizationModule;
+	  friend class LocalizationiDLSModule;
+	  friend class LocalizationDLSModule;
+	  friend class LocalizationTestModule;
    };
 
 }// namespace localization

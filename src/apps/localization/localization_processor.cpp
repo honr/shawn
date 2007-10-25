@@ -14,6 +14,8 @@
 #include "apps/localization/modules/distance/localization_dv_hop_module.h"
 #include "apps/localization/modules/distance/localization_euclidean_module.h"
 #include "apps/localization/modules/distance/localization_gpsfree_lcs_module.h"
+#include "apps/localization/modules/position/localization_dls_module.h"
+#include "apps/localization/modules/refinement/localization_iter_dls_module.h"
 #include "apps/localization/modules/position/localization_minmax_module.h"
 #include "apps/localization/modules/position/localization_lateration_module.h"
 #include "apps/localization/modules/position/localization_gpsfree_ncs_module.h"
@@ -22,13 +24,14 @@
 #include "apps/localization/util/localization_utils.h"
 #include "sys/distance_estimates/distance_estimate_keeper.h"
 #include "sys/misc/random/random_variable_keeper.h"
+#include "sys/misc/random/uniform_random_variable.h"
 #include "sys/node.h"
 #include "sys/world.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_environment.h"
 #include "sys/communication_model.h"
 
-
+#include "apps/localization/modules/distance/localization_test_module.h"
 using namespace shawn;
 
 namespace localization
@@ -51,7 +54,8 @@ namespace localization
          rollback_cnt_        ( 0 ),
          rollback_limit_      ( 0 ),
          confidence_          ( 0 ),
-         dist_est_            ( NULL )
+         dist_est_            ( NULL ),
+		 isServer_            (false)
    {}
    // ----------------------------------------------------------------------
    LocalizationProcessor::
@@ -87,6 +91,19 @@ namespace localization
       ref_module_->set_owner( *this );
       ref_module_->boot();
    }
+      /**
+   * This is only proccessed if the positioning algorithm is DLS.
+   * This fakes the step of processing the Matrix Ap and the vector d. 
+   * under "normal" circumstances beacon processors have to transmit their
+    * positions to the "server";   
+   **/
+    void
+   LocalizationProcessor::
+   special_boot( void )
+		throw()
+	{   	   	
+	}
+
    // ----------------------------------------------------------------------
    bool
    LocalizationProcessor::
@@ -114,6 +131,11 @@ namespace localization
 
          if ( dist_module_->finished() )
             phase_ = position;
+		 if(dynamic_cast<LocalizationTestModule*>( dist_module_ ) !=NULL){
+			 phase_ = distance;
+			 set_state( Inactive );
+			}
+
       }
 
       if ( phase_ == position )
@@ -218,11 +240,13 @@ namespace localization
          case gpsless_lcs:
             dist_module_ = new LocalizationGPSfreeLCSModule();
             break;
+		 case test:
+			 dist_module_ = new LocalizationTestModule();
       }
 
       switch ( pos_algo_ )
       {
-         case min_max:
+          case min_max:
             pos_module_ = new LocalizationMinMaxModule();
             break;
 
@@ -237,6 +261,10 @@ namespace localization
          case gpsless_ncs_extended:
             pos_module_ = new LocalizationGPSfreeNCSExtendedModule();
             break;
+
+		 case DLS:
+            pos_module_ =new LocalizationDLSModule();
+            break;
       }
 
       switch ( ref_algo_ )
@@ -247,6 +275,10 @@ namespace localization
 
          case iter_lateration:
             ref_module_ = new LocalizationIterLaterationModule();
+            break;
+
+		 case iDLS:
+            ref_module_ = new LocalizationiDLSModule();
             break;
       }
    }
@@ -261,19 +293,42 @@ namespace localization
          DEBUG( logger(), "set " << owner().label() << " as anchor on startup" );
          set_proc_type( anchor );
       }
+	  if( owner().is_special_node())
+		  set_proc_type( server);
 
       switch ( proc_type() )
       {
          case anchor:
          {
             confidence_ = 1;
-            owner_w().set_est_position( owner().real_position() );
+			double position_error= owner().world().simulation_controller().environment().optional_double_param("anchor_pos_err",-1);
+			if(position_error!=-1){
+				shawn::UniformRandomVariable* urv = new shawn::UniformRandomVariable();
+				urv->set_upper_bound(2*position_error);
+				urv->set_upper_bound_inclusive(false);
+				urv->set_lower_bound_inclusive(false);
+				urv->init();	
+				double dx = (*urv)-position_error;
+				double dy = (*urv) - position_error;
+				double dz =(*urv) - position_error;
+				std::cout << dx << " " << dy << " " << dz << std::endl;
+				Vec tmp=owner().real_position();
+				if(tmp.z()==0)
+					dz=0;
+				Vec pos(tmp.x()+dx, tmp.y()+dy,tmp.z()+dz);
+				owner_w().set_est_position(pos);				
+			}
+			else
+				owner_w().set_est_position( owner().real_position() );
          }
 
          case unknown:
          {
             confidence_ = 0.1;
          }
+		 case server:
+		 {
+		 }
       }
    }
    // ----------------------------------------------------------------------
