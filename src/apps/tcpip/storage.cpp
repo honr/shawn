@@ -112,7 +112,7 @@ namespace tcpip
 	* Reads a char form the array
 	* @return The read char (between 0 and 255)
 	*/
-	unsigned char Storage::readChar()	throw()
+	unsigned char Storage::readChar()	throw(std::invalid_argument)
 	{
 		if ( !valid_pos() )
 		{
@@ -149,7 +149,7 @@ namespace tcpip
 	/**
 	*
 	*/
-	void Storage::writeByte(int value) throw()
+	void Storage::writeByte(int value) throw(std::invalid_argument)
 	{
 		if (value < -128 || value > 127)
 		{
@@ -172,7 +172,7 @@ namespace tcpip
 	/**
 	*
 	*/
-	void Storage::writeUnsignedByte(int value) throw()
+	void Storage::writeUnsignedByte(int value) throw(std::invalid_argument)
 	{
 		if (value < 0 || value > 255)
 		{
@@ -233,7 +233,7 @@ namespace tcpip
         }
 
 	// ----------------------------------------------------------------------
-	void Storage::writeShort( int value ) throw()
+	void Storage::writeShort( int value ) throw(std::invalid_argument)
 	{
 		if (value < -32768 || value > 32767)
 		{

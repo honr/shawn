@@ -72,21 +72,21 @@ public:
 
 	void reset();
 
-	virtual unsigned char readChar() throw();
+	virtual unsigned char readChar() throw(std::invalid_argument);
 	virtual void writeChar(unsigned char) throw();
 
 	virtual int readByte() throw();
-	virtual void writeByte(int) throw();
+	virtual void writeByte(int) throw(std::invalid_argument);
 //	virtual void writeByte(unsigned char) throw();
 
 	virtual int readUnsignedByte() throw();
-	virtual void writeUnsignedByte(int) throw();
+	virtual void writeUnsignedByte(int) throw(std::invalid_argument);
 
 	virtual std::string readString() throw();
 	virtual void writeString(std::string s) throw();
 
 	virtual int readShort() throw();
-	virtual void writeShort(int) throw();
+	virtual void writeShort(int) throw(std::invalid_argument);
 
 	virtual int readInt() throw();
 	virtual void writeInt(int) throw();
