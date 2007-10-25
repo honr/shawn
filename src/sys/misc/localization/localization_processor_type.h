@@ -24,7 +24,8 @@ namespace shawn
       enum ProcessorType
       {
          anchor, ///< anchors know their real position
-         unknown ///< unknowns have to estimate their positions
+         unknown, ///< unknowns have to estimate their positions
+		 server
       };
 
       ///@name ctor/dtor
@@ -45,6 +46,9 @@ namespace shawn
       /** \return \c true, if processor is anchor.
        */
       virtual bool is_anchor( void ) const throw();
+	  /**
+	  */
+	  virtual bool is_server( void ) const throw();
       ///@}
       
 

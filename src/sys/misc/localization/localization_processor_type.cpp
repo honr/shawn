@@ -44,6 +44,11 @@ namespace shawn
       return proc_type_ == anchor;
    }
 
+	bool LocalizationProcessorType::
+		is_server( void ) const throw()
+	{
+		return proc_type_ == server;
+	}
 }
 
 /*-----------------------------------------------------------------------
