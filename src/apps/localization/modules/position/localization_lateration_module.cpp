@@ -10,7 +10,7 @@
 
 #include "apps/localization/modules/position/localization_lateration_module.h"
 #include "apps/localization/math/localization_triangulation.h"
-
+#include <fstream>
 
 namespace localization
 {
@@ -49,8 +49,20 @@ namespace localization
       // in the lateration phase as new parameter in least squares
       // approach. Particularly if you know only 3 anchors, the new
       // parameter in the second pass is very useful.
+	 // if(node().id() == 13){
+//	 std::ofstream ofs( "distances.csv",std::ios::app );
+	  ConstNeighborInfoListIterator iter = neighbors.begin();
+	  for(; iter!=neighbors.end(); iter++){		 
+		  const shawn::Node* n = &(*iter)->node();
+		
+	/*	  ofs<< "Distance from Node" <<node().id() << "to Anker"<< n->label() << " real distance:"<<  (node().real_position()-n->real_position()).euclidean_norm()<<
+			  " estimated distance:" << (*iter)->distance()<< std::endl;
+*/
+	//	ofs<< std::endl;
+	  //}
+	  }
       if ( est_pos_lateration( neighbors, est_pos, lat_anchors, false ) &&
-            est_pos_lateration( neighbors, est_pos, lat_anchors, true ) )
+           est_pos_lateration( neighbors, est_pos, lat_anchors, true ) )
       {
          if ( !observer().check_residue() || check_residue( neighbors, est_pos, lat_anchors, observer().comm_range() ) )
             node_w().set_est_position( est_pos );
