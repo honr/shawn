@@ -302,7 +302,6 @@ namespace localization
             confidence_ = 1;
 			double position_error= owner().world().simulation_controller().environment().optional_double_param("anchor_pos_err",-1);
 			if(position_error>0.0){
-				std::cout<< "mit anker fehler"<< std::endl;
 				shawn::UniformRandomVariable* urv = new shawn::UniformRandomVariable();
 				urv->set_upper_bound(2*position_error);
 				urv->set_upper_bound_inclusive(false);
