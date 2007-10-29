@@ -79,7 +79,6 @@ namespace localization
       init_parameters();
       init_modules();
       init_proc_type();
-
       assert( dist_module_ && pos_module_ && ref_module_ );
 
       dist_module_->set_owner( *this );
@@ -302,7 +301,8 @@ namespace localization
          {
             confidence_ = 1;
 			double position_error= owner().world().simulation_controller().environment().optional_double_param("anchor_pos_err",-1);
-			if(position_error!=-1){
+			if(position_error>0.0){
+				std::cout<< "mit anker fehler"<< std::endl;
 				shawn::UniformRandomVariable* urv = new shawn::UniformRandomVariable();
 				urv->set_upper_bound(2*position_error);
 				urv->set_upper_bound_inclusive(false);
