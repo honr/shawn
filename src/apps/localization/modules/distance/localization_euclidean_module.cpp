@@ -120,7 +120,8 @@ namespace localization
       throw()
    {
       const Node& source = leim.source();
-      Vec source_pos = leim.source().real_position();
+      Vec source_pos = 
+		  (leim.source().has_est_position())? ( leim.source().est_position()) : ( leim.source().real_position() );
       double distance = estimate_distance( source, node() );
 
       last_useful_msg_ = simulation_round();
@@ -175,7 +176,9 @@ namespace localization
          return true;
 
       const Node& anchor = leam.anchor();
-      Vec anchor_pos = leam.anchor().real_position();
+      Vec anchor_pos = 
+		  ( leam.anchor().has_est_position() )?
+		  ( leam.anchor().est_position() ) : ( leam.anchor().real_position() );
       const Node& source = leam.source();
 
       // if anchor receives message about another anchor, the real distance

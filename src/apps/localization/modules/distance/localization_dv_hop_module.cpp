@@ -124,6 +124,9 @@ namespace localization
 
       // calculate distance and build average hop distance to anchor
 
+	  /*
+	  *	Edited. If anchor has position error 
+	  */
 	double distance= euclidean_distance(
 		  ((anchor.has_est_position())?(anchor.est_position()):(anchor.real_position())),
 		  ((node().has_est_position())?(node().est_position()):(node().real_position()))
