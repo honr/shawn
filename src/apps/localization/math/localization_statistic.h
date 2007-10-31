@@ -93,7 +93,7 @@ namespace localization
        */
       virtual List as_list( void ) const throw();
       ///@}
-
+		virtual void clear( void ) throw();
 
       /** Print values to given ostream.
        */

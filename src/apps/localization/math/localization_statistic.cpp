@@ -133,6 +133,13 @@ namespace localization
       return values_;
    }
    // ----------------------------------------------------------------------
+   void 
+	LocalizationStatistic::
+	clear( void )
+	throw()
+   {
+	   values_.clear();
+   }
    std::ostream&
    operator<<( std::ostream& os, const LocalizationStatistic& stat )
       throw()
