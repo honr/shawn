@@ -110,9 +110,9 @@ namespace localization
 	{
 		SimpleMatrix<double>* w = new SimpleMatrix<double>(3,1); 
 		SimpleMatrix<double>* x = new SimpleMatrix<double>(3,1);
-		x->at(0,0) = owner().owner().est_position().x();
-		x->at(1,0) = owner().owner().est_position().y();
-		x->at(2,0) = owner().owner().est_position().z();
+		x->at(0,0) = node().est_position().x();
+		x->at(1,0) = node().est_position().y();
+		x->at(2,0) = node().est_position().z();
 		SimpleMatrix<double>* temp1 = new SimpleMatrix<double>(*x);
 		for(unsigned int i = 0; i< iter_positions_->size(); i++){
 			w->at(0,0) = iter_positions_->at(i)->x();
