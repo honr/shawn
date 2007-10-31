@@ -117,8 +117,13 @@ namespace localization
 				}
 			}
 			linearizationTool=beacons_->front();
-			tool = &(linearizationTool->real_position());
-			
+			if(linearizationTool->has_est_position()){
+				shawn::Vec est_pos(linearizationTool->est_position());			
+				tool = &(est_pos);
+			}
+			else
+				tool = &(linearizationTool->real_position());
+
 			beacons_->erase(beacons_->begin());
 			matrix_a_ = new SimpleMatrix<double>(beacons_->size(),3); 
 			vector_r_ =new SimpleMatrix<double>(beacons_->size(),1);
@@ -126,7 +131,18 @@ namespace localization
 			std::vector<shawn::Node*>::iterator iter=beacons_->begin();
 			std::vector<shawn::Node*>::iterator end = beacons_->end();
 			for(int count =0; iter!= end; iter++,count++){
-				shawn::Vec pos( (*iter)->real_position()-*tool );
+				shawn::Vec* tmp_pos;
+				if((*iter)->has_est_position())
+				{
+					shawn::Vec est_pos((*iter)->est_position());
+					tmp_pos=&est_pos;
+				}
+				else
+				{
+					shawn::Vec real_pos((*iter)->real_position());
+					tmp_pos=&real_pos;
+				}
+				shawn::Vec pos( *tmp_pos - *tool );
 				matrix_a_->at(count,0)=pos.x();
 				matrix_a_->at(count,1)=pos.y();
 				matrix_a_->at(count,2)=pos.z();
@@ -148,31 +164,27 @@ namespace localization
 			distance_r1 = owner().estimate_distance(node(), *linearization_tool_);
 			distance_r1 *=distance_r1;
 			NeighborInfoList neighbors;
-      collect_neighbors( neighborhood(), lat_anchors, neighbors );
-	 
+			collect_neighbors( neighborhood(), lat_anchors, neighbors );
+
 			for( std::vector<shawn::Node*>::iterator iter = beacons_->begin(); iter!=beacons_->end();iter++,count++){
 				for( ConstNeighborInfoListIterator iter1 = neighbors.begin(); iter1!=neighbors.end(); iter1++){
 					if((*iter)->id() == (*iter1)->node().id() ){
-				distance_r2 = (*iter1)->distance();
-				//distance_r2 = owner().estimate_distance(node(), **iter);
+						distance_r2 = (*iter1)->distance();
+						//distance_r2 = owner().estimate_distance(node(), **iter);
 
-				if(distance_r2 == std::numeric_limits<double>::max() ||distance_r2 == std::numeric_limits<double>::min())
-					vector_r_->at(count,0) = 0;
-				else    
-					vector_r_->at(count,0) = 0.5*( distance_r1 - (distance_r2*distance_r2) + (vector_r_->at(count,0)));
-					break;
+						if(distance_r2 == std::numeric_limits<double>::max() ||distance_r2 == std::numeric_limits<double>::min())
+							vector_r_->at(count,0) = 0;
+						else    
+							vector_r_->at(count,0) = 0.5*( distance_r1 - (distance_r2*distance_r2) + (vector_r_->at(count,0)));
+						break;
 					}
 				}		
-		}	
-
-
-
-
-
+			}	
 			SimpleMatrix<double>*  temp = new SimpleMatrix<double>(3,1);	
 			*temp= *matrix_a_ * *vector_r_;
 			est_pos = new shawn::Vec(temp->at(0,0),temp->at(1,0),temp->at(2,0));
-			*est_pos += linearization_tool_->real_position();
+			*est_pos += (linearization_tool_->has_est_position())?
+				(linearization_tool_->est_position()):(linearization_tool_->real_position());
 			node_w().set_est_position( *est_pos );
 			delete temp;
 	}
