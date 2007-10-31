@@ -10,7 +10,6 @@
 #define __SHAWN_SYS_TRANSMISSION_MODEL_H
 
 #include "sys/vec.h"
-#include "sys/vec.h"
 
 #include "sys/message.h"
 #include <stdexcept>
