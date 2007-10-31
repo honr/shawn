@@ -159,6 +159,8 @@ namespace shawn
 		double didx = size*0.5*x;
 		int lidx = int(floor(didx));
 		int hidx = int(ceil(didx));
+		if( hidx >= size)
+			hidx--;
 		//cout << "vcmf.TwoDFunction( " << x << " ): size=" << size << " didx=" << didx << endl << flush;
 		return vec_[lidx] + (didx-lidx)*(vec_[hidx]-vec_[lidx]);
 	}

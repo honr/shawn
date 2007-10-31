@@ -655,8 +655,8 @@ namespace distest
 					}
 					else
 					{ 
-				      std::vector<double> v=readVector(fname);
-					  cmf = new VectorCommunicationModelFunction(v);
+				      //std::vector<double> v=readVector(fname);
+					  cmf = new VectorCommunicationModelFunction(readVector(fname));
 					}
 				} else
 				if (cmf_type == "linear") {
@@ -668,12 +668,13 @@ namespace distest
 				}
 				
 				nptr->setCommunicationModelFunction( cmf );
+				if(sc.environment().optional_bool_param("print_info",true)){
 				nptr->gnuplotEstimationTable();
 				cmf->gnuplot3D( "gnuplot3D.txt", false, 0.0 );
 				cmf->gnuplot3D( "gnuplot3D-mult-d_0.txt", true, 0.0 );
 				cmf->gnuplot3D( "gnuplot3D-mult-d_1.txt", true, 1.0 );
 				cmf->gnuplot2D( "gnuplot2D.txt" );
-
+				}
 
 			}
 
