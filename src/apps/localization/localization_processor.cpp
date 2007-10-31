@@ -302,7 +302,7 @@ namespace localization
             confidence_ = 1;
 			double position_error= owner().world().simulation_controller().environment().optional_double_param("anchor_pos_err",-1);
 			if(position_error>0.0){
-				shawn::UniformRandomVariable* urv = new shawn::UniformRandomVariable();
+				/*shawn::UniformRandomVariable* urv = new shawn::UniformRandomVariable();
 				urv->set_upper_bound(2*position_error);
 				urv->set_upper_bound_inclusive(false);
 				urv->set_lower_bound_inclusive(false);
@@ -310,7 +310,17 @@ namespace localization
 				double dx = (*urv)-position_error;
 				double dy = (*urv) - position_error;
 				double dz =(*urv) - position_error;
-				std::cout << dx << " " << dy << " " << dz << std::endl;
+				*/
+				
+				shawn::UniformRandomVariable urv;
+				urv.set_upper_bound(2*position_error);
+				urv.set_upper_bound_inclusive(false);
+				urv.set_lower_bound_inclusive(false);
+				urv.init();	
+				double dx = (urv)-position_error;
+				double dy = (urv) - position_error;
+				double dz =(urv) - position_error;
+
 				Vec tmp=owner().real_position();
 				if(tmp.z()==0)
 					dz=0;
