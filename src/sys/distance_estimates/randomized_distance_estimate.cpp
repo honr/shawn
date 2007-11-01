@@ -100,7 +100,7 @@ namespace shawn
                       const Node& target,
                       double& result )
       const throw()
-   {
+   {int cnt=0;
       do {
          result=0.0;
          
@@ -110,6 +110,10 @@ namespace shawn
                * (*multiplier_);
          if( offset_.is_not_null() )
             result += *offset_;
+
+		cnt++;
+		if(cnt>50000)
+			result=chop_lower_;
       } while( resample_chopped_ && (result<chop_lower_));
       
       if( result<chop_lower_ ) result=chop_lower_;
