@@ -201,7 +201,6 @@ int
 	tag(SimulationController& sc)
 	   throw()
 	{
-		std::cout<< sc.world().node_count()<<std::endl;
 		int cnt = 0;
       LocalizationProcessorType *lpt;
 
