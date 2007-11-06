@@ -292,8 +292,8 @@ namespace localization
          DEBUG( logger(), "set " << owner().label() << " as anchor on startup" );
          set_proc_type( anchor );
       }
-	  if( owner().is_special_node())
-		  set_proc_type( server);
+	//  if( owner().is_special_node())
+	//	  set_proc_type( server);
 
       switch ( proc_type() )
       {
