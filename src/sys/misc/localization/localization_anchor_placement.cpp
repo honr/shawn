@@ -44,7 +44,8 @@ namespace shawn
          anchor_cnt = inner_grid( sc, anchor_cnt );
       else if ( pl_type_ == "outer_grid" )
          anchor_cnt = outer_grid( sc, anchor_cnt );
-      else if ( pl_type_ == "random" );
+      else if ( pl_type_ == "random" )
+		  random_set(sc,anchor_cnt);
       else if( pl_type_=="tag")
 		  anchor_cnt=tag(sc);
 	  else
@@ -151,7 +152,9 @@ namespace shawn
    random_set( SimulationController& sc, int anchor_cnt )
       throw()
    {
-      if ( anchor_cnt == 0 ) return;
+	   assert(anchor_cnt ==0);
+	   if ( anchor_cnt == 0 )
+		   return;
 
       int cnt = 0;
       LocalizationProcessorType *lpt;
