@@ -100,25 +100,34 @@ namespace shawn
                       const Node& target,
                       double& result )
       const throw()
-   {int cnt=0;
-      do {
-         result=0.0;
-         
-         if( multiplier_.is_not_null() )
-            result += 
-               (source.real_position()-target.real_position()).euclidean_norm()
-               * (*multiplier_);
-         if( offset_.is_not_null() )
-            result += *offset_;
+   {
+	   int cnt = 0;
+	   double mult = 0.0;
 
-		cnt++;
-		if(cnt>50000)
-			result=chop_lower_;
-      } while( resample_chopped_ && (result<chop_lower_));
-      
-      if( result<chop_lower_ ) result=chop_lower_;
+	   do {
+		   result = 0.0;
 
-      return true;
+		   if( multiplier_.is_not_null() ) 
+		   {
+			   mult = (*multiplier_);
+			   result += (source.real_position()-target.real_position()).euclidean_norm() * mult;
+		   }
+
+		   if( offset_.is_not_null() )
+			   result += *offset_;
+
+		   cnt++;
+		   if(cnt > 50000)
+			   result = chop_lower_;
+
+	   } while( resample_chopped_ && (result < chop_lower_));
+
+	   if( result < chop_lower_ ) 
+		   result=chop_lower_;
+
+	   std::cout << "estimate distance(): result " << result << ", mult " << mult << ", real dist: " << (source.real_position()-target.real_position()).euclidean_norm() << std::endl;
+
+	   return true;
    }
    // ----------------------------------------------------------------------
    std::string

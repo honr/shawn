@@ -10,19 +10,21 @@
 #include "sys/distance_estimates/distance_estimate_keeper.h"
 #include "sys/distance_estimates/perfect_distance_estimate.h"
 #include "sys/distance_estimates/task_randomized_distance_estimate.h"
+#include "sys/distance_estimates/task_absolute_error_distance_estimate.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task_keeper.h"
 
 namespace shawn
 {
 
-   void 
-   init_distance_estimates( SimulationController& sc )
-      throw()
-   {
-      sc.distance_estimate_keeper_w().add( new PerfectDistanceEstimate );
-      sc.simulation_task_keeper_w().add( new SimulationTaskRandomizedDistanceEstimate );
-   }
+	void 
+		init_distance_estimates( SimulationController& sc )
+		throw()
+	{
+		sc.distance_estimate_keeper_w().add( new PerfectDistanceEstimate );
+		sc.simulation_task_keeper_w().add( new SimulationTaskRandomizedDistanceEstimate );
+		sc.simulation_task_keeper_w().add( new SimulationTaskAbsoluteErrorDistanceEstimate);
+	}
 
 }
 
