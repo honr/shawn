@@ -133,7 +133,10 @@ namespace localization
       if ( leim.proc_type() == LocalizationProcessor::anchor )
          neighborhood_w().update_anchor( source, source_pos, distance );
       else
-         neighborhood_w().update_neighbor( source, distance );
+         neighborhood_w().update_neighbor( source, distance );	 
+	  if ( neighborhood().valid_anchor_cnt() >= (int)observer().floodlimit() )
+           state_ = eu_finished;
+	   
 
       return true;
    }
