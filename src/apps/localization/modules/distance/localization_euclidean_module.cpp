@@ -18,7 +18,11 @@
 #include "sys/world.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_environment.h"
+#include <sstream>
+#include <iostream>
 
+#define EUCDEBUG(x) std::cout << "euclidean debug["<< owner().id() <<"]: " << x << std::endl
+//#define EUCDEBUG(x) 
 
 using namespace shawn;
 
@@ -120,8 +124,7 @@ namespace localization
       throw()
    {
       const Node& source = leim.source();
-      Vec source_pos = 
-		  (leim.source().has_est_position())? ( leim.source().est_position()) : ( leim.source().real_position() );
+      Vec source_pos = (leim.source().has_est_position())? ( leim.source().est_position()) : ( leim.source().real_position() );
       double distance = estimate_distance( source, node() );
 
       last_useful_msg_ = simulation_round();
@@ -210,7 +213,8 @@ namespace localization
       throw()
    {
       NeighborhoodIterator it = neighborhood_w().find_w( anchor );
-      if ( !it->second->is_valid() )
+      //In case that we have not yet estimated a distance to this anchor
+	  if ( !it->second->is_valid() )
       {
          double distance = -1;
 
@@ -225,13 +229,14 @@ namespace localization
                break;
          }
 
-         if ( distance == -1 ) return;
+         if ( distance == -1 ) 
+		 {
+			 EUCDEBUG("Distance to anchor "<< anchor.id() <<" is -1");
+			 return;
+		 }
 
          it->second->set_distance( distance );
-
-         send( new LocalizationEuclideanAnchorMessage(
-            it->second->node(),
-            it->second->distance() ) );
+         send( new LocalizationEuclideanAnchorMessage( it->second->node(), it->second->distance() ) );
 
          // if floodlimit reached, finished
          if ( neighborhood().valid_anchor_cnt() >= (int)observer().floodlimit() )
@@ -247,18 +252,19 @@ namespace localization
       double distance = -1;
       bool leave = false;
 
-      for ( ConstNeighborhoodIterator
-               it1 = neighborhood().begin_neighborhood();
-               it1 != neighborhood().end_neighborhood();
-               ++it1 )
+      for ( ConstNeighborhoodIterator it1 = neighborhood().begin_neighborhood(); it1 != neighborhood().end_neighborhood(); ++it1 )
       {
-         for ( ConstNeighborhoodIterator
-                  it2 = it1;
-                  it2 != neighborhood().end_neighborhood();
-                  ++it2 )
+         for ( ConstNeighborhoodIterator it2 = it1; it2 != neighborhood().end_neighborhood(); ++it2 )
          {
             if ( it1 == it2 )
                continue;
+
+			EUCDEBUG("------------------------------------ n1["<< (*(it1->first)).id() <<"], n2["<< (*(it2->first)).id() <<"], anchor["<< anchor.id() <<"]");
+			EUCDEBUG("::" << neighborhood().has_valid_neighbor( *it1->first ) << ", " <<
+							 neighborhood().has_valid_neighbor( *it2->first ) << ", " <<
+							 neighborhood().has_valid_nneighbor( *it1->first, *it2->first ) << ", " <<
+							 neighborhood().has_valid_nneighbor( *it1->first, anchor ) << ", " <<
+							 neighborhood().has_valid_nneighbor( *it2->first, anchor ));
 
             // check, that all needed distances exist
             if ( !neighborhood().has_valid_neighbor( *it1->first ) ||
@@ -293,8 +299,9 @@ namespace localization
                   ;
             }
 
-            DistancePair dp = trilateration_distance(
-                                 self_n1, self_n2, n1_n2, n1_anchor, n2_anchor );
+			EUCDEBUG("n1["<< (*(it1->first)).id() <<"], n2["<< (*(it2->first)).id() <<"], anchor["<< anchor.id() <<"]");
+
+            DistancePair dp = trilateration_distance( self_n1, self_n2, n1_n2, n1_anchor, n2_anchor );
             if ( dp.first == -1 )
                continue;
 
@@ -302,6 +309,20 @@ namespace localization
             NodeList nl_cn = find_common_neighbor_neighbors( anchor, *it1->first, *it2->first );
             double dist_nv = neighbor_vote( anchor, *it1->first, *it2->first, dp, nl_nv );
             double dist_cn = common_neighbor( anchor, *it1->first, *it2->first, dp, nl_cn );
+			
+			{
+				std::ostringstream oss;
+				for(NodeList::iterator lalait = nl_nv.begin(); lalait != nl_nv.end(); ++lalait)
+					oss << (**lalait).id() << ", ";
+				EUCDEBUG("Neighborlist[nv, "<< nl_nv.size() <<"]: " << oss.str());
+			}
+			{
+				std::ostringstream oss;
+				for(NodeList::iterator lalait = nl_cn.begin(); lalait != nl_cn.end(); ++lalait)
+					oss << (**lalait).id() << ", ";
+				EUCDEBUG("Neighborlist[cn, "<< nl_cn.size() <<"]: " << oss.str());
+			}
+
 
             if ( dist_nv == -1 && dist_cn == -1 )
                continue;
@@ -368,20 +389,14 @@ namespace localization
       double max_measure_nv = std::numeric_limits<double>::min();
       double max_measure_cn = std::numeric_limits<double>::min();
 
-      for ( ConstNeighborhoodIterator
-               it1 = neighborhood().begin_neighborhood();
-               it1 != neighborhood().end_neighborhood();
-               ++it1 )
+      for ( ConstNeighborhoodIterator it1 = neighborhood().begin_neighborhood(); it1 != neighborhood().end_neighborhood(); ++it1 )
       {
-         for ( ConstNeighborhoodIterator
-                  it2 = it1;
-                  it2 != neighborhood().end_neighborhood();
-                  ++it2 )
+         for ( ConstNeighborhoodIterator it2 = it1; it2 != neighborhood().end_neighborhood(); ++it2 )
          {
             if ( it1 == it2 )
                continue;
 
-            // check, that all needed distances exist
+            // check, that all needed distance estimations to neighboring nodes exist
             if ( !neighborhood().has_valid_neighbor( *it1->first ) ||
                   !neighborhood().has_valid_neighbor( *it2->first ) ||
                   !neighborhood().has_valid_nneighbor( *it1->first, *it2->first ) ||
@@ -394,6 +409,8 @@ namespace localization
             double n1_anchor = neighborhood().nneighbor_distance( *it1->first, anchor );
             double n2_anchor = neighborhood().nneighbor_distance( *it2->first, anchor );
             double n1_n2 = neighborhood().nneighbor_distance( *it1->first, *it2->first );
+
+			EUCDEBUG("-------");
 
             // check collinearity
             switch ( cc_std_ )
@@ -414,13 +431,25 @@ namespace localization
                   ;
             }
 
-            DistancePair dp = localization::trilateration_distance(
-                                 self_n1, self_n2, n1_n2, n1_anchor, n2_anchor );
+			EUCDEBUG("n1["<< (*(it1->first)).id() <<"], n2["<< (*(it2->first)).id() <<"], anchor["<< anchor.id() <<"]");
+
+            DistancePair dp = localization::trilateration_distance( self_n1, self_n2, n1_n2, n1_anchor, n2_anchor );
             if ( dp.first == -1 )
-               continue;
+			{
+				EUCDEBUG("trilateration failed "<< anchor.id());
+				continue;
+			}
 
             double measure;
             NodeList nl = find_common_neighbor_neighbors_opt( anchor, *it1->first, *it2->first, measure );
+			
+			std::ostringstream oss;
+			for(NodeList::iterator lalait = nl.begin(); lalait != nl.end(); ++lalait)
+				oss << (**lalait).id() << ", ";
+			EUCDEBUG("Neighborlist: " << oss.str());
+
+				
+
             double dist_nv = neighbor_vote( anchor, *it1->first, *it2->first, dp, nl );
             double dist_cn = common_neighbor( anchor, *it1->first, *it2->first, dp, nl );
 
@@ -464,6 +493,11 @@ namespace localization
          }
       }// switch vote_
 
+	  if (distance == -1 )
+	  {
+		EUCDEBUG("voting resulted in -1 for anchor "<< anchor.id());
+	  }
+
       return distance;
    }
    // ----------------------------------------------------------------------
@@ -503,10 +537,7 @@ namespace localization
    {
       NodeList temp;
 
-      for ( ConstNeighborhoodIterator
-               it = neighborhood().begin_neighborhood();
-               it != neighborhood().end_neighborhood();
-               ++it )
+      for ( ConstNeighborhoodIterator it = neighborhood().begin_neighborhood(); it != neighborhood().end_neighborhood(); ++it )
       {
          // node is not n1 or n2, and connected to self and anchor
          if ( *it->first == n1 || *it->first == n2 || *it->first == anchor ||
@@ -534,10 +565,7 @@ namespace localization
       NodeList temp;
       col_measure = std::numeric_limits<double>::min();
 
-      for ( ConstNeighborhoodIterator
-               it = neighborhood().begin_neighborhood();
-               it != neighborhood().end_neighborhood();
-               ++it )
+      for ( ConstNeighborhoodIterator it = neighborhood().begin_neighborhood(); it != neighborhood().end_neighborhood(); ++it )
       {
          // node is not n1 or n2, and connected to self and anchor
          if ( *it->first == n1 || *it->first == n2 || *it->first == anchor ||
@@ -569,10 +597,9 @@ namespace localization
    }
    // ----------------------------------------------------------------------
    double
-   LocalizationEuclideanModule::
-   neighbor_vote( const Node& anchor, const Node& n1, const Node& n2,
-         const DistancePair& dp1, const NodeList& nl )
-      const throw()
+	LocalizationEuclideanModule::
+	neighbor_vote( const Node& anchor, const Node& n1, const Node& n2, const DistancePair& dp1, const NodeList& nl )
+    const throw()
    {
       // Following idea is from K. Langendoen and N. Reijers in their
       // implementation of ad-hoc positioning using OMNeT++.
@@ -582,7 +609,11 @@ namespace localization
       // The following lines are inspired by above mentioned people and their
       // code.
 
-      if ( nl.empty() ) return -1;
+	   if ( nl.empty() ) 
+	   {
+		   EUCDEBUG("List empty (neighbor_vote)");
+		   return -1;
+	   }
 
       // temporary workaround. update to 2D/3D should follow soon, so euclidean
       // will exclusively work with NodeLists.
@@ -594,17 +625,11 @@ namespace localization
       stat1 += dp1.first;
       stat2 += dp1.second;
 
-      for ( NodeList::const_iterator
-               it = nl.begin();
-               it != nl.end();
-               ++it )
+      for ( NodeList::const_iterator it = nl.begin(); it != nl.end(); ++it )
       {
          const Node& n3 = **it;
 
-         for ( NodeList::const_iterator
-                  it_refs = nl_refs.begin();
-                  it_refs != nl_refs.end();
-                  ++it_refs )
+         for ( NodeList::const_iterator it_refs = nl_refs.begin(); it_refs != nl_refs.end(); ++it_refs )
          {
 
             const Node& n1_2 = **it_refs;
@@ -636,8 +661,7 @@ namespace localization
                   ;
             }
 
-            DistancePair dp2 = localization::trilateration_distance(
-                                    self_n12, self_n3, n12_n3, n12_anchor, n3_anchor );
+            DistancePair dp2 = localization::trilateration_distance( self_n12, self_n3, n12_n3, n12_anchor, n3_anchor );
             if ( dp2.first == -1)
                continue;
 

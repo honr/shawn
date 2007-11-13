@@ -125,7 +125,7 @@ namespace shawn
 	   if( result < chop_lower_ ) 
 		   result=chop_lower_;
 
-	   std::cout << "estimate distance(): result " << result << ", mult " << mult << ", real dist: " << (source.real_position()-target.real_position()).euclidean_norm() << std::endl;
+	   //std::cout << "estimate distance(): result " << result << ", mult " << mult << ", real dist: " << (source.real_position()-target.real_position()).euclidean_norm() << std::endl;
 
 	   return true;
    }

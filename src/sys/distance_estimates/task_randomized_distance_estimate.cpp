@@ -29,17 +29,11 @@ namespace shawn
    run( SimulationController& sc )
       throw( std::runtime_error )
    {
-      std::string name = 
-         sc.environment().optional_string_param("name","");
-      std::string mult = 
-         sc.environment().optional_string_param("multiplier","");
-      std::string offset =
-         sc.environment().optional_string_param("offset","");
-      double chop =
-         sc.environment().optional_double_param("chop_low",
-                                                std::numeric_limits<double>::min());
-      bool resample =
-         sc.environment().optional_bool_param("resample_chopped",false);
+      std::string name =  sc.environment().optional_string_param("name","");
+      std::string mult =  sc.environment().optional_string_param("multiplier","");
+      std::string offset = sc.environment().optional_string_param("offset","");
+      double chop = sc.environment().optional_double_param("chop_low", std::numeric_limits<double>::min());
+      bool resample = sc.environment().optional_bool_param("resample_chopped",false);
 
       RandomizedDistanceEstimate *rde = new RandomizedDistanceEstimate;
 
