@@ -22,6 +22,10 @@
 #include "sys/node.h"
 #include "sys/processor.h"
 
+#ifdef ENABLE_VFDB
+#include "apps/vfdb/vfdb_postscript_task.h"
+#endif
+
 
 namespace localization
 {
@@ -235,6 +239,9 @@ namespace localization
 	  friend class LocalizationiDLSModule;
 	  friend class LocalizationDLSModule;
 	  friend class LocalizationTestModule;
+	  #ifdef ENABLE_VFDB
+	  friend class vfdb::VfdbPostscriptTask;
+      #endif
    };
 
 }// namespace localization

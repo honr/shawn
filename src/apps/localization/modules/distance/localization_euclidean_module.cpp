@@ -21,8 +21,8 @@
 #include <sstream>
 #include <iostream>
 
-#define EUCDEBUG(x) std::cout << "euclidean debug["<< owner().id() <<"]: " << x << std::endl
-//#define EUCDEBUG(x) 
+//#define EUCDEBUG(x) std::cout << "euclidean debug["<< owner().id() <<"]: " << x << std::endl
+#define EUCDEBUG(x) 
 
 using namespace shawn;
 
@@ -105,7 +105,7 @@ namespace localization
    finished( void )
       throw()
    {
-      return state_ == eu_finished;
+	   return (state_ == eu_finished);
    }
 
 	void
@@ -134,9 +134,10 @@ namespace localization
          neighborhood_w().update_anchor( source, source_pos, distance );
       else
          neighborhood_w().update_neighbor( source, distance );	 
+
+	  //BugFix: One-hop to anchor
 	  if ( neighborhood().valid_anchor_cnt() >= (int)observer().floodlimit() )
-           state_ = eu_finished;
-	   
+		  state_ = eu_finished;
 
       return true;
    }
@@ -147,9 +148,7 @@ namespace localization
       throw()
    {
       // send info about own neighborhood
-      send( new LocalizationEuclideanNeighborMessage(
-         neighborhood().neighbor_distance_map() ) );
-
+      send( new LocalizationEuclideanNeighborMessage( neighborhood().neighbor_distance_map() ) );
       state_ = eu_work;
    }
    // ----------------------------------------------------------------------
@@ -165,9 +164,7 @@ namespace localization
       ConstNeighborhoodIterator it = neighborhood().find( lenm.source() );
       if ( it->second->is_anchor() && it->second->is_valid() )
       {
-         send( new LocalizationEuclideanAnchorMessage(
-                  it->second->node(),
-                  it->second->distance() ) );
+         send( new LocalizationEuclideanAnchorMessage( it->second->node(), it->second->distance() ) );
       }
 
       return true;
@@ -178,7 +175,7 @@ namespace localization
    process_euclidean_anchor_message( const LocalizationEuclideanAnchorMessage& leam )
       throw()
    {
-      if ( state_ == eu_finished )
+     if ( state_ == eu_finished )
          return true;
 
       const Node& anchor = leam.anchor();
@@ -242,8 +239,9 @@ namespace localization
          send( new LocalizationEuclideanAnchorMessage( it->second->node(), it->second->distance() ) );
 
          // if floodlimit reached, finished
-         if ( neighborhood().valid_anchor_cnt() >= (int)observer().floodlimit() )
-            state_ = eu_finished;
+		 if ( neighborhood().valid_anchor_cnt() >= (int)observer().floodlimit() )
+			 state_ = eu_finished;
+
       }
    }
    // ----------------------------------------------------------------------
