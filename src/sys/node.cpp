@@ -801,7 +801,13 @@ namespace shawn
 			return neighbors;
 
 	}
-
+	// ----------------------------------------------------------------------
+	const Node::ProcessorList&
+	Node::processors() const
+	throw()
+	{
+		return processors_;
+	}
 }
 
 /*-----------------------------------------------------------------------

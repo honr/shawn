@@ -48,6 +48,10 @@ namespace shawn
       /** Returns the speed of the Node according to the current simulation time.
         */
       virtual Vec velocity( void ) const throw();
+	  ///
+	  /** Returns the destination.
+	  */
+	  virtual Vec destination( void ) const throw();
       ///
       /** Returns the type of Movement, in this case LinearMovement
         */

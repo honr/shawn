@@ -26,7 +26,8 @@
 
 #endif
 //-----------
-
+//#define DISABLE_LOGGING
+#define DISABLE_LOGLEVEL_DEBUG
 
 #endif
 /*-----------------------------------------------------------------------

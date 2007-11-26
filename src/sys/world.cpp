@@ -323,6 +323,7 @@ namespace shawn
       mi->msg_     = mh;
 
       transmission_model_w().send_message(*mi);
+	  // Think about delete mi;
    }
    // ----------------------------------------------------------------------
    bool

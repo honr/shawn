@@ -110,7 +110,7 @@ namespace shawn
       ///
       virtual int size( void ) const throw();
       ///@}
-		virtual void setSize( int )throw();
+	  virtual void setSize( int )throw();
 
    private:
 

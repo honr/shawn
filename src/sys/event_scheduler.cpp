@@ -93,8 +93,7 @@ namespace shawn
       assert( t >= current_time() );
       EventHandle eh = new EventInfo( h, t, eth );
 
-      std::pair<EventSet::iterator,bool> 
-         worked = events_.insert(eh);
+      std::pair<EventSet::iterator,bool> worked = events_.insert(eh);
       assert( worked.second );
       eh->pos_ = worked.first;
       return eh;
@@ -107,7 +106,20 @@ namespace shawn
    {
       assert( !eh->dead_ ); // must not delete_event in it's timeout
       assert( eh != NULL );
-      assert( events_.find(eh) != events_.end() );
+	  //assert( events_.find(eh) != events_.end() );
+	  // Assertion
+	  bool event_found = false;
+	  if (events_.find(eh) == events_.end()){
+		  for (EventSet::iterator it = events_.begin(); it != events_.end(); ++it){
+			  if ( eh->pos_ == it ){
+				  event_found = true;
+				  break;
+			  }
+		  }
+	  }else{
+		 event_found = true;
+	  }
+	  assert( event_found );
       events_.erase( eh->pos_ );
       delete eh;
    }
@@ -120,7 +132,20 @@ namespace shawn
    {
       assert( newt >= current_time() );
       assert( eh != NULL );
-      assert( events_.find(eh) != events_.end() );
+      //assert( events_.find(eh) != events_.end() );
+	  // Assertion
+	  bool event_found = false;
+	  if (events_.find(eh) == events_.end()){
+		  for (EventSet::iterator it = events_.begin(); it != events_.end(); ++it){
+			  if ( eh->pos_ == it ){
+				  event_found = true;
+				  break;
+			  }
+		  }
+	  }else{
+		 event_found = true;
+	  }
+	  assert( event_found );
       events_.erase( eh->pos_ );
       eh->time_ = newt;
       std::pair<EventSet::iterator,bool> 
@@ -158,16 +183,15 @@ namespace shawn
                {
                   time_ = net;
                   EventScheduler::EventHandle eh = front_w();
+				  assert( eh );
                   assert( eh->pos_ == events_.begin() );
                   assert( net == eh->time_ );
                   assert( !eh->dead_ );
                   eh->dead_ = true;
-
                   eh->handler_->timeout( *this, eh, net, eh->tag_ );
-               
                   if( eh->dead_ )
-                     {
-                        events_.erase(eh);
+					{
+						events_.erase( eh->pos_ );
                         delete eh;
                      }
                }
@@ -219,6 +243,9 @@ namespace shawn
    clear( double new_time )
       throw()
    {
+	  for( EventSet::iterator it = events_.begin(); it != events_.end(); ++it ){
+	     if(*it) delete *it;
+	  }
       events_.clear();
       time_=new_time;
    }

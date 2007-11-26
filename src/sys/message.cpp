@@ -106,11 +106,18 @@ namespace shawn
    int
    Message::
    size( void )
-      const throw()
-   { return size_; }
-	void Message::setSize(int size){
+   const throw()
+   { 
+	   return size_;
+   }
+   // ----------------------------------------------------------------------
+   void 
+   Message::
+   setSize(int size)
+   throw()
+   {
 		size_=size;
-		}
+   }
 
 
 }

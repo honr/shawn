@@ -101,7 +101,7 @@ namespace shawn
     // ----------------------------------------------------------------------
     void
         ReliableTransmissionModel::
-        deliver_one_message( TransmissionModel::MessageInfo&mi )
+        deliver_one_message( TransmissionModel::MessageInfo& mi )
         throw()
     {
 
@@ -113,6 +113,8 @@ namespace shawn
         for( EdgeModel::adjacency_iterator it = world_w().begin_adjacent_nodes_w( *mi.src_ ),
              endit = world_w().end_adjacent_nodes_w( *mi.src_ ); it != endit; ++it )
             it->receive( ConstMessageHandle(mi.msg_) );
+
+		delete &mi;
     }
 
 

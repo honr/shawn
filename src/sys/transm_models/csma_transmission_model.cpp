@@ -24,6 +24,7 @@ namespace shawn
 		deliver_num_(0),
 		backOff_(backoff),
 		bandwidth_(bandwidth),
+		neighbors_(NULL),
 		sending_jitter_(sending_jitter)
 		{
 		}
@@ -31,29 +32,32 @@ namespace shawn
 	// ----------------------------------------------------------------------
 	CsmaTransmissionModel::
 		~CsmaTransmissionModel()
-		{}
+	{
+	}
 
 	// ----------------------------------------------------------------------
 	void CsmaTransmissionModel::init()
 		throw()
-		{
+	{
 		TransmissionModel::init();
-		if( neighbors_ != NULL )
+		if( neighbors_ != NULL ){
 			delete neighbors_;
+			neighbors_ = NULL;
+		}
 		//This gives us an Array of Messages for all nodes which can be received in O(1)
 		neighbors_ = new DynamicNodeArray<MessageList>(world_w());
-		}
+	}
 
 	// ----------------------------------------------------------------------
 	void CsmaTransmissionModel::reset()
 		throw()
-		{
+	{
 		average_delay_ = deliver_num_>0? average_delay_/deliver_num_ : 0;
-		jitter_ = deliver_num_>1? jitter_/(deliver_num_-1) :0;
-		std::cout << "CSMA: "<<  
+		jitter_ = deliver_num_ > 1 ? jitter_ / (deliver_num_ -1) : 0;
+		/*std::cout << "CSMA: "<<  
 			received_ <<" msgs. to be sent. "<< dropped_ << " msgs. dropped." 
 			<< packet_failure_ << " packets fail to reach the destination." << " And average delay is "
-			<< average_delay_  <<". Jitter is "<<jitter_<< std::endl;
+			<< average_delay_  <<". Jitter is "<<jitter_<< std::endl;*/
 
 		TransmissionModel::reset();
 		received_ = 0;
@@ -62,7 +66,7 @@ namespace shawn
 		average_delay_ = 0;
 		deliver_num_ = 0;
 		jitter_ = 0;
-		}
+	}
 	// ----------------------------------------------------------------------
 
 
@@ -76,9 +80,11 @@ namespace shawn
 		}
 
 	// ----------------------------------------------------------------------
-	void CsmaTransmissionModel::send_message( MessageInfo &mi )
-		throw()
-		{
+	void 
+		CsmaTransmissionModel::
+		send_message( MessageInfo &mi )
+	throw()
+	{
 		csma_msg* new_msg = new csma_msg(&mi, mi.msg_->size() / bandwidth_, backOff_);
 		// If sending jitter is set, deliver time will be changed. ( Needed to avoid same deliver times due to 
 		// processors sending at the beginning of a round.)
@@ -90,10 +96,10 @@ namespace shawn
 		m->insert(new_msg);
 		// Create a new Event. Important is the MessageTag (new_msg). It defines which message will be send
 		event_handle_ = world_w().scheduler_w().new_event(*this, mi.time_,new_msg);
-		}
+	}
 
 	void CsmaTransmissionModel::timeout(EventScheduler & event_scheduler, EventScheduler::EventHandle event_handle, double time, EventScheduler::EventTagHandle & event_tag_handle) throw()
-		{
+	{
 		csma_msg* msg = dynamic_cast<csma_msg* >(event_tag_handle.get());
 		if(msg != NULL){
 			if(!msg->sending)
@@ -103,9 +109,9 @@ namespace shawn
 
 			}
 		else
-			std::cout<< "msg = NULL"<<std::endl;
+			/*std::cout<< "msg = NULL"<<std::endl*/;
 
-		}
+	}
 
 	// ----------------------------------------------------------------------
 	void CsmaTransmissionModel::
@@ -119,10 +125,10 @@ namespace shawn
 			if(msg->isSending()){
 				Node* source = msg->pmi->src_;
 				deliver_num_++;
-				std::cout <<"csma: "<< "Source Node: " <<  source->id() 
+				/*std::cout <<"csma: "<< "Source Node: " <<  source->id() 
 					<< ". Msg. send time: " <<  msg->deliver_time
 					<< ". Msg. deliver time: " <<  msg->pmi->time_
-					<< std::endl;
+					<< std::endl;*/
 				for(unsigned int i=0; i< msg->destinations_.size(); i++){
 					//All receiving nodes will check, if they already receive a message 
 					receive(msg->destinations_[i]->dest_node_,msg);
@@ -151,7 +157,7 @@ namespace shawn
 					csma_msg* temp = *iter;
 					if(msg->deliver_time > temp->deliver_time && msg->deliver_time <= temp->deliver_time + temp->duration_)
 						{
-						std::cout <<"csma: "<< "Node " << temp->pmi->src_->id() << " is interfering" << std::endl;
+						/*std::cout <<"csma: "<< "Node " << temp->pmi->src_->id() << " is interfering" << std::endl;*/
 						double time_fin = temp->deliver_time + temp->duration_;
 						sending = true;
 						nextFreeTime = (nextFreeTime>= time_fin)? (nextFreeTime):(time_fin);
@@ -164,7 +170,7 @@ namespace shawn
 				msg->setSending();
 				}
 			else{
-				std::cout<<"csma: "<<"Other node sending. Message from node: "<<msg->pmi->src_->id() <<" delayed"<< std::endl;
+				//std::cout<<"csma: "<<"Other node sending. Message from node: "<<msg->pmi->src_->id() <<" delayed"<< std::endl;
 				msg->deliver_time= nextFreeTime + msg->backoff;
 				//New Event. To the next time the medium is free + a backoff
 				event_handle_ = world_w().scheduler_w().new_event(*this,msg->deliver_time,msg);
@@ -200,14 +206,14 @@ namespace shawn
 				}
 
 			if(inUse){
-				std::cout<<"csma: "<<"Message from Node:"<< msg->pmi->src_->id() << "dropped. Due to conflict at node:"
-					<< target->id()<< std::endl;
+				/*std::cout<<"csma: "<<"Message from Node:"<< msg->pmi->src_->id() << "dropped. Due to conflict at node:"
+					<< target->id()<< std::endl;*/
 				++dropped_;
 
 				}
 			else{
-				std::cout<<"csma: "<<"Node:"<< target->id() << "received msg. from node:"
-					<< msg->pmi->src_->id()<< std::endl;
+				/*std::cout<<"csma: "<<"Node:"<< target->id() << "received msg. from node:"
+					<< msg->pmi->src_->id()<< std::endl;*/
 				++received_;
 				double cur_delay=(msg->deliver_time-msg->pmi->time_);
 				average_delay_ +=cur_delay; 

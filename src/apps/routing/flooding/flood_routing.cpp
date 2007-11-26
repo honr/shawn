@@ -87,7 +87,7 @@ namespace routing
             if( frm.hopsremain_ > 0 )
 			{
 				routing::RoutedMessageInfo* rmi = &(frm.info());
-				owner.send( new FloodRoutingMessage(fri.message(), rmi, frm.hopsremain_ - 1 ) );
+				owner.send( new FloodRoutingMessage(fri.message(), static_cast<RoutedMessageInfoHandle>(rmi), frm.hopsremain_ - 1 ) );
 			}
 
             return true;

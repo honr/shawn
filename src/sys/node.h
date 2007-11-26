@@ -113,9 +113,9 @@ namespace shawn
 
       ///Set the movement for this node. This will determine the nodes position
       virtual void set_movement( const NodeMovementHandle& ) throw();
-      ///Get the nodes movement as const
+      ///Get the nodes movement 
       virtual NodeMovement& movement_w( void ) throw();
-      ///Get the nodes movement
+      ///Get the nodes movement as const
       virtual const NodeMovement& movement( void ) const throw();
 	  ///Convenience method. Calls movement().position()
       virtual Vec real_position( void ) const throw();
@@ -163,6 +163,8 @@ namespace shawn
 	    * the beginning of the simulation. This can be used e.g. to start a certain protocol. 
 		*/
 	  bool is_special_node( void ) const throw();
+	  /// Returns the ProcessorList
+	  const Node::ProcessorList& processors( void ) const throw();
 	  ///Returns a Processor of a desired type. Returns NULL if no processor of this type is registered
       template<typename T>
       T* get_processor_of_type_w( void ) throw()

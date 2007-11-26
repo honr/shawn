@@ -129,6 +129,14 @@ namespace shawn
     }
 
     // ----------------------------------------------------------------------
+	Vec
+		LinearMovement::
+		destination( void )
+		const throw()
+	{
+		return dest_;
+	}
+	// ----------------------------------------------------------------------
     std::string
         LinearMovement::
         name( void )
@@ -182,7 +190,7 @@ namespace shawn
         LM_DEBUG("boxes_changed: Earliest grid violation @ " << box_exit_time );
 
         //Only if the node will leave the grid until its destination, generate an event
-        if (box_exit_time <= arrival_time_)
+        if (box_exit_time <= arrival_time_ && box_exit_time != std::numeric_limits<double>::max())
         {
             LM_DEBUG("boxes_changed: New event created" );
             event_handle_ = (world_->scheduler_w().new_event(*this, box_exit_time, NULL));
@@ -192,7 +200,6 @@ namespace shawn
             LM_DEBUG("boxes_changed: No event created (arrival_time("<< arrival_time_ <<
                 ") > box_exit_time("<< box_exit_time <<"))" );
         }
-
     }
     // ----------------------------------------------------------------------
     double     
