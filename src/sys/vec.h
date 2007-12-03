@@ -11,6 +11,7 @@
 
 #include "sys/util/defutils.h"
 #include "shawn_config.h"
+#include <iostream>
 
 #ifdef HAVE_CGAL
 #include "sys/cgal/types.h"
