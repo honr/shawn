@@ -13,6 +13,7 @@
 #include "sys/node_movements/playback/node_movement_creator.h"
 #include "sys/node_movements/playback/ns2_node_movement_creator.h"
 #include "sys/node_movements/playback/tag_node_movement_creator.h"
+#include "sys/node_movements/playback/random_direction_node_movement_creator.h"
 #include "sys/event_scheduler.h"
 #include <string>
 
@@ -48,6 +49,12 @@ namespace shawn
 			 sc.world_w().movement_controller_w().set_node_movement_creator(tagnmc);
 		     sc.world_w().movement_controller_w().start();
 		}
+      else if(sc.environment_w().optional_string_param("mode","")=="random_direction")
+      {
+         RandomDirectionNodeMovementCreator * rdnmc =new RandomDirectionNodeMovementCreator(sc);
+         sc.world_w().movement_controller_w().set_node_movement_creator(rdnmc);
+         sc.world_w().movement_controller_w().start();
+      }
 		else
 		{
         WARN(sc.logger(), "No NodeMovementCreator Set");

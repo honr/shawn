@@ -94,7 +94,6 @@ namespace shawn
             MessageInfo* mi = aired_messages_.front();
             aired_messages_.pop();
             deliver_one_message( *mi );
-            delete mi;
         }
     }
 
