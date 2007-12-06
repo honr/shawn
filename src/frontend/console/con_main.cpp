@@ -35,15 +35,18 @@
 using namespace std;
 using namespace shawn;
 
-ShawnSimulationController* master_init( bool jshawn_support )
+
+ShawnSimulationController* master_init()
    throw()
 {
-   ShawnSimulationController* sc = NULL;
-   
+   /* jshawn support is deprecated!
    if(!jshawn_support)
 	   sc = shawn_init_sys();
    else
 	   sc = new JShawnSimulationController;
+	*/
+
+   ShawnSimulationController* sc = shawn_init_sys();
 
    init_sys_tasks(*sc);
    init_apps(*sc);
@@ -184,7 +187,8 @@ int main( int argc, char *argv[] )
 	if( strcmp(argv[i], "-jshawn") == 0 )
 		jshawn_support = true;
 
-   shawn::ShawnSimulationController* sc = master_init(jshawn_support);
+   //shawn::ShawnSimulationController* sc = master_init(jshawn_support);
+   shawn::ShawnSimulationController* sc = master_init();
  
    if( !parse_args( argc, argv, *sc, filen ) )
       exit(1);

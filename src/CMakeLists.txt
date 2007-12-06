@@ -30,8 +30,16 @@
 # Collect all source files recursively to be compiled
 #=============
 
-	file( GLOB_RECURSE shawnSourcesCPP *.cpp )
-	file( GLOB_RECURSE shawnSourcesH *.h )
+	file( GLOB_RECURSE shawnSourcesAppsCPP apps/*.cpp )
+	file( GLOB_RECURSE shawnSourcesAppsH apps/*.h )
+
+	file( GLOB_RECURSE shawnSourcesFrontendCPP frontend/*.cpp )
+	file( GLOB_RECURSE shawnSourcesFrontendH frontend/*.h )
+	
+	file( GLOB_RECURSE shawnSourcesSysCPP sys/*.cpp )
+	file( GLOB_RECURSE shawnSourcesSysH sys/*.h )
+	
+	#file( GLOB_RECURSE shawnSourcesConfig shawn_config.h )
 
 	#
 	# Collect LEGACYAPPS sources if present
@@ -47,21 +55,33 @@
 # Add collected source files to common source variables
 #=============
 
-	if ( shawnSourcesCPP )
-		set( shawnSources ${shawnSourcesCPP} )
-	endif ( shawnSourcesCPP )
+	# shawnSources - Sources for executable build
 
-	if ( shawnSourcesH )
-		set( shawnSources ${shawnSources} ${shawnSourcesH} )
-	endif ( shawnSourcesH )
+		set( shawnSources ${shawnSources} ${shawnSourcesSysCPP} )
+		set( shawnSources ${shawnSources} ${shawnSourcesSysH} )
 
-	if ( shawnSourcesC )
-		set( shawnSources ${shawnSources} ${shawnSourcesC} )
-	endif ( shawnSourcesC )
+		set( shawnSources ${shawnSources} ${shawnSourcesAppsCPP} )
+		set( shawnSources ${shawnSources} ${shawnSourcesAppsH} )
 
-	if ( legacyappsSourcesCPP )
+		set( shawnSources ${shawnSources} ${shawnSourcesFrontendCPP} )
+		set( shawnSources ${shawnSources} ${shawnSourcesFrontendH} )
+		
+		set( shawnSources ${shawnSources} shawn_config.h )
+
 		set( shawnSources ${shawnSources} ${legacyappsSourcesCPP} )
-	endif ( legacyappsSourcesCPP )
+	
+	# shawnSourcesLib - Sources for library build
+
+		set( shawnSourcesLib ${shawnSourcesLib} ${shawnSourcesSysCPP} )
+		set( shawnSourcesLib ${shawnSourcesLib} ${shawnSourcesSysH} )
+
+		set( shawnSourcesLib ${shawnSourcesLib} ${shawnSourcesAppsCPP} )
+		set( shawnSourcesLib ${shawnSourcesLib} ${shawnSourcesAppsH} )
+
+		set( shawnSourcesLib ${shawnSourcesLib} shawn_config.h )
+
+		set( shawnSourcesLib ${shawnSourcesLib} ${legacyappsSourcesCPP} )
+
 
 
 #=============
@@ -144,6 +164,7 @@
 #=============
 
 	add_executable( shawn ${shawnSources} )
+	add_library( shawnlib ${shawnSourcesLib} )
 
 
 #=============

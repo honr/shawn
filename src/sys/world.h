@@ -38,7 +38,7 @@ namespace shawn
         , public Logger
 #endif
    {
-private:
+public:
       ///
       typedef
       std::vector<Node*>
