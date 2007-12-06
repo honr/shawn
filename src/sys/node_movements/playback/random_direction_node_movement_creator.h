@@ -58,7 +58,7 @@ namespace shawn
       SimulationController &sc_;
       
       // Map to save times, when nodes will fall from the border of the world
-      std::map<double, Node*> next_movement_times_;
+      std::multimap<double, Node*> next_movement_times_;
 
       // Random Variable for getting speeds
       shawn::UniformRandomVariable urvSpeed_;
