@@ -163,9 +163,9 @@
 # Build target
 #=============
 
+	add_library( shawn ${shawnSources} )
 	add_executable( shawn ${shawnSources} )
 	add_library( shawnlib ${shawnSourcesLib} )
-
 
 #=============
 # Link libraries to the shawn target

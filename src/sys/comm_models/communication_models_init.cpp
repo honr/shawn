@@ -16,6 +16,7 @@
 //#include "sys/comm_models/quasi_disk_graph_communication_model_factory.h"
 #include "sys/comm_models/manual_communication_model_factory.h"
 #include "sys/comm_models/permalink_communication_model_factory.h"
+#include "sys/comm_models/link_probability_communication_model_factory.h"
 #include "sys/comm_models/multiple_communication_model_factory.h"
 #include "sys/comm_models/stochastic_comm_model_factory.h"
 
@@ -30,6 +31,7 @@ namespace shawn
         //        sc.communication_model_keeper_w().add( new QuasiDiskGraphCommunicationModelFactory );
         sc.communication_model_keeper_w().add( new MultipleCommunicationModelFactory );
         sc.communication_model_keeper_w().add( new PermalinkCommunicationModelFactory );
+        sc.communication_model_keeper_w().add( new LinkProbabilityCommunicationModelFactory );
         sc.communication_model_keeper_w().add( new StochasticCommunicationModelFactory );
    }
 

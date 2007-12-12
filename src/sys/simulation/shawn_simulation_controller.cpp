@@ -131,7 +131,7 @@ namespace shawn
       li.has_command_=false;
       li.parms_=new SimulationEnvironment::ParameterSet;
 
-	  std::string::size_type hashm = b.find('#');
+      std::string::size_type hashm = b.find('#');
 
       std::string line;
       if( hashm == std::string::npos )
@@ -146,13 +146,7 @@ namespace shawn
          {
             environment_w().push_parameters( li.parms_ );
 
-			if ( !&simulation_task_keeper_w() )
-				cout << "no sim task keeper" << endl;
-
-			cout << li.command_ << endl;
-
             SimulationTaskHandle sth = simulation_task_keeper_w().find_w( li.command_ );
-
             if( sth != NULL )
                {
                   execute_task(sth);
@@ -161,7 +155,6 @@ namespace shawn
             else
                {
                   environment_w().pop_parameters();
-
                   throw std::runtime_error(std::string("Unknown task '")+
                                            li.command_ +
                                            std::string("'.") );

@@ -88,7 +88,7 @@ namespace shawn{
       double direction = urvDirection_;
       double speed = urvSpeed_;
       Vec vector(sin(direction) * speed, cos(direction) * speed, 0.0);
-      double intersectTime = 9999999999999;
+      double intersectTime = std::numeric_limits<double>::max();
 
       // Get x intersection
       if (vector.x() < 0)
