@@ -46,6 +46,7 @@ ShawnSimulationController* master_init( bool jshawn_support )
 	   sc = new JShawnSimulationController;
 
    init_sys_tasks(*sc);
+   std::cout << "rufe init_apps auf" << std::endl;
    init_apps(*sc);
 
 	#ifdef HAVE_LEGACYAPPS

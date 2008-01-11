@@ -120,7 +120,7 @@
 #	endif ( WIN32 )
 
 
-	if ( WIN32 )
+	if ( WIN32 AND NOT CYGWIN )
 
 		set ( DEFAULT_EXPAT_ROOT  )
 		set ( DEFAULT_CGAL_ROOT   )
@@ -133,7 +133,7 @@
         set( INCLUDE_PATH_CGAL_COMPILER_CONFIG   CACHE PATH "Path to CGAL compiler config" )
         set( INCLUDE_PATH_BOOST   CACHE PATH "Path to Boost include path" )
 
-	else ( WIN32 )
+	else ( WIN32 AND NOT CYGWIN )
 
 		set ( DEFAULT_EXPAT_ROOT  )
 		set ( DEFAULT_CGAL_ROOT   )
@@ -146,7 +146,7 @@
         set( INCLUDE_PATH_CGAL_COMPILER_CONFIG   CACHE PATH "Path to CGAL compiler config" )
         set( INCLUDE_PATH_BOOST   CACHE PATH "Path to Boost include path" )
 
-	endif ( WIN32 )
+	endif ( WIN32 AND NOT CYGWIN )
 
 
 	link_directories( ${LIB_PATH_EXPAT}
@@ -164,14 +164,14 @@
 #=============
 
 	add_library( shawn ${shawnSources} )
-	add_executable( shawn ${shawnSources} )
+	add_executable( shawnexe ${shawnSources} )
 	add_library( shawnlib ${shawnSourcesLib} )
 
 #=============
 # Link libraries to the shawn target
 #=============
 
-	if ( WIN32 )
+	if (  WIN32 AND NOT CYGWIN  )
 
 		if ( LIB_PATH_EXPAT )
 			set ( LIB_EXPAT libexpatMT.lib )
@@ -183,21 +183,22 @@
 
 		set ( SYSTEM_LIBS ws2_32.lib )
 
-	else ( WIN32 )
+	else (  WIN32 AND NOT CYGWIN  )
 
 		if ( LIB_PATH_EXPAT )
-			set ( LIB_EXPAT expat )
+			set ( LIB_EXPAT libexpat.a )
 		endif ( LIB_PATH_EXPAT )
 
 		if ( LIB_PATH_CGAL )
-			set ( LIB_CGAL CGAL )
+			set ( LIB_CGAL libCGAL.a )
 		endif ( LIB_PATH_CGAL )
 
 		set ( SYSTEM_LIBS dl )
 		
-	endif ( WIN32 )
+	endif (  WIN32 AND NOT CYGWIN  )
 
 	target_link_libraries( shawn ${SYSTEM_LIBS} ${LIB_EXPAT} ${LIB_CGAL} )
+	target_link_libraries( shawnexe ${SYSTEM_LIBS} ${LIB_EXPAT} ${LIB_CGAL} )
 
 
 #=============
