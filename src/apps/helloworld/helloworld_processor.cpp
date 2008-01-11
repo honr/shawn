@@ -48,11 +48,6 @@ namespace helloworld
    {
       const HelloworldMessage* hmsg = dynamic_cast<const HelloworldMessage*> ( mh.get() );
 
-	  NodeDistanceEstimateHandle h = owner_w().world_w().simulation_controller_w().distance_estimate_keeper_w().find_w("extended_tagged_polygon");
-	  double d = -1;
-	  h->estimate_distance(owner_w(), mh->source(), d);
-	  cout << "dist("<< owner_w().id() << "," << mh->source().id() <<") = " << d << endl;
-
       if( hmsg != NULL )
 		{
 			last_time_of_receive_=simulation_round();
