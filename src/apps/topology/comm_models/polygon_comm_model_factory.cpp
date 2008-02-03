@@ -1,10 +1,4 @@
-/************************************************************************
- ** This file is part of the network simulator Shawn.                  **
- ** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
- ** Shawn is free software; you can redistribute it and/or modify it   **
- ** under the terms of the BSD License. Refer to the shawn-licence.txt **
- ** file in the root of the Shawn source tree for further details.     **
- ************************************************************************/
+
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 #include "shawn_config.h"
@@ -12,16 +6,21 @@
 
 #include "apps/topology/comm_models/polygon_comm_model_factory.h"
 #include "apps/topology/comm_models/polygon_comm_model.h"
+#include "apps/topology/topology/polygon_topology.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_environment.h"
-
+#include "sys/distance_estimates/distance_estimate_keeper.h"
+#include "apps/topology/topology_keepers.h"
 #include <limits>
-
+#include <iostream>
 using namespace std;
-
+using namespace shawn;
 namespace topology
 {
-
+PolygonTopologyCommunicationModelFactory::
+	PolygonTopologyCommunicationModelFactory(shawn::SimulationController* sc)
+	:sc_(sc)
+{}
 	// ----------------------------------------------------------------------
 	PolygonTopologyCommunicationModelFactory::
 		~PolygonTopologyCommunicationModelFactory()
@@ -42,7 +41,7 @@ namespace topology
 		description(void) 
 		const throw()
 	{
-		return "";
+		return "polygon_topology_communication_model";
 	}
 
 	// ----------------------------------------------------------------------
@@ -51,12 +50,29 @@ namespace topology
 		create( const SimulationController& sc) 
 		const throw()
 	{
-		double range = sc.environment().optional_double_param("range", std::numeric_limits<int>::max() );
-		PolygonTopologyCommunicationModel* pcm = new PolygonTopologyCommunicationModel();
+			string topology_name = sc.environment().required_string_param("topology");
+		double lower = sc.environment().required_double_param("lower_bound");
+		double upper = sc.environment().required_double_param("upper_bound");
+		string fname = sc.environment().optional_string_param("file_name","");
+		string rssi_dist = sc.environment().optional_string_param("rssi_dist","");
+		bool attenuation = sc.environment().optional_bool_param("with_attenuation", false);
 
-		//TODO: DENNIS: Parametrize the model
+		//Retrieve the topology by the supplied name
+		reading::ConstReadingHandle h = topology::topology_keeper(sc).find(topology_name);
+		assert( h.is_not_null() );
+		const PolygonTopology* pt = dynamic_cast<const PolygonTopology*>( h.get() );
 
-		return pcm;
+		if( pt == NULL )
+		{
+			cerr << "The supplied topology (" << topology_name << "( does not exist or is not of type PolygonTopology" << endl;
+			exit(1);
+		}
+
+		//Parameterize the newly created model
+		PolygonTopologyCommunicationModel* cm = new PolygonTopologyCommunicationModel(*pt,upper,lower,fname,rssi_dist,attenuation);
+		cm->set_transmission_range(upper);
+		return cm;
+
 	}
 
 
@@ -64,11 +80,3 @@ namespace topology
 
 #endif
 #endif
-
-/*-----------------------------------------------------------------------
-* Source  $Source: /cvs/shawn/shawn/sys/comm_models/disk_graph_communication_model_factory.cpp,v $
-* Version $Revision$
-* Date    $Date$
-*-----------------------------------------------------------------------
-* $Log: disk_graph_communication_model_factory.cpp,v $
- *-----------------------------------------------------------------------*/
