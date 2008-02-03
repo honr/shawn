@@ -18,6 +18,9 @@
 #include "apps/topology/topology/xml_polygon_topology_task.h"
 #include "apps/topology/topology/polygon_topology_postscript_task.h"
 
+#include "sys/comm_models/communication_model_keeper.h"
+#include "apps/topology/comm_models/polygon_comm_model_factory.h"
+#include "apps/topology/topology/task_polygon_distance_estimate.h"
 #include <iostream>
 
 namespace topology
@@ -33,6 +36,8 @@ namespace topology
 	 
 	 sc.simulation_task_keeper_w().add( new XMLPolygonTopologyTask );
 	 sc.simulation_task_keeper_w().add( new PolygonTopologyPostscriptTask );
+	 sc.simulation_task_keeper_w().add( new SimulationTaskPolygonDistanceEstimate() );
+	 sc.communication_model_keeper_w().add( new PolygonTopologyCommunicationModelFactory(&sc) );
   }
 
 }
