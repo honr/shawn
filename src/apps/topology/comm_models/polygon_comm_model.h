@@ -4,7 +4,7 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 #include "shawn_config.h"
-#ifdef HAVE_CGAL
+
 
 #include "sys/communication_model.h"
 #include "sys/node_distance_estimate.h"
@@ -16,7 +16,16 @@
 namespace topology
 {
 
-
+/**
+*	Base class for either the Communication Model
+*	and the Distance Estimation Task.
+*	These classes  need:
+*	- the name of a topology,
+*	- lower bound defining the minimal RSSI value with which a message will be send
+*	- upper_bound defining the maximal transmission range
+*	- optional: Defining the RSSI to DISTANCE and DISTANCE to RSSI functions. 
+*		If no file is given a default function is used.
+*/
 	class CommonTaggedPolygonBase
 	{
 		struct cmp
@@ -30,7 +39,7 @@ namespace topology
 		///@name construction / destruction
 		///@{
 		///
-		CommonTaggedPolygonBase(const topology::PolygonTopology& topo, double, double, std::string dist2rssi, std::string rssi2dist, bool);
+		CommonTaggedPolygonBase(const topology::PolygonTopology& topo, double, double, std::string dist2rssi, std::string rssi2dist);
 
 		///
 		virtual ~CommonTaggedPolygonBase();
@@ -43,7 +52,6 @@ namespace topology
 		/**
 		*
 		*/
-		double attenuation_factor(const shawn::Node& u, const shawn::Node& v) const throw();
 		///@}
 
 		///@name Communication range
@@ -69,13 +77,15 @@ namespace topology
 		**/
 		virtual double getRSSI(double distance) const throw();
 
-		//Carsten fragen
+		/*
+		* Calculates the distance for a given RSSI value
+		*/
 		double get_distance(double measuredRssi) const throw();
 
 	protected:
 		const topology::PolygonTopology& topo_;
 		bool   initialized_;
-		bool use_attenuation_;
+
 		double upper_bound_;
 		double lower_bound_;
 		bool   has_range_;
@@ -87,13 +97,17 @@ namespace topology
 		std::string distance_estimate_rssi_dist_file_;
 		shawn::UniformRandomVariable urv_;
 	};
+	/**
+	*	Communication Model. Different nodes can communicate up to a 
+	*	defined RSSI value. 
+	*/
 	class PolygonTopologyCommunicationModel
 	: public shawn::CommunicationModel, public CommonTaggedPolygonBase 
 	{
 	public:
 
-		PolygonTopologyCommunicationModel(const topology::PolygonTopology& topo, double upper, double lower, std::string fn, std::string rssi2distfile, bool att)
-			: CommonTaggedPolygonBase(topo, upper, lower, fn, rssi2distfile, att)
+		PolygonTopologyCommunicationModel(const topology::PolygonTopology& topo, double upper, double lower, std::string fn, std::string rssi2distfile)
+			: CommonTaggedPolygonBase(topo, upper, lower, fn, rssi2distfile)
 			{}
 			virtual ~PolygonTopologyCommunicationModel() {}
 
@@ -135,8 +149,8 @@ namespace topology
 	private:
 		std::string name_;
 	public:
-		PolygonTopologyDistEst(std::string name, const topology::PolygonTopology& topo,double upper, double lower, std::string fn, std::string rssi2distfile, bool att)
-			: CommonTaggedPolygonBase(topo, upper, lower, fn, rssi2distfile, att),
+		PolygonTopologyDistEst(std::string name, const topology::PolygonTopology& topo,double upper, double lower, std::string fn, std::string rssi2distfile/*, bool att*/)
+			: CommonTaggedPolygonBase(topo, upper, lower, fn, rssi2distfile),
 			  name_(name)
 			{}
 
@@ -144,8 +158,8 @@ namespace topology
 	
 			///@name NodeDistanceEstimate interface
 			///@{
-
-			///
+			
+			/// Estimates the distance between to given nodes.
 			virtual bool estimate_distance( const shawn::Node& source, const shawn::Node& target, double& result ) const throw();
 			///
 			virtual std::string name( void ) const throw();
@@ -157,6 +171,5 @@ namespace topology
 
 }
 
-#endif
 #endif
 #endif

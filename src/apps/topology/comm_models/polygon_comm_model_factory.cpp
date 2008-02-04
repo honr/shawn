@@ -2,7 +2,7 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 #include "shawn_config.h"
-#ifdef HAVE_CGAL
+
 
 #include "apps/topology/comm_models/polygon_comm_model_factory.h"
 #include "apps/topology/comm_models/polygon_comm_model.h"
@@ -55,7 +55,7 @@ PolygonTopologyCommunicationModelFactory::
 		double upper = sc.environment().required_double_param("upper_bound");
 		string fname = sc.environment().optional_string_param("file_name","");
 		string rssi_dist = sc.environment().optional_string_param("rssi_dist","");
-		bool attenuation = sc.environment().optional_bool_param("with_attenuation", false);
+//		bool attenuation = sc.environment().optional_bool_param("with_attenuation", false);
 
 		//Retrieve the topology by the supplied name
 		reading::ConstReadingHandle h = topology::topology_keeper(sc).find(topology_name);
@@ -69,7 +69,7 @@ PolygonTopologyCommunicationModelFactory::
 		}
 
 		//Parameterize the newly created model
-		PolygonTopologyCommunicationModel* cm = new PolygonTopologyCommunicationModel(*pt,upper,lower,fname,rssi_dist,attenuation);
+		PolygonTopologyCommunicationModel* cm = new PolygonTopologyCommunicationModel(*pt,upper,lower,fname,rssi_dist/*,attenuation*/);
 		cm->set_transmission_range(upper);
 		return cm;
 
@@ -78,5 +78,5 @@ PolygonTopologyCommunicationModelFactory::
 
 }
 
-#endif
+
 #endif

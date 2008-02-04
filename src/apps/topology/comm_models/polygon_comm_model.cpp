@@ -2,7 +2,7 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 #include "shawn_config.h"
-#ifdef HAVE_CGAL
+
 
 #include "apps/topology/comm_models/polygon_comm_model.h"
 #include "sys/node.h"
@@ -13,10 +13,6 @@
 #include "sys/distance_estimates/distance_estimate_keeper.h"
 
 #include <fstream>
-#include <CGAL/Cartesian.h>
-#include <CGAL/MP_Float.h>
-#include <CGAL/Quotient.h>
-#include <CGAL/Sweep_line_2_algorithms.h>
 
 
 #include <cassert>
@@ -30,15 +26,14 @@ namespace topology
 
 	
 	CommonTaggedPolygonBase::
-		CommonTaggedPolygonBase(const PolygonTopology& topo,double upper, double lower, std::string fn, std::string rssi2distfile, bool att)
+		CommonTaggedPolygonBase(const PolygonTopology& topo,double upper, double lower, std::string fn, std::string rssi2distfile)
 		: topo_(topo),
 		initialized_ ( false ),
 		upper_bound_  ( upper ),
 		has_range_   ( false ),
 		lower_bound_ ( lower ),
 		fname_		 ( fn ),
-		distance_estimate_rssi_dist_file_ (rssi2distfile),
-		use_attenuation_ (att)
+		distance_estimate_rssi_dist_file_ (rssi2distfile)
 	{}
 	// ----------------------------------------------------------------------
 	CommonTaggedPolygonBase::
@@ -94,65 +89,6 @@ namespace topology
 	}
 
 	// ----------------------------------------------------------------------
-	double 
-		CommonTaggedPolygonBase::
-		attenuation_factor(const Node& u, const Node& v)
-		const throw()
-	{
-		CGAL::Segment_2<shawn::CGALKernel> suv = CGAL::Segment_2<shawn::CGALKernel> (u.real_position(), v.real_position());
-		double att_dB = 0.0;
-		//For each hole polygon
-		for(PolygonTopology::ConstPolygonVector::const_iterator it = topo_.holes().begin(), end = topo_.holes().end(); it!=end; ++it)
-		{	
-			PolygonTopology::Polygon& p = **it;
-			std::list< CGAL::Point_2<shawn::CGALKernel> > isects;
-
-			//For each line segment of the polygon
-			for(CGAL::Polygon_2<shawn::CGALKernel>::Edge_const_iterator pit = p.edges_begin(), pend = p.edges_end(); pit!=pend; ++pit)
-			{
-				//Find possible intersections
-				CGAL::Segment_2<shawn::CGALKernel> pseg = *pit;
-				CGAL::Object result = CGAL::intersection(suv, pseg);
-				CGAL::Point_2<shawn::CGALKernel> ipoint;
-				CGAL::Segment_2<shawn::CGALKernel> iseg;
-				if (CGAL::assign(ipoint, result)) // handle the point intersection case.
-					isects.push_back( ipoint );
-				else if (CGAL::assign(iseg, result)) // handle the segment intersection case.
-					cout << "WARNING: Intersection segment ("<< iseg <<"): " <<  "u("<<u.id()<<"), v("<< v.id() <<"), suv: ("<< suv <<"), pseg("<< pseg << ")" << endl;
-				else ; // handle the no intersection case.
-			}
-
-			//Calculate the attenuation
-			if( isects.size() > 0 )
-			{
-				double polygon_att = 0.0;
-				//Determine the attenuation in dB/length_unit by reading the polygons "attenuation" tag
-				const shawn::TagContainer* temp =topo_.tags(p);
-				if(temp != NULL )
-				{
-					ConstTagHandle att_tag = temp->find_tag("attenuation");
-					if( att_tag.is_not_null() )
-					{
-						const DoubleTag* att_ptr = dynamic_cast<const DoubleTag*>( att_tag.get() );
-						if(att_ptr != NULL)
-							polygon_att = att_ptr->value();
-					}
-				}
-				att_dB += (isects.size() / 2) * polygon_att;
-			}
-		}
-		
-		if( att_dB > 0.0 )
-		{
-			double linear_factor = std::pow( 10.0, att_dB / 10.0 );
-			cout << "TaggedPolygonCommModel::attenuation_factor(non-sqrt) of this polygon is " << linear_factor << " (" << att_dB << " dB) " << endl;
-			return linear_factor;
-		}
-
-		return 1.0;
-	}
-
-	// ----------------------------------------------------------------------
 	bool
 		PolygonTopologyCommunicationModel::
 		can_communicate_uni( const Node& u, const Node& v )
@@ -161,14 +97,13 @@ namespace topology
 		if(u.id() == v.id()) 
 			return true;
 
-		double att = use_attenuation_ ? attenuation_factor(u, v) : 1.0;
 		double rssi = getRSSI(euclidean_distance( u.real_position(), v.real_position() ));
 
-		if( ( rssi / att ) >= lower_bound_ ) 
+		if( ( rssi  ) >= lower_bound_ ) 
 			return true; 
 
 		double variable = (urv_);
-		if( variable  <= ((rssi / att)/lower_bound_) )
+		if( variable  <= (rssi /lower_bound_) )
 		{
 			assert(lower_bound_ != 0);
 			return true;
@@ -187,13 +122,9 @@ namespace topology
 		if( !source.world().communication_model().can_communicate_uni(source, target) )
 			return false;
 
-		//Calculate attenuation factor
-		//If the attenuation factor is zero, also no estimation is possible
-		double att = use_attenuation_ ? attenuation_factor(source, target) : 1.0;
 		
-		//The result is distance multiplied with (1.0/att)
 		double real_dist = euclidean_distance( source.real_position(), target.real_position() );
-		double rssi = getRSSI( real_dist ) / att;
+		double rssi = getRSSI( real_dist ) ;
 		result = get_distance( rssi );
 
 		cout << "CommonTaggedPolygonBase::estimate_distance: " << source.id() << " > " << target.id() << ", realdist " << real_dist << ", estimation " <<  result << endl;
@@ -461,6 +392,5 @@ namespace topology
 	}
 }
 
-#endif
 #endif
 
