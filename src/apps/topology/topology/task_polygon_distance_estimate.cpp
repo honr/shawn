@@ -20,7 +20,6 @@
 
 using namespace std;
 using namespace shawn;
-//using namespace topology;
 
 #include <limits>
 #include <iostream>
@@ -68,7 +67,7 @@ namespace topology
 
 
 		//Parameterize the newly created model
-		PolygonTopologyDistEst* de = new PolygonTopologyDistEst(distest_name, *pt, upper, lower, fname, rssi_dist, attenuation);
+		PolygonTopologyDistEst* de = new PolygonTopologyDistEst(distest_name, *pt, upper, lower, fname, rssi_dist/*, attenuation*/);
 		de->set_transmission_range(upper);	
 		de->init();
 		sc.distance_estimate_keeper_w().add(de);	
