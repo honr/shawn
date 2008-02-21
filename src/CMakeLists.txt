@@ -17,14 +17,12 @@
 
 	project( SHAWN )
 
-
 #=============
 # Set the default paths for binary and lib build
 #=============
 
 	get_filename_component( EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/../buildfiles ABSOLUTE CACHE )
 	get_filename_component( LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/../lib ABSOLUTE CACHE )
-
 
 #=============
 # Collect all source files recursively to be compiled
@@ -93,26 +91,20 @@
 #
 #	if ( WIN32 )
 #
-#		set ( DEFAULT_EXPAT_ROOT ../libs/expat-1.95.8 )
 #		set ( DEFAULT_CGAL_ROOT  ../libs/CGAL-3.1 )
 #
-#		set( LIB_PATH_EXPAT ${DEFAULT_EXPAT_ROOT}/StaticLibs CACHE PATH "Path to expat library" )
 #		set( LIB_PATH_CGAL ${DEFAULT_CGAL_ROOT}/lib/msvc7 CACHE PATH "Path to CGAL library" )
 #
-#       set( INCLUDE_PATH_EXPAT ${DEFAULT_EXPAT_ROOT}/source/lib CACHE PATH "Path to expat includes" )
 #       set( INCLUDE_PATH_CGAL ${DEFAULT_CGAL_ROOT}/include CACHE PATH "Path to CGAL includes" )
 #       set( INCLUDE_PATH_CGAL_COMPILER_CONFIG ${DEFAULT_CGAL_ROOT}/include/CGAL/config/msvc7 CACHE PATH "Path to CGAL compiler config" )
 #       set( INCLUDE_PATH_BOOST ../libs/boost CACHE PATH "Path to Boost include path" )
 #
 #	else ( WIN32 )
 #
-#		set ( DEFAULT_EXPAT_ROOT ../libs/expat-1.95.8 )
 #		set ( DEFAULT_CGAL_ROOT  ../libs/CGAL-3.1 )
 #
-#		set( LIB_PATH_EXPAT ${DEFAULT_EXPAT_ROOT}/.libs CACHE PATH "Path to expat library" )
 #		set( LIB_PATH_CGAL ${DEFAULT_CGAL_ROOT}/lib/i686_Linux-2.4.26-om_g++-3.3.5 CACHE PATH "Path to CGAL library" )
 #
-#       set( INCLUDE_PATH_EXPAT ${DEFAULT_EXPAT_ROOT}/lib CACHE PATH "Path to expat includes" )
 #       set( INCLUDE_PATH_CGAL ${DEFAULT_CGAL_ROOT}/include CACHE PATH "Path to CGAL includes" )
 #       set( INCLUDE_PATH_CGAL_COMPILER_CONFIG ${DEFAULT_CGAL_ROOT}/include/CGAL/config/i686_Linux-2.4.26-om_g++-3.3.5 CACHE PATH "Path to CGAL compiler config" )
 #       set( INCLUDE_PATH_BOOST ../libs/boost CACHE PATH "Path to Boost include path" )
@@ -122,26 +114,20 @@
 
 	if ( WIN32 AND NOT CYGWIN )
 
-		set ( DEFAULT_EXPAT_ROOT  )
 		set ( DEFAULT_CGAL_ROOT   )
 
-		set( LIB_PATH_EXPAT   CACHE PATH "Path to expat library" )
 		set( LIB_PATH_CGAL   CACHE PATH "Path to CGAL library" )
 
-        set( INCLUDE_PATH_EXPAT   CACHE PATH "Path to expat includes" )
         set( INCLUDE_PATH_CGAL   CACHE PATH "Path to CGAL includes" )
         set( INCLUDE_PATH_CGAL_COMPILER_CONFIG   CACHE PATH "Path to CGAL compiler config" )
         set( INCLUDE_PATH_BOOST   CACHE PATH "Path to Boost include path" )
 
 	else ( WIN32 AND NOT CYGWIN )
 
-		set ( DEFAULT_EXPAT_ROOT  )
 		set ( DEFAULT_CGAL_ROOT   )
 
-		set( LIB_PATH_EXPAT   CACHE PATH "Path to expat library" )
 		set( LIB_PATH_CGAL   CACHE PATH "Path to CGAL library" )
 
-        set( INCLUDE_PATH_EXPAT   CACHE PATH "Path to expat includes" )
         set( INCLUDE_PATH_CGAL   CACHE PATH "Path to CGAL includes" )
         set( INCLUDE_PATH_CGAL_COMPILER_CONFIG   CACHE PATH "Path to CGAL compiler config" )
         set( INCLUDE_PATH_BOOST   CACHE PATH "Path to Boost include path" )
@@ -149,11 +135,9 @@
 	endif ( WIN32 AND NOT CYGWIN )
 
 
-	link_directories( ${LIB_PATH_EXPAT}
-					  ${LIB_PATH_CGAL} )
+	link_directories( ${LIB_PATH_CGAL} )
 
 	include_directories( ./
-						 ${INCLUDE_PATH_EXPAT}
 						 ${INCLUDE_PATH_CGAL}
                          ${INCLUDE_PATH_CGAL_COMPILER_CONFIG}
                          ${INCLUDE_PATH_BOOST} )
@@ -173,10 +157,6 @@
 
 	if (  WIN32 AND NOT CYGWIN  )
 
-		if ( LIB_PATH_EXPAT )
-			set ( LIB_EXPAT libexpatMT.lib )
-		endif ( LIB_PATH_EXPAT )
-
 		if ( LIB_PATH_CGAL )
 			set ( LIB_CGAL CGAL.lib )
 		endif ( LIB_PATH_CGAL )
@@ -184,10 +164,6 @@
 		set ( SYSTEM_LIBS ws2_32.lib )
 
 	else (  WIN32 AND NOT CYGWIN  )
-
-		if ( LIB_PATH_EXPAT )
-			set ( LIB_EXPAT libexpat.a )
-		endif ( LIB_PATH_EXPAT )
 
 		if ( LIB_PATH_CGAL )
 			set ( LIB_CGAL libCGAL.a )
@@ -197,8 +173,8 @@
 		
 	endif (  WIN32 AND NOT CYGWIN  )
 
-	target_link_libraries( shawn ${SYSTEM_LIBS} ${LIB_EXPAT} ${LIB_CGAL} )
-	target_link_libraries( shawnexe ${SYSTEM_LIBS} ${LIB_EXPAT} ${LIB_CGAL} )
+	target_link_libraries( shawn ${SYSTEM_LIBS} ${LIB_CGAL} )
+	target_link_libraries( shawnexe ${SYSTEM_LIBS} ${LIB_CGAL} )
 
 
 #=============
@@ -213,17 +189,9 @@
 
 	if ( firstRunDone )
 
-		if ( LIB_PATH_EXPAT AND NOT EXISTS ${LIB_PATH_EXPAT}/${LIB_EXPAT} )
-			set ( incorrectPaths "${incorrectPaths} [LIB_PATH_EXPAT] Can't find '${LIB_EXPAT}' in '${LIB_PATH_EXPAT}'\n" )
-		endif ( LIB_PATH_EXPAT AND NOT EXISTS ${LIB_PATH_EXPAT}/${LIB_EXPAT} )
-	
 		if ( LIB_PATH_CGAL AND NOT EXISTS ${LIB_PATH_CGAL}/${LIB_CGAL} )
 			set ( incorrectPaths "${incorrectPaths} [LIB_PATH_CGAL] Can't find '${LIB_CGAL}' in '${LIB_PATH_CGAL}'\n" )
 		endif ( LIB_PATH_CGAL AND NOT EXISTS ${LIB_PATH_CGAL}/${LIB_CGAL} )
-
-		if ( INCLUDE_PATH_EXPAT AND NOT EXISTS ${INCLUDE_PATH_EXPAT}/expat.h )
-			set ( incorrectPaths "${incorrectPaths} [INCLUDE_PATH_EXPAT] Can't find 'expat.h' in '${INCLUDE_PATH_EXPAT}'\n" )
-		endif ( INCLUDE_PATH_EXPAT AND NOT EXISTS ${INCLUDE_PATH_EXPAT}/expat.h )
 
 		if ( INCLUDE_PATH_CGAL AND NOT EXISTS ${INCLUDE_PATH_CGAL}/CGAL/basic.h )
 			set ( incorrectPaths "${incorrectPaths} [INCLUDE_PATH_CGAL] Can't find 'CGAL/basic.h' in '${INCLUDE_PATH_CGAL}'\n" )
@@ -250,11 +218,6 @@
 # Compiler definitions
 #=============
 
-	if ( LIB_PATH_EXPAT )
-		add_definitions( -DHAVE_EXPAT )
-		add_definitions( -DXML_STATIC )
-	endif ( LIB_PATH_EXPAT )
-	
 	if ( LIB_PATH_CGAL )
 		add_definitions( -DHAVE_CGAL )
 	endif ( LIB_PATH_CGAL )
