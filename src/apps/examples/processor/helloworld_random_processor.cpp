@@ -5,15 +5,15 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
+#include "apps/examples/processor/helloworld_random_processor.h"
+#ifdef ENABLE_EXAMPLES
 
-#include "helloworld_random_processor.h"
-#ifdef ENABLE_HELLOWORLD
-
-#include <iostream>
+#include "apps/examples/processor/helloworld_random_processor.h"
+#include "apps/examples/processor/helloworld_message.h"
 #include "sys/node.h"
-#include "apps/helloworld/helloworld_random_processor.h"
-#include "apps/helloworld/helloworld_message.h"
 #include "sys/misc/random/basic_random.h"
+#include <iostream>
+
 using namespace std;
 using namespace shawn;
 
@@ -93,8 +93,7 @@ namespace helloworld
 
 	void HelloworldRandomProcessor::timeout(shawn::EventScheduler & event_scheduler, shawn::EventScheduler::EventHandle event_handle, double time, shawn::EventScheduler::EventTagHandle & event_tag_handle) throw()
 	{
-
-	send( new HelloworldMessage((int)random(1,10)) );	
+		send( new HelloworldMessage((int)random(1,10)) );	
 	}
 
 	double 

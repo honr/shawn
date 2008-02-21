@@ -7,24 +7,14 @@
  ************************************************************************/
 
 #include "shawn_config.h"
-
-#ifdef HAVE_EXPAT 
-
-#include <cstdio>
-#include <sstream>
 #include "sys/worlds/save_world_task.h"
 #include "sys/vec.h"
 #include "sys/misc/uuid.h"
-
-//#define SAX_SAVE_CREATE_TEST_TAGS //Enable to attach some test tags to the world and each node
-
-#ifdef SAX_SAVE_CREATE_TEST_TAGS
-#include "sys/taggings/group_tag.h"
-#include "sys/taggings/basic_tags.h"
-#include "sys/taggings/map_tags.h"
-#endif
+#include <cstdio>
+#include <sstream>
 
 using namespace std;
+using namespace shawn::xml;
 
 namespace shawn
 {
@@ -33,42 +23,43 @@ namespace shawn
     /**
     *
     */
-    SimulationTaskSaveWorld::SimulationTaskSaveWorld() 
+    SimulationTaskSaveWorld::
+    	SimulationTaskSaveWorld() 
         : outf(NULL),
-        insert_done_(false),
-        append_(false),
+          insert_done_(false),
+          append_(false),
           sc(NULL),
           run_count_(0),
 		  tag_depth_(0),
 	      uuid_(UUIDGenerator::uuid())
-    {
-    }
+    {}
 
     // ----------------------------------------------------------------------
-    /// Returns the name of the tag to be used in the config file
-    /**
+    /** Returns the name of the tag to be used in the config file
     *
     */
-    std::string SimulationTaskSaveWorld::name( void ) const throw() 
+    std::string 
+    	SimulationTaskSaveWorld::
+    	name( void ) 
+    	const throw() 
     {
         return "save_world";
     }
 
-
     // ----------------------------------------------------------------------
-    /// Description of the tag
-    /**
+    /** Description
     *
     */
-    std::string SimulationTaskSaveWorld::description( void ) const throw() 
+    std::string 
+    	SimulationTaskSaveWorld::description( void ) 
+    	const throw() 
     {
         return "Saves the state of the world and the nodes to a xml file.";
     }
 
 
     // ----------------------------------------------------------------------
-    /// Determines snapshot ID to use in saving
-    /**
+    /** Determines snapshot ID to use in saving
     *  Environment string "snapshot" determines the snapshot id that is used
     *  in saving.
     *
@@ -83,10 +74,10 @@ namespace shawn
     *  If %r is used, an attempt will be made to keep the snapshots in the file
     *  sorted. Otherwise, the new snapshot will be append at the end of the file.
     */
-   void
-   SimulationTaskSaveWorld::
-   construct_snapshot_id( shawn::SimulationController& sc )
-      throw( runtime_error )
+	void
+		SimulationTaskSaveWorld::
+		construct_snapshot_id( shawn::SimulationController& sc )
+		throw( runtime_error )
    {
       string fmt = sc.environment().optional_string_param("snapshot","%r");
       snapshot_id_.clear();
@@ -140,7 +131,10 @@ namespace shawn
     /**
     *
     */
-    void SimulationTaskSaveWorld::run( shawn::SimulationController& sc) throw( runtime_error )
+    void 
+    	SimulationTaskSaveWorld::
+    	run( shawn::SimulationController& sc) 
+    	throw( runtime_error )
     {
         this->sc = &sc;
         insert_done_ = false;
@@ -148,58 +142,6 @@ namespace shawn
         append_ = sc.environment().optional_bool_param("append", false);
         require_world(sc);
         construct_snapshot_id(sc);
-
-#ifdef SAX_SAVE_CREATE_TEST_TAGS //Insert some test tags for debugging
-		cerr << "WARNING: Creating test tags" << endl;
-        int i = 1;
-        shawn::Tag* t = NULL;
-
-        for( shawn::World::node_iterator it = sc.world_w().begin_nodes_w(); 
-            it != sc.world_w().end_nodes_w(); ++it) 
-        {
-            t = new shawn::IntegerTag("blubb1", i++);
-            t->set_persistency(true);
-            (*it).add_tag(t);
-
-            t = new shawn::StringTag("blubb2", "blubb--" );
-            t->set_persistency(true);
-            (*it).add_tag(t);
-
-            shawn::Tag* t = new shawn::StringStringMapTag("map_test");
-            t->add_indexed_entry("index1", "lala1");
-            t->add_indexed_entry("index2", "lala2");
-            t->add_indexed_entry("index3", "lala3");
-            t->set_persistency(true);
-            (*it).add_tag(t);
-        }
-
-        t =  new StringTag("worldtest1", "aksdfjlkasdjfasldf");
-        t->set_persistency(true);
-        sc.world_w().add_tag(t);
-
-        t =   new StringTag("worldtest2", "lkfdsjlfjsdfasfsdafajdsf");
-        t->set_persistency(true);
-        sc.world_w().add_tag(t);
-
-
-		GroupTag* gt = new GroupTag("blubb");
-        gt->set_persistency(true);
-        sc.world_w().add_tag(gt);
-
-        t =  new StringTag("grouptest1", "test1");
-        t->set_persistency(true);
-		gt->add_tag(t);
-
-        t =  new StringTag("grouptest2", "test2");
-        t->set_persistency(true);
-		gt->add_tag(t);
-
-		GroupTag* gt2 = new GroupTag("blubb");
-        gt2->set_persistency(true);
-		gt2->add_tag(t);
-		gt->add_tag(gt2);
-
-#endif
 
         prepare_file();
 
@@ -218,20 +160,25 @@ namespace shawn
     * is matching the current simulation time. This is necessary, since we want to parse the file
     * in chronological order when parsing it with a SAX stream parser.
     */
-    void SimulationTaskSaveWorld::skip_target_reached(const char *name, const char **atts) 
+    void 
+    	SimulationTaskSaveWorld::
+    	skip_target_reached(string name, AttList atts) 
     {
         //Check if the next snapshot time is greater than our desired insert time
-        if( !strcmp(name, "snapshot") )
+        if( name == "snapshot" )
+        {
            if( snapshot_id_is_default_ )
               {
-                 int cur_time = attribute("id", atts) ? atoi(attribute("id", atts)) : 0;
+                 int cur_time = attribute("id", atts) != "" ? atoi(attribute("id", atts).c_str()) : 0;
                  
                  if( cur_time > sc->world().simulation_round() )
                     start_saving();
               }
-
-        if( !strcmp(name, "scenario") )
+        }
+        else if( name == "scenario" )
+        {
             start_saving();
+        }
     }
 
     // ----------------------------------------------------------------------
@@ -240,18 +187,20 @@ namespace shawn
     * either at an opening snapshot tag or a closing scenarion tag.
     *
     */
-    bool SimulationTaskSaveWorld::check_skip_target_reached(const char* name, const char**, bool opening_tag) 
+    bool 
+    	SimulationTaskSaveWorld::
+    	check_skip_target_reached(string name, AttList, bool opening_tag) 
     {
         //Check if we are past the insertion point
         if(insert_done_)
             return false;
 
         //All opening of snapshot are welcome
-        if( !strcmp(name, "snapshot") && opening_tag) 
+        if( name == "snapshot" && opening_tag) 
             return true;
 
         //All closing tags of scenario are welcome
-        if( !strcmp(name, "scenario") && !opening_tag ) 
+        if( name == "scenario" && !opening_tag ) 
             return true;
 
         return false;
@@ -262,7 +211,9 @@ namespace shawn
     /**
     *
     */
-    void SimulationTaskSaveWorld::clear_skip_target()
+    void 
+    	SimulationTaskSaveWorld::
+    	clear_skip_target()
     {
     }
 
@@ -271,7 +222,9 @@ namespace shawn
     /** After the insert is done, true is returned.
     *
     */
-    bool SimulationTaskSaveWorld::skipping() 
+    bool 
+    	SimulationTaskSaveWorld::
+    	skipping() 
     {
         return insert_done_;
     }
@@ -281,14 +234,18 @@ namespace shawn
     /** All encountered tags are copied to the outfile. 
     * @todo Delay the writing until the closing tag is encoutered to avoid the problem described above.
     */
-    void SimulationTaskSaveWorld::handle_start_element(const char *name, const char **atts) 
+    void 
+    	SimulationTaskSaveWorld::
+    	handle_start_element(string name, AttList atts) 
         throw(runtime_error)
     {
         SAXSkipReader::handle_start_element(name, atts);
 
         *outf << "<" << name << " ";
-        for(const char** tmp = atts; *tmp; tmp+= 2)
-            *outf << tmp[0] << "=\"" << tmp[1] << "\" ";
+        
+    	for(AttList::iterator it = atts.begin(), end = atts.end(); it!=end; ++it)
+            *outf << it->first << "=\"" << it->second << "\" ";
+        
         *outf << ">" << endl;
 
     }
@@ -297,7 +254,9 @@ namespace shawn
     /// Callback from the SAX Parser: Handles the copy process from the old to the new file.
     /** All encountered tags are copied to the outfile. 
     */
-    void SimulationTaskSaveWorld::handle_end_element(const char *name) 
+    void 
+    	SimulationTaskSaveWorld::
+    	handle_end_element(string name) 
         throw(runtime_error)
     {
         SAXSkipReader::handle_end_element(name);
@@ -309,7 +268,10 @@ namespace shawn
     /// Prepares the in and outfile. 
     /** Depending on the append or truncate mode it creates a temporary file or a new one.
     */
-    void SimulationTaskSaveWorld::prepare_file() throw( runtime_error )
+    void 
+    	SimulationTaskSaveWorld::
+    	prepare_file() 
+    	throw( runtime_error )
     {
         filename_ = sc->environment().required_string_param("file");
         tmpoutname_ = filename_ + ".tmp";
@@ -332,7 +294,10 @@ namespace shawn
     /** Depending on the append or truncate mode overwrites the old xml file with the new one 
     * or it just closes the newly created file.
     */
-    void SimulationTaskSaveWorld::finalize_file() throw()
+    void 
+    	SimulationTaskSaveWorld::
+    	finalize_file() 
+    	throw()
     {
 
         if(!append_) 
@@ -357,7 +322,10 @@ namespace shawn
     * @see save_world_tags 
     * @see save_node_tags
     */
-    void SimulationTaskSaveWorld::start_saving() throw()
+    void 
+    	SimulationTaskSaveWorld::
+    	start_saving() 
+    	throw()
     {
         if(insert_done_)
             return;
@@ -376,7 +344,10 @@ namespace shawn
     /**
     *
     */
-    void SimulationTaskSaveWorld::save_world() throw ()
+    void 
+    	SimulationTaskSaveWorld::
+    	save_world() 
+    	throw ()
     {
         if( sc->world().count_tags() == 0 )
             return;
@@ -396,9 +367,12 @@ namespace shawn
     /**
     *
     */
-    void SimulationTaskSaveWorld::save_nodes() throw ()
+    void 
+    	SimulationTaskSaveWorld::
+    	save_nodes() 
+    	throw ()
     {  
-        for( shawn::World::const_node_iterator it = sc->world().begin_nodes(); it != sc->world().end_nodes(); it++) 
+        for( shawn::World::const_node_iterator it = sc->world().begin_nodes(); it != sc->world().end_nodes(); ++it) 
         {
             const shawn::Node* node = &(*it);
 
@@ -502,8 +476,6 @@ namespace shawn
     }
 
 }
-
-#endif
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/worlds/save_world_task.cpp,v $

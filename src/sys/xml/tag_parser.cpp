@@ -12,6 +12,7 @@
 #include <exception>
 
 using namespace std;
+using namespace shawn::xml;
 
 namespace shawn
 {
@@ -26,14 +27,13 @@ namespace shawn
 		// ----------------------------------------------------------------------
 		void
 			TagParser::
-			handle_open_tag_tag(const char **atts, TagContainer& tc) 
+			handle_open_tag_tag(AttList atts, TagContainer& tc) 
 			throw()
 		{
-			string name = to_string( attr("name", atts) );
-			string type = to_string( attr("type", atts) );        
-			string value = to_string( attr("value", atts) );
+			string name  = attribute("name", atts);
+			string type  = attribute("type", atts);        
+			string value = attribute("value", atts);
 			TagFactoryHandle tfh = find_tag_factory(type);
-
 
 			if( tfh.is_not_null() ) 
 			{
@@ -66,7 +66,7 @@ namespace shawn
 		// ----------------------------------------------------------------------
 		void
 			TagParser::
-			handle_close_tag_tag(const char **atts, TagContainer& tc) 
+			handle_close_tag_tag(AttList atts, TagContainer& tc) 
 			throw() 
 		{
 			current_tags_.pop();
@@ -75,19 +75,19 @@ namespace shawn
 		// ----------------------------------------------------------------------
 		void 
 			TagParser::
-			handle_tag_entry(const char **atts)
+			handle_tag_entry(AttList atts)
 			throw()
 		{
-			const char* index = attr("index", atts);
-			const char* value = attr("value", atts);
-			assert(value != NULL);
+			string index = attribute("index", atts);
+			string value = attribute("value", atts);
+			assert(value != "");
 
 			//No factory for the current tag found -> Ignoring entries
 			if(current_tags_.top() == NULL)
 				return;
 
 			//Index -> Map like, else Set like behavior
-			if( index != NULL)
+			if( index != "")
 				current_tags_.top()->add_indexed_entry(index, value);
 			else 
 				current_tags_.top()->add_value_entry(value);
@@ -135,28 +135,6 @@ namespace shawn
 
 			return NULL;
 		}    
-
-		// ----------------------------------------------------------------------
-		std::string 
-			TagParser::
-			to_string(const char* cc)
-			const throw()
-		{
-			return string( cc != NULL ? cc : "" );
-		}
-
-		// ----------------------------------------------------------------------
-		const char* 
-			TagParser::
-			attr(const char* name, const char **atts)
-			const throw()
-		{
-			for(; *atts; atts += 2)
-				if( !strcmp(name, atts[0]) )
-					return atts[1];
-
-			return NULL;
-		}
 
 		// ----------------------------------------------------------------------
 		void 

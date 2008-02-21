@@ -5,7 +5,6 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #ifndef __SHAWN_APPS_XML_NODE_SENSOR_H
 #define __SHAWN_APPS_XML_NODE_SENSOR_H
 
@@ -21,13 +20,15 @@
 #include "sys/world.h"
 #include "sys/node.h"
 #include "sys/vec.h"
-
 #include <map>
 
 namespace xmlreading
 {
 	template <class T>
-	class XMLNodeSensor : public reading::NodeSensor<T>, public xmlreading::XMLNodeSensorBase, public shawn::EventScheduler::EventHandler 
+	class XMLNodeSensor 
+		: public reading::NodeSensor<T>, 
+		  public xmlreading::XMLNodeSensorBase, 
+		  public shawn::EventScheduler::EventHandler 
 	{
 	private:
 		shawn::World* world_;
@@ -292,7 +293,8 @@ namespace xmlreading
 	//-----------------------------------------------------------------------
 	//-----------------------------------------------------------------------
 	///
-	class XMLNodeIntegerSensor : public XMLNodeSensor<int>
+	class XMLNodeIntegerSensor 
+		: public XMLNodeSensor<int>
 	{
 	public:	
 		///@name construction / destruction
@@ -323,7 +325,8 @@ namespace xmlreading
 	//-----------------------------------------------------------------------
 	//-----------------------------------------------------------------------
 	///
-	class XMLNodeDoubleSensor : public XMLNodeSensor<double>
+	class XMLNodeDoubleSensor 
+		: public XMLNodeSensor<double>
 	{
 	public:
 		///@name construction /destruction
@@ -354,7 +357,8 @@ namespace xmlreading
 	//-----------------------------------------------------------------------
 	//-----------------------------------------------------------------------
 	///
-	class XMLNodeBoolSensor : public XMLNodeSensor<bool>
+	class XMLNodeBoolSensor 
+		: public XMLNodeSensor<bool>
 	{
 	public:
 		///@name construction /destruction

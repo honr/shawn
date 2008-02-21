@@ -10,6 +10,8 @@
 
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
+#include "shawn_config.h"
+#ifdef HAVE_CGAL
 
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task.h"
@@ -49,6 +51,7 @@ namespace topology
 
 }
 
+#endif
 #endif
 #endif
 /*-----------------------------------------------------------------------

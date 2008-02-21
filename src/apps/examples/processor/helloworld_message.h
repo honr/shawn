@@ -5,24 +5,33 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
-#ifndef __SHAWN_APPS_HELLOWORLD_INIT_H
-#define __SHAWN_APPS_HELLOWORLD_INIT_H
-
+#ifndef __SHAWN_EXAMPLES_PROCESSOR_HELLOWORLD_MESSAGE_H
+#define __SHAWN_EXAMPLES_PROCESSOR_HELLOWORLD_MESSAGE_H
 #include "../buildfiles/_apps_enable_cmake.h"
-#ifdef ENABLE_HELLOWORLD
+#ifdef ENABLE_EXAMPLES
 
-namespace shawn
-{ class SimulationController; }
+#include "sys/message.h"
 
-extern "C" void init_helloworld( shawn::SimulationController& );
+namespace helloworld
+{
+
+   class HelloworldMessage
+       : public shawn::Message
+   {
+   public:
+	   HelloworldMessage();
+	   HelloworldMessage(int);
+	   virtual ~HelloworldMessage();
+   };
+
+}
 
 #endif
 #endif
 /*-----------------------------------------------------------------------
- * Source  $Source: /cvs/shawn/shawn/apps/helloworld/helloworld_init.h,v $
+ * Source  $Source: /cvs/shawn/shawn/apps/helloworld/helloworld_message.h,v $
  * Version $Revision$
  * Date    $Date$
  *-----------------------------------------------------------------------
- * $Log: helloworld_init.h,v $
+ * $Log: helloworld_message.h,v $
  *-----------------------------------------------------------------------*/

@@ -9,8 +9,9 @@
 #ifdef	ENABLE_READING
 
 #include "apps/reading/xml_node_reading_parser.h"
-
 #include <string>
+
+using namespace shawn::xml;
 
 namespace xmlreading
 {
@@ -29,7 +30,7 @@ namespace xmlreading
 		delete settings_;
 	}
 	// ----------------------------------------------------------------------
-	void XMLNodeReadingParser::start_element(const std::string& name, const AttList attList) throw(runtime_error)
+	void XMLNodeReadingParser::start_element(std::string name, AttList attList) throw(runtime_error)
 	{
 		TRACE_PARSER("XML_NODE_READING_PARSER");
 		attList_ = attList;

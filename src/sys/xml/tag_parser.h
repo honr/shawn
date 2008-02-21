@@ -10,6 +10,7 @@
 #define __SHAWN_SYS_XML_TAG_PARSER_H
 
 #include "sys/tag.h"
+#include "sys/xml/sax_reader.h"
 #include "sys/taggings/tag_factory_keeper.h"
 
 #include <stack>
@@ -27,22 +28,19 @@ namespace shawn
 			virtual ~TagParser();
 
 			///
-			virtual void handle_open_tag_tag(const char **atts, shawn::TagContainer& tc) throw();
+			virtual void handle_open_tag_tag(shawn::xml::AttList atts, shawn::TagContainer& tc) throw();
 
 			///
-			virtual void handle_close_tag_tag(const char **atts, shawn::TagContainer& tc) throw();      
+			virtual void handle_close_tag_tag(shawn::xml::AttList atts, shawn::TagContainer& tc) throw();      
 
 			///
-			virtual void handle_tag_entry(const char **atts) throw();
+			virtual void handle_tag_entry(shawn::xml::AttList atts) throw();
 
 			///
 			void set_tag_factory_keeper(TagFactoryKeeper&);
 
 		private:
 			typedef std::stack<shawn::Tag*> TagStack;
-
-			///
-			std::string to_string(const char*) const throw();
 
 			///
 			shawn::TagFactoryHandle find_tag_factory( const std::string& ) const throw();
@@ -53,9 +51,6 @@ namespace shawn
 			///
 			shawn::TagContainer* current_container(shawn::TagContainer&) const throw();
 
-			///
-			const char* attr(const char* name, const char **atts) const throw();
-			
 			TagStack current_tags_;			///< The current tags
 			shawn::TagFactoryKeeper* tfk_;	///<
 		};

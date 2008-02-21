@@ -5,12 +5,9 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #ifndef __SHAWN_APPS_HELLOWORLD_RANDOM_PROCESSOR_FACTORY_H
 #define __SHAWN_APPS_HELLOWORLD_RANDOM_PROCESSOR_FACTORY_H
-
-//#include "config/helloworld.h"
-#ifdef ENABLE_HELLOWORLD
+#ifdef ENABLE_EXAMPLES
 
 #include "sys/processors/processor_factory.h"
 
@@ -23,23 +20,25 @@ namespace shawn
 
 namespace helloworld
 {
-	/// Inherited from HelloworldFactory
-/**
-* This class is used to create HelloworldRandomProcessor. It is added to to the SimulationController
-**/
+
+	//--------------------------------------------------------------------------
+	/**This class is used to create HelloworldRandomProcessor. It is added to to the SimulationController
+	**/
    class HelloworldRandomProcessorFactory
       : public shawn::ProcessorFactory
    {
-   public:
-		HelloworldRandomProcessorFactory(shawn::SimulationController& sc);
-      virtual ~HelloworldRandomProcessorFactory();
+	public:
+	   HelloworldRandomProcessorFactory(shawn::SimulationController& sc);
+	   virtual ~HelloworldRandomProcessorFactory();
 
-      virtual std::string name( void ) const throw();
-      virtual std::string description( void ) const throw();
-      virtual shawn::Processor* create( void ) throw();
+	   virtual std::string name( void ) const throw();
+	   virtual std::string description( void ) const throw();
+	   virtual shawn::Processor* create( void ) throw();
 
-      static void register_factory( shawn::SimulationController& ) throw();
-		shawn::SimulationController* sc_;
+	   static void register_factory( shawn::SimulationController& ) throw();
+	private:
+      shawn::SimulationController* sc_;
+      
 	};
 
 }

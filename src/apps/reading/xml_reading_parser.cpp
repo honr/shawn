@@ -9,11 +9,15 @@
 #ifdef	ENABLE_READING
 
 #include "apps/reading/xml_reading_parser.h"
+using namespace std;
+using namespace shawn::xml;
 
 namespace xmlreading
 {
 	// ----------------------------------------------------------------------
-	XMLReadingParser::XMLReadingParser(XMLReadingBase& xmlreadingbase) : xmlreadingbase_ (&xmlreadingbase)
+	XMLReadingParser::
+		XMLReadingParser(XMLReadingBase& xmlreadingbase) 
+		: xmlreadingbase_(&xmlreadingbase)
 	{
 		parserreadings_ = new Readings();
 		settings_ = new Settings();
@@ -21,7 +25,8 @@ namespace xmlreading
 		settings_parsed_ = false;
 	}
 	// ----------------------------------------------------------------------
-	XMLReadingParser::~XMLReadingParser() 
+	XMLReadingParser::
+		~XMLReadingParser() 
 	{
 		delete parserreadings_;
 		delete settings_;
@@ -31,7 +36,10 @@ namespace xmlreading
 		xmlreadingbase_ = NULL;
 	}
 	// ----------------------------------------------------------------------
-	void XMLReadingParser::start_element(const std::string& name, const AttList attList) throw(runtime_error)
+	void 
+		XMLReadingParser::
+		start_element(std::string name, AttList attList) 
+		throw(runtime_error)
 	{
 		if(!reading_initialized_)
 		{	
@@ -46,7 +54,8 @@ namespace xmlreading
 				reading_data_type_ = pos->second;
 			}
 			reading_initialized_ = true;
-		}else if(!settings_parsed_ && "setting" == name)
+		}
+		else if(!settings_parsed_ && "setting" == name)
 		{
 			TRACE_PARSER("XMLREADINGPARSER: parsing setting data");
 			SettingData* sd = new SettingData; 
@@ -57,7 +66,8 @@ namespace xmlreading
 			settings_->push_back(sd);
 			xmlreadingbase_->receive_and_pass_settings(*settings_, reading_data_type_);
 			settings_parsed_ = true;
-		}else if("time" == name)
+		}
+		else if("time" == name)
 		{
 			TRACE_PARSER("XMLREADINGPARSER: parsing time tag");
 			AttList::const_iterator pos = attList.find("t_val");
@@ -66,7 +76,8 @@ namespace xmlreading
 				t_val  = shawn::conv_string_to_double(pos->second);
 				set_next_parse_event_time();
 			}
-		}else if("value" == name)
+		}
+		else if("value" == name)
 		{
 			TRACE_PARSER("XMLREADINGPARSER: parsing value tag");
 			AttList::const_iterator pos = attList.find("pos_x");
@@ -91,7 +102,10 @@ namespace xmlreading
 		
 	}
 	// ----------------------------------------------------------------------
-	void XMLReadingParser::end_element(std::string name) throw(runtime_error)
+	void 
+		XMLReadingParser::
+		end_element(std::string name) 
+		throw(runtime_error)
 	{
 		if("time" == name)
 		{
@@ -110,8 +124,12 @@ namespace xmlreading
 			xmlreadingbase_->set_next_event();
 		}
 	}
+	
 	// ----------------------------------------------------------------------
-	void XMLReadingParser::update_readings(shawn::Vec v, Values values) throw()
+	void 
+		XMLReadingParser::
+		update_readings(shawn::Vec v, Values values) 
+		throw()
 	{
 		TRACE_PARSER("XMLREADINGPARSER: update parser readings");
 		pair<shawn::Vec, Values> vec (v, values);
@@ -130,14 +148,22 @@ namespace xmlreading
 			}  
 		}
 	}
+	
 	// ----------------------------------------------------------------------
-	void XMLReadingParser::set_next_parse_event_time() throw()
+	void 
+		XMLReadingParser::
+		set_next_parse_event_time() 
+		throw()
 	{
 		TRACE_PARSER("XMLREADINGPARSER: set next parse event time: ");
 		next_parse_event_time_ = t_val;
 	}
+	
 	// ----------------------------------------------------------------------
-	void XMLReadingParser::timeout(shawn::EventScheduler& event_scheduler, shawn::EventScheduler::EventHandle event_handle, double time, shawn::EventScheduler::EventTagHandle& event_tag_handle) throw()
+	void 
+		XMLReadingParser::
+		timeout(shawn::EventScheduler& event_scheduler, shawn::EventScheduler::EventHandle event_handle, double time, shawn::EventScheduler::EventTagHandle& event_tag_handle) 
+		throw()
 	{
 		TRACE_PARSER("XMLREADINGPARSER: parse event at: "<<next_parse_event_time_);
 		
@@ -147,8 +173,12 @@ namespace xmlreading
 		xmlreadingbase_->receiving_new_values(*parserreadings_);
  		parse();
 	}
+	
 	// ----------------------------------------------------------------------
-	void XMLReadingParser::show_parser_readings() throw()
+	void 
+		XMLReadingParser::
+		show_parser_readings() 
+		throw()
 	{
 		TRACE_PARSER("XMLREADINGPARSER: showing parser readings");
 		for(Readings::iterator it = parserreadings_->begin(); it!= parserreadings_->end(); ++it)

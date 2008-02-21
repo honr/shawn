@@ -5,20 +5,14 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
+#ifndef __SHAWN_SYS_XML_SAX_READER_H
+#define __SHAWN_SYS_XML_SAX_READER_H
 
-#ifndef __SNS_SYS_XML_SAX_READER_H
-#define __SNS_SYS_XML_SAX_READER_H
-
-#include "shawn_config.h"
-#ifdef HAVE_EXPAT 
-
-extern "C" {
-#include <expat.h>
-}
+#include <sys/xml/irrxml/irrXML.h>
 #include <stdlib.h>
-
 #include <set>
 #include <map>
+#include <deque>
 #include <stdexcept>
 #include <string>
 
@@ -28,9 +22,14 @@ namespace shawn
 {
     namespace xml
     {
-
+		typedef std::multimap<std::string, std::string> AttList;	
+	
+        /// Extracts the value of an attribute. Returns default_val if not existing
+        std::string attribute(std::string name, AttList atts, std::string default_val = "");
+    
+		
         // -------------------------------------------------------------------
-        /// Simple C++ wrapper class for the SAX parser expat.
+        /// Simple C++ wrapper class for the SAX parser irrXML (http://www.ambiera.com/irrxml/index.html).
         /** Overwrite the handle_(start|end)_element methods to parse the file.
         *
         */
@@ -70,17 +69,15 @@ namespace shawn
 
             ///@}
 
+            
         protected:
-            /// Extracts the value of an attribute. Returns default_val if not existing
-            const char* attribute(const char* name, const char **atts, char* default_val = NULL) const;
 
             /// Empty stub
-            virtual void handle_start_element(const char *name, const char **atts) throw(std::runtime_error);
+            virtual void handle_start_element(std::string name, AttList atts) throw(std::runtime_error);
             /// Empty stub
-            virtual void handle_end_element(const char *name) throw(std::runtime_error);
+            virtual void handle_end_element(std::string name) throw(std::runtime_error);
 
             bool stop_flag_;                ///< Tells the parsing process to stop at the next feasible point in time
-
 
             /// Opens the file. 
             /**
@@ -89,11 +86,8 @@ namespace shawn
             void open_file() throw(std::runtime_error);
 
             std::string document_uri_;      ///< The xml file's uri
-            std::ifstream* is_;             ///< The stream to read from
-            XML_Parser parser;              ///< The expat sax parser instance
-
-            friend void saxreader_start(void *userdata, const char *name, const char **atts);
-            friend void saxreader_end(void *userdata, const char *name);
+            irr::io::IrrXMLReader* irr_;	///< Instance of the IrrXML parser
+            std::deque<std::string> element_stack_; 
         };
 
 
@@ -101,7 +95,9 @@ namespace shawn
         /// Abstract SAX Reader prepared to skip certain areas of the XML file.
         /** Implement the pure virtual methods to implement your skipping functionality.
         */
-        class SAXSkipReader : public SAXReader {
+        class SAXSkipReader 
+        	: public SAXReader 
+        {
         public:        
 
             /// Reset the entire parsing state and close the current file.
@@ -111,25 +107,28 @@ namespace shawn
             ///@name SAX related stuff
             ///@{
 
-            ///Checks if the skip target has been reached and calls skip_target_reached if yes.
-            virtual void handle_start_element(const char *name, const char **atts) throw(std::runtime_error);
-
-            //Checks if the skip target has been reached and calls skip_target_reached if yes.
-            virtual void handle_end_element(const char *name) throw(std::runtime_error);
+	            ///Checks if the skip target has been reached and calls skip_target_reached if yes.
+	            virtual void handle_start_element(std::string name, AttList atts) throw(std::runtime_error);
+	
+	            //Checks if the skip target has been reached and calls skip_target_reached if yes.
+	            virtual void handle_end_element(std::string name) throw(std::runtime_error);
 
             ///@}
 
             ///@name Skipping
             ///@{
 
-            ///Clear all skip targets
-            virtual void clear_skip_target() = 0;
-            ///Return true if you are in skipping mode
-            virtual bool skipping() = 0;
-            ///Called by SAXSkipReader handle_(start|end)_element to check whether a skip target has been reached
-            virtual bool check_skip_target_reached(const char *name, const char **atts, bool opening_tag) = 0;
-            ///Called by the SAXSkipReader once check_skip_target_reached returns true
-            virtual void skip_target_reached(const char *name, const char **atts) = 0;
+	            ///Clear all skip targets
+	            virtual void clear_skip_target() = 0;
+	            
+	            ///Return true if you are in skipping mode
+	            virtual bool skipping() = 0;
+	            
+	            ///Called by SAXSkipReader handle_(start|end)_element to check whether a skip target has been reached
+	            virtual bool check_skip_target_reached(std::string name, AttList atts, bool opening_tag) = 0;
+	            
+	            ///Called by the SAXSkipReader once check_skip_target_reached returns true
+	            virtual void skip_target_reached(std::string name, AttList atts) = 0;
 
             ///@}
 
@@ -140,10 +139,11 @@ namespace shawn
         ///Simple skipper that skips to a given tag having certain attributes and values
         /** Implement skip_target_reached to get a callback when the desired tag is encounterd.
         */
-        class SAXSimpleSkipReader : public SAXSkipReader {
+        class SAXSimpleSkipReader 
+        	: public SAXSkipReader 
+        {
         public:
             SAXSimpleSkipReader();
-
 
             /// Set the skip target to look for. 
             /** Set name to the name of the tag you are looking for. By default opening 
@@ -160,13 +160,13 @@ namespace shawn
         protected:
 
             ///Called by the SAXSimpleSkipReader once the desired tag is encounterd.
-            virtual void skip_target_reached(const char *name, const char **atts) = 0;
+            virtual void skip_target_reached(std::string, AttList atts) = 0;
 
             ///@name Skipping
             ///@{
 
             ///Returns true if the skip target set by set_skip_target and set_skip_target_add_attr has been reached
-            virtual bool check_skip_target_reached(const char *name, const char **atts, bool opening_tag);
+            virtual bool check_skip_target_reached(string name, AttList atts, bool opening_tag);
             ///Clears the skip target
             virtual void clear_skip_target();
             ///Returns whether we are in skipping mode
@@ -184,7 +184,6 @@ namespace shawn
     };
 
 }
-#endif
 #endif
 
 /*-----------------------------------------------------------------------

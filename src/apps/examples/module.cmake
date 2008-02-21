@@ -4,7 +4,7 @@
 
 # Name of this module
 
-	set ( moduleName EXAMPLETASK )
+	set ( moduleName EXAMPLES )
 
 # Default status (ON/OFF)
 

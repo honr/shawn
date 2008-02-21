@@ -36,46 +36,50 @@ using namespace std;
 namespace shawn
 {
 
-
-   
-   SimulationTaskSimulation::
-   SimulationTaskSimulation()
+	// ----------------------------------------------------------------------
+	SimulationTaskSimulation::
+		SimulationTaskSimulation()
+	{}
+	
+	// ----------------------------------------------------------------------
+	SimulationTaskSimulation::
+		~SimulationTaskSimulation()
    {}
+	
    // ----------------------------------------------------------------------
-   SimulationTaskSimulation::
-   ~SimulationTaskSimulation()
-   {}
-   // ----------------------------------------------------------------------
-   void
-   SimulationTaskSimulation::
-   run( SimulationController& sc )
-      throw( std::runtime_error )
+	void
+		SimulationTaskSimulation::
+		run( SimulationController& sc )
+    	throw( std::runtime_error )
    {
-      int max_it = sc.environment().optional_int_param( "max_iterations",
-                                                        std::numeric_limits<int>::max() );
+      int max_it = sc.environment().optional_int_param( "max_iterations", std::numeric_limits<int>::max() );
 
       if( !sc.has_world() )
-         throw std::runtime_error( std::string("Task '") +
-                                   name() +
-                                   std::string("' needs a world.") );
+         throw std::runtime_error( std::string("Task '") + name() + std::string("' needs a world.") );
 
-	  World& w = sc.world_w();
-     while( !(w.is_done()) && (max_it>0) )
-        { w.step(); --max_it; }
+      World& w = sc.world_w();
+      
+      while( !(w.is_done()) && (max_it>0) )
+      { 
+    	  w.step(); 
+    	  --max_it; 
+      }
    }
+	
    // ----------------------------------------------------------------------
-   std::string
-   SimulationTaskSimulation::
-   name( void ) 
-      const throw()
+	std::string
+		SimulationTaskSimulation::
+		name( void ) 
+		const throw()
    {
       return "simulation";
    }
-   // ----------------------------------------------------------------------
-   std::string
-   SimulationTaskSimulation::
-   description( void ) 
-      const throw()
+	
+	// ----------------------------------------------------------------------
+	std::string
+		SimulationTaskSimulation::
+		description( void ) 
+		const throw()
    {
       return "runs the real simulation";
    }
@@ -85,70 +89,72 @@ namespace shawn
 
 
 
-   SimulationTaskAddWorldTask::
-   SimulationTaskAddWorldTask( bool pre )
-      : pre_ ( pre )
-   {}
-   // ----------------------------------------------------------------------
-   SimulationTaskAddWorldTask::
-   ~SimulationTaskAddWorldTask()
-   {}
-   // ----------------------------------------------------------------------
-   void
-   SimulationTaskAddWorldTask::
-   run( SimulationController& sc )
-      throw( std::runtime_error )
-   {
-      require_world(sc);
-      std::string task =
-         sc.environment().required_string_param( "task" );
-      SimulationTaskHandle sth =
-         sc.simulation_task_keeper_w().find_w(task);
+	// ----------------------------------------------------------------------
+	SimulationTaskAddWorldTask::
+		SimulationTaskAddWorldTask( bool pre )
+		: pre_ ( pre )
+	{}
+		
+	// ----------------------------------------------------------------------
+	SimulationTaskAddWorldTask::
+		~SimulationTaskAddWorldTask()
+	{}
+	
+	// ----------------------------------------------------------------------
+	void
+		SimulationTaskAddWorldTask::
+		run( SimulationController& sc )
+		throw( std::runtime_error )
+	{
+		require_world(sc);
+		std::string task = sc.environment().required_string_param( "task" );
+		SimulationTaskHandle sth = sc.simulation_task_keeper_w().find_w(task);
 
-      if( pre_ )
-         sc.world_w().add_pre_step_task( sth );
-      else
-         sc.world_w().add_post_step_task( sth );
+		if( pre_ )
+			sc.world_w().add_pre_step_task( sth );
+		else
+			sc.world_w().add_post_step_task( sth );
+	}
+	
+	// ----------------------------------------------------------------------
+	std::string
+		SimulationTaskAddWorldTask::
+		name( void )
+		const throw()
+	{
+		if( pre_ )
+			return std::string("add_prestep");
+		else
+			return std::string("add_poststep");
    }
-   // ----------------------------------------------------------------------
-   std::string
-   SimulationTaskAddWorldTask::
-   name( void )
-      const throw()
-   {
-      if( pre_ )
-         return std::string("add_prestep");
-      else
-         return std::string("add_poststep");
-   }
-   // ----------------------------------------------------------------------
-   std::string
-   SimulationTaskAddWorldTask::
-   description( void )
-      const throw()
-   {
-      return
-         std::string("makes $task being run ") +
-         std::string( pre_ ? "before" : "after") +
-         std::string("each simulation round");
-   }
+	
+	// ----------------------------------------------------------------------
+	std::string
+		SimulationTaskAddWorldTask::
+		description( void )
+		const throw()
+	{
+		return std::string("makes $task being run ") + std::string( pre_ ? "before" : "after") + std::string("each simulation round");
+	}
 
 
 
 
 
-   SimulationTaskWorld::
-   SimulationTaskWorld()
-   {}
-   // ----------------------------------------------------------------------
-   SimulationTaskWorld::
-   ~SimulationTaskWorld()
-   {}
-   // ----------------------------------------------------------------------
-   void
-   SimulationTaskWorld::
-   run( SimulationController& sc )
-      throw( std::runtime_error )
+	SimulationTaskWorld::
+		SimulationTaskWorld()
+	{}
+	
+	// ----------------------------------------------------------------------
+	SimulationTaskWorld::
+		~SimulationTaskWorld()
+	{}
+	
+	// ----------------------------------------------------------------------
+	void
+		SimulationTaskWorld::
+		run( SimulationController& sc )
+		throw( std::runtime_error )
    {
       World* nw = new World;
       nw->set_simulation_controller(sc);
@@ -175,6 +181,7 @@ namespace shawn
       nw->init();
 	  sc.set_world(nw);
    }
+   
    // ----------------------------------------------------------------------
    void 
 	   SimulationTaskWorld::
@@ -184,15 +191,12 @@ namespace shawn
 	   std::string config_file = sc.environment().optional_string_param("env_config", "");
 	   if( config_file != "" )
 	   {
-#ifdef HAVE_EXPAT
 		   EnvironmentConfigLoader cl(sc);
 		   cl.set_document_uri(config_file);
 		   cl.parse();
-#else
-		 throw std::runtime_error("$env_config supplied, but HAVE_EXPAT is undefined. Please add expat support");	
-#endif		
 	   }
    }
+   
    // ----------------------------------------------------------------------
    void
 	   SimulationTaskWorld::
@@ -203,6 +207,7 @@ namespace shawn
 	   EdgeModelFactoryHandle emfh = sc.edge_model_keeper_w().find_w(em);
 	   w.set_edge_model( *(emfh->create(sc)) );
    }
+   
    // ----------------------------------------------------------------------
    void
 	   SimulationTaskWorld::
@@ -213,6 +218,7 @@ namespace shawn
 	   TransmissionModelFactoryHandle tmfh = sc.transmission_model_keeper_w().find_w(tm_name);
 	   w.set_transmission_model( *(tmfh->create(sc)) );
    }
+   
    // ----------------------------------------------------------------------
    void
 	   SimulationTaskWorld::
@@ -223,6 +229,7 @@ namespace shawn
 	   CommunicationModelFactoryHandle fh = sc.communication_model_keeper_w().find_w(name);
 	   w.set_communication_model(*(fh->create(sc)));
    }
+   
    // ----------------------------------------------------------------------
    void
    SimulationTaskWorld::
@@ -231,6 +238,7 @@ namespace shawn
    {
       w.set_movement_controller( new MovementController(sc) );
    }
+   
    // ----------------------------------------------------------------------
    std::string
    SimulationTaskWorld::
@@ -239,6 +247,7 @@ namespace shawn
    {
       return "prepare_world";
    }
+   
    // ----------------------------------------------------------------------
    std::string
    SimulationTaskWorld::
@@ -255,11 +264,11 @@ namespace shawn
 
 
 #ifndef WIN32
-#warning MOVE TASK TO MISC/DEGFREE
+	#warning MOVE TASK TO MISC/DEGFREE
 #endif
 
    SimulationTaskDegreeHistogram::
-   SimulationTaskDegreeHistogram()
+   	SimulationTaskDegreeHistogram()
    {}
    // ----------------------------------------------------------------------
    SimulationTaskDegreeHistogram::
@@ -272,17 +281,13 @@ namespace shawn
       throw( std::runtime_error )
    {
       if( !sc.has_world() )
-         throw std::runtime_error( std::string("Task '") +
-                                   name() +
-                                   std::string("' needs a world.") );
-      std::string ofn =
-         sc.environment().required_string_param("dhist_file");
+         throw std::runtime_error( std::string("Task '") + name() + std::string("' needs a world.") );
+      std::string ofn = sc.environment().required_string_param("dhist_file");
 
       ofstream out(ofn.c_str());
       if( !out )
-         throw std::runtime_error( std::string("Cannot write to '") +
-                                   ofn +
-                                   std::string("'!") );
+         throw std::runtime_error( std::string("Cannot write to '") + ofn + std::string("'!") );
+      
       DegreeHistogram dhist;
       dhist.set_world(sc.world());
       dhist.init();

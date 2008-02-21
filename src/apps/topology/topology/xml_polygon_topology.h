@@ -5,13 +5,10 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #ifndef __SHAWN_SYS_WORLDS_TOPOLOGY_POLYGON_XML_POLYGON_TOPOLOGY_H
 #define __SHAWN_SYS_WORLDS_TOPOLOGY_POLYGON_XML_POLYGON_TOPOLOGY_H
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
-#include "shawn_config.h"
-#ifdef HAVE_CGAL
 
 #include "sys/cgal/types.h"
 #include "apps/topology/topology/polygon_topology.h"
@@ -102,23 +99,22 @@ namespace topology
           * @return Polygon type
           * @throws std::runtime_error If the polygon type is invalid
           */
-        PolygonType polygon_type(const char** atts)  throw(std::runtime_error);
+        PolygonType polygon_type(shawn::xml::AttList atts)  throw(std::runtime_error);
 
         /** Callback handler for opening xml tags
           */
-        virtual void handle_start_element(const char *name, const char **atts) throw(std::runtime_error);
+        virtual void handle_start_element(std::string name, shawn::xml::AttList atts) throw(std::runtime_error);
 
         /** Callback handler for closing xml tags
           */
-        virtual void handle_end_element(const char *name) throw(std::runtime_error);
+        virtual void handle_end_element(std::string name) throw(std::runtime_error);
         
         /** */
-        shawn::CGAL2D to_point(const char** atts) const throw(std::runtime_error);        
+        shawn::CGAL2D to_point(shawn::xml::AttList atts) const throw(std::runtime_error);        
     };
 
 }
 
-#endif
 #endif
 #endif
 /*-----------------------------------------------------------------------

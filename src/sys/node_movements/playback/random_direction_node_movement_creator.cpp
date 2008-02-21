@@ -5,42 +5,59 @@
 #include "sys/node_movement.h"
 #include "sys/node.h"
 #include "sys/world.h"
-#include<string>
-#include<limits>
+#include <string>
+#include <limits>
+#include <math.h>
 
 #define RANDOMDIRECTION_STARTNOW -1.0
 #define PI 3.14159265
 
 using namespace std;
 
-namespace shawn{
+namespace shawn
+{
 
-   RandomDirectionNodeMovementCreator::RandomDirectionNodeMovementCreator(SimulationController& sc)
-      : sc_(sc)
-   {
-      urvSpeed_.set_lower_bound(sc.environment_w().optional_double_param("random_direction_v_min", 0.001));
-      urvSpeed_.set_upper_bound(sc.environment_w().optional_double_param("random_direction_v_max", 1.0));
-      urvSpeed_.set_lower_bound_inclusive(true);
-      urvSpeed_.set_upper_bound_inclusive(true);
-      urvSpeed_.init();
+	//-------------------------------------------------------------------------------
+	/**
+	 * 
+	 */
+   	RandomDirectionNodeMovementCreator::
+   		RandomDirectionNodeMovementCreator(SimulationController& sc)
+   		: sc_(sc)
+   	{
+		  urvSpeed_.set_lower_bound(sc.environment_w().optional_double_param("random_direction_v_min", 0.001));
+		  urvSpeed_.set_upper_bound(sc.environment_w().optional_double_param("random_direction_v_max", 1.0));
+		  urvSpeed_.set_lower_bound_inclusive(true);
+		  urvSpeed_.set_upper_bound_inclusive(true);
+		  urvSpeed_.init();
+		
+		  urvDirection_.set_lower_bound(0.0);
+		  urvDirection_.set_upper_bound(2*PI);
+		  urvDirection_.set_lower_bound_inclusive(true);
+		  urvDirection_.set_upper_bound_inclusive(false);
+		  urvDirection_.init();
+		
+		  width_ = sc.environment_w().required_double_param("width");
+		  height_ = sc.environment_w().required_double_param("height");
+   	}
 
-      urvDirection_.set_lower_bound(0.0);
-      urvDirection_.set_upper_bound(2*PI);
-      urvDirection_.set_lower_bound_inclusive(true);
-      urvDirection_.set_upper_bound_inclusive(false);
-      urvDirection_.init();
-
-      width_ = sc.environment_w().required_double_param("width");
-      height_ = sc.environment_w().required_double_param("height");
-   }
-
-   RandomDirectionNodeMovementCreator::~RandomDirectionNodeMovementCreator(void)
-   {
-   }
+	//-------------------------------------------------------------------------------
+	/**
+	 * 
+	 */
+	RandomDirectionNodeMovementCreator::
+		~RandomDirectionNodeMovementCreator(void)
+   {}
 
 
-   MovementInfo* RandomDirectionNodeMovementCreator::next_movement()
-      throw( std::runtime_error )
+	//-------------------------------------------------------------------------------
+	/**
+	 * 
+	 */
+   MovementInfo* 
+   	RandomDirectionNodeMovementCreator::
+   	next_movement()
+    throw( std::runtime_error )
    {
       if (static_cast<int>(next_movement_times_.size()) < sc_.world().node_count())
       {
@@ -56,6 +73,7 @@ namespace shawn{
             }
          }
       }
+      
       // Otherwise get the next scheduled movement
       if (next_movement_times_.size() > 0)
       {
@@ -70,7 +88,13 @@ namespace shawn{
 
    }
 
-   MovementInfo* RandomDirectionNodeMovementCreator::generateNewMovement(Node &node, double startTime)
+	//-------------------------------------------------------------------------------
+	/**
+	 * 
+	 */
+   MovementInfo* 
+   	RandomDirectionNodeMovementCreator::
+   	generateNewMovement(Node &node, double startTime)
    {
       // Generate a new movement
       MovementInfo* mi = new MovementInfo();
@@ -78,10 +102,13 @@ namespace shawn{
       if (startTime < 0.0) 
       {
          mi->set_urgency(MovementInfo::Immediately);
-      } else {
+      } 
+      else 
+      {
          mi->set_urgency(MovementInfo::Delayed);
          mi->set_dispatch_time(startTime);
       }
+      
       LinearMovement* lm = new LinearMovement();
 
       // Get movement vector
@@ -94,19 +121,27 @@ namespace shawn{
       if (vector.x() < 0)
       {
          double t = (0 - node.real_position().x()) / vector.x();
-         if (t < intersectTime) intersectTime = t;
-      } else if (vector.x() > 0){
+         if (t < intersectTime) 
+        	 intersectTime = t;
+      } 
+      else if (vector.x() > 0)
+      {
          double t = (width_ - node.real_position().x()) / vector.x();
-         if (t < intersectTime) intersectTime = t;
+         if (t < intersectTime) 
+        	 intersectTime = t;
       }
       // Get y intersection
       if (vector.y() < 0)
       {
          double t = (0 - node.real_position().y()) / vector.y();
-         if (t < intersectTime) intersectTime = t;
-      } else if (vector.y() > 0){
+         if (t < intersectTime) 
+        	 intersectTime = t;
+      } 
+      else if (vector.y() > 0)
+      {
          double t = (height_ - node.real_position().y()) / vector.y();
-         if (t < intersectTime) intersectTime = t;
+         if (t < intersectTime) 
+        	 intersectTime = t;
       }
 
       lm->set_parameters(speed, node.real_position() + (vector * intersectTime), sc_.world_w());
@@ -117,7 +152,13 @@ namespace shawn{
       return mi;
    }
 
-   void RandomDirectionNodeMovementCreator::reset()
+	//-------------------------------------------------------------------------------
+	/**
+	 * 
+	 */
+   void 
+   	RandomDirectionNodeMovementCreator::
+   	reset()
    {
       next_movement_times_.clear();
    }

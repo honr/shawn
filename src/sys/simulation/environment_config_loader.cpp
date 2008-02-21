@@ -7,34 +7,39 @@
  ************************************************************************/
 
 #include "shawn_config.h"
-#ifdef HAVE_EXPAT 
-
 #include "sys/simulation/environment_config_loader.h"
 #include "sys/simulation/simulation_controller.h"
 
 using namespace std;
+using namespace shawn::xml;
 
 namespace shawn
 {
 
     // ----------------------------------------------------------------------
-    EnvironmentConfigLoader::EnvironmentConfigLoader(SimulationController& sc) 
+    EnvironmentConfigLoader::
+    	EnvironmentConfigLoader(SimulationController& sc) 
         : parsing_state_(Unknown), 
-        sim_controller_(sc)
+          sim_controller_(sc)
     {
 		set_tag_factory_keeper( sc.tag_factory_keeper_w() );
 	} 
 
     // ----------------------------------------------------------------------
-    EnvironmentConfigLoader::~EnvironmentConfigLoader()  
+    EnvironmentConfigLoader::
+    	~EnvironmentConfigLoader()  
     {} 
 
     // ----------------------------------------------------------------------
-    void EnvironmentConfigLoader::skip_target_reached(const char*, const char** atts) 
+    void 
+    	EnvironmentConfigLoader::
+    	skip_target_reached(string, AttList atts) 
     {}
 
     // ----------------------------------------------------------------------
-    void EnvironmentConfigLoader::handle_start_element(const char *name, const char **atts) 
+    void 
+    	EnvironmentConfigLoader::
+    	handle_start_element(string name, AttList atts) 
         throw(runtime_error)
     {
         SAXSkipReader::handle_start_element(name, atts);
@@ -44,35 +49,41 @@ namespace shawn
     }
 
     // ----------------------------------------------------------------------
-    void EnvironmentConfigLoader::handle_end_element(const char *name) throw(runtime_error)
+    void 
+    	EnvironmentConfigLoader::
+    	handle_end_element(string name) 
+    	throw(runtime_error)
     {
         SAXSkipReader::handle_end_element(name);
         if( !skipping() )
-            parse_xml(name, NULL, false);
+            parse_xml(name, AttList(), false);
     }
 
     // ----------------------------------------------------------------------
-    inline void EnvironmentConfigLoader::parse_xml(const char *name, const char **atts, bool opening_tag) throw(runtime_error) 
+    inline void 
+    	EnvironmentConfigLoader::
+    	parse_xml(string name, AttList atts, bool opening_tag) 
+    	throw(runtime_error) 
     {
         if( parsing_state_ == Done )
             return;
 
-        if(strcmp("scenario", name) == 0 && parsing_state_ == Unknown) 
+        if("scenario" == name && parsing_state_ == Unknown) 
         {
             opening_tag? parsing_state_ = Scenario : parsing_state_ = Done;
         }
-        else if(strcmp("environment", name) == 0 && parsing_state_ == Scenario) 
+        else if("environment" == name && (parsing_state_ == Scenario || parsing_state_ == Environment) ) 
         {
             opening_tag ? parsing_state_ = Environment : parsing_state_ = Done;
         }
-        else if(strcmp("tag", name) == 0 && parsing_state_ == Environment) 
+        else if("tag" == name && parsing_state_ == Environment) 
 		{
 			if(opening_tag)
 				handle_open_tag_tag(atts, sim_controller_.environment_w());
 			else
 				handle_close_tag_tag(atts, sim_controller_.environment_w());
 		}
-        else if(strcmp("entry", name) == 0 && parsing_state_ == Environment && opening_tag) 
+        else if("entry" == name && parsing_state_ == Environment && opening_tag) 
         {
             handle_tag_entry(atts);
         }
@@ -81,7 +92,6 @@ namespace shawn
 
 }
 
-#endif
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/simulation/environment_config_loader.cpp,v $

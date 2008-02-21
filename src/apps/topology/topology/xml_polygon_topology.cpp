@@ -22,6 +22,7 @@
 #include <vector>
 
 using namespace shawn;
+using namespace shawn::xml;
 using namespace std;
 
 namespace topology
@@ -73,7 +74,7 @@ namespace topology
 	// ----------------------------------------------------------------------
 	void
 		XMLPolygonTopology::
-		handle_start_element(const char *name, const char **atts) 
+		handle_start_element(string name, AttList atts) 
 		throw(std::runtime_error)
 	{
 		if( parsing_state_ == UnknownState && !strcmp("topology", name) )
@@ -109,7 +110,7 @@ namespace topology
 	// ----------------------------------------------------------------------
 	void
 		XMLPolygonTopology::
-		handle_end_element(const char *name) 
+		handle_end_element(string name) 
 		throw(std::runtime_error)
 	{
 		if( parsing_state_ == TopologyState && !strcmp("topology", name) )
@@ -159,7 +160,7 @@ namespace topology
 	// ----------------------------------------------------------------------
 	CGAL2D 
 		XMLPolygonTopology::
-		to_point(const char** atts) 
+		to_point(AttList atts) 
 		const throw(std::runtime_error)
 	{
 		double x = conv_string_to_double( attribute("x", atts, "0.0") );
@@ -173,10 +174,10 @@ namespace topology
 		polygon_type(const char** atts) 
 		throw(runtime_error)
 	{       
-		if(!strcmp( attribute("type", atts, "unknown") , "outer"))
+		if( attribute("type", atts, "unknown") ==  "outer")
 			return OuterType;
 
-		if(!strcmp( attribute("type", atts, "unknown") , "hole"))
+		if( attribute("type", atts, "unknown") == "hole")
 			return HoleType;
 
 		throw runtime_error("Polygon type unknown");

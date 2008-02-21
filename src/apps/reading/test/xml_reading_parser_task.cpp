@@ -5,37 +5,55 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_READING
 
 #include "apps/reading/test/xml_reading_parser_task.h"
 
+using namespace shawn::xml;
+
 namespace reading
 {
 	//--------------------------------------------------------------
-	XMLReadingParserTask::XMLReadingParserTask(){}
+	XMLReadingParserTask::
+		XMLReadingParserTask()
+	{}
+	
 	//--------------------------------------------------------------
-	XMLReadingParserTask::~XMLReadingParserTask()
+	XMLReadingParserTask::
+		~XMLReadingParserTask()
 	{
 		sc_ = NULL;
 		world_ = NULL;
 		delete sc_;
 		delete world_;
 	}
+	
 	//--------------------------------------------------------------
-	std::string XMLReadingParserTask::name(void) const throw()
+	std::string 
+		XMLReadingParserTask::
+		name(void) 
+		const throw()
 	{
 		return "xml_reading_parser_task";
 	}
+	
 	//--------------------------------------------------------------
-	std::string XMLReadingParserTask::description(void) const throw()
+	std::string 
+		XMLReadingParserTask::
+		description(void) 
+		const throw()
 	{
-		return "Reading parser task. It should read an XML file and display the information in the console, when running shawn.This is all done by creating a Reading. It should create an ReadingParser and the parsed information should be passed to the Reading";
+		return "Reading parser task. It should read an XML file and display the information "
+			   "in the console, when running shawn.This is all done by creating a Reading. "
+			   "It should create an ReadingParser and the parsed information should be passed to the Reading";
 	}
+	
 	//--------------------------------------------------------------
-	void XMLReadingParserTask::run(shawn::SimulationController& sc)
-	throw (std::runtime_error)
+	void 
+		XMLReadingParserTask::
+		run(shawn::SimulationController& sc)
+		throw (std::runtime_error)
 	{
 		require_world(sc);
 		// Sets the relative path to the XML file which has to be parsed
@@ -92,8 +110,12 @@ namespace reading
 		//is_ = NULL;
 		//delete is_;	
 	}
+	
 	//--------------------------------------------------------------
-	void XMLReadingParserTask::start_element(const std::string& name, const shawn::xml::SAXInterruptibleReader::AttList attList) throw(std::runtime_error)
+	void 
+		XMLReadingParserTask::
+		start_element(const std::string name, shawn::xml::AttList attList) 
+		throw(std::runtime_error)
 	{
 		TRACE("XMLREADINGPARSERTASK: parsing reading tag");
 		attList_ = attList;
@@ -110,11 +132,15 @@ namespace reading
 		if("settings" == name)
 			interrupt();
 	}
+	
 	//--------------------------------------------------------------
-	void XMLReadingParserTask::end_element(std::string name) throw(std::runtime_error)
+	void 
+		XMLReadingParserTask::
+		end_element(std::string name) 
+		throw(std::runtime_error)
 	{
 	}
-	//--------------------------------------------------------------
+
 }
 
 #endif

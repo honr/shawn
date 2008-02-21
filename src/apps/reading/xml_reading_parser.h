@@ -50,10 +50,10 @@ namespace xmlreading
 	*	</readingvalues>
 	* </reading>
 	*/
-
-	class XMLReadingParser :public shawn::xml::SAXInterruptibleReader,
-				public shawn::xml::TagParser,
-				public shawn::EventScheduler::EventHandler
+	class XMLReadingParser :
+		public shawn::xml::SAXInterruptibleReader,
+		public shawn::xml::TagParser,
+		public shawn::EventScheduler::EventHandler
 	{
 	public:
 		bool parsing_done_;
@@ -77,26 +77,28 @@ namespace xmlreading
         	///@}
         	///@name event handling
 		///@{
+		
 		/** This method is called when an timeout signal has been set. Time tags from the XML file deliver the point in time, when the timeout method has to be called.
 		**/
 		void timeout( shawn::EventScheduler&, shawn::EventScheduler::EventHandle, double, shawn::EventScheduler::EventTagHandle& ) throw();
 		///@}
-		// ----------------------------------------------------------------------
+
 		/** Insert the just read values into the local Readings variable*/
 		void update_readings(shawn::Vec, Values) throw();
-		// ----------------------------------------------------------------------
+
 		/** Set the next event time where the parser should go on with parsing */
 		void set_next_parse_event_time() throw();
-		// ----------------------------------------------------------------------
+
 		/** Returns the parse event time */
 		double get_next_parse_event_time() throw() { return next_parse_event_time_; }
-		// ----------------------------------------------------------------------
+		
 		/** Show all values currently held by the Readings variable*/
 		void show_parser_readings() throw();
-		// ----------------------------------------------------------------------
+
 	protected:
 		/// Callback handler for Expat opening tag events. Real handling is delegated to parse().
-		virtual void start_element(const std::string&, const shawn::xml::SAXInterruptibleReader::AttList) throw(std::runtime_error);
+		virtual void start_element(std::string, shawn::xml::AttList) throw(std::runtime_error);
+		
 		/// Callback handler for Expat closing tag events. Real handling is delegated to parse().
 		virtual void end_element(std::string name) throw(std::runtime_error);
 	};

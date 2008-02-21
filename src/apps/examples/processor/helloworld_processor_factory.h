@@ -5,44 +5,43 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
+#ifndef __SHAWN_APPS_EXAMPLES_PROCESSOR_PROCESSOR_FACTORY_H
+#define __SHAWN_APPS_EXAMPLES_PROCESSOR_PROCESSOR_FACTORY_H
+#ifdef ENABLE_EXAMPLES
 
-#ifndef __SHAWN_APPS_HELLOWORLD_PROCESSOR_H
-#define __SHAWN_APPS_HELLOWORLD_PROCESSOR_H
+#include "sys/processors/processor_factory.h"
 
-#include "../buildfiles/_apps_enable_cmake.h"
-#ifdef ENABLE_HELLOWORLD
-
-#include <set>
-#include "sys/processor.h"
+namespace shawn 
+{ 
+    class SimulationController; 
+    class Processor;
+}
 
 namespace helloworld
 {
 
-   class HelloworldProcessor
-       : public shawn::Processor
+   class HelloworldProcessorFactory
+      : public shawn::ProcessorFactory
    {
    public:
-      HelloworldProcessor();
-      virtual ~HelloworldProcessor();
+      HelloworldProcessorFactory();
+      virtual ~HelloworldProcessorFactory();
 
-      virtual void boot( void ) throw();
-      virtual bool process_message( const shawn::ConstMessageHandle& ) throw();
-      virtual void work( void ) throw();
+      virtual std::string name( void ) const throw();
+      virtual std::string description( void ) const throw();
+      virtual shawn::Processor* create( void ) throw();
 
-   private:
-      int last_time_of_receive_;
-      std::set<const shawn::Node*> neighbours_;
+      static void register_factory( shawn::SimulationController& ) throw();
    };
-
 
 }
 
 #endif
 #endif
 /*-----------------------------------------------------------------------
- * Source  $Source: /cvs/shawn/shawn/apps/helloworld/helloworld_processor.h,v $
+ * Source  $Source: /cvs/shawn/shawn/apps/helloworld/helloworld_processor_factory.h,v $
  * Version $Revision$
  * Date    $Date$
  *-----------------------------------------------------------------------
- * $Log: helloworld_processor.h,v $
+ * $Log: helloworld_processor_factory.h,v $
  *-----------------------------------------------------------------------*/

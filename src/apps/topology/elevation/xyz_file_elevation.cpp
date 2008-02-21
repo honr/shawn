@@ -11,6 +11,7 @@
 #include "apps/topology/elevation/xyz_file_elevation.h"
 #include "apps/topology/elevation/xyz_file.h"
 #include <sstream>
+#include <math.h>
 #include <limits>
 
 using namespace shawn;

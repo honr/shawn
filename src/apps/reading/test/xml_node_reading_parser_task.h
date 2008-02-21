@@ -21,7 +21,9 @@
 
 namespace reading
 {
-	class XMLNodeReadingParserTask : public shawn::SimulationTask, public shawn::xml::SAXInterruptibleReader 
+	class XMLNodeReadingParserTask 
+		: public shawn::SimulationTask, 
+		  public shawn::xml::SAXInterruptibleReader 
 	{
 	private:
 		///
@@ -39,7 +41,7 @@ namespace reading
 		///
 		xmlreading::XMLNodeSensorFactory* ns_fac;
 		///
-		shawn::xml::SAXInterruptibleReader::AttList attList_;
+		shawn::xml::AttList attList_;
 		///
 //		shawn::World::NodeVector* nv_;
 		///	
@@ -67,7 +69,7 @@ namespace reading
 		///@name basic methods inherited from SAXReader
 		///@{
 		/// Callback handler for Expat opening tag events. Real handling is delegated to parse().
-		virtual void start_element(const std::string&, const shawn::xml::SAXInterruptibleReader::AttList) throw(std::runtime_error);
+		virtual void start_element(std::string, shawn::xml::AttList) throw(std::runtime_error);
 		///
 		/// Callback handler for Expat closing tag events. Real handling is delegated to parse().
 		virtual void end_element(std::string) throw(std::runtime_error);

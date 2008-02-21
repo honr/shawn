@@ -5,16 +5,14 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #include "../buildfiles/_apps_enable_cmake.h"
-#ifdef ENABLE_HELLOWORLD
+#ifdef ENABLE_EXAMPLES
 
-#include <iostream>
-
+#include "apps/examples/processor/helloworld_processor_factory.h"
+#include "apps/examples/processor/helloworld_processor.h"
 #include "sys/processors/processor_keeper.h"
-#include "apps/helloworld/helloworld_processor_factory.h"
-#include "apps/helloworld/helloworld_processor.h"
 #include "sys/simulation/simulation_controller.h"
+#include <iostream>
 
 using namespace std;
 using namespace shawn;
@@ -22,6 +20,7 @@ using namespace shawn;
 namespace helloworld
 {
 
+   // ----------------------------------------------------------------------
    void
    HelloworldProcessorFactory::
    register_factory( SimulationController& sc )
@@ -29,24 +28,30 @@ namespace helloworld
    {
       sc.processor_keeper_w().add( new HelloworldProcessorFactory );
    }
+   
    // ----------------------------------------------------------------------
    HelloworldProcessorFactory::
    HelloworldProcessorFactory()
    {
       //cout << "HelloworldProcessorFactory ctor" << &auto_reg_ << endl;
    }
+   
    // ----------------------------------------------------------------------
    HelloworldProcessorFactory::
    ~HelloworldProcessorFactory()
    {
       //cout << "HelloworldProcessorFactory dtor" << endl;
    }
+   
    // ----------------------------------------------------------------------
    std::string
    HelloworldProcessorFactory::
    name( void )
       const throw()
-   { return "helloworld"; }
+   { 
+	   return "helloworld"; 
+   }
+   
    // ----------------------------------------------------------------------
    std::string 
    HelloworldProcessorFactory::
@@ -55,6 +60,7 @@ namespace helloworld
    {
       return "simple HelloWorld demo processor";
    }
+   
    // ----------------------------------------------------------------------
    shawn::Processor*
    HelloworldProcessorFactory::
@@ -63,7 +69,6 @@ namespace helloworld
    {
       return new HelloworldProcessor;
    }
-
 
 }
 

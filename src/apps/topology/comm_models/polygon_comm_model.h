@@ -3,6 +3,7 @@
 #define __SHAWN_APPS_TOPOLOGY_COMM_MODELS_TOPOLOGY_COMM_MODEL_H
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
+#ifdef HAVE_CGAL
 #include "shawn_config.h"
 
 
@@ -171,5 +172,6 @@ namespace topology
 
 }
 
+#endif
 #endif
 #endif

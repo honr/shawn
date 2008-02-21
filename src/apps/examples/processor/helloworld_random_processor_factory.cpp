@@ -5,17 +5,14 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #include "../buildfiles/_apps_enable_cmake.h"
-#ifdef ENABLE_HELLOWORLD
-
-#include <iostream>
+#ifdef ENABLE_EXAMPLES
 
 #include "sys/processors/processor_keeper.h"
-#include "apps/helloworld/helloworld_random_processor_factory.h"
 #include "sys/simulation/simulation_controller.h"
-
-#include "apps/helloworld/helloworld_random_processor.h"
+#include "apps/examples/processor/helloworld_random_processor_factory.h"
+#include "apps/examples/processor/helloworld_random_processor.h"
+#include <iostream>
 
 using namespace std;
 using namespace shawn;

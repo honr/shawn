@@ -6,19 +6,28 @@
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 
-#include "exampletask_init.h"
-#ifdef ENABLE_EXAMPLETASK
+#include "apps/examples/examples_init.h"
+#ifdef ENABLE_EXAMPLES
 
-#include "apps/exampletask/exampletask_init.h"
-#include "apps/exampletask/exampletask.h"
+#include "apps/examples/simulationtask/exampletask.h"
+#include "apps/examples/processor/helloworld_processor_factory.h"
+#include "apps/examples/processor/helloworld_random_processor_factory.h"
+#include "apps/examples/tag/tag_test.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task_keeper.h"
+#include <iostream>
 
-extern "C" void init_exampletask( shawn::SimulationController& sc )
+extern "C" void init_examples( shawn::SimulationController& sc )
 {
-   sc.simulation_task_keeper_w().add( new exampletask::ExampleTask );
+	std::cout << "Initialising examples" << std::endl;
+	
+	sc.simulation_task_keeper_w().add( new exampletask::ExampleTask );
+	
+	helloworld::HelloworldProcessorFactory::register_factory(sc);
+	helloworld::HelloworldRandomProcessorFactory::register_factory(sc);
+	
+	sc.simulation_task_keeper_w().add( new examples::tagtest::TagTestTask );
 }
-
 
 #endif
 /*-----------------------------------------------------------------------

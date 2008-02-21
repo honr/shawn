@@ -5,28 +5,20 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #include "shawn_config.h"
-
 #include "sys/xml/xml_init.h"
 #include "sys/worlds/save_world_task.h"
-
 #include "sys/simulation/simulation_task_keeper.h"
 #include "sys/simulation/simulation_controller.h"
 
-
 namespace shawn
 {
-
-   void 
-   init_xml( SimulationController& sc )
-      throw()
-   {
-#ifdef HAVE_EXPAT 
+	void 
+		init_xml( SimulationController& sc )
+		throw()
+	{
        sc.simulation_task_keeper_w().add( new shawn::SimulationTaskSaveWorld );
-#endif
-   }
-
+	}
 
 }
 

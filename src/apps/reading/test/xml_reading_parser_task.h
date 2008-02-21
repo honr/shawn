@@ -35,14 +35,16 @@ namespace reading
     	*	for "tasks" a run-method.
 	*	If you want to run this task, you will have to create a XML file following the rules mentioned in the xml_reading_parser.h file.
     	*/
-	class XMLReadingParserTask : public shawn::SimulationTask, public shawn::xml::SAXInterruptibleReader 
+	class XMLReadingParserTask : 
+		public shawn::SimulationTask, 
+		public shawn::xml::SAXInterruptibleReader 
 	{
 	private:
 		std::string reading_file_;
 		std::string reading_name_;
 		std::string type;
 		std::string data;
-		shawn::xml::SAXInterruptibleReader::AttList attList_;
+		shawn::xml::AttList attList_;
 		shawn::World* world_;
 		shawn::SimulationController* sc_;
 	public:
@@ -70,7 +72,7 @@ namespace reading
 		///@name basic methods inherited from SAXReader
 		///@{
 		/// Callback handler for Expat opening tag events. Real handling is delegated to parse().
-		virtual void start_element(const std::string&, const shawn::xml::SAXInterruptibleReader::AttList) throw(std::runtime_error);
+		virtual void start_element(const std::string, shawn::xml::AttList) throw(std::runtime_error);
 		///
 		/// Callback handler for Expat closing tag events. Real handling is delegated to parse().
 		virtual void end_element(std::string) throw(std::runtime_error);

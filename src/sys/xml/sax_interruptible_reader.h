@@ -5,12 +5,8 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #ifndef __SHAWN_SYS_XML_SAX_INTERRUPTIBLE_READER_H
 #define __SHAWN_SYS_XML_SAX_INTERRUPTIBLE_READER_H
-
-#include "shawn_config.h"
-#ifdef HAVE_EXPAT 
 
 #include <stdexcept>
 #include <string>
@@ -25,23 +21,27 @@ namespace shawn
     {
 
         // -------------------------------------------------------------------
-        /// 
         /** 
         *
         */
-		class SAXInterruptibleReader : public SAXReader
+		class SAXInterruptibleReader 
+			: public SAXReader
         {
-		public:
-			typedef std::multimap<std::string, std::string> AttList;
 		private:
 
-			struct CacheData { 
+	        // -------------------------------------------------------------------
+	        /** 
+	        *
+	        */
+			struct CacheData 
+			{ 
 				std::string name; 
 				AttList atts; 
 				bool open_tag;
 			};
 
 			typedef list<struct CacheData*> Cache;
+			
         public:
             ///@name Construction / Destruction
             ///@{
@@ -58,28 +58,17 @@ namespace shawn
             ///@}
 
         protected:
-
-			virtual void start_element(const std::string& name, const AttList) throw(std::runtime_error) = 0;
+        	
+			virtual void start_element(std::string name, AttList atts) throw(std::runtime_error) = 0;
 			virtual void end_element(std::string name) throw(std::runtime_error) = 0;
 
-            virtual void handle_start_element(const char *name, const char **atts) throw(std::runtime_error);
-            virtual void handle_end_element(const char *name) throw(std::runtime_error);
+            virtual void handle_start_element(std::string name, AttList atts) throw(std::runtime_error);
+            virtual void handle_end_element(std::string name) throw(std::runtime_error);
 		
 		private:
-
-			AttList convert(const char **atts) const;
 			Cache cache_;
 			bool initialized_;
         };
 	}
 }
 #endif
-#endif
-
-/*-----------------------------------------------------------------------
-* Source  $Source: /cvs/shawn/shawn/sys/xml/sax_interruptible_reader.h,v $
-* Version $Revision$
-* Date    $Date$
-*-----------------------------------------------------------------------
-* $Log: sax_interruptible_reader.h,v $
- *-----------------------------------------------------------------------*/

@@ -5,16 +5,12 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #ifndef __SHAWN_SYS_SIMULATION_ENVIRONMENT_CONFIG_LOADER_H
 #define __SHAWN_SYS_SIMULATION_ENVIRONMENT_CONFIG_LOADER_H
 
 #include "shawn_config.h"
-#ifdef HAVE_EXPAT 
-
 #include "sys/xml/sax_reader.h"
 #include "sys/xml/tag_parser.h"
-
 #include <exception>
 
 namespace shawn 
@@ -48,16 +44,16 @@ namespace shawn
 	protected:
 
 		/// Callback handler for Expat opening tag events. Real handling is delegated to parse_xml().
-		virtual void handle_start_element(const char *name, const char **atts) throw(std::runtime_error);
+		virtual void handle_start_element(std::string name, shawn::xml::AttList atts) throw(std::runtime_error);
 
 		/// Callback handler for Expat closing tag events. Real handling is delegated to parse_xml().
-		virtual void handle_end_element(const char *name) throw(std::runtime_error);
+		virtual void handle_end_element(std::string name) throw(std::runtime_error);
 
 		///Keeps the current parsing state and extracts the relevant information from the XML file.
-		void parse_xml(const char *name, const char **atts, bool opening_tag) throw(std::runtime_error);        
+		void parse_xml(std::string name, shawn::xml::AttList atts, bool opening_tag) throw(std::runtime_error);        
 
 		///Callback handler from SAXSkipReader. Invoked if the target tag in the XML file has been reached.
-		virtual void skip_target_reached(const char *name, const char **atts);
+		virtual void skip_target_reached(std::string name, shawn::xml::AttList atts);
 
 	private:
 		ParsingState parsing_state_;			///< The current parsing state
@@ -66,7 +62,6 @@ namespace shawn
 
 }
 
-#endif
 #endif
 
 /*-----------------------------------------------------------------------

@@ -5,17 +5,16 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
+#include "apps/examples/processor/helloworld_processor.h"
+#ifdef ENABLE_EXAMPLES
 
-#include "helloworld_processor.h"
-#ifdef ENABLE_HELLOWORLD
-
-#include <iostream>
-#include "sys/node.h"
-#include "apps/helloworld/helloworld_processor.h"
-#include "apps/helloworld/helloworld_message.h"
+#include "apps/examples/processor/helloworld_processor.h"
+#include "apps/examples/processor/helloworld_message.h"
 #include "sys/node_distance_estimate.h"
 #include "sys/distance_estimates/distance_estimate_keeper.h"
 #include "sys/simulation/simulation_controller.h"
+#include "sys/node.h"
+#include <iostream>
 
 
 using namespace std;

@@ -5,6 +5,8 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
+#include "shawn_config.h"
+#ifdef ENABLE_TOPOLOGY 
 
 #include "sys/distance_estimates/absolute_error_distance_estimate.h"
 #include "sys/distance_estimates/distance_estimate_keeper.h"
@@ -20,9 +22,6 @@
 
 using namespace std;
 using namespace shawn;
-
-#include <limits>
-#include <iostream>
 
 namespace topology
 {
@@ -94,3 +93,4 @@ namespace topology
 
 }
 
+#endif

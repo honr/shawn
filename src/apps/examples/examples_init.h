@@ -6,33 +6,25 @@
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 
-#include "helloworld_message.h"
+#ifndef __SHAWN_APPS_EXAMPLETASK_EXAMPLETASK_INIT_H
+#define __SHAWN_APPS_EXAMPLETASK_EXAMPLETASK_INIT_H
 
-#ifdef ENABLE_HELLOWORLD
+#include "../buildfiles/_apps_enable_cmake.h"
+#ifdef ENABLE_EXAMPLES
 
-namespace helloworld
-{
+namespace shawn
+{ class SimulationController; }
 
-   HelloworldMessage::
-   HelloworldMessage()
-   {}
-	HelloworldMessage::
-   HelloworldMessage(int size)
-   {
-	 setSize(size);}
 
-   // ----------------------------------------------------------------------
-   HelloworldMessage::
-   ~HelloworldMessage()
-   {}
+extern "C" void init_examples( shawn::SimulationController& );
 
-}
+
 #endif
-
+#endif
 /*-----------------------------------------------------------------------
- * Source  $Source: /cvs/shawn/shawn/apps/helloworld/helloworld_message.cpp,v $
+ * Source  $Source: /cvs/shawn/shawn/apps/exampletask/exampletask_init.h,v $
  * Version $Revision$
  * Date    $Date$
  *-----------------------------------------------------------------------
- * $Log: helloworld_message.cpp,v $
+ * $Log: exampletask_init.h,v $
  *-----------------------------------------------------------------------*/

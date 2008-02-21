@@ -5,26 +5,29 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
-#ifndef __SHAWN_PROTO_HELLOWORLD_MESSAGE_H
-#define __SHAWN_PROTO_HELLOWORLD_MESSAGE_H
-
+#ifndef __SHAWN_APPS_EXAMPLETASK_H
+#define __SHAWN_APPS_EXAMPLETASK_H
 #include "../buildfiles/_apps_enable_cmake.h"
-#ifdef ENABLE_HELLOWORLD
+#ifdef ENABLE_EXAMPLES
 
+#include "sys/simulation/simulation_controller.h"
+#include "sys/simulation/simulation_task.h"
 
-#include "sys/message.h"
-
-namespace helloworld
+namespace exampletask
 {
-
-   class HelloworldMessage
-       : public shawn::Message
+   class ExampleTask
+      : public shawn::SimulationTask
    {
    public:
-      HelloworldMessage();
-		HelloworldMessage(int);
-      virtual ~HelloworldMessage();
+      ExampleTask();
+      virtual ~ExampleTask();
+
+      virtual std::string name( void ) const throw();
+      virtual std::string description( void ) const throw();
+
+      virtual void run( shawn::SimulationController& sc )
+         throw( std::runtime_error );
+
    };
 
 }
@@ -32,9 +35,9 @@ namespace helloworld
 #endif
 #endif
 /*-----------------------------------------------------------------------
- * Source  $Source: /cvs/shawn/shawn/apps/helloworld/helloworld_message.h,v $
+ * Source  $Source: /cvs/shawn/shawn/apps/exampletask/exampletask.h,v $
  * Version $Revision$
  * Date    $Date$
  *-----------------------------------------------------------------------
- * $Log: helloworld_message.h,v $
+ * $Log: exampletask.h,v $
  *-----------------------------------------------------------------------*/

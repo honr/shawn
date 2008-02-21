@@ -6,10 +6,6 @@
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 
-#include "shawn_config.h"
-
-#ifdef HAVE_EXPAT 
-
 #include "sys/worlds/load_world_factory.h"
 #include "sys/world.h"
 #include "sys/vec.h"
@@ -20,7 +16,7 @@
 #include "sys/taggings/tag_factory_keeper.h"
 #include "sys/simulation/simulation_controller.h"
 
-// Included these files for KiSeq-Loading
+//TODO: Still necessary? Included these files for KiSeq-Loading
 #include "sys/util/string_conv.h"
 #include "sys/comm_models/rim_comm_model.h"
 
@@ -30,21 +26,25 @@
 #include <string>
 
 using namespace std;
+using namespace shawn::xml;
 
 namespace shawn
 {
 
     // ----------------------------------------------------------------------
-    LoadWorldFactory::LoadWorldFactory() 
+    LoadWorldFactory::
+    	LoadWorldFactory() 
         : node_count_(0),
-        world_(NULL),
-        parsing_state_(Unknown),
-        current_node_(NULL)
-    {       
-    } 
+          world_(NULL),
+          parsing_state_(Unknown),
+          current_node_(NULL)
+    {} 
 
     // ----------------------------------------------------------------------
-    void LoadWorldFactory::fill_world( shawn::World& w ) throw()
+    void 
+    	LoadWorldFactory::
+    	fill_world( shawn::World& w ) 
+    	throw()
     {
         world_ = &w;
         sim_controller_ = &w.simulation_controller_w();
@@ -57,19 +57,22 @@ namespace shawn
     }
 
     // ----------------------------------------------------------------------
-    LoadWorldFactory::~LoadWorldFactory()  
-    {       
-    } 
+    LoadWorldFactory::
+    	~LoadWorldFactory()  
+    {} 
 
     // ----------------------------------------------------------------------
-    void LoadWorldFactory::skip_target_reached(const char*, const char** atts) 
+    void 
+    	LoadWorldFactory::
+    	skip_target_reached(std::string, AttList atts) 
     {
         cerr << "Load World: Snapshot found: " << attribute("id", atts) << endl;
-
     }
 
     // ----------------------------------------------------------------------
-    void LoadWorldFactory::handle_start_element(const char *name, const char **atts) 
+    void 
+    	LoadWorldFactory::
+    	handle_start_element(string name, AttList atts) 
         throw(runtime_error)
     {
         SAXSkipReader::handle_start_element(name, atts);
@@ -79,43 +82,42 @@ namespace shawn
     }
 
     // ----------------------------------------------------------------------
-    void LoadWorldFactory::handle_end_element(const char *name) throw(runtime_error)
+    void 
+    	LoadWorldFactory::
+    	handle_end_element(string name) 
+    	throw(runtime_error)
     {
         SAXSkipReader::handle_end_element(name);
 
         if( !skipping() )
-            parse_xml(name, NULL, false);
+            parse_xml(name, AttList(), false);
     }
 
 
     // ----------------------------------------------------------------------
-    inline void LoadWorldFactory::parse_xml(const char *name, const char **atts, bool opening_tag) throw(runtime_error) 
+    inline void 
+    	LoadWorldFactory::
+    	parse_xml(string name, AttList atts, bool opening_tag) 
+    	throw(runtime_error) 
     {
         if( parsing_state_ == Done )
             return;
 
-        if(strcmp("node", name) == 0) 
+        if("node" == name) 
             handle_tag_node(atts, opening_tag);
-
-        else if(strcmp("location", name) == 0 && opening_tag && parsing_state_ == Node) 
+        else if("location" == name && opening_tag && parsing_state_ == Node) 
             handle_tag_location(atts, opening_tag);
-
-        else if(strcmp("snapshot", name) == 0 ) 
+        else if("snapshot" == name) 
             handle_tag_snapshot(atts, opening_tag);
-
-        else if(strcmp("world", name) == 0 )
+        else if("world" == name)
             handle_tag_world(atts, opening_tag);
-
-        else if(strcmp("sizehint", name) == 0 && opening_tag ) 
+        else if("sizehint" == name && opening_tag ) 
             handle_tag_sizehint(atts, opening_tag);
-
-        else if(strcmp("scenario", name) == 0) 
+        else if("scenario" == name) 
             handle_tag_scenario(atts, opening_tag);
-
-        else if(strcmp("entry", name) == 0 && opening_tag) 
+        else if("entry" == name && opening_tag) 
 				handle_tag_entry(atts);
-
-        else if(strcmp("tag", name) == 0 ) 
+        else if("tag" == name) 
 		{
 			TagContainer* tc = world_;
 			if(parsing_state_ == Node )
@@ -131,7 +133,7 @@ namespace shawn
     // ----------------------------------------------------------------------
     inline void 
         LoadWorldFactory::
-        handle_tag_scenario(const char**, bool opening_tag)
+        handle_tag_scenario(AttList atts, bool opening_tag)
     {
         opening_tag? parsing_state_ = Scenario : parsing_state_ = Done;
     }
@@ -139,7 +141,7 @@ namespace shawn
     // ----------------------------------------------------------------------
     inline void 
         LoadWorldFactory::
-        handle_tag_world(const char**, bool opening_tag)    
+        handle_tag_world(AttList atts, bool opening_tag)    
     {
         opening_tag ? parsing_state_ = World : parsing_state_ = Snapshot;
     }
@@ -147,7 +149,7 @@ namespace shawn
     // ----------------------------------------------------------------------
     inline void 
         LoadWorldFactory::
-        handle_tag_snapshot(const char**, bool opening_tag)    
+        handle_tag_snapshot(AttList atts, bool opening_tag)    
     {
         if (opening_tag) 
             parsing_state_ = Snapshot;
@@ -162,7 +164,7 @@ namespace shawn
     // ----------------------------------------------------------------------
     inline void 
         LoadWorldFactory::
-        handle_tag_node(const char **atts, bool opening_tag)        
+        handle_tag_node(AttList atts, bool opening_tag)        
     {
         if( opening_tag ) 
         {
@@ -193,22 +195,22 @@ namespace shawn
 
     inline void 
         LoadWorldFactory::
-        handle_tag_location(const char **atts, bool opening_tag)        
+        handle_tag_location(AttList atts, bool opening_tag)        
     {
         if(!opening_tag)
             return;
 
         double x, y, z;
-        const char* tmp;
+        string tmp;
 
         tmp = attribute("x", atts);
-        x = tmp ? atof(tmp) : 0.0;
+        x = tmp != "" ? atof(tmp.c_str()) : 0.0;
 
         tmp = attribute("y", atts);
-        y = tmp ? atof(tmp) : 0.0;
+        y = tmp != "" ? atof(tmp.c_str()) : 0.0;
 
         tmp = attribute("z", atts);
-        z = tmp ? atof(tmp) : 0.0;
+        z = tmp != "" ? atof(tmp.c_str()) : 0.0;
 
         Vec loc(x,y,z);
         current_node_->set_real_position(loc);
@@ -217,7 +219,7 @@ namespace shawn
     // ----------------------------------------------------------------------
     inline void 
         LoadWorldFactory::
-        handle_tag_sizehint(const char **atts, bool opening_tag)       
+        handle_tag_sizehint(AttList atts, bool opening_tag)       
     {
         if(!opening_tag)
             return;
@@ -228,16 +230,17 @@ namespace shawn
    
 
     // ----------------------------------------------------------------------
-    void LoadWorldFactory::set_snapshot_id( const std::string& tim ) throw()
+    void 
+    	LoadWorldFactory::
+    	set_snapshot_id( const std::string tim ) 
+    	throw()
     {
         cerr << "Load World: Loading snapshot: " << tim << endl;
         set_skip_target("snapshot");
-        set_skip_target_add_attr("id", tim.c_str());
+        set_skip_target_add_attr("id", tim);
     }
 
 }
-
-#endif
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/worlds/load_world_factory.cpp,v $

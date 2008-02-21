@@ -5,20 +5,14 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #ifndef __SHAWN_APPS_XML_NODE_READING_PARSER_H
 #define __SHAWN_APPS_XML_NODE_READING_PARSER_H
-
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef	ENABLE_READING
 
 #ifndef TRACE_PARSER
 #define TRACE_PARSER(x)  std::cout << x << std::endl;	//show comments
 #endif
-
-
-
-
 
 #include "sys/xml/tag_parser.h"
 #include "sys/event_scheduler.h"
@@ -54,9 +48,10 @@ namespace xmlreading
 	///@}
 	///	XMLNodeReadingParser
 	/**	This class is responsible for the actual parsing process. With it a XML file with the under the name 'data access format' given format is parsed. Furthermore all information is stored in local maps and structs. At first the SettingData is parsed. The SettingData contains information about what to do with the parsed information and is passed to the sensor immediatly. For now there are now settings for how to process with the node data. At a timeout-signal the parsed information is passed to the sensor. */
-	class XMLNodeReadingParser : public shawn::xml::SAXInterruptibleReader,
-				public shawn::xml::TagParser,
-				public shawn::EventScheduler::EventHandler
+	class XMLNodeReadingParser 
+		: public shawn::xml::SAXInterruptibleReader,
+		  public shawn::xml::TagParser,
+		  public shawn::EventScheduler::EventHandler
 	{
 	public:
 		///
@@ -81,7 +76,7 @@ namespace xmlreading
 		///
 		shawn::EventScheduler::EventHandle event_handle_;
 		///
-		shawn::xml::SAXInterruptibleReader::AttList attList_;
+		shawn::xml::AttList attList_;
 		///	
 	public:
 		///@name construction/destruction
@@ -113,7 +108,7 @@ namespace xmlreading
 	protected:
 		///@name sax parser methods
 		/// Callback handler for Expat opening tag events. Real handling is delegated to parse().
-		void start_element(const std::string&, const shawn::xml::SAXInterruptibleReader::AttList) throw(std::runtime_error);
+		void start_element(std::string, shawn::xml::AttList) throw(std::runtime_error);
 		///
 		/// Callback handler for Expat closing tag events. Real handling is delegated to parse().
 		void end_element(std::string) throw(std::runtime_error);

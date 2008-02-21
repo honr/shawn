@@ -5,12 +5,8 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #ifndef __SHAWN_SYS_WORLDS_LOAD_WORLD_FACTORY_H
 #define __SHAWN_SYS_WORLDS_LOAD_WORLD_FACTORY_H
-
-#include "shawn_config.h"
-#ifdef HAVE_EXPAT 
 
 #include "sys/worlds/processor_world_factory.h"
 #include "sys/xml/sax_reader.h"
@@ -21,7 +17,6 @@
 
 #include <expat.h>
 #include <stdlib.h>
-
 #include <iostream>
 #include <fstream>
 #include <set>
@@ -81,7 +76,7 @@ namespace shawn
 	* </pre>
 	*
 	*	Expected call in .conf File:
-	*	load_world world_in_file="Filename.xml" processors="Processortype" snapshot=0
+	*	load_world file=Filename.xml processors=Processortype snapshot=0
 	*/
 	class LoadWorldFactory : 
 		public shawn::xml::SAXSimpleSkipReader, 
@@ -112,7 +107,7 @@ namespace shawn
 		///@{
 
 		/** Set the snapshot id which will be used when reading the file */
-		void set_snapshot_id( const std::string& ) throw();
+		void set_snapshot_id( const std::string ) throw();
 
 		/** Actual parsing is triggered here */
 		virtual void fill_world( shawn::World& ) throw();
@@ -122,32 +117,32 @@ namespace shawn
 	protected:
 
 		/// Callback handler for Expat opening tag events. Real handling is delegeated to parse_xml().
-		virtual void handle_start_element(const char *name, const char **atts) throw(std::runtime_error);
+		virtual void handle_start_element(std::string name, shawn::xml::AttList atts) throw(std::runtime_error);
 
 		/// Callback handler for Expat closing tag events. Real handling is delegeated to parse_xml().
-		virtual void handle_end_element(const char *name) throw(std::runtime_error);
+		virtual void handle_end_element(std::string name) throw(std::runtime_error);
 
 		///Keeps the current parsing state and extracts the relevant information from the XML file.
 		/** Creates Nodes in the world (Location and Tags are currently read). Also tags for the shwan::World are
 		* read and attached to the world. Only called if not in skipping mode.
 		*/
-		void parse_xml(const char *name, const char **atts, bool opening_tag) throw(std::runtime_error);        
+		void parse_xml(std::string name, shawn::xml::AttList atts, bool opening_tag) throw(std::runtime_error);        
 
 		///Handles &lt;scenario&gt; tags
-		void handle_tag_scenario(const char **atts, bool opening_tag);        
+		void handle_tag_scenario(shawn::xml::AttList atts, bool opening_tag);        
 		///Handles &lt;world&gt; tags
-		void handle_tag_world(const char **atts, bool opening_tag);        
+		void handle_tag_world(shawn::xml::AttList atts, bool opening_tag);        
 		///Handles &lt;snapshot&gt; tags
-		void handle_tag_snapshot(const char **atts, bool opening_tag);        
+		void handle_tag_snapshot(shawn::xml::AttList atts, bool opening_tag);        
 		///Handles &lt;node&gt; tags
-		void handle_tag_node(const char **atts, bool opening_tag);        
+		void handle_tag_node(shawn::xml::AttList atts, bool opening_tag);        
 		///Handles &lt;location&gt; tags
-		void handle_tag_location(const char **atts, bool opening_tag);        
+		void handle_tag_location(shawn::xml::AttList atts, bool opening_tag);        
 		///Handles &lt;sizehint&gt; tags
-		void handle_tag_sizehint(const char **atts, bool opening_tag);        
+		void handle_tag_sizehint(shawn::xml::AttList atts, bool opening_tag);        
 
 		/** Callback handler from SAXSkipReader. Invoked if the target tag in the XML file has been reached. */
-		virtual void skip_target_reached(const char *name, const char **atts);
+		virtual void skip_target_reached(std::string name, shawn::xml::AttList atts);
 
 		virtual void add_node(shawn::Node*); //add nodes to world - can be rimplemented in subclasses in order to trigger the addition of nodes
 
@@ -163,6 +158,5 @@ namespace shawn
 
 }
 
-#endif
 #endif
 

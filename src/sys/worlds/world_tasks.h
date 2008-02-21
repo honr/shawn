@@ -84,8 +84,6 @@ namespace shawn
 
 
 
-#ifdef HAVE_EXPAT
-
    class SimulationTaskLoadWorldFactory
       : public SimulationTaskProcessorWorldFactory
    {
@@ -103,8 +101,7 @@ namespace shawn
                                    ProcessorWorldFactory& ) throw( std::runtime_error );
    };
 
-#endif
-
+   
 }
 
 #endif

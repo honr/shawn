@@ -5,11 +5,9 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
+#include "apps/examples/simulationtask/exampletask.h"
+#ifdef ENABLE_EXAMPLES
 
-#include "exampletask.h"
-#ifdef ENABLE_EXAMPLETASK
-
-#include "apps/exampletask/exampletask.h"
 #include "sys/world.h"
 
 namespace exampletask

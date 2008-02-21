@@ -5,35 +5,22 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #include "shawn_config.h"
-
-#ifdef HAVE_EXPAT 
-
 #include "sys/xml/sax_interruptible_reader.h"
-
-extern "C" {
-#include <expat.h>
-}
 
 #include <assert.h>
 #include <string>
 #include <iostream>
 #include <fstream>
 
-#ifndef XMLCALL
-#define XMLCALL
-#endif
-
 using namespace std;
+using namespace irr;
+using namespace irr::io;
 
 namespace shawn
 {
 	namespace xml
 	{
-		void XMLCALL saxreader_start(void *userdata, const char *name, const char **atts);
-		void XMLCALL saxreader_end(void *userdata, const char *name);
-
 		// ----------------------------------------------------------------------
 		SAXInterruptibleReader::
 			SAXInterruptibleReader()
@@ -50,60 +37,72 @@ namespace shawn
 			parse() 
 			throw(runtime_error) 
 		{
-			char buf[16384];
-			int len;
-
+			stop_flag_ = false;
 			if(!initialized_)
-			{
-				//Open the file
 				open_file();
 
-				//Create the SAX parser and register the C-Style handlers
-				//which will call back on this object instace
-				parser = XML_ParserCreate(NULL);
-				XML_SetUserData(parser, (void*)this);
-				XML_SetElementHandler(parser, saxreader_start, saxreader_end);
-				initialized_ = true;
-			}
-			stop_flag_ = false;
 			while(!cache_.empty() && !stop_flag_)
 			{
 				struct CacheData* cd = cache_.front();
 				
-				if( cd->open_tag ) {
-					
+				if( cd->open_tag )
 					start_element(cd->name, cd->atts);
-				}
-					
 				else
 					end_element(cd->name);
-					
 				
 				cache_.pop_front();
 				delete cd;
 			}
 
-			//Read the file until the end of file marker is encountered 
-			//and pass the data to the sax xml parser
-			while( !is_->eof() && !stop_flag_ ) 
-			{
-				is_->read( buf, sizeof(buf) );
-				len = is_->gcount();
+			//Read the file until the end of file
+            while( irr_ && irr_->read() && !stop_flag_ ) 
+            {
+            	
+            	switch( irr_->getNodeType()) 
+            	{
+            	//No xml node. This is usually the node if you did not read anything yet
+            	case EXN_NONE: 
+            		break;
+            		
+                //A xml element, like <foo>. 
+            	case EXN_ELEMENT:
+            		{
+            		AttList atts;            		
+            		for(int i = 0 ; i < irr_->getAttributeCount(); ++i)
+            			atts.insert( pair<string, string>(string(irr_->getAttributeName(i)), string(irr_->getAttributeValue(i))));
 
-				if (XML_Parse(parser, buf, len, is_->eof()) == XML_STATUS_ERROR)
-				{
-					cerr << XML_ErrorString(XML_GetErrorCode(parser)) <<
-						"at line " << XML_GetCurrentLineNumber(parser) << endl;
+                    handle_start_element(irr_->getNodeName(), atts);
+            		}
+            		break;
+            		
+                //End of an xml element, like </foo>. 
+            	case EXN_ELEMENT_END:
+                    handle_end_element(irr_->getNodeName());
+            		break;
+            		
+                //Text within a xml element: <foo> this is the text. </foo>. 
+            	case EXN_TEXT:
+            		break;
+            		
+                //An xml comment like <!-- I am a comment --> or a DTD definition. 
+            	case EXN_COMMENT:
+            		break;
+            		
+                //An xml cdata section like <![CDATA[ this is some CDATA ]]>. 
+            	case EXN_CDATA:
+            		break;
+            		
+                //Unknown element. 
+            	case EXN_UNKNOWN:
+            		break;
+            	}
 
-					reset();
-					throw runtime_error("Error in parsing XML input");
-				}
+            	//TODO: Validate the XML (e.g., a stack with open tags)
+            }			
 
-			}
-
+			//Done -> Close the file and free all associated memory
 			if( !stop_flag_ )
 			{
-				//Done -> Close the file and free all associated memory
 				parsing_done();
 				reset();
 			}
@@ -111,29 +110,29 @@ namespace shawn
 
 		// ----------------------------------------------------------------------
 		void SAXInterruptibleReader::
-			handle_start_element(const char* name, const char** atts) 
+			handle_start_element(string name, AttList atts) 
 			throw(runtime_error)
 		{
 			string _name = string(name);
-			AttList attlist = convert(atts);
 			
 			if( stop_flag_ )
 			{
 				CacheData* cd = new CacheData;
 				cd->open_tag = true;
 				cd->name = _name ;
-				cd->atts = attlist;
+				cd->atts = atts;
 				cache_.push_back(cd);
 			} 
-			else {
-				start_element(_name , attlist);
+			else 
+			{
+				start_element(_name, atts);
 			}
 		}
 
 
 		// ----------------------------------------------------------------------
 		void SAXInterruptibleReader::
-			handle_end_element(const char* name) 
+			handle_end_element(string name) 
 			throw(runtime_error)
 		{			
 			string n = string(name);
@@ -148,24 +147,9 @@ namespace shawn
 				end_element(n);
 		}
 
-
-		// ----------------------------------------------------------------------
-		SAXInterruptibleReader::AttList
-			SAXInterruptibleReader::
-			convert(const char **atts) 
-			const
-		{
-			AttList attlist;
-
-			for(; *atts; atts += 2)
-				attlist.insert( pair<string, string>(string(atts[0]), string(atts[1])));
-
-			return attlist;
-		}
-
 	}
 }
-#endif
+
 
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/sys/xml/sax_interruptible_reader.cpp,v $

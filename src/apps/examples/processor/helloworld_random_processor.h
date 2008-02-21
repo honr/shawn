@@ -5,29 +5,26 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
-#ifndef __SHAWN_APPS_HELLOWORLD_PROCESSOR_H2
-#define __SHAWN_APPS_HELLOWORLD_PROCESSOR_H2
-
+#ifndef __SHAWN_APPS_EXAMPLES_HELLOWORLD_RANDOM_PROCESSOR_H__
+#define __SHAWN_APPS_EXAMPLES_HELLOWORLD_RANDOM_PROCESSOR_H__
 #include "../buildfiles/_apps_enable_cmake.h"
-#ifdef ENABLE_HELLOWORLD
+#ifdef ENABLE_EXAMPLES
 
-#include <set>
-#include "sys/processor.h"
-#include "apps/helloworld/helloworld_processor.h"
+#include "apps/examples/processor/helloworld_processor.h"
 #include "sys/event_scheduler.h"
+#include "sys/processor.h"
+#include <set>
 
 namespace helloworld
 {
-/**
-*	This is a Helloworld processor which sends a Hello message on a randomly chosen
-*  time to it's neighbors and a randomly chosen message size.
-*  Can be used by: processors=helloworld_random
-*  The Processor will send the message within six seconds as default.
-*  One can also specify the sending time by the intervals lower and upper bound.
-*  These can be set in Shawn with the parameters:
-*  "lowerBound = double_value" and "upperBound = double_value"
-*/
+	/** This is a Helloworld processor which sends a Hello message on a randomly chosen
+	*  time to it's neighbors and a randomly chosen message size.
+	*  Can be used by: processors=helloworld_random
+	*  The Processor will send the message within six seconds as default.
+	*  One can also specify the sending time by the intervals lower and upper bound.
+	*  These can be set in Shawn with the parameters:
+	*  "lowerBound = double_value" and "upperBound = double_value"
+	*/
    class HelloworldRandomProcessor
 		: public HelloworldProcessor,shawn::EventScheduler::EventHandler
    {

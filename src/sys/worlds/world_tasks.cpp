@@ -20,9 +20,7 @@
 
 #include <iostream>
 
-#ifdef HAVE_EXPAT
 using namespace shawn::xml;
-#endif
 using namespace std;
 
 namespace shawn
@@ -31,9 +29,7 @@ namespace shawn
     {
         sc.simulation_task_keeper_w().add( new SimulationTaskRectWorldFactory );
         sc.simulation_task_keeper_w().add( new SimulationTaskCuboidWorldFactory );
-#ifdef HAVE_EXPAT
         sc.simulation_task_keeper_w().add( new SimulationTaskLoadWorldFactory );
-#endif
     }
 
 
@@ -202,8 +198,6 @@ namespace shawn
 
 
 
-#ifdef HAVE_EXPAT
-
     SimulationTaskLoadWorldFactory::
         SimulationTaskLoadWorldFactory()
     {}
@@ -235,12 +229,18 @@ namespace shawn
     {
         LoadWorldFactory* xmlf = NULL;
 
-        try {
+        try 
+        {
+        	std::string file = sc.environment().optional_string_param("file","");
+        	if( file == "" )
+        		sc.environment().required_string_param("world_in_file");
+        	
             xmlf = new LoadWorldFactory;
-            xmlf->set_document_uri( sc.environment().required_string_param("world_in_file") );
+            xmlf->set_document_uri( file );
             xmlf->set_snapshot_id( sc.environment().optional_string_param("snapshot","0") );
         }
-        catch( std::runtime_error& ) {
+        catch( std::runtime_error& ) 
+        {
             delete xmlf;
             throw;
         }
@@ -257,7 +257,6 @@ namespace shawn
         // nothing -- xml factory needs no count
     }
 
-#endif
 
 
 }
