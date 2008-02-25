@@ -111,7 +111,7 @@
 #=============
 
 	add_library( shawnlib ${shawnSourcesLib} )
-	add_library( shawn-with-main ${shawnSources} )
+#	add_library( shawn-with-main ${shawnSources} ${shawnSourcesLib} )
 	
 	add_executable( shawn ${shawnSources} )
 
