@@ -55,19 +55,10 @@
 
 	# shawnSources - Sources for executable build
 
-		set( shawnSources ${shawnSources} ${shawnSourcesSysCPP} )
-		set( shawnSources ${shawnSources} ${shawnSourcesSysH} )
-
-		set( shawnSources ${shawnSources} ${shawnSourcesAppsCPP} )
-		set( shawnSources ${shawnSources} ${shawnSourcesAppsH} )
-
 		set( shawnSources ${shawnSources} ${shawnSourcesFrontendCPP} )
 		set( shawnSources ${shawnSources} ${shawnSourcesFrontendH} )
-		
 		set( shawnSources ${shawnSources} shawn_config.h )
 
-		set( shawnSources ${shawnSources} ${legacyappsSourcesCPP} )
-	
 	# shawnSourcesLib - Sources for library build
 
 		set( shawnSourcesLib ${shawnSourcesLib} ${shawnSourcesSysCPP} )
@@ -76,41 +67,13 @@
 		set( shawnSourcesLib ${shawnSourcesLib} ${shawnSourcesAppsCPP} )
 		set( shawnSourcesLib ${shawnSourcesLib} ${shawnSourcesAppsH} )
 
-		set( shawnSourcesLib ${shawnSourcesLib} shawn_config.h )
-
 		set( shawnSourcesLib ${shawnSourcesLib} ${legacyappsSourcesCPP} )
 
-
+		set( shawnSourcesLib ${shawnSourcesLib} shawn_config.h )
 
 #=============
 # Add include and library directories for the compiler/linker
 #=============
-
-#
-# Old default directories:
-#
-#	if ( WIN32 )
-#
-#		set ( DEFAULT_CGAL_ROOT  ../libs/CGAL-3.1 )
-#
-#		set( LIB_PATH_CGAL ${DEFAULT_CGAL_ROOT}/lib/msvc7 CACHE PATH "Path to CGAL library" )
-#
-#       set( INCLUDE_PATH_CGAL ${DEFAULT_CGAL_ROOT}/include CACHE PATH "Path to CGAL includes" )
-#       set( INCLUDE_PATH_CGAL_COMPILER_CONFIG ${DEFAULT_CGAL_ROOT}/include/CGAL/config/msvc7 CACHE PATH "Path to CGAL compiler config" )
-#       set( INCLUDE_PATH_BOOST ../libs/boost CACHE PATH "Path to Boost include path" )
-#
-#	else ( WIN32 )
-#
-#		set ( DEFAULT_CGAL_ROOT  ../libs/CGAL-3.1 )
-#
-#		set( LIB_PATH_CGAL ${DEFAULT_CGAL_ROOT}/lib/i686_Linux-2.4.26-om_g++-3.3.5 CACHE PATH "Path to CGAL library" )
-#
-#       set( INCLUDE_PATH_CGAL ${DEFAULT_CGAL_ROOT}/include CACHE PATH "Path to CGAL includes" )
-#       set( INCLUDE_PATH_CGAL_COMPILER_CONFIG ${DEFAULT_CGAL_ROOT}/include/CGAL/config/i686_Linux-2.4.26-om_g++-3.3.5 CACHE PATH "Path to CGAL compiler config" )
-#       set( INCLUDE_PATH_BOOST ../libs/boost CACHE PATH "Path to Boost include path" )
-#
-#	endif ( WIN32 )
-
 
 	if ( WIN32 AND NOT CYGWIN )
 
@@ -147,9 +110,10 @@
 # Build target
 #=============
 
-	add_library( shawn ${shawnSources} )
-	add_executable( shawnexe ${shawnSources} )
 	add_library( shawnlib ${shawnSourcesLib} )
+	add_library( shawn-with-main ${shawnSources} )
+	
+	add_executable( shawn ${shawnSources} )
 
 #=============
 # Link libraries to the shawn target
@@ -173,9 +137,8 @@
 		
 	endif (  WIN32 AND NOT CYGWIN  )
 
-	target_link_libraries( shawn ${SYSTEM_LIBS} ${LIB_CGAL} )
-	target_link_libraries( shawnexe ${SYSTEM_LIBS} ${LIB_CGAL} )
-
+	target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} )
+	target_link_libraries( shawn-with-main shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} )
 
 #=============
 # Check directories and give a warning, if one or more paths are incorrect
