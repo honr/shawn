@@ -15,7 +15,7 @@
 namespace shawn
 	{
 	CsmaTransmissionModel::
-		CsmaTransmissionModel(int bandwidth, double backoff, double sending_jitter) :
+		CsmaTransmissionModel(int bandwidth, double backoff, double sending_jitter, double sending_jitter_lb) :
 	received_(0), 
 		dropped_(0), 
 		packet_failure_(0), 
@@ -25,7 +25,8 @@ namespace shawn
 		backOff_(backoff),
 		bandwidth_(bandwidth),
 		neighbors_(NULL),
-		sending_jitter_(sending_jitter)
+		sending_jitter_(sending_jitter),
+		sending_jitter_lb_(sending_jitter_lb)
 		{
 		}
 
@@ -46,6 +47,7 @@ namespace shawn
 		}
 		//This gives us an Array of Messages for all nodes which can be received in O(1)
 		neighbors_ = new DynamicNodeArray<MessageList>(world_w());
+		std::cout << "csma: Initialised." << std::endl;
 	}
 
 	// ----------------------------------------------------------------------
@@ -88,7 +90,7 @@ namespace shawn
 		csma_msg* new_msg = new csma_msg(&mi, mi.msg_->size() / bandwidth_, backOff_);
 		// If sending jitter is set, deliver time will be changed. ( Needed to avoid same deliver times due to 
 		// processors sending at the beginning of a round.)
-		mi.time_=( sending_jitter_ > 0.0 ) ? ( new_msg->random( 0.001, sending_jitter_ ) + mi.time_) : ( mi.time_ );
+		mi.time_=( sending_jitter_ > 0.0 ) ? ( new_msg->random( sending_jitter_lb_, sending_jitter_ ) + mi.time_) : ( mi.time_ );
 		new_msg->deliver_time = mi.time_;
 		find_destinations( new_msg );
 		//Adds a message to the DynamicNodeArray

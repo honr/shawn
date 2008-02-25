@@ -32,7 +32,7 @@ namespace shawn
 	public:
 		///@name construction, destruction and support for life cycle
 		///@{
-		CsmaTransmissionModel(int bandwidth, double backoff, double sending_jitter);
+		CsmaTransmissionModel(int bandwidth, double backoff, double sending_jitter, double sending_jitter_lb);
 		~CsmaTransmissionModel();
 		/**
 		 *@brief Initialize the csma transmission model
@@ -154,6 +154,8 @@ namespace shawn
 		EventScheduler::EventHandle event_handle_;
 		/// Jitter for starting the transmission
 		double sending_jitter_;
+
+		double sending_jitter_lb_;
 
 		///The messages that have been sent by the nodes and are waiting for delivery
 		typedef std::set<csma_msg*> MessageList;

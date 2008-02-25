@@ -6,6 +6,7 @@
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 
+#include <assert.h>
 #include "sys/transm_models/csma_transmission_model.h"
 #include "sys/transm_models/csma_transmission_model_factory.h"
 #include "sys/transm_models/transmission_model_keeper.h"
@@ -46,8 +47,11 @@ namespace shawn
 	
 		int bandwidth =sc.environment().required_int_param( "bandwidth");
 		double backoff = sc.environment().required_double_param( "backoff");
-		double sending_jitter = sc.environment().optional_double_param( "jitter",0.0);
-      return new CsmaTransmissionModel(bandwidth,backoff,sending_jitter);
+		double sending_jitter = sc.environment().optional_double_param( "jitter",0.0 );
+		sending_jitter = sc.environment().optional_double_param( "jitter_upper_bound",sending_jitter );
+		double sending_jitter_lb = sc.environment().optional_double_param( "jitter_lower_bound",0.001 );
+		//if (sending_jitter > 0.0) assert(sending_jitter >= sending_jitter_lb); 
+		return new CsmaTransmissionModel(bandwidth,backoff,sending_jitter,sending_jitter_lb);
    }
 	
 
