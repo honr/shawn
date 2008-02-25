@@ -48,6 +48,11 @@
 		file( GLOB_RECURSE legacyappsSourcesCPP ${LEGACYAPPS_PATH}/*.cpp )
 	endif ( LEGACYAPPS_PATH )
 
+	#
+	# Let the user choosse whether to build the shawn-with-main lib
+	#
+
+	OPTION(BUILD_LIB_WITH_MAIN "Additionally build a library containing main()" OFF)
 
 #=============
 # Add collected source files to common source variables
@@ -110,10 +115,14 @@
 # Build target
 #=============
 
-	add_library( shawnlib ${shawnSourcesLib} )
-#	add_library( shawn-with-main ${shawnSources} ${shawnSourcesLib} )
-	
-	add_executable( shawn ${shawnSources} )
+
+	IF(BUILD_LIB_WITH_MAIN)
+		add_library( shawnlib ${shawnSources} ${shawnSourcesLib} )
+	ELSE(BUILD_LIB_WITH_MAIN)
+		add_library( shawnlib ${shawnSourcesLib} )
+		add_executable( shawn ${shawnSources} )
+	ENDIF(BUILD_LIB_WITH_MAIN)
+
 
 #=============
 # Link libraries to the shawn target
@@ -137,8 +146,9 @@
 		
 	endif (  WIN32 AND NOT CYGWIN  )
 
-	target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} )
-	target_link_libraries( shawn-with-main shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} )
+	IF(NOT BUILD_LIB_WITH_MAIN)
+		target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} )
+	ENDIF(NOT BUILD_LIB_WITH_MAIN)
 
 #=============
 # Check directories and give a warning, if one or more paths are incorrect
