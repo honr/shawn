@@ -64,9 +64,10 @@ namespace routing
 		} 
 		else if( geo_prot != NULL )
 		{
-			shawn::Vec dest_position = shawn::Vec(ll.x() + shawn::uniform_discrete_random( int(abs(ur.x() - ll.x() - 1.0))), 
-				ll.y() + shawn::uniform_discrete_random( int(abs(ur.y() - ll.y() - 1.0))), 
-				ll.z() + shawn::uniform_discrete_random( int(abs(ur.z() - ll.z() - 1.0))) );
+			shawn::Vec dest_position = shawn::Vec(
+				ll.x() + shawn::uniform_discrete_random( int(abs(long(ur.x() - ll.x() - 1.0)))), 
+				ll.y() + shawn::uniform_discrete_random( int(abs(long(ur.y() - ll.y() - 1.0)))), 
+				ll.z() + shawn::uniform_discrete_random( int(abs(long(ur.z() - ll.z() - 1.0)))) );
 
 			cerr << "Sending geo message to random position (" << dest_position.x() << "/" << dest_position.y() << ")" << endl;;
 			geo_prot->send_to(owner_w(), msg, dest_position);

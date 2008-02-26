@@ -105,9 +105,9 @@ namespace routing
             shawn::World& w = owner_w().world_w();
             shawn::Node* sender =   w.find_node_by_id_w( shawn::uniform_discrete_random(w.node_count()-1) );
             shawn::Vec ll = w.lower_left(), ur = w.upper_right();
-            shawn::Vec dest_position = shawn::Vec(ll.x() + shawn::uniform_discrete_random( int(abs(ur.x() - ll.x() - 1.0))), 
-                                                  ll.y() + shawn::uniform_discrete_random( int(abs(ur.y() - ll.y() - 1.0))), 
-                                                  ll.z() + shawn::uniform_discrete_random( int(abs(ur.z() - ll.z() - 1.0))) );
+            shawn::Vec dest_position = shawn::Vec(ll.x() + shawn::uniform_discrete_random( int(abs(long(ur.x() - ll.x() - 1.0)))), 
+                                                  ll.y() + shawn::uniform_discrete_random( int(abs(long(ur.y() - ll.y() - 1.0)))), 
+                                                  ll.z() + shawn::uniform_discrete_random( int(abs(long(ur.z() - ll.z() - 1.0)))) );
             assert( sender != NULL );
             GeoTestProcessor* sender_proc = sender->get_processor_of_type_w<GeoTestProcessor>();
             assert(sender_proc != NULL);
