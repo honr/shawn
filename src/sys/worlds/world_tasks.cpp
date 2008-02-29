@@ -233,7 +233,7 @@ namespace shawn
         {
         	std::string file = sc.environment().optional_string_param("file","");
         	if( file == "" )
-        		sc.environment().required_string_param("world_in_file");
+        		file = sc.environment().required_string_param("world_in_file");
         	
             xmlf = new LoadWorldFactory;
             xmlf->set_document_uri( file );

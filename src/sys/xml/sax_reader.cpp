@@ -124,10 +124,11 @@ namespace shawn
                 //A xml element, like <foo>. 
             	case EXN_ELEMENT:
             		{
-	            		AttList atts;            		
+            			AttList atts;            		
 	            		for(int i = 0 ; i < irr_->getAttributeCount(); ++i)
 	            			atts.insert( pair<string, string>(string(irr_->getAttributeName(i)), string(irr_->getAttributeValue(i))));
 	            		
+
 	            		element_stack_.push_front(irr_->getNodeName());
 	                    handle_start_element(irr_->getNodeName(), atts);
 	                    if( !irr_->isEmptyElement() )
@@ -137,7 +138,7 @@ namespace shawn
                 //End of an xml element, like </foo>. 
             	case EXN_ELEMENT_END:
                     handle_end_element(irr_->getNodeName());
-                    
+
                     if(element_stack_.front() != irr_->getNodeName() ) 
                     {
                     	ostringstream os;
@@ -151,6 +152,8 @@ namespace shawn
                     	throw std::runtime_error(os.str());
                     }
             		element_stack_.pop_front();
+            		if (element_stack_.size() == 0)
+            			interrupt();
             		
             		break;
             		
