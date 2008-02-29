@@ -43,11 +43,14 @@ namespace motion_event
 		start_time_ = 0.0;
 		standard_deviation_ = 0.0;
 		max_time_error_ = MAX_ERROR;
+		in_range_of_nodes_.clear();
 	}
 	// ----------------------------------------------------------------------
 	MotionEventTask::
 	~MotionEventTask()
-	{}
+	{
+		in_range_of_nodes_.clear();
+	}
 	// ----------------------------------------------------------------------
 	std::string
 	MotionEventTask::
@@ -78,7 +81,8 @@ namespace motion_event
 		start_time_ = sc.environment().required_double_param("start_time");
 		standard_deviation_ = sc.environment().optional_double_param("standard_deviation", 0.0);
 		max_time_error_ = sc.environment().optional_double_param("max_time_error", MAX_ERROR);
-
+		in_range_of_nodes_.clear();
+		
 		for (shawn::World::node_iterator iter = sc.world_w().begin_nodes_w(); iter != sc.world_w().end_nodes_w(); ++iter) 
 		{
 			pair<shawn::Node*, bool> p;
@@ -107,6 +111,23 @@ namespace motion_event
 
 			Vec position = Vec( x_pos, y_pos, z_pos );
 			Vec destination = Vec( x_dest, y_dest, z_dest );
+		/*
+			TagHandle th = sc.environment_w().find_tag_w("ObjectPathTag");
+			shawn::IntegerDoubleMapTag* mt;
+			if ( th.is_not_null() )
+				mt = dynamic_cast<IntegerStringMapTag*>(th.get());
+			else mt = new shawn::IntegerStringMapTag("ObjectPathTag");
+			{
+				const IntegerDoubleMapTag::Map& m = mt->value();
+				std::ostringstream ossint, ossdouble;
+				ossint << m.size();
+				ossdouble << position;
+				
+				//mt->add_indexed_entry( ossint.str(), ossdouble.str());
+				mt->set_persistency(true);
+				sc.environment_w().add_tag(mt);
+			}*/
+			
 			single_line(sc, position, destination);
 		}
 
@@ -115,6 +136,83 @@ namespace motion_event
 	void 
 	MotionEventTask::
 	single_line(shawn::SimulationController& sc, const shawn::Vec start_pos, const shawn::Vec dest_pos) 
+	{
+		Vec lower_left = Vec(min(start_pos.x(), dest_pos.x()), min(start_pos.y(), dest_pos.y()), min(start_pos.z(), dest_pos.z()) );
+		Vec upper_right = Vec(max(start_pos.x(), dest_pos.x()), max(start_pos.y(), dest_pos.y()), max(start_pos.z(), dest_pos.z()) );
+		lower_left -= Vec(detection_range_, detection_range_, 0);
+		upper_right += Vec(detection_range_, detection_range_, 0);
+		
+		Box outer_box = Box(lower_left, upper_right);
+		Box dest_box = Box(dest_pos - Vec(detection_range_, detection_range_, 0), dest_pos + Vec(detection_range_, detection_range_, 0));
+		
+		Vec direction = dest_pos - start_pos;
+		double dir_norm = direction.euclidean_norm();
+		for( shawn::World::node_iterator it = sc.world_w().begin_nodes_w(); it != sc.world_w().end_nodes_w(); ++it )
+		{
+			shawn::Node& node = *it;
+			//cout << "Node: " << it->id() << endl;
+			Vec n = node.real_position();
+			
+			if (outer_box.contains(n))
+			{
+				//Minimum distance between node and moving event
+				double distance = ((cross_product((n - start_pos), direction)).euclidean_norm())/dir_norm;
+	
+				//cout << "Distance: " << distance << endl;
+				
+				//computation of node projection on the line of the moving event 
+				double lambda = ( (n - start_pos) * direction ) / (dir_norm * dir_norm) ;
+				Vec intercept = start_pos + (direction * lambda);
+
+				//cout << "Nod_pos: " << n.x() << "," << n.y() << "," << n.z() << endl;
+				//cout << "Dest: " << dest_pos.x() << "," << dest_pos.y() << "," << dest_pos.z() << endl;
+				//cout << "Distance: " << euclidean_distance(n, dest_pos) << " <= " << detection_range_ << endl;
+				
+				//If object was not in the detection range of node before
+				if ( !in_range_of_node(&node) ) 
+				{
+					//compute the time, at which the node remarks the motion event
+					NormalRandomVariable* var = new NormalRandomVariable;
+					var->set_standard_deviation(standard_deviation_);
+					var->init();
+					double random_variable = *var;
+					while (random_variable < (-1.0)*max_time_error_ || random_variable > max_time_error_)
+						random_variable = *var;
+					double intercept_time = start_time_ + random_variable + euclidean_distance(start_pos, intercept)/velocity_;
+					delete var;
+					//cout << "intercept= " << start_time_ + euclidean_distance(start_pos, intercept)/velocity_ << endl;
+					//cout << "Person " << object_id_ << " hits node " << node.id() << " (" << node.real_position() << ") at position " << intercept << " at " << intercept_time << endl;
+
+					// Saving event information in a tag
+					TagHandle th = node.find_tag_w("MotionEventTag");
+					shawn::IntegerDoubleMapTag* mt;
+					if ( th.is_not_null() )
+						mt = dynamic_cast<IntegerDoubleMapTag*>(th.get());
+					else mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
+					{
+						const IntegerDoubleMapTag::Map& m = mt->value();
+						std::ostringstream ossint, ossdouble;
+						ossint << m.size();
+						ossdouble << intercept_time;
+						
+						mt->add_indexed_entry( ossint.str(), ossdouble.str());
+						mt->set_persistency(true);
+						node.add_tag(mt);
+					}
+				}
+			}
+			// If person does not leave the detection range of the node set in_range_of_node = true
+			if ( dest_box.contains(n) ) 
+				set_in_range_of_node(&node, true);
+			else set_in_range_of_node(&node, false);
+			
+		}
+		start_time_ += euclidean_distance(start_pos, dest_pos)/velocity_;
+	}
+	// ----------------------------------------------------------------------
+	void 
+	MotionEventTask::
+	single_line_disc_range(shawn::SimulationController& sc, const shawn::Vec start_pos, const shawn::Vec dest_pos) 
 	{
 		Vec direction = dest_pos - start_pos;
 		double dir_norm = direction.euclidean_norm();
@@ -130,7 +228,7 @@ namespace motion_event
 			//cout << "Distance: " << distance << endl;
 			if (distance <= detection_range_) 
 			{
-				//computation of node projection on the line of the moving event (between pos_ and dest_)
+				//computation of node projection on the line of the moving event 
 				double lambda = ( (n - start_pos) * direction ) / (dir_norm * dir_norm) ;
 				Vec intercept = start_pos + (direction * lambda);
 
@@ -162,7 +260,7 @@ namespace motion_event
 
 					delete var;
 
-					cout << "Person " << object_id_ << " hits node " << node.id() << " at position " << intercept << " at " << intercept_time << endl;
+					//cout << "Person " << object_id_ << " hits node " << node.id() << " (" << node.real_position() << ") at position " << intercept << " at " << intercept_time << endl;
 
 					// Saving event information in a tag
 					TagHandle th = node.find_tag_w("MotionEventTag");
