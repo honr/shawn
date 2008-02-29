@@ -61,28 +61,33 @@ namespace shawn
         init_from_tags(const SimulationController& sc, LinkProbabilityCommunicationModel& plcm) 
         const throw()
     {
-        /* First look for a group tag named 'probability'
+        /* First look for a group tag named 'link_probability'
         Check each tag for the type StringBoolMapTag. Each map will contain the
         neighboring nodes of one node. The name of the map tag corresponds to the 
         node for which neighbor entries are present. Therefore we iterate over all 
         tags instead of a lookup by name.
         */
+
+	//cout << "link probability communication model"<< endl;
         ConstTagHandle pl_tag_group = sc.environment().find_tag("link_probability");
         const GroupTag* gt = pl_tag_group.is_not_null() ? dynamic_cast<const GroupTag*> (pl_tag_group.get()) : NULL;
 
+
         if( gt != NULL )
         {
+
+	    //cout << "group link_probability found"<< endl;
             for(Tag::tag_iterator it = gt->begin_tags(), end = gt->end_tags(); it!=end; ++it)
             {
-				StringDoubleMapTag* mt = dynamic_cast<StringDoubleMapTag*> (it->second.get());
+		StringDoubleMapTag* mt = dynamic_cast<StringDoubleMapTag*> (it->second.get());
                 if( mt != NULL )
                     for( StringDoubleMapTag::Map::const_iterator mit = mt->value().begin(),
                         mend = mt->value().end(); mit!=mend; ++mit )
                     {
-						double probability = mit->second;
+			double probability = mit->second;
 
-						plcm.add_edge( it->first, mit->first, probability );
-						cout << "inserting link " << it->first << " to " << mit->first << " with p=" << probability<< endl;
+			plcm.add_edge( it->first, mit->first, probability );
+			//cout << "inserting link " << it->first << " to " << mit->first << " with p=" << probability<< endl;
 
                     }
             }
