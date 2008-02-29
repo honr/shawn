@@ -383,6 +383,72 @@ namespace distest
 			psc->setlinewidth2(0.1);
 }
 
+//--------------------------------------------------------------------------------
+//Calculate the Connection Probability Distribution of the currently set Communication Model
+//--------------------------------------------------------------------------------
+
+    void
+        TestTask::
+        calc_communication_probability_function( shawn::SimulationController& sc )
+        throw( std::runtime_error )
+
+	{
+	
+		shawn::PerfectDistanceEstimate* perfect_de_;
+		//cout << ContainerSize << endl;
+		shawn::NodeDistanceEstimateHandle nei = sc.distance_estimate_keeper_w().find_w( "perfect_estimate" );	
+		if (nei.is_not_null()) 
+			perfect_de_ = (shawn::PerfectDistanceEstimate*)nei.get();
+		else
+			cout << "ERROR: TestTask::init: Could not retrieve perfect distance estimate." << endl;
+		
+		double r = sc.world().size_hint();
+		double result;
+
+		cout << "r=" << r << endl;
+		shawn::CommunicationModel* com = &(sc.world_w().communication_model_w());
+		//shawn::RimCommModel* rim =dynamic_cast<shawn::RimCommModel*>(com);
+
+		//CommunicationModel * udg = sc.communication_model_keeper_w().find_w("disk_graph")->create(sc);
+		for( shawn::World::const_node_iterator it1 = sc.world().begin_nodes(); it1 != sc.world().end_nodes(); ++it1) {            
+			for( shawn::World::const_node_iterator it2 = sc.world().begin_nodes(); it2 != sc.world().end_nodes(); ++it2) {            
+				perfect_de_->estimate_distance(*(it1), *(it2), result );
+				result/=r;
+
+				if (result <= 2.0 ) {
+						int index = (int)(floor(result*100.0));
+						//cout << index << endl;
+						if (com->can_communicate_uni(*(it1), *(it2))) 
+							could[index]++; else couldnot[index]++;
+					}
+
+				}
+			}
+
+			double frac[200];
+			std::string filename = sc.environment().required_string_param("file_name");
+			if ( filename != "") {
+				std::string out_file_short;
+				out_file_short=filename;
+				std::ofstream out((char*)(out_file_short.c_str()));
+
+
+				for (int i = 0; i<200;i++) {
+					if (could[i]+couldnot[i]>0)
+						frac[i] = (double)(could[i])/(double)(could[i]+couldnot[i]);
+					else
+						frac[i]=0.0;
+					out << DoubleFormatter((double)(i)/100.0) << "; " <<DoubleFormatter(frac[i]) << ";" <<could[i]+couldnot[i] <<  endl;
+				}
+				out.close();
+				for (int i = 0; i<200;i++) {
+					could[i]=0;
+					couldnot[i]=0;
+				}
+
+			}
+		}
+
 
 
 	// ----------------------------------------------------------------------
@@ -392,7 +458,9 @@ namespace distest
         throw( std::runtime_error )
     {
 				if (!initialized) init(sc);
-	
+	        calc_communication_probability_function( sc );
+
+
 		
 //--------------------------------------------------------------------------------
 //  Writing gnuplot files of communication model functions
@@ -1065,7 +1133,7 @@ const World& w = sc.world();
 		shawn::Vec rr(r, r, 0);
 		shawn::Vec ll = w.lower_left() + rr;
 		shawn::Vec ur = w.upper_right() - rr;
-*/
+
         shawn::CommunicationModel* com = &(sc_->world_w().communication_model_w());
 		
 	for( shawn::World::const_node_iterator it1 = sc.world().begin_nodes(), endit1 = sc.world().end_nodes();it1 != endit1; ++it1) 
@@ -1095,7 +1163,7 @@ const World& w = sc.world();
 		}
 		cout << "------------------------------------------"<< endl;
 	}
-
+*/
 //--------------------------------------------------------------------------------
 //calculating average densities
 //--------------------------------------------------------------------------------

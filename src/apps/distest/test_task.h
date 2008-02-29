@@ -53,6 +53,7 @@ typedef std::vector< std::vector<int> > INTMatrix;
 	virtual std::string getIdString( const shawn::SimulationController& sc ) const throw();
         bool out_of_bounds(shawn::Vec& ll, shawn::Vec& ur, const shawn::Node& node) throw();
 		void paint_scenario( shawn::SimulationController& sc, Node& n1, Node& n2, double frac );
+	void calc_communication_probability_function( shawn::SimulationController& sc );
 
 
 		DIPostscriptWriter *psc;	
