@@ -254,8 +254,11 @@ public class ShawnProcess {
 		File f = new File(filename);
 		BufferedWriter w = new BufferedWriter(new FileWriter(f));
 
-		w.write("//This file was written by JShawn (http://swarmnet.de/shawn) on "
+		w.write("// This file was written by JShawn (http://swarmnet.de/shawn) on "
 				+ new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z").format(new Date()) + "\n\n");
+		w.write("// The current max. command history size is " + getHistorySize() + " and " + commandHistory.size() + " commands were stored.");
+		w.write("// If you miss commands in this file, use public void setHistorySize(int historySize) to increase the history size.");
+		w.write("// The default history size is " + historySize);
 
 		for (String cmd : commandHistory)
 			w.write(cmd + "\n");
