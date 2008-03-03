@@ -83,7 +83,10 @@ private:
 //! Creates an instance of an UFT-8 or ASCII character xml parser. 
 IrrXMLReader* createIrrXMLReader(const char* filename)
 {
-	return new CXMLReaderImpl<char, IXMLBase>(new CFileReadCallBack(filename)); 
+	CFileReadCallBack* file = new CFileReadCallBack(filename);
+	if(file->getSize() == 0) 
+		return NULL;
+	return new CXMLReaderImpl<char, IXMLBase>(file); 	
 }
 
 
