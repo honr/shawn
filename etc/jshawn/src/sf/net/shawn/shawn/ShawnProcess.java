@@ -114,9 +114,13 @@ public class ShawnProcess {
 	 * @param value
 	 */
 	public void setGlobalVariable(String name, String value) {
-		String sc = name + "=" + value;
-		log.debug("Setting global variable: " + sc);
-		stdinStream.println(sc);
+		String cmdLine = name + "=" + value;
+		log.debug("Setting global variable: " + cmdLine);
+		// Save the command in the history
+		storeCommandInHistory(cmdLine);
+
+		// Send to Shawn
+		stdinStream.println(cmdLine);
 		stdinStream.flush();
 	}
 
@@ -140,9 +144,7 @@ public class ShawnProcess {
 		String cmdLine = cmd + " " + params;
 
 		// Save the command in the history
-		commandHistory.addLast(cmdLine);
-		while (commandHistory.size() > historySize)
-			commandHistory.removeFirst();
+		storeCommandInHistory(cmdLine);
 
 		// Send the command to Shawn
 		log.debug("Sending line to shawn: " + cmdLine);
@@ -244,6 +246,19 @@ public class ShawnProcess {
 		} catch (Throwable t) {
 			log.error("Error while destroying shawn process: " + t, t);
 		}
+	}
+
+	// --------------------------------------------------------------------------------
+	/**
+	 * Save the command in the history
+	 * 
+	 * @param cmdLine
+	 *            The complete command string
+	 */
+	private void storeCommandInHistory(String cmdLine) {
+		commandHistory.addLast(cmdLine);
+		while (commandHistory.size() > historySize)
+			commandHistory.removeFirst();
 	}
 
 	// --------------------------------------------------------------------------------
