@@ -140,9 +140,9 @@ public class ShawnProcess {
 		String cmdLine = cmd + " " + params;
 
 		// Save the command in the history
-		commandHistory.push(cmdLine);
+		commandHistory.addLast(cmdLine);
 		while (commandHistory.size() > historySize)
-			commandHistory.removeLast();
+			commandHistory.removeFirst();
 
 		// Send the command to Shawn
 		log.debug("Sending line to shawn: " + cmdLine);
