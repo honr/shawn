@@ -80,41 +80,11 @@
 # Add include and library directories for the compiler/linker
 #=============
 
-	if ( WIN32 AND NOT CYGWIN )
-
-		set ( DEFAULT_CGAL_ROOT   )
-
-		set( LIB_PATH_CGAL   CACHE PATH "Path to CGAL library" )
-
-        set( INCLUDE_PATH_CGAL   CACHE PATH "Path to CGAL includes" )
-        set( INCLUDE_PATH_CGAL_COMPILER_CONFIG   CACHE PATH "Path to CGAL compiler config" )
-        set( INCLUDE_PATH_BOOST   CACHE PATH "Path to Boost include path" )
-
-	else ( WIN32 AND NOT CYGWIN )
-
-		set ( DEFAULT_CGAL_ROOT   )
-
-		set( LIB_PATH_CGAL   CACHE PATH "Path to CGAL library" )
-
-        set( INCLUDE_PATH_CGAL   CACHE PATH "Path to CGAL includes" )
-        set( INCLUDE_PATH_CGAL_COMPILER_CONFIG   CACHE PATH "Path to CGAL compiler config" )
-        set( INCLUDE_PATH_BOOST   CACHE PATH "Path to Boost include path" )
-
-	endif ( WIN32 AND NOT CYGWIN )
-
-
-	link_directories( ${LIB_PATH_CGAL} )
-
-	include_directories( ./
-						 ${INCLUDE_PATH_CGAL}
-                         ${INCLUDE_PATH_CGAL_COMPILER_CONFIG}
-                         ${INCLUDE_PATH_BOOST} )
-
+	include_directories( ./ )
 
 #=============
 # Build target
 #=============
-
 
 	IF(BUILD_LIB_WITH_MAIN)
 		add_library( shawnlib ${shawnSources} ${shawnSourcesLib} )
@@ -130,75 +100,25 @@
 
 	if (  WIN32 AND NOT CYGWIN  )
 
-		if ( LIB_PATH_CGAL )
-			set ( LIB_CGAL CGAL.lib )
-		endif ( LIB_PATH_CGAL )
-
 		set ( SYSTEM_LIBS ws2_32.lib )
 
 	else (  WIN32 AND NOT CYGWIN  )
-
-		if ( LIB_PATH_CGAL )
-			set ( LIB_CGAL libCGAL.a )
-		endif ( LIB_PATH_CGAL )
 
 		set ( SYSTEM_LIBS dl )
 		
 	endif (  WIN32 AND NOT CYGWIN  )
 
 	IF(NOT BUILD_LIB_WITH_MAIN)
-		target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} )
+		target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} )
 	ENDIF(NOT BUILD_LIB_WITH_MAIN)
-
-#=============
-# Check directories and give a warning, if one or more paths are incorrect
-#=============
-
-	set ( incorrectPaths  )
-
-	# Only check paths if the current configure run is not the first
-	# run, so the warning messages don't appear the first time the
-	# user starts CMake
-
-	if ( firstRunDone )
-
-		if ( LIB_PATH_CGAL AND NOT EXISTS ${LIB_PATH_CGAL}/${LIB_CGAL} )
-			set ( incorrectPaths "${incorrectPaths} [LIB_PATH_CGAL] Can't find '${LIB_CGAL}' in '${LIB_PATH_CGAL}'\n" )
-		endif ( LIB_PATH_CGAL AND NOT EXISTS ${LIB_PATH_CGAL}/${LIB_CGAL} )
-
-		if ( INCLUDE_PATH_CGAL AND NOT EXISTS ${INCLUDE_PATH_CGAL}/CGAL/basic.h )
-			set ( incorrectPaths "${incorrectPaths} [INCLUDE_PATH_CGAL] Can't find 'CGAL/basic.h' in '${INCLUDE_PATH_CGAL}'\n" )
-		endif ( INCLUDE_PATH_CGAL AND NOT EXISTS ${INCLUDE_PATH_CGAL}/CGAL/basic.h )
-
-		if ( INCLUDE_PATH_CGAL_COMPILER_CONFIG AND NOT EXISTS ${INCLUDE_PATH_CGAL_COMPILER_CONFIG}/CGAL/compiler_config.h )
-			set ( incorrectPaths "${incorrectPaths} [INCLUDE_PATH_CGAL_COMPILER_CONFIG] Can't find 'CGAL/compiler_config.h' in '${INCLUDE_PATH_CGAL_COMPILER_CONFIG}'\n" )
-		endif ( INCLUDE_PATH_CGAL_COMPILER_CONFIG AND NOT EXISTS ${INCLUDE_PATH_CGAL_COMPILER_CONFIG}/CGAL/compiler_config.h )
-
-		if ( INCLUDE_PATH_BOOST AND NOT EXISTS ${INCLUDE_PATH_BOOST}/boost/config.hpp )
-			set ( incorrectPaths "${incorrectPaths} [INCLUDE_PATH_BOOST] Can't find '/boost/config.hpp' in '${INCLUDE_PATH_BOOST}'\n" )
-		endif ( INCLUDE_PATH_BOOST AND NOT EXISTS ${INCLUDE_PATH_BOOST}/boost/config.hpp )
-		
-		if ( incorrectPaths )
-			message( "Warning! The following paths seem to be incorrect. Shawn can't be compiled/linked with incorrect lib or include paths:\n\n${incorrectPaths}" )
-		endif ( incorrectPaths )
-	
-	endif ( firstRunDone )
-	
-	set( firstRunDone TRUE CACHE INTERNAL firstRunDone )
-
 
 #=============
 # Compiler definitions
 #=============
 
-	if ( LIB_PATH_CGAL )
-		add_definitions( -DHAVE_CGAL )
-	endif ( LIB_PATH_CGAL )
-
 	if ( LEGACYAPPS_PATH )
 		add_definitions( -DHAVE_LEGACYAPPS )
 	endif ( LEGACYAPPS_PATH )
-
 
 	# Add SHAWN flag, to distinguish code needed by Shawn from code
 	# that should be excluded, when an App is used by another program
