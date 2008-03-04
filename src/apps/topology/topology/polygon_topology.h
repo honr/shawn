@@ -9,12 +9,11 @@
 #define __SHAWN_APPS_TOPOLOGY_POLYGON_TOPOLOGY_H
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
-#include "shawn_config.h"
-#ifdef HAVE_CGAL
+#include "shawn_config.h"		
 
-#include "sys/cgal/types.h"
+#include "apps/topology/polygon/polygon.h"
+#include "apps/topology/polygon/bbox_2d.h"
 #include "apps/topology/topology/topology_2d.h"
-#include <CGAL/Polygon_2.h>
 #include <vector>
 
 namespace topology
@@ -24,7 +23,8 @@ namespace topology
       : public Topology2D
    {
    public:
-      typedef CGAL::Polygon_2<shawn::CGALKernel> Polygon;
+      typedef polygon::Polygon Polygon;
+	   
       typedef std::vector<Polygon*> PolygonVector;
       typedef const std::vector<Polygon*> ConstPolygonVector;
 	  typedef std::map<Polygon*, shawn::TagContainer*> PolygonTagMap;
@@ -37,6 +37,7 @@ namespace topology
       virtual std::string description( void ) const throw();
       virtual bool value( const shawn::Vec& ) const throw();
       virtual shawn::Box domain( void ) const throw();
+      virtual Bbox2D get_outer_bbox(void) const throw();
 
       // PolygonTopology will delete this one!
       // passed polygon must be is_simple() !
@@ -45,7 +46,7 @@ namespace topology
       // passed polygon must be is_simple() !
       virtual void add_hole_polygon( Polygon& ) throw();
 
-      virtual Polygon& outer_w() const;
+      virtual polygon::Polygon& outer_w() const;
 
 	  virtual ConstPolygonVector& holes() const;
       virtual PolygonVector& holes_w();
@@ -54,7 +55,7 @@ namespace topology
 	  virtual shawn::TagContainer& tags_w(Polygon& polygon);
       
    private:
-      Polygon*      outer_;
+      polygon::Polygon* outer_;
       PolygonVector holes_;
       std::string   name_;
 	  PolygonTagMap tags_;
@@ -62,7 +63,6 @@ namespace topology
 
 }
 
-#endif
 #endif
 #endif
 /*-----------------------------------------------------------------------

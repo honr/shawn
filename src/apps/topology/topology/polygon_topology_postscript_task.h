@@ -11,12 +11,13 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 #include "shawn_config.h"
-#ifdef HAVE_CGAL
 
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task.h"
 #include "sys/vec.h"
 #include "apps/topology/topology/polygon_topology.h"
+#include "apps/topology/polygon/segment_2d.h"
+#include "apps/topology/polygon/polygon.h"
 #include <iostream>
 #include <fstream>
 
@@ -51,7 +52,7 @@ namespace topology
 
 }
 
-#endif
+
 #endif
 #endif
 /*-----------------------------------------------------------------------

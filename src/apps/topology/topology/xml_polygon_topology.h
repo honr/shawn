@@ -9,12 +9,14 @@
 #define __SHAWN_SYS_WORLDS_TOPOLOGY_POLYGON_XML_POLYGON_TOPOLOGY_H
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
+#include "shawn_config.h"
 
-#include "sys/cgal/types.h"
+#include "apps/topology/polygon/polygon.h"
 #include "apps/topology/topology/polygon_topology.h"
 #include "sys/xml/sax_reader.h"
 #include "sys/tag_container.h"
 #include "sys/xml/tag_parser.h"
+#include "apps/topology/polygon/segment_2d.h"
 
 #include <string>
 #include <stdexcept>
@@ -110,7 +112,7 @@ namespace topology
         virtual void handle_end_element(std::string name) throw(std::runtime_error);
         
         /** */
-        shawn::CGAL2D to_point(shawn::xml::AttList atts) const throw(std::runtime_error);        
+       polygon::Point2D to_point(shawn::xml::AttList atts) const throw(std::runtime_error);
     };
 
 }

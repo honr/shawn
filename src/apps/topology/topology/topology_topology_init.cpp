@@ -35,12 +35,12 @@ namespace topology
      sc.simulation_task_keeper_w().add( new CuboidTopologyTask );
 	 sc.simulation_task_keeper_w().add( new Topology25DTask );
 	 
-#ifdef HAVE_CGAL
+
 	 sc.simulation_task_keeper_w().add( new SimulationTaskPolygonDistanceEstimate() );
 	 sc.simulation_task_keeper_w().add( new XMLPolygonTopologyTask );
 	 sc.communication_model_keeper_w().add( new PolygonTopologyCommunicationModelFactory(&sc) );
 	 sc.simulation_task_keeper_w().add( new PolygonTopologyPostscriptTask );
-#endif
+
   }
 
 }

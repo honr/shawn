@@ -8,14 +8,14 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 #include "shawn_config.h"
-#ifdef HAVE_CGAL
+
+#include"apps/topology/polygon/point_2d.h"
 
 #include "apps/topology/topology/xml_polygon_topology.h"
 #include "apps/topology/topology/polygon_topology_helpers.h"
 #include "sys/util/string_conv.h"
 #include "sys/simulation/simulation_controller.h"
-
-#include <CGAL/ch_graham_andrew.h>
+#include "apps/topology/polygon/segment_2d.h"
 
 #include <iostream>
 #include <iterator>
@@ -66,8 +66,12 @@ namespace topology
 		parse();
 
 		if( create_outer_polygon_ )
-			set_outer_polygon( topology::convex_hull(outer_->vertices_begin(), outer_->vertices_end()) );
-
+		{
+			Polygon& tmp = *new Polygon;
+			tmp = outer_->compute_convex_hull();
+			set_outer_polygon(tmp);
+			
+		}	
 		cerr << "XMLPolygonTopology: Loaded " << polygon_count_ << " polygons and " << tag_count_ << " tags" << endl;    
 	}
 
@@ -77,17 +81,17 @@ namespace topology
 		handle_start_element(string name, AttList atts) 
 		throw(std::runtime_error)
 	{
-		if( parsing_state_ == UnknownState && !strcmp("topology", name) )
+		if( parsing_state_ == UnknownState && "topology" == name )
 		{
 			parsing_state_ = TopologyState;
 		}
-		else if( parsing_state_ == TopologyState && !strcmp("polygon", name) ) 
+		else if( parsing_state_ == TopologyState && "polygon" == name ) 
 		{
 			polygon_type_ = polygon_type(atts);
 			parsing_state_ = PolygonState;
 			polygon_ = new Polygon;
 		} 
-		else if( parsing_state_ == PolygonState && !strcmp("vertex", name) ) 
+		else if( parsing_state_ == PolygonState && "vertex" == name ) 
 		{
 			assert( polygon_ != NULL );
 
@@ -96,12 +100,12 @@ namespace topology
 			if( create_outer_polygon_ && polygon_type_ != OuterType )
 				outer_->push_back( to_point(atts) );
 		} 
-		else if( parsing_state_ == PolygonState && !strcmp("tag", name) )
+		else if( parsing_state_ == PolygonState && "tag" == name )
 		{
 			parsing_state_ = TagState;
 			handle_open_tag_tag(atts, tags_w(*polygon_));
 		}
-		else if( parsing_state_ == TagState && !strcmp("entry", name) )
+		else if( parsing_state_ == TagState && "entry" == name )
 		{
 			handle_tag_entry(atts);
 		}
@@ -113,11 +117,11 @@ namespace topology
 		handle_end_element(string name) 
 		throw(std::runtime_error)
 	{
-		if( parsing_state_ == TopologyState && !strcmp("topology", name) )
+		if( parsing_state_ == TopologyState && "topology" == name )
 		{
 			parsing_state_ = DoneState;
 		}
-		else if( parsing_state_ == PolygonState && !strcmp("polygon", name) ) 
+		else if( parsing_state_ == PolygonState && "polygon" == name ) 
 		{
 			assert( polygon_ != NULL );
 			parsing_state_ = TopologyState;
@@ -128,7 +132,7 @@ namespace topology
 			if( (!polygon_->is_simple()) && fix_non_simple_polygons_ ) 
 			{
 				cerr << "XMLPolygonTopology: Warning: Polygon is not simple, creating conex hull instead" << endl;    
-				Polygon& pnew = topology::convex_hull(polygon_->vertices_begin(), polygon_->vertices_end());
+				Polygon pnew = polygon_->compute_convex_hull(); // convex hull of the polygon
 				delete polygon_;
 				polygon_ = &pnew;
 			}
@@ -148,9 +152,9 @@ namespace topology
 
 			polygon_ = NULL;
 		}
-		else if( parsing_state_ == TagState && !strcmp("tag", name) )
+		else if( parsing_state_ == TagState && "tag" == name )
 		{
-			handle_close_tag_tag(NULL, tags_w(*polygon_));
+			handle_close_tag_tag(AttList(), tags_w(*polygon_));
 			parsing_state_ = PolygonState;
 			tag_count_++;
 		}
@@ -158,20 +162,20 @@ namespace topology
 	}
 
 	// ----------------------------------------------------------------------
-	CGAL2D 
+	Point2D
 		XMLPolygonTopology::
 		to_point(AttList atts) 
 		const throw(std::runtime_error)
 	{
 		double x = conv_string_to_double( attribute("x", atts, "0.0") );
 		double y = conv_string_to_double( attribute("y", atts, "0.0") );
-		return CGAL2D(x,y);
+		return Point2D(x,y);
 	}
 
 	// ----------------------------------------------------------------------
 	XMLPolygonTopology::PolygonType
 		XMLPolygonTopology::
-		polygon_type(const char** atts) 
+		polygon_type(AttList atts) 
 		throw(runtime_error)
 	{       
 		if( attribute("type", atts, "unknown") ==  "outer")
@@ -184,7 +188,6 @@ namespace topology
 	}
 
 }
-#endif
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/topology/topology/xml_polygon_topology.cpp,v $

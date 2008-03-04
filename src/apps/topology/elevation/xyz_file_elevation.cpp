@@ -13,6 +13,7 @@
 #include <sstream>
 #include <math.h>
 #include <limits>
+#include <math.h>
 
 using namespace shawn;
 

@@ -8,17 +8,18 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #include "shawn_config.h"
 #ifdef ENABLE_TOPOLOGY
-#ifdef HAVE_CGAL
 
 #include "apps/topology/topology/polygon_topology_postscript_task.h"
 #include "apps/topology/topology_keepers.h"
 #include "sys/world.h"
 #include "sys/simulation/simulation_environment.h"
 #include "apps/reading/reading_keeper.h"
+#include "apps/topology/polygon/polygon.h"
 
 using namespace shawn;
 using namespace std;
 using namespace reading;
+using namespace polygon;
 
 namespace topology
 {
@@ -26,7 +27,7 @@ namespace topology
 	// ----------------------------------------------------------------------
 	PolygonTopologyPostscriptTask::
 		PolygonTopologyPostscriptTask()
-		: picture_dimension_ ( 600 ),
+		: picture_dimension_ ( 550 ),
 		  border_width_ ( 10 )
 	{}
 
@@ -59,9 +60,7 @@ namespace topology
 		run( shawn::SimulationController& sc )
 		throw( std::runtime_error )
 	{
-#ifndef HAVE_CGAL
-		throw std::runtime_error(name() + std::string(" cannot be used: CGAL support disabled at compile-time"));
-#else
+
 		string f = sc.environment().required_string_param("file");
 		string n = sc.environment().required_string_param("topology");
 		PolygonTopology* p = dynamic_cast<PolygonTopology*>(topology_keeper_w(sc).find_w(n).get());
@@ -77,7 +76,7 @@ namespace topology
 
 		outfile.flush();
 		outfile.close();
-#endif
+
 	}
 
 
@@ -88,8 +87,19 @@ namespace topology
 	{
 		//Paint parameters
 		{
+			Bbox2D p_bbox = p.get_outer_bbox(); // returns bounding box of the polygon topology
+
 			shawn::Vec ur = sc.world_w().upper_right();
 			shawn::Vec ll = sc.world_w().lower_left();
+		
+			//Compute lower_left of p_bbox and ll and upper_right of p_bbox an ur. Then save these computed values in ll and ur.
+			double min_x = std::min(p_bbox.get_min_x(),ll.x());
+			double max_x = std::max(p_bbox.get_max_x(),ur.x());
+			double min_y = std::min(p_bbox.get_min_y(),ll.y());
+			double max_y = std::max(p_bbox.get_max_y(),ur.y());
+			ur = shawn::Vec(max_x, max_y, 0.0);
+			ll = shawn::Vec(min_x, min_y, 0.0);
+			
 			double wdt= ur.x() - ll.x();
 			double hgt= ur.y() - ll.y();
 			scale_= (picture_dimension_ - 2.0 * border_width_ ) / wdt;
@@ -143,10 +153,10 @@ namespace topology
 		PolygonTopologyPostscriptTask::
 		draw(const PolygonTopology::Polygon& p, shawn::SimulationController& sc, ostream& out)
 	{
-		for(CGAL::Polygon_2<shawn::CGALKernel>::Edge_const_iterator it = p.edges_begin(), end = p.edges_end(); it!=end; ++it)
+		for(polygon::Polygon::Edge_const_iterator it = p.e_begin(), end = p.e_end(); it!=end; ++it)
 		{
-			CGAL::Polygon_2<shawn::CGALKernel>::Segment_2 edge = *it;
-			Vec s = pos2ps(Vec(edge.source())), t = pos2ps(Vec(edge.target()));
+			polygon::Segment2D edge = *it;
+			Vec s = pos2ps(Vec(edge.get_source())), t = pos2ps(Vec(edge.get_sink()));
 			out << "topologystyle " << s.x() << " " << s.y() << " moveto " << t.x() << " " << t.y() << " lineto stroke" << endl;
 		}
 	}
@@ -204,7 +214,7 @@ namespace topology
 	}
 
 }
-#endif
+
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/topology/topology/xml_polygon_topology_task.cpp,v $

@@ -2,7 +2,6 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 #include "shawn_config.h"
-#ifdef HAVE_CGAL
 
 #include "apps/topology/comm_models/polygon_comm_model_factory.h"
 #include "apps/topology/comm_models/polygon_comm_model.h"
@@ -79,5 +78,5 @@ PolygonTopologyCommunicationModelFactory::
 }
 
 
-#endif
+
 #endif

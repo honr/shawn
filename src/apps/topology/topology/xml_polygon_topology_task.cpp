@@ -14,12 +14,11 @@
 #include "apps/reading/reading_keeper.h"
 
 #include "shawn_config.h"
-#ifdef HAVE_CGAL
 #include "apps/topology/topology/xml_polygon_topology.h"
-#endif
 
 using namespace shawn;
 using namespace reading;
+
 
 namespace topology
 {
@@ -63,9 +62,6 @@ namespace topology
 		run( shawn::SimulationController& sc )
 		throw( std::runtime_error )
 	{
-		#ifndef HAVE_CGAL
-		throw std::runtime_error(name() + std::string(" cannot be used: CGAL support disabled at compile-time"));
-		#else
 
 			std::string f = sc.environment().required_string_param("file");
 			std::string n = sc.environment().required_string_param("name");
@@ -78,9 +74,9 @@ namespace topology
 			XMLPolygonTopology* p = new XMLPolygonTopology;
 			p->set_name(n);
 			p->read(sc, f, create_outer, fix_non_simple_polygons);
+			
 			topology_keeper_w(sc).add(p);
 
-		#endif
 	}
 
 }

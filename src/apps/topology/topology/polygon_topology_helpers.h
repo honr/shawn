@@ -9,10 +9,11 @@
 #define __SHAWN_APPS_TOPOLOGY_TOPOLOGY_HELPERS_H
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
-#include "shawn_config.h"
-#ifdef HAVE_CGAL
+#include "shawn_config.h"			
 
-#include "sys/cgal/types.h"
+#include "apps/topology/polygon/point_2d.h"
+#include "apps/topology/polygon/polygon.h"
+#include "apps/topology/polygon/segment_2d.h"
 #include "sys/tag.h"
 #include "sys/node.h"
 #include "sys/edge_model.h"
@@ -23,22 +24,22 @@ namespace topology
     /** Creates a convex hull around the given vertices.
       *
       */
-    shawn::Polygon& 
-        convex_hull(shawn::Polygon::Vertex_const_iterator begin, shawn::Polygon::Vertex_const_iterator end)
-        throw();
-
+/*    shawn::Polygon& 	// deprecated! use "apps/topology/polygon/polygon.h"
+        convex_hull(shawn::Polygon::Vertex_const_iterator begin, shawn::Polygon::Vertex_const_iterator end)	
+    	throw();
+*/
     /** Calculates the shortest distance line segment between a polygon and a point
       *
       */
-    shawn::CGALSegment2D shortest_distance_segment(const shawn::Polygon& poly, const shawn::CGAL2D p) 
-        throw();
-
+/*    shawn::CGALSegment2D shortest_distance_segment(const shawn::Polygon& poly, const shawn::CGAL2D p) //deprecated - use "apps/topology/polygon/polygon.h"
+    	throw();
+*/
     /** Calculates the shortest distance between a polygon and a point
       *
       */
-    double shortest_distance(const shawn::Polygon& poly, const shawn::CGAL2D p) 
-        throw();
-
+ /*   double shortest_distance(const shawn::Polygon& poly, const shawn::CGAL2D p) //deprecated - use "apps/topology/polygon/polygon.h"
+    	throw();
+*/
     /** Checks whether a node has the tag tag_name attached
       *
       */
@@ -47,7 +48,7 @@ namespace topology
 
 }
 
-#endif
+
 #endif
 #endif
 /*-----------------------------------------------------------------------

@@ -8,26 +8,27 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 #include "shawn_config.h"
-#ifdef HAVE_CGAL
 
 #include "apps/topology/topology/polygon_topology_helpers.h"
 
-#include <CGAL/ch_graham_andrew.h>
 #include <iostream>
 #include <vector>
+#include <math.h>
 
 using namespace std;
 using namespace shawn;
+using namespace polygon;
 
 namespace topology
 {
 
     // ----------------------------------------------------------------------
-    Polygon& 
-        convex_hull(Polygon::Vertex_const_iterator begin, Polygon::Vertex_const_iterator end)
-        throw()
+/*		// deprecated! use "apps/topology/polygon/polygon.h"
+	Polygon& 
+        convex_hull(Polygon::Vertex_const_iterator begin, Polygon::Vertex_const_iterator end) 
+    	throw()
     {
-        vector <CGAL2D> vertices;
+        vector <CGAL2D> vertices;		//deprecated - use "apps/topology/polygon/polygon.h"
         CGAL::ch_graham_andrew(begin, end, back_inserter(vertices));
         Polygon& pnew = *(new Polygon);
 
@@ -36,15 +37,16 @@ namespace topology
 
         return pnew;
     }
+*/    
     
     // ----------------------------------------------------------------------
-    CGALSegment2D shortest_distance_segment(const Polygon& poly, const CGAL2D p) 
+/*    Segment2D shortest_distance_segment(const Polygon& poly, const Point2D p) 
         throw()
     {
         double min = numeric_limits<double>::max(), d;
-        CGALSegment2D min_segment;
+        Segment2D min_segment;
 
-        for(Polygon::Edge_const_iterator it = poly.edges_begin(); it != poly.edges_end() ; ++it)
+        for(Polygon::Edge_const_iterator it = poly.e_begin(); it != poly.e_end() ; ++it)
         {
             d = squared_distance((*it), p);
             if( d < min )
@@ -55,20 +57,20 @@ namespace topology
         }
         return min_segment;
     }
-
+*/
 
     // ----------------------------------------------------------------------
-    double shortest_distance(const Polygon& poly, const CGAL2D p) 
+/*    double shortest_distance(const Polygon& poly, const Point2D p) 
         throw()
     {
         return sqrt( squared_distance( shortest_distance_segment(poly, p), p ));
     }
-
+*/
 
 
 }
 
-#endif
+
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/topology/topology/polygon_topology_helpers.cpp,v $

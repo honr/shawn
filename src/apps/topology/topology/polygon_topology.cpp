@@ -8,9 +8,10 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 #include "shawn_config.h"
-#ifdef HAVE_CGAL
 
 #include "apps/topology/topology/polygon_topology.h"
+#include <iostream>
+
 using namespace shawn;
 
 namespace topology
@@ -44,34 +45,53 @@ namespace topology
 		value( const Vec& p )
 		const throw()
 	{
-		CGAL2D pc(p);
+		Point2D pc(p);
 
 		assert( outer_ != NULL );
-
-		if( outer_->bounded_side(pc)==CGAL::ON_UNBOUNDED_SIDE )
-			return false;
+		
 
 		// we take the boundary of holes to be inside the area, i.e., 
 		// the topological closure is considered "inside".
-		for( PolygonVector::const_iterator it = holes_.begin(), endit=holes_.end(); it != endit; ++it )
-			if( (**it).bounded_side(pc)==CGAL::ON_BOUNDED_SIDE )
-				return false;
 
-		return true;
+		
+ 		if(outer_->bounded_side(pc)||outer_->on_boundary(pc)){
+			for( PolygonVector::const_iterator it = holes_.begin(); it != holes_.end(); it++ ){
+				if(((*it)->bounded_side(pc))){
+					if(!((*it)->on_boundary(pc))){
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+		return false;	
+		
 	}
 
 	// ----------------------------------------------------------------------
-	Box
+	shawn::Box
 		PolygonTopology::
 		domain( void )
 		const throw()
 	{
 		assert( outer_!=NULL );
-		CGAL::Bbox_2 bb( outer_->bbox() );
-		return Box( Vec( bb.xmin(), bb.ymin(), 0.0 ),
-			Vec( bb.xmax(), bb.ymax(), 0.0 ) );
+		Bbox2D bb = outer_->getBoundingBox();
+
+		return Box( Vec( bb.get_min_x(), bb.get_min_y(), 0.0 ),
+				Vec( bb.get_max_x(), bb.get_max_y(), 0.0 ) );
+
 	}
 
+	// ----------------------------------------------------------------------
+	Bbox2D
+		PolygonTopology::
+		get_outer_bbox( void )
+		const throw()
+	{
+		assert( outer_!=NULL );
+		return outer_->getBoundingBox();
+	}	
+	
 	// ----------------------------------------------------------------------
 	void
 		PolygonTopology::
@@ -148,7 +168,7 @@ namespace topology
 	}
 
 	// ----------------------------------------------------------------------
-	Polygon& 
+	polygon::Polygon& 
 		PolygonTopology::
 		outer_w()
 		const
@@ -176,7 +196,6 @@ namespace topology
 
 }
 
-#endif
 #endif
 /*-----------------------------------------------------------------------
 * Source  $Source: /cvs/shawn/shawn/apps/topology/topology/polygon_topology.cpp,v $
