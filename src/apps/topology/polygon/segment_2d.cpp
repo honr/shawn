@@ -225,7 +225,9 @@ namespace polygon
 		equals(Segment2D s) 
 		throw()	
 	{
-		if((source_.equals(s.get_source()) && sink_.equals(s.get_sink())) || (source_.equals(s.get_sink()) && sink_.equals(s.get_source()))){
+		if(	(source_.equals(s.get_source()) && sink_.equals(s.get_sink())) || 
+			(source_.equals(s.get_sink())   && sink_.equals(s.get_source())) )
+		{
 			return true;
 		}
 		
