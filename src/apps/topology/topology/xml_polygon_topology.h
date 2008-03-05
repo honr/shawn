@@ -17,6 +17,7 @@
 #include "sys/tag_container.h"
 #include "sys/xml/tag_parser.h"
 #include "apps/topology/polygon/segment_2d.h"
+#include "sys/vec.h"
 
 #include <string>
 #include <stdexcept>
@@ -112,7 +113,7 @@ namespace topology
         virtual void handle_end_element(std::string name) throw(std::runtime_error);
         
         /** */
-       polygon::Point2D to_point(shawn::xml::AttList atts) const throw(std::runtime_error);
+       Vec to_point(shawn::xml::AttList atts) const throw(std::runtime_error);
     };
 
 }

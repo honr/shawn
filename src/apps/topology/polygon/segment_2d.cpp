@@ -1,13 +1,12 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
-#define EPS 1e-3
+#define EPS .00001
 
-using namespace std;
-
-#include "segment_2d.h"
+#include "apps/topology/polygon/segment_2d.h"
 #include <math.h>
 #include <iostream>
+#include "sys/util/defutils.h"
 
 namespace polygon
 {
@@ -19,63 +18,23 @@ namespace polygon
 	// ----------------------------------------------------------------------	
 	
 	Segment2D::
-		Segment2D(Point2D p1, Point2D p2)
+		Segment2D(const Vec& p1, const Vec& p2)
 	{
 		source_ = p1;
 		sink_ = p2;
 	} 
-
-	// ----------------------------------------------------------------------	
-	
-	Segment2D::
-		Segment2D(Vec v1, Vec v2)
-	{
-		Point2D p1;
-		p1.set_location(v1.x(), v1.y());
-		Point2D p2;
-		p2.set_location(v2.x(), v2.y());
-		source_ = p1;
-		sink_ = p2;
-	} 	
 	
 	// ----------------------------------------------------------------------	
 	
 	Segment2D::
 		~Segment2D()
 	{}
-
-	// ----------------------------------------------------------------------
-	void 
-		Segment2D::
-		set_name(const std::string& s)
-		throw()
-	{ 
-		name_ = s; 
-	}		
-	
-	// ----------------------------------------------------------------------
-	std::string
-		Segment2D::
-		name(void)
-		const throw()
-	{
-		return name_;
-	}
-
-	// ----------------------------------------------------------------------
-	std::string
-		Segment2D::
-		description(void)
-		const throw()
-	{ 
-		return std::string("an edge between two vertices. In contrast to a line a segment really ends at its source and sink!"); 
-	}
 	
 	// ----------------------------------------------------------------------	
 
-	Point2D 
+	Vec 
 		Segment2D::
-		get_source(void) 
+		get_source(void) const 
 		throw()
 	{
 		return source_;
@@ -84,9 +43,9 @@ namespace polygon
 	// ----------------------------------------------------------------------	
 	
 
-	Point2D 
+	Vec 
 		Segment2D::
-		get_sink(void) 
+		get_sink(void) const 
 		throw()
 	{
 		return sink_;
@@ -97,14 +56,14 @@ namespace polygon
 
 	Bbox2D 
 		Segment2D::
-		get_Bbox(void) 
+		get_Bbox(void) const 
 		throw()
 	{
 		Bbox2D box;
-		vector<Point2D>  seg;
+		vector<Vec>  seg;
 		seg.push_back(source_);
 		seg.push_back(sink_);
-		box.getBoundingBox(&seg);
+		box.getBoundingBox(seg);
 		return box;
 	}	
 
@@ -112,46 +71,42 @@ namespace polygon
 	
 	bool
 		Segment2D::
-		point_on_segment(Point2D p) 
+		point_on_segment(const Vec& p) const 
 		throw()
 	{	
 		Bbox2D bbox; 
-		vector<Point2D> segment;
+		vector<Vec> segment;
 		segment.push_back(source_);
 		segment.push_back(sink_);
-		bbox.getBoundingBox(&segment);
+		bbox.getBoundingBox(segment);
 		double bbox_min_x = bbox.get_min_x();
 		double bbox_max_x = bbox.get_max_x();
 		double bbox_min_y = bbox.get_min_y();
 		double bbox_max_y = bbox.get_max_y();
 		
-		double p_x = p.get_x();
-		double p_y = p.get_y();
-		if ( ((bbox_min_x-p_x)<= EPS) && ((bbox_max_x-p_x)>= -EPS) && ((bbox_min_y-p_y)<= EPS) && ((bbox_max_y-p_y)>= -EPS) ){
+		double p_x = p.x();
+		double p_y = p.y();
+		if ( ((bbox_min_x-p_x)<= EPS) && ((bbox_max_x-p_x)>= -EPS) && ((bbox_min_y-p_y)<= EPS) && ((bbox_max_y-p_y)>= -EPS) )
+		{
 			
 			//compute normal vector of seg
-			Vector2D p_vec = Vector2D(p);
-			Vector2D source_vec = Vector2D(source_);
-			Vector2D sink_vec = Vector2D(sink_);
-			Vector2D dv = sink_vec - source_vec;// direction vector
-			Vector2D n; // normal vector
+			Vec dv = sink_ - source_;// direction vector
+			Vec n; // normal vector
 			
-			if(fabs(dv.get_x())<EPS){ // dv is a vertical vector
-				double dv_x = dv.get_x();
-				double dv_y = dv.get_y();
-				n.set_x(dv_y);
-				n.set_y(dv_x);
+			if(fabs(dv.x())<EPS)
+			{ // dv is a vertical vector
+				n = Vec(dv.y(), dv.x(), 0.0);
 			}
-			else{				
-				n.set_x(- (dv.get_y() / dv.get_x()));
-				n.set_y(1);
+			else{		
+				n = Vec((- (dv.y() / dv.x())),1.0, 0.0);
 			}
-			double length_of_n = n.get_length();
-			Vector2D p_minus_a = p_vec - source_vec; // a = point on seg (=source of seg)
+			double length_of_n = n.euclidean_norm();
+			Vec p_minus_a = p - source_; // a = point on seg (=source of seg)
 			double help = fabs(n * p_minus_a);
 			double distance_point_segment = help / length_of_n; // |n*(P-A)| / |n|
 			
-			if (fabs(distance_point_segment)<EPS){
+			if (fabs(distance_point_segment)<EPS)
+			{
 				return true;
 			}
 		}
@@ -162,10 +117,11 @@ namespace polygon
 	
 	bool 
 		Segment2D::
-		check_for_intersections(Segment2D* p_seg, Point2D* ipoint) 
+		check_for_intersections(const Segment2D& p_seg, Vec& ipoint) const 
 		throw()	
 	{
-		if (equals(*p_seg)) {
+		if (equals(p_seg)) 
+		{
 			return true;
 		}
 		
@@ -173,17 +129,17 @@ namespace polygon
 		
 		//xA = x1 + lambda*(x2-x1)
 		//yA = y1 + lambda*(y2-y1)
-		double x1 = source_.get_x(); 
-		double x2 = sink_.get_x();
-		double y1 = source_.get_y();
-		double y2 =	sink_.get_y();
+		double x1 = source_.x(); 
+		double x2 = sink_.x();
+		double y1 = source_.y();
+		double y2 =	sink_.y();
 			
 		//xB = x3 + mue*(x4-x3)
 		//yB = y3 + mue*(y4-y3)	
-		double x3 = (*p_seg).get_source().get_x();
-		double x4 = (*p_seg).get_sink().get_x();
-		double y3 = (*p_seg).get_source().get_y();
-		double y4 =	(*p_seg).get_sink().get_y();			
+		double x3 = p_seg.get_source().x();
+		double x4 = p_seg.get_sink().x();
+		double y3 = p_seg.get_source().y();
+		double y4 =	p_seg.get_sink().y();			
 	
 		double mue = (x1*y2 + x2*y3 + x3*y1 - x2*y1 - x3*y2 - x1*y3) /
 					 (x1*y4 + x4*y2 + x2*y3 + x3*y1 - x4*y1 - x1*y3 -x3*y2 - x2*y4);
@@ -200,15 +156,18 @@ namespace polygon
 		//----------------------------------------------------------
 		
 		// (s1==s2?) 
-		if( ((fabs(x_s1 - x_s2) < EPS)) && ((fabs(y_s1 - y_s2) < EPS))){
+		if(EQDOUBLE(x_s1, x_s2) && EQDOUBLE(y_s1, y_s2))
+		{
 			//the point of intersection can not be an end point of a segment!
-			if( !((((fabs(x_s1 - source_.get_x()) < EPS)) && ((fabs(y_s1 - source_.get_y()) <EPS))) || (((fabs(x_s1 - sink_.get_x()) < EPS)) && ((fabs(y_s1 - sink_.get_y()) <EPS)))) ){ 			
+			if( !((EQDOUBLE(x_s1, source_.x()) && EQDOUBLE(y_s1, source_.y()) ) || (EQDOUBLE(x_s1, sink_.x()) && EQDOUBLE(y_s1, sink_.y())) ))
+			{ 			
 				// does the point of intersection s lie on both segments? (segments are no lines!)
-				Point2D s;
-				s.set_location(x_s1, y_s1);	
+				Vec s;
+				s = Vec(x_s1, y_s1, 0.0);	
 			
-				if(point_on_segment(s) && (*p_seg).point_on_segment(s)){
-					*ipoint=s;
+				if(point_on_segment(s) && p_seg.point_on_segment(s))
+				{
+					ipoint=s;
 					return true;
 				}
 			}
@@ -222,11 +181,11 @@ namespace polygon
 	
 	bool 
 		Segment2D::
-		equals(Segment2D s) 
+		equals(const Segment2D& s) const 
 		throw()	
 	{
-		if(	(source_.equals(s.get_source()) && sink_.equals(s.get_sink())) || 
-			(source_.equals(s.get_sink())   && sink_.equals(s.get_source())) )
+		if(	(source_==s.get_source() && sink_==s.get_sink()) || 
+			(source_==s.get_sink()   && sink_==s.get_source()) )
 		{
 			return true;
 		}
@@ -234,7 +193,7 @@ namespace polygon
 		return false;
 	}
 	
-	
+
 }
 
 #endif	

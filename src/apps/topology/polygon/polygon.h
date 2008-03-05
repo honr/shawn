@@ -1,16 +1,24 @@
+/************************************************************************
+ ** This file is part of the network simulator Shawn.                  **
+ ** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
+ ** Shawn is free software; you can redistribute it and/or modify it   **
+ ** under the terms of the BSD License. Refer to the shawn-licence.txt **
+ ** file in the root of the Shawn source tree for further details.     **
+ ************************************************************************/
+
 #ifndef POLYGON_H_
 #define POLYGON_H_
 
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
-#include "bbox_2d.h"
-#include "point_2d.h"
-#include "segment_2d.h"
-#include "jarvis_march.h"
-#include "polygon.h"
+#include "apps/topology/polygon/bbox_2d.h"
+#include "apps/topology/polygon/segment_2d.h"
+#include "apps/topology/polygon/jarvis_march.h"
+#include "apps/topology/polygon/polygon.h"
 #include <vector>
 #include <string>
+#include <stdexcept>
 
 
 using namespace std;
@@ -35,9 +43,9 @@ namespace polygon
 	  /** This constructor creates a new polygon. 
 	  * Note that the parameter hands over the corners of the polygon in the right order!
 	  *  
-	  *  \param vector<Point2D>	: the corners of the polygon to construct in the right order
+	  *  \param vector<Vec>	: the corners of the polygon to construct in the right order
 	  */      
-      Polygon(vector<Point2D>);      
+      Polygon(const vector<Vec>&);      
       virtual ~Polygon();
 
       virtual void set_name( const std::string& ) throw();
@@ -47,71 +55,71 @@ namespace polygon
 	  /** This method adds a corner to the polygon.
 	  * Note that the points of a polygon have to be in the right order!
 	  *
-	  *  \param Point2D : the corner to add
+	  *  \param Vec : the corner to add
 	  */
-      virtual void push_back(Point2D) throw();
+      virtual void push_back(const Vec&) throw(std::runtime_error);
       
 	  /** This method deletes a corner of the polygon.
 	  *
-	  *  \param Point2D : the corner to delete
+	  *  \param Vec : the corner to delete
 	  */      
-	  virtual void delete_point(Point2D) throw();				
+	  virtual void delete_point(const Vec&) throw();				
 	  
 	  /** This method returns the number of corners of the polygon.
 	  *
 	  *  \return int	: the size of the vector polygon_
 	  */ 	  
-	  virtual int get_numberofpoints(void) throw();				
+	  virtual int get_numberofpoints(void) const throw();				
 	  
-	  /** This method returns a corners's index in the member variable polygon_.
-	  *  If the corner is not part of the polygon, the method returns -1. 	
+	  /** This method determines whether a point is already contained in the polygon or not.
+	  *  If the point is not part of the vector, the method returns false. 	
 	  *
-	  *  \param Point2D	: the corner to search for
-	  *  \return int	: the corners's index
+	  *  \param Vec	: the corner to search for
+	  *  \return bool	: true if contained else false
 	  */ 	  
-	  virtual int contains_point(Point2D) throw();		
+	  virtual bool contains_point(const Vec&) const throw();		
 	  
-	  /** This method returns a point's index in a vector<Point2D>.
-	  *  If the point is not part of the vector, the method returns -1. 	
+	  /** This method determines whether a point is already contained in a vector of points or not.
+	  *  If the point is not part of the vector, the method returns false. 	
 	  *
-	  *  \param Point2D	: the point to search for
-	  *  \param vector<Point2D> : the vector where to search for the point
-	  *  \return int	: the point's index
+	  *  \param Vec	: the point to search for
+	  *  \param vector<Vec> : the vector where to search for the point
+	  *  \return bool	: true if contained else false
 	  */ 	  
-	  virtual int contains_point(Point2D, vector<Point2D>) throw();
+	  virtual bool contains_point(const Vec&, const vector<Vec>&) const throw();
 	  
 	  /** This method returns the polygon.	
 	  *
-	  *  \return vector<Point2D> 	: returns the member variable polygon_
+	  *  \return vector<Vec> 	: returns the member variable polygon_
 	  */ 	  
-	  virtual vector<Point2D> get_poly_vector(void) throw();	
+	  virtual vector<Vec> get_poly_vector(void) const throw();	
 	   
 	  /** This method computes the segments of a polygon consisting of ordered corners and returns them in a vector.	
 	  *
 	  *  \return vector<Segment2D> 	: returns the computed segments of the polygon
 	  */ 	  	  
-	  virtual vector<Segment2D> get_segments(void) throw();		
+	  virtual vector<Segment2D> get_segments(void) const throw();		
 
 	  /** This method computes and returns the bounding box of a polygon.	
 	  *
 	  *  \return Bbox2D 	: the smallest bounding box of a polygon
 	  */	  
-	  virtual Bbox2D getBoundingBox(void) throw();	
+	  virtual Bbox2D getBoundingBox(void) const throw();	
 	  
 	  /** This method returns true if a point lies inside a polygon's area and 
 	  * returns false if the point lies outside.	
 	  *
-	  *  \param Point2D	: the point to check for
+	  *  \param Vec	: the point to check for
 	  *  \return bool 	: true if the point lies on the bounded side of the polygon, else false
 	  */		  
-	  virtual bool bounded_side(Point2D) throw();	
+	  virtual bool bounded_side(const Vec&) const throw();	
 	  
 	  /** This method returns true if a point lies on a polygon's boundary else returns false.
 	  *
-	  *  \param Point2D	: the point to check for
+	  *  \param Vec	: the point to check for
 	  *  \return bool 	: true if the point lies on the boundary of the polygon, else false
 	  */	  
-	  virtual bool on_boundary(Point2D) throw();
+	  virtual bool on_boundary(const Vec&) const throw();
 	  
 	  /** This method returns true if the polygon is simple else returns false.
 	  * A polygon is simple if the boundary of the polygon does not cross itself
@@ -119,13 +127,13 @@ namespace polygon
 	  *
 	  *  \return bool 	: true if the polygon is simple else false
 	  */	  
-	  virtual bool is_simple() throw();							
+	  virtual bool is_simple() const throw();							
 	  
 	  /** This method returns true if the polygon is empty (contains no corners) else returns false.
 	  *
 	  *  \return bool 	: true if the polygon is empty else false
 	  */	  
-	  virtual bool is_empty() throw();							
+	  virtual bool is_empty() const throw();							
 	  
 	  /** This method computes and returns a polygon's convex hull.
 	  *
@@ -135,12 +143,13 @@ namespace polygon
 
 	  /** An iterator for the corners of the polygon.
 	  */
-	  typedef vector<Point2D>::iterator iterator; 	
+	  typedef vector<Vec>::iterator iterator; 	
 	  /** A const iterator for the corners of the polygon.
 	  */	  
-	  typedef vector<Point2D>::const_iterator const_iterator; 	
+	  typedef vector<Vec>::const_iterator const_iterator; 	
 
 	  iterator begin() { return polygon_.begin(); } 
+	  iterator find(Vec v) {return std::find(polygon_.begin(), polygon_.end(), v);}
 	  iterator end()   { return polygon_.end(); } 
 	  const_iterator begin() const { return polygon_.begin(); } 
 	  const_iterator end() const   { return polygon_.end(); } 
@@ -152,10 +161,10 @@ namespace polygon
 	  */		  
 	  typedef vector<Segment2D>::const_iterator Edge_const_iterator; 	
 
-	  Edge_iterator e_begin() { return segments_.begin(); } 
-	  Edge_iterator e_end()   { return segments_.end(); } 
-	  Edge_const_iterator e_begin() const { return segments_.begin(); } 
-	  Edge_const_iterator e_end() const   { return segments_.end(); } 	  
+	  Edge_iterator edges_begin() { return segments_.begin(); } 
+	  Edge_iterator edges_end()   { return segments_.end(); } 
+	  Edge_const_iterator edges_begin() const { return segments_.begin(); } 
+	  Edge_const_iterator edges_end() const   { return segments_.end(); } 	  
 
 	  /** To write the polygon's elements.
 	  */	  	  
@@ -165,7 +174,7 @@ namespace polygon
    private:
 	  std::string name_;
 	    	  
-      vector<Point2D> polygon_;									// vector of vertices
+      vector<Vec> polygon_;									// vector of vertices
       vector<Segment2D> segments_;								// vector of edges between the vertices
   	 
    };

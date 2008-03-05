@@ -1,7 +1,7 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
-#include "bbox_2d.h"
+#include "apps/topology/polygon/bbox_2d.h"
 
 using namespace std;
 
@@ -19,66 +19,44 @@ namespace polygon
 		~Bbox2D()
 	{}
 
-	// ----------------------------------------------------------------------
-	void 
-		Bbox2D::
-		set_name(const std::string& s)
-		throw()
-	{ 
-		name_ = s; 
-	}		
-	
-	// ----------------------------------------------------------------------
-	std::string
-		Bbox2D::
-		name(void)
-		const throw()
-	{
-		return name_;
-	}
-
-	// ----------------------------------------------------------------------
-	std::string
-		Bbox2D::
-		description(void)
-		const throw()
-	{ 
-		return std::string("a 2-dimensional bounding box"); 
-	}
-	
 	// ----------------------------------------------------------------------	
 	
 	Bbox2D
 		Bbox2D::
-		getBoundingBox(vector<Point2D>* polygon) 
+		getBoundingBox(const vector<Vec>& polygon) 
 		throw()
 	{	
 	
 		double x;
 		double y;
-		for(vector<Point2D>::iterator it=(*polygon).begin(); it!=(*polygon).end(); it++)
+		for(vector<Vec>::const_iterator it=polygon.begin(); it!=polygon.end(); it++)
 		{
-			Point2D p = *it;
-			x = p.get_x();
-			y = p.get_y();
+			Vec p = *it;
+			x = p.x();
+			y = p.y();
 				
-			if(it==(*polygon).begin()){
+			if(it==polygon.begin())
+			{
 				min_x_ = x;
 				max_x_ = x;
 				min_y_ = y;
 				max_y_ = y;
 			}
 			else{
-				if(x<min_x_){	//compute min_x
+				if(x<min_x_)
+				{	//compute min_x
 					min_x_ = x;
 				}
-				if(x>max_x_){	//compute max_x
+				if(x>max_x_)
+				{	//compute max_x
 					max_x_ = x;
 				}
-				if(y<min_y_){	//compute min_y
+				if(y<min_y_)
+				{	//compute min_y
 					min_y_ = y;
 				}
-				if(y>max_y_){	//compute max_y
+				if(y>max_y_)
+				{	//compute max_y
 					max_y_ = y;
 				}
 			}			
@@ -90,52 +68,9 @@ namespace polygon
 	
 	// ----------------------------------------------------------------------	
 	
-	Bbox2D
-		Bbox2D::
-		getBoundingBox(vector<Point3D>* polygon) 
-		throw()
-	{	
-		double x;
-		double y;
-		for(vector<Point3D>::iterator it=(*polygon).begin(); it!=(*polygon).end(); it++)
-		{
-			Point3D p = *it;
-			x = p.get_x();
-			y = p.get_y();
-				
-			if(it==(*polygon).begin()){
-				min_x_ = x;
-				max_x_ = x;
-				min_y_ = y;
-				max_y_ = y;
-			}
-			else{
-				if(x<min_x_){	//compute min_x
-					min_x_ = x;
-				}
-				if(x>max_x_){	//compute max_x
-					max_x_ = x;
-				}
-				if(y<min_y_){	//compute min_y
-					min_y_ = y;
-				}
-				if(y>max_y_){	//compute max_y
-					max_y_ = y;
-				}
-			}			
-		}
-
-		width_  = max_x_ - min_x_;	// compute the width of the bounding box
-		height_ = max_y_ - min_y_;	// compute the height of the bounding box
-		
-		return *this;
-	}
-	
-	// ----------------------------------------------------------------------	
-	
 	double 
 		Bbox2D::
-		get_min_x(void) 
+		get_min_x(void) const
 		throw()
 	{
 		return min_x_;
@@ -145,7 +80,7 @@ namespace polygon
 	
 	double
 		Bbox2D::
-		get_max_x(void) 
+		get_max_x(void) const
 		throw()
 	{
 		return max_x_;
@@ -155,7 +90,7 @@ namespace polygon
 	
 	double 
 		Bbox2D::
-		get_min_y(void) 
+		get_min_y(void) const
 		throw()
 	{
 		return min_y_;
@@ -165,7 +100,7 @@ namespace polygon
 	
 	double
 		Bbox2D::
-		get_max_y(void) 
+		get_max_y(void) const
 		throw()
 	{
 		return max_y_;
@@ -175,7 +110,7 @@ namespace polygon
 	
 	double
 		Bbox2D::
-		get_width(void) 
+		get_width(void) const
 		throw()
 	{
 		return width_;
@@ -185,7 +120,7 @@ namespace polygon
 	
 	double
 		Bbox2D::
-		get_height(void) 
+		get_height(void) const
 		throw()	
 	{
 		return height_;

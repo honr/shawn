@@ -9,7 +9,7 @@
 #ifdef ENABLE_TOPOLOGY
 #include "shawn_config.h"
 
-#include"apps/topology/polygon/point_2d.h"
+#include "sys/vec.h"
 
 #include "apps/topology/topology/xml_polygon_topology.h"
 #include "apps/topology/topology/polygon_topology_helpers.h"
@@ -162,14 +162,14 @@ namespace topology
 	}
 
 	// ----------------------------------------------------------------------
-	Point2D
+	Vec
 		XMLPolygonTopology::
 		to_point(AttList atts) 
 		const throw(std::runtime_error)
 	{
 		double x = conv_string_to_double( attribute("x", atts, "0.0") );
 		double y = conv_string_to_double( attribute("y", atts, "0.0") );
-		return Point2D(x,y);
+		return Vec(x,y,0.0);
 	}
 
 	// ----------------------------------------------------------------------

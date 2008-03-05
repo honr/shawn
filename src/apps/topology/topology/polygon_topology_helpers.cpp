@@ -40,7 +40,7 @@ namespace topology
 */    
     
     // ----------------------------------------------------------------------
-/*    Segment2D shortest_distance_segment(const Polygon& poly, const Point2D p) 
+/*    Segment2D shortest_distance_segment(const Polygon& poly, const Vec p) 
         throw()
     {
         double min = numeric_limits<double>::max(), d;
@@ -60,7 +60,7 @@ namespace topology
 */
 
     // ----------------------------------------------------------------------
-/*    double shortest_distance(const Polygon& poly, const Point2D p) 
+/*    double shortest_distance(const Polygon& poly, const Vec p) 
         throw()
     {
         return sqrt( squared_distance( shortest_distance_segment(poly, p), p ));

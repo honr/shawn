@@ -1,12 +1,18 @@
+/************************************************************************
+ ** This file is part of the network simulator Shawn.                  **
+ ** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
+ ** Shawn is free software; you can redistribute it and/or modify it   **
+ ** under the terms of the BSD License. Refer to the shawn-licence.txt **
+ ** file in the root of the Shawn source tree for further details.     **
+ ************************************************************************/
+
 #ifndef SEGMENT_2D_H_
 #define SEGMENT_2D_H_
 
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
-#include "point_2d.h"
-#include "bbox_2d.h"
-#include "vector_2d.h"
+#include "apps/topology/polygon/bbox_2d.h"
 #include "sys/vec.h"
 
 using namespace std;
@@ -26,62 +32,56 @@ class Segment2D
 public:
 
 	Segment2D();
-	Segment2D(Point2D, Point2D);
-	Segment2D(Vec, Vec);
-	virtual ~Segment2D();
-
-	virtual void set_name( const std::string& ) throw();
-	virtual std::string name( void ) const throw();
-	virtual std::string description( void ) const throw();
+	Segment2D(const Vec&, const Vec&);
+	~Segment2D();
 
 	/** This method returns the source point of the segment.
 	*
-	*  \return Point2D : returns the source
+	*  \return Vec : returns the source
 	*/  	
-	virtual Point2D get_source(void) throw();
+	Vec get_source(void) const throw();
 	
 	/** This method returns the sink point of the segment.
 	*
-	*  \return Point2D : returns the sink
+	*  \return Vec : returns the sink
 	*/ 	
-	virtual Point2D get_sink(void) throw();
+	Vec get_sink(void) const throw();
 	
 	
 	/** This method returns the smallest bounding box of the segment.
 	*
 	*  \return Bbox2D : returns the bounding box of the segment
 	*/	
-	virtual Bbox2D get_Bbox(void) throw();
+	Bbox2D get_Bbox(void) const throw();
 	
 	/** This method returns true if the point lies on the segment else returns false.
 	*
-	*  \param Point2D	: the point to check for whether it lies on the segment or not
+	*  \param Vec	: the point to check for whether it lies on the segment or not
 	*  \return bool 	: true if the point lies on the segment else false
 	*/		
-	virtual bool point_on_segment(Point2D) throw();
+	bool point_on_segment(const Vec&) const throw();
 	
 	/** This method returns true if two segments have a point of intersection else returns false.
 	* You have the chance to return the computed point of intersection as a reference.
 	*
 	*  \param Segment2D*: the second segment
-	*  \param Point2D*	: return the point of intersection as a reference here
+	*  \param Vec*	: return the point of intersection as a reference here
 	*  \return bool 	: true if the two segments do have a point of intersection else false
 	*/	
-	virtual bool check_for_intersections(Segment2D*, Point2D*) throw();	
+	bool check_for_intersections(const Segment2D&, Vec&) const throw();	
 	
 	/** This method returns true if two segments are equal else returns false.
 	*
 	*  \param Segment2D	: the second segment
 	*  \return bool 	: true if the two segments are equal else false
 	*/		
-	virtual bool equals(Segment2D) throw();
-   
+	bool equals(const Segment2D&) const throw();
+	
+	
 private:
  		
-	std::string name_;	
-	
-	Point2D source_;
-	Point2D sink_;
+	Vec source_;
+	Vec sink_;
 	
 
 };

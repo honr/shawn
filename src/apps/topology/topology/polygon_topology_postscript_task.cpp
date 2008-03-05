@@ -153,7 +153,7 @@ namespace topology
 		PolygonTopologyPostscriptTask::
 		draw(const PolygonTopology::Polygon& p, shawn::SimulationController& sc, ostream& out)
 	{
-		for(polygon::Polygon::Edge_const_iterator it = p.e_begin(), end = p.e_end(); it!=end; ++it)
+		for(polygon::Polygon::Edge_const_iterator it = p.edges_begin(), end = p.edges_end(); it!=end; ++it)
 		{
 			polygon::Segment2D edge = *it;
 			Vec s = pos2ps(Vec(edge.get_source())), t = pos2ps(Vec(edge.get_sink()));

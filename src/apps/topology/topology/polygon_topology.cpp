@@ -45,21 +45,20 @@ namespace topology
 		value( const Vec& p )
 		const throw()
 	{
-		Point2D pc(p);
-
 		assert( outer_ != NULL );
 		
 
 		// we take the boundary of holes to be inside the area, i.e., 
 		// the topological closure is considered "inside".
-
-		
- 		if(outer_->bounded_side(pc)||outer_->on_boundary(pc)){
+		cout<<"pos = "<<p<<" : "; 
+		if(outer_->bounded_side(p)||outer_->on_boundary(p)){
 			for( PolygonVector::const_iterator it = holes_.begin(); it != holes_.end(); it++ ){
-				if(((*it)->bounded_side(pc))){
-					if(!((*it)->on_boundary(pc))){
+				if(((*it)->bounded_side(p))){
+					if(!((*it)->on_boundary(p))){
+						cout<<"hole->bounded_side"<<endl;
 						return false;
 					}
+					cout<<"hole->boundary"<<endl;
 				}
 			}
 			return true;

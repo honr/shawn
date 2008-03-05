@@ -13,12 +13,6 @@
 #include "shawn_config.h"
 #include <iostream>
 
-#include "apps/topology/polygon/point_2d.h"
-#include "apps/topology/polygon/point_3d.h"
-#include "apps/topology/polygon/vector_2d.h"
-#include "apps/topology/polygon/vector_3d.h"
-
-using namespace polygon;
 
 namespace shawn
 {
@@ -34,36 +28,6 @@ namespace shawn
       {}
 
       ~Vec();
-
-
-      explicit inline Vec( Point2D p )
-      	: x_(p.get_x()), y_(p.get_y()), z_(0.0)
-      {}
-
-      explicit inline Vec( Point3D p )
-      	: x_(p.get_x()), y_(p.get_y()), z_(p.get_z())
-      {}
-
-      explicit inline Vec( Vector2D& p )
-      	: x_(p.get_x()), y_(p.get_y()), z_(0.0)
-      {}
-
-      explicit inline Vec( Vector3D& p )
-      	: x_(p.get_x()), y_(p.get_y()), z_(p.get_z())
-      {}
-
-      inline operator Point2D ( void ) const throw()
-      { return Point2D(x(),y()); }	
-
-      inline operator Point3D ( void ) const throw()
-      { return Point3D(x(),y(),z()); }	
-
-      inline Vec& operator= ( Point2D& p )
-      { x_=p.get_x(); y_=p.get_y(); z_=0.0; return *this; }	
-
-      inline Vec& operator= ( Point3D& p )
-      { x_=p.get_x(); y_=p.get_y(); z_=p.get_z(); return *this; }
-
 
       inline double x( void ) 
          const throw()

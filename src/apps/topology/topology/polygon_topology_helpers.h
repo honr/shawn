@@ -11,7 +11,7 @@
 #ifdef ENABLE_TOPOLOGY
 #include "shawn_config.h"			
 
-#include "apps/topology/polygon/point_2d.h"
+#include "sys/vec.h"
 #include "apps/topology/polygon/polygon.h"
 #include "apps/topology/polygon/segment_2d.h"
 #include "sys/tag.h"

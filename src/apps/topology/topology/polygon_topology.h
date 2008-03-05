@@ -16,6 +16,9 @@
 #include "apps/topology/topology/topology_2d.h"
 #include <vector>
 
+using namespace polygon;
+using namespace shawn;
+
 namespace topology
 {
 
