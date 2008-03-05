@@ -126,6 +126,8 @@ namespace localization
       const Node& source = leim.source();
       Vec source_pos = (leim.source().has_est_position())? ( leim.source().est_position()) : ( leim.source().real_position() );
       double distance = estimate_distance( source, node() );
+	 // if(distance ==UNKNOWN_DISTANCE)
+	//	  return false;
 
       last_useful_msg_ = simulation_round();
 
@@ -161,7 +163,20 @@ namespace localization
       neighborhood_w().update_nneighbors( lenm.source(), lenm.neighbors() );
 
       // if source is valid anchor, send anchor-message
+                 
       ConstNeighborhoodIterator it = neighborhood().find( lenm.source() );
+       if(it == neighborhood().end_neighborhood())
+           std::cout << " Knoten nicht gefunden" << std::cout;
+       else 
+           std::cout << "knoten gefunden" << std::endl;
+      if(it->second->is_anchor())
+        std::cout << "isAnchor" << std::endl;
+      else
+          std::cout << "Is noAnchor" << std::endl;
+      if(it->second->is_valid())
+          std::cout << "isValid" << std::endl;
+      else
+          std::cout << "is not valid" << std::endl;
       if ( it->second->is_anchor() && it->second->is_valid() )
       {
          send( new LocalizationEuclideanAnchorMessage( it->second->node(), it->second->distance() ) );
@@ -193,7 +208,7 @@ namespace localization
          else
             return true;
 
-         double distance = euclidean_distance( anchor_pos, node().real_position() );
+		 double distance = euclidean_distance( anchor_pos, (node().has_est_position())?(node().est_position()):(node().real_position()) );
          send( new LocalizationEuclideanAnchorMessage( anchor, distance ) );
 
          return true;
@@ -435,32 +450,46 @@ namespace localization
 			EUCDEBUG("n1["<< (*(it1->first)).id() <<"], n2["<< (*(it2->first)).id() <<"], anchor["<< anchor.id() <<"]");
 
             DistancePair dp = localization::trilateration_distance( self_n1, self_n2, n1_n2, n1_anchor, n2_anchor );
-            if ( dp.first == -1 )
+			
+			if ( dp.first > -1.00000000001 && dp.first < -0.999999999999 )
 			{
 				EUCDEBUG("trilateration failed "<< anchor.id());
 				continue;
 			}
-
+/*			std::string filename= "euclideanDist.txt";
+			std::ofstream out((char*)(filename.c_str()), std::ios::app);
+			double real = (node().real_position() - anchor.real_position()).euclidean_norm();
+/*			out << " real dist: " << (node().real_position() - anchor.real_position()).euclidean_norm() 
+				<< " dist1: " << dp.first << " dist2: " << dp.second << std::endl; 
+		if(( ((dp.first- real) < -0.0000000000001) || ((dp.first- real) > 0.0000000000001 ))
+				&& 
+				( ((dp.second- real) < -0.0000000000001) || ((dp.second- real) > 0.0000000000001 ))
+				)
+				out << " real dist: " << real
+					<< " dist1: " << dp.first << " dist2: " << dp.second << " error: " <<((fabs(dp.first-real)<(fabs(dp.second-real)))?(dp.first-real):(dp.second-real)) <<
+				" node id" <<node().id() << " anchor id " << anchor.id() <<
+				" self_n1 "<< self_n1<< " self_n2 " <<self_n2 <<" n1_n2 " << n1_n2 <<
+				" n1_anchor " << n1_anchor << " n2_anchor " << n2_anchor << std::endl;*/
             double measure;
             NodeList nl = find_common_neighbor_neighbors_opt( anchor, *it1->first, *it2->first, measure );
 			
-			std::ostringstream oss;
+	/*		std::ostringstream oss;
 			for(NodeList::iterator lalait = nl.begin(); lalait != nl.end(); ++lalait)
 				oss << (**lalait).id() << ", ";
 			EUCDEBUG("Neighborlist: " << oss.str());
-
+*/
 				
 
             double dist_nv = neighbor_vote( anchor, *it1->first, *it2->first, dp, nl );
             double dist_cn = common_neighbor( anchor, *it1->first, *it2->first, dp, nl );
 
-            if ( dist_cn != -1 && max_measure_cn < measure && measure > 0 )
+            if ( dist_cn > -1.000000001 && dist_cn < -0.9999999999 && max_measure_cn < measure && measure > 0 )
             {
                max_measure_cn = measure;
                best_cn = dist_cn;
             }
 
-            if ( dist_nv != -1 && max_measure_nv < measure && measure > 0 )
+            if ( dist_nv > -1.000000001 && dist_nv < -0.9999999999 && max_measure_nv < measure && measure > 0 )
             {
                max_measure_nv = measure;
                best_nv = dist_nv;
@@ -472,29 +501,29 @@ namespace localization
       {
          case eu_vote_nv:
          {
-            if ( best_nv != -1 ) distance = best_nv;
+            if ( best_nv > -1.000000001 && best_nv < -0.9999999999 ) distance = best_nv;
             break;
          }
          case eu_vote_cn:
          {
-            if ( best_cn != -1 ) distance = best_cn;
+            if ( best_cn > -1.000000001 && best_cn < -0.9999999999 ) distance = best_cn;
             break;
          }
          case eu_vote_nvcn:
          {
-            if ( best_cn != -1 ) distance = best_cn;
-            if ( best_nv != -1 ) distance = best_nv;
+            if ( best_cn > -1.000000001 && best_cn < -0.9999999999 ) distance = best_cn;
+            if (best_nv > -1.000000001 && best_nv < -0.9999999999 ) distance = best_nv;
             break;
          }
          case eu_vote_cnnv:
          {
-            if ( best_nv != -1 ) distance = best_nv;
-            if ( best_cn != -1 ) distance = best_cn;
+            if ( best_nv > -1.0000000001 && best_nv < -0.9999999999 -1 ) distance = best_nv;
+            if ( best_cn > -1.0000000001 && best_cn < -0.9999999999 ) distance = best_cn;
             break;
          }
       }// switch vote_
 
-	  if (distance == -1 )
+	  if (distance > -1.00000000001 && distance < -0.999999999999)
 	  {
 		EUCDEBUG("voting resulted in -1 for anchor "<< anchor.id());
 	  }
@@ -663,7 +692,7 @@ namespace localization
             }
 
             DistancePair dp2 = localization::trilateration_distance( self_n12, self_n3, n12_n3, n12_anchor, n3_anchor );
-            if ( dp2.first == -1)
+            if ( dp2.first > -1.00000000001 && dp2.first < -0.999999999999)
                continue;
 
             enum ChooseDist { d11, d12, d21, d22 } ch_dist = d11;

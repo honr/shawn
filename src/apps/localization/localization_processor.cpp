@@ -352,7 +352,10 @@ namespace localization
 //       returns false.
       double distance;
       //assert( dist_est_->estimate_distance( src, dest, distance ) );
-      dist_est_->estimate_distance( src, dest, distance );
+	  bool line_of_sight_only = owner().world().simulation_controller().environment().optional_bool_param("line_of_sight_only",false);
+	  bool estimated = dist_est_->estimate_distance( src, dest, distance );
+	  if(line_of_sight_only && !estimated )
+		distance = UNKNOWN_DISTANCE;
       return distance;
    }
 

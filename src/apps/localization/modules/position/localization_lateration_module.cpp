@@ -38,7 +38,12 @@ namespace localization
       shawn::Vec est_pos;
       NeighborInfoList neighbors;
       collect_neighbors( neighborhood(), lat_anchors, neighbors );
-
+      if(neighbors.empty())
+      {
+          std::cout << " LocalizationLaterationModule: No neighbors found" <<std::endl;
+          return;
+      }
+      assert(!neighbors.empty());
       // Following idea is from K. Langendoen and N. Reijers in their
       // implementation of ad-hoc positioning using OMNeT++.
       // See also:

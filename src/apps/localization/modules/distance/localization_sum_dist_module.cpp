@@ -85,9 +85,13 @@ namespace localization
       const Node& anchor = lsdm.anchor();
 	  Vec anchor_pos = (lsdm.anchor().has_est_position())?(lsdm.anchor().est_position()):(lsdm.anchor().real_position());
       double rcvd_path = lsdm.path_length();
-      rcvd_path += estimate_distance( lsdm.source(), node() );
 
-      // if anchor is new and floodlimit not reached, insert new anchor;
+	  double distance = estimate_distance(lsdm.source(), node());
+	  if(distance ==UNKNOWN_DISTANCE)
+		  return false;
+	  rcvd_path += distance; 
+
+	  // if anchor is new and floodlimit not reached, insert new anchor;
       // if anchor is known and new distance is smaller than old one,
       //    update info;
       // otherwise return
