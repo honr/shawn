@@ -50,15 +50,15 @@ namespace topology
 
 		// we take the boundary of holes to be inside the area, i.e., 
 		// the topological closure is considered "inside".
-		cout<<"pos = "<<p<<" : "; 
+		//cout<<"pos = "<<p<<" : "; 
 		if(outer_->bounded_side(p)||outer_->on_boundary(p)){
 			for( PolygonVector::const_iterator it = holes_.begin(); it != holes_.end(); it++ ){
 				if(((*it)->bounded_side(p))){
 					if(!((*it)->on_boundary(p))){
-						cout<<"hole->bounded_side"<<endl;
+						//cout<<"hole->bounded_side"<<endl;
 						return false;
 					}
-					cout<<"hole->boundary"<<endl;
+					//cout<<"hole->boundary"<<endl;
 				}
 			}
 			return true;
