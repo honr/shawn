@@ -149,13 +149,13 @@ namespace shawn
             /** Set name to the name of the tag you are looking for. By default opening 
               * tags are searched.
               */
-            void set_skip_target(string name, bool opening_tag = true);
+            void set_skip_target(std::string name, bool opening_tag = true);
 
             /// Add an attribute condition to the skipping target.
             /** All (attribute, value) pairs form an and condition.
               *
               */
-            void set_skip_target_add_attr(string name, string value);
+            void set_skip_target_add_attr(std::string name, std::string value);
 
         protected:
 
@@ -175,7 +175,7 @@ namespace shawn
             ///@}
 
         private:
-            typedef std::map<string, string> str_str_map; ///< ///A <string, string> map
+            typedef std::map<std::string, std::string> str_str_map; ///< ///A <string, string> map
             std::string skip_to_tag_;      ///<The name of the tag we are looking for
             str_str_map skip_to_tag_atts_;  ///<Contains (name, value) to describe attributes that must be present
             bool skip_to_opening_tag;       ///<True if we are looking for the opening or the closing tag

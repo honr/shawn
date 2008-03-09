@@ -13,6 +13,9 @@
 #ifdef ENABLE_MOTIONEVENTTASK
 
 #include "sys/simulation/simulation_task.h"
+#include "sys/misc/random/random_variable_keeper.h"
+#include "sys/misc/random/uniform_random_variable.h"
+#include "sys/misc/random/normal_random_variable.h"
 #include "sys/node.h"
 #include <list>
 using std::list;
@@ -92,9 +95,16 @@ namespace motion_event
 	    */
 	   double max_time_error_;
 	   
+	   /** \brief Rate of ghost detections and missing object detections  
+	    */
+	   double missing_detection_rate_;
+	   
 	   /** \brief Temporary saving the direction change of an object. 
 	    */
 	   std::list<std::pair<shawn::Node*,bool> > in_range_of_nodes_; 
+	   
+	   shawn::NormalRandomVariable* nrv_;
+	   shawn::UniformRandomVariable* urv_;
 
    };
 

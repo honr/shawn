@@ -40,9 +40,9 @@ namespace shawn
 		   virtual double multIntegral( double dist, double step );
            virtual double ThreeDFunction( double x, double y, double x_offset );
            virtual double TwoDFunction( double x ) = 0;
-		   virtual string name() = 0;
-		   virtual void gnuplot3D( string filename, bool mult, double dist );
-		   virtual void gnuplot2D( string filename );
+		   virtual std::string name() = 0;
+		   virtual void gnuplot3D( std::string filename, bool mult, double dist );
+		   virtual void gnuplot2D( std::string filename );
 		  virtual vector<double> calculateEstimationTable(double step);
  
 	   protected:
@@ -56,7 +56,7 @@ namespace shawn
 	   public:
 		   LinearCommunicationModelFunction( double smooth_factor ); 
            virtual double TwoDFunction( double x );
-		   virtual string name() {return "linear";};
+		   virtual std::string name() {return "linear";};
 	   protected:
 		   double smooth_factor_;
 	   };
@@ -65,7 +65,7 @@ namespace shawn
 	   {
 	   public:
            virtual double TwoDFunction( double x );
-		   virtual string name() {return "circle";};
+		   virtual std::string name() {return "circle";};
 	   };
 
 	   class VectorCommunicationModelFunction : public CommunicationModelFunction
@@ -75,7 +75,7 @@ namespace shawn
 		   VectorCommunicationModelFunction( vector<double> v): ready_(true) {setVector(v);}; 
 		   virtual double TwoDFunction( double x );
 		   virtual void setVector( vector<double> v );
-		   virtual string name() {return "vector";};
+		   virtual std::string name() {return "vector";};
 	   protected:
 		   bool ready_;
 		   vector<double> vec_;
@@ -86,7 +86,7 @@ namespace shawn
 	   public:
 		   RimModelFunction( RimCommModel& rim, int model_count ) :  rim_(rim), iterations_(model_count) {}; 
    		   virtual vector<double> calculateEstimationTable(double step);
-		   virtual string name() {return "rim";};
+		   virtual std::string name() {return "rim";};
 		   virtual double TwoDFunction( double x ) {return 0;};
 
 	   protected:

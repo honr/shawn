@@ -13,8 +13,6 @@
 #include "sys/simulation/simulation_controller.h"
 #include "sys/event_scheduler.h"
 #include "sys/vec.h"
-#include "sys/misc/random/normal_random_variable.h"
-#include "sys/misc/random/random_variable_keeper.h"
 
 #include "sys/taggings/basic_tags.h"
 #include "sys/taggings/map_tags.h"
@@ -43,13 +41,20 @@ namespace motion_event
 		start_time_ = 0.0;
 		standard_deviation_ = 0.0;
 		max_time_error_ = MAX_ERROR;
+		missing_detection_rate_ = 0.0;
 		in_range_of_nodes_.clear();
+		urv_ = new UniformRandomVariable();
+		nrv_ = new NormalRandomVariable();
 	}
 	// ----------------------------------------------------------------------
 	MotionEventTask::
 	~MotionEventTask()
 	{
 		in_range_of_nodes_.clear();
+		delete urv_;
+		urv_ = NULL;
+		delete nrv_;
+		nrv_ = NULL;
 	}
 	// ----------------------------------------------------------------------
 	std::string
@@ -74,61 +79,113 @@ namespace motion_event
 	throw( std::runtime_error )
 	{
 		require_world( sc );
-
-		object_id_ = sc.environment().required_int_param("object_id");
-		velocity_ = sc.environment().required_double_param("velocity");
-		detection_range_ = sc.environment().required_double_param("detection_range");
-		start_time_ = sc.environment().required_double_param("start_time");
-		standard_deviation_ = sc.environment().optional_double_param("standard_deviation", 0.0);
-		max_time_error_ = sc.environment().optional_double_param("max_time_error", MAX_ERROR);
-		in_range_of_nodes_.clear();
 		
-		for (shawn::World::node_iterator iter = sc.world_w().begin_nodes_w(); iter != sc.world_w().end_nodes_w(); ++iter) 
+		std::string type = sc.environment().optional_string_param("type", "object");
+		
+		if (type == "object")
 		{
-			pair<shawn::Node*, bool> p;
-			p.first = &(*iter);
-			p.second = false;
-			in_range_of_nodes_.push_back(p);
-		}
-
-		// Reading of positions (vectors) of the object
-		StrTok tok(sc.environment().required_string_param("object"), ",;() ");
-		StrTok::iterator it = tok.begin();
-		for(int i=0; i<tok.size()-3; i+=3)
-		{
-			double x_pos = conv_string_to_double( *it );
-			it++;
-			double y_pos = conv_string_to_double( *it );
-			it++;
-			double z_pos = conv_string_to_double( *it );
-			it++;		
-			double x_dest = conv_string_to_double( *it );
-			it++;
-			double y_dest = conv_string_to_double( *it );
-			it++;
-			double z_dest = conv_string_to_double( *it );
-			it-=2;	
-
-			Vec position = Vec( x_pos, y_pos, z_pos );
-			Vec destination = Vec( x_dest, y_dest, z_dest );
-		/*
-			TagHandle th = sc.environment_w().find_tag_w("ObjectPathTag");
-			shawn::IntegerDoubleMapTag* mt;
-			if ( th.is_not_null() )
-				mt = dynamic_cast<IntegerStringMapTag*>(th.get());
-			else mt = new shawn::IntegerStringMapTag("ObjectPathTag");
-			{
-				const IntegerDoubleMapTag::Map& m = mt->value();
-				std::ostringstream ossint, ossdouble;
-				ossint << m.size();
-				ossdouble << position;
-				
-				//mt->add_indexed_entry( ossint.str(), ossdouble.str());
-				mt->set_persistency(true);
-				sc.environment_w().add_tag(mt);
-			}*/
+		
+			object_id_ = sc.environment().required_int_param("object_id");
+			velocity_ = sc.environment().required_double_param("velocity");
+			detection_range_ = sc.environment().required_double_param("detection_range");
+			start_time_ = sc.environment().required_double_param("start_time");
+			standard_deviation_ = sc.environment().optional_double_param("standard_deviation", 0.0);
+			max_time_error_ = sc.environment().optional_double_param("max_time_error", MAX_ERROR);
+			missing_detection_rate_ = sc.environment().optional_double_param("missingDetRate", 0.0);
+			in_range_of_nodes_.clear();
 			
-			single_line(sc, position, destination);
+			urv_->set_upper_bound(1.0);
+			urv_->init();
+			
+			for (shawn::World::node_iterator iter = sc.world_w().begin_nodes_w(); iter != sc.world_w().end_nodes_w(); ++iter) 
+			{
+				pair<shawn::Node*, bool> p;
+				p.first = &(*iter);
+				p.second = false;
+				in_range_of_nodes_.push_back(p);
+			}
+	
+			// Reading of positions (vectors) of the object
+			StrTok tok(sc.environment().required_string_param("object"), ",;() ");
+			StrTok::iterator it = tok.begin();
+			for(int i=0; i<tok.size()-3; i+=3)
+			{
+				double x_pos = conv_string_to_double( *it );
+				it++;
+				double y_pos = conv_string_to_double( *it );
+				it++;
+				double z_pos = conv_string_to_double( *it );
+				it++;		
+				double x_dest = conv_string_to_double( *it );
+				it++;
+				double y_dest = conv_string_to_double( *it );
+				it++;
+				double z_dest = conv_string_to_double( *it );
+				it-=2;	
+	
+				Vec position = Vec( x_pos, y_pos, z_pos );
+				Vec destination = Vec( x_dest, y_dest, z_dest );
+			/*
+				TagHandle th = sc.environment_w().find_tag_w("ObjectPathTag");
+				shawn::IntegerDoubleMapTag* mt;
+				if ( th.is_not_null() )
+					mt = dynamic_cast<IntegerStringMapTag*>(th.get());
+				else mt = new shawn::IntegerStringMapTag("ObjectPathTag");
+				{
+					const IntegerDoubleMapTag::Map& m = mt->value();
+					std::ostringstream ossint, ossdouble;
+					ossint << m.size();
+					ossdouble << position;
+					
+					//mt->add_indexed_entry( ossint.str(), ossdouble.str());
+					mt->set_persistency(true);
+					sc.environment_w().add_tag(mt);
+				}*/
+				
+				single_line(sc, position, destination);
+			}
+		}
+		else
+		if (type == "errorDetections")
+		{
+			double iterations = sc.environment().required_int_param("max_iterations");
+			double errorDet = sc.environment().required_double_param("errorDetectionsPerTimeRange");
+			double timeRange = sc.environment().optional_double_param("errorDetectionTimeRange", 86400.0);
+			
+			urv_->set_upper_bound(timeRange);
+			urv_->init();
+			double random_variable = 0;
+				
+			for( shawn::World::node_iterator it = sc.world_w().begin_nodes_w(); it != sc.world_w().end_nodes_w(); ++it )
+			{
+				for (int i=0; i<(int)errorDet; ++i) // TODO
+				{
+					random_variable = *urv_;
+					cout << "node=" << it->id() << " i=" << i << " urv=" << random_variable << endl;
+					if (random_variable < iterations)
+					{
+						shawn::Node& node = *it;
+						
+						// Saving event information in a tag
+						TagHandle th = node.find_tag_w("MotionEventTag");
+						shawn::IntegerDoubleMapTag* mt;
+						if ( th.is_not_null() )
+							mt = dynamic_cast<IntegerDoubleMapTag*>(th.get());
+						else mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
+						{
+							const IntegerDoubleMapTag::Map& m = mt->value();
+							std::ostringstream ossint, ossdouble;
+							ossint << m.size();
+							ossdouble << random_variable;
+							
+							mt->add_indexed_entry( ossint.str(), ossdouble.str());
+							mt->set_persistency(true);
+							node.add_tag(mt);
+						}
+					}
+				}
+				
+			}
 		}
 
 	}
@@ -172,32 +229,38 @@ namespace motion_event
 				if ( !in_range_of_node(&node) ) 
 				{
 					//compute the time, at which the node remarks the motion event
-					NormalRandomVariable* var = new NormalRandomVariable;
-					var->set_standard_deviation(standard_deviation_);
-					var->init();
-					double random_variable = *var;
+					//NormalRandomVariable* var = new NormalRandomVariable;
+					nrv_->set_standard_deviation(standard_deviation_);
+					nrv_->init();
+					double random_variable = *nrv_;
 					while (random_variable < (-1.0)*max_time_error_ || random_variable > max_time_error_)
-						random_variable = *var;
+						random_variable = *nrv_;
 					double intercept_time = start_time_ + random_variable + euclidean_distance(start_pos, intercept)/velocity_;
-					delete var;
+					//delete var;
 					//cout << "intercept= " << start_time_ + euclidean_distance(start_pos, intercept)/velocity_ << endl;
-					//cout << "Person " << object_id_ << " hits node " << node.id() << " (" << node.real_position() << ") at position " << intercept << " at " << intercept_time << endl;
+					//cout << "Object " << object_id_ << " hits node " << node.id() << " (" << node.real_position() << ") at position " << intercept << " at " << intercept_time << endl;
 
-					// Saving event information in a tag
-					TagHandle th = node.find_tag_w("MotionEventTag");
-					shawn::IntegerDoubleMapTag* mt;
-					if ( th.is_not_null() )
-						mt = dynamic_cast<IntegerDoubleMapTag*>(th.get());
-					else mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
+					double urv = *urv_;
+					//cout << "miss rate=" << missing_detection_rate_ << " urv=" << urv << endl;
+					// with dete
+					if (urv >= missing_detection_rate_) 
 					{
-						const IntegerDoubleMapTag::Map& m = mt->value();
-						std::ostringstream ossint, ossdouble;
-						ossint << m.size();
-						ossdouble << intercept_time;
-						
-						mt->add_indexed_entry( ossint.str(), ossdouble.str());
-						mt->set_persistency(true);
-						node.add_tag(mt);
+						// Saving event information in a tag
+						TagHandle th = node.find_tag_w("MotionEventTag");
+						shawn::IntegerDoubleMapTag* mt;
+						if ( th.is_not_null() )
+							mt = dynamic_cast<IntegerDoubleMapTag*>(th.get());
+						else mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
+						{
+							const IntegerDoubleMapTag::Map& m = mt->value();
+							std::ostringstream ossint, ossdouble;
+							ossint << m.size();
+							ossdouble << intercept_time;
+							
+							mt->add_indexed_entry( ossint.str(), ossdouble.str());
+							mt->set_persistency(true);
+							node.add_tag(mt);
+						}
 					}
 				}
 			}
@@ -249,34 +312,35 @@ namespace motion_event
 					else set_in_range_of_node(&node, false);
 
 					//compute the time, at which the node remarks the motion event
-					NormalRandomVariable* var = new NormalRandomVariable;
-					var->set_standard_deviation(standard_deviation_);
-					var->init();
-					double random_variable = *var;
+					nrv_->set_standard_deviation(standard_deviation_);
+					nrv_->init();
+					double random_variable = *nrv_;
 					while (random_variable < (-1.0)*max_time_error_ || random_variable > max_time_error_)
-						random_variable = *var;
-
+						random_variable = *nrv_;
 					double intercept_time = start_time_ + random_variable + euclidean_distance(start_pos, intercept)/velocity_;
-
-					delete var;
-
-					//cout << "Person " << object_id_ << " hits node " << node.id() << " (" << node.real_position() << ") at position " << intercept << " at " << intercept_time << endl;
-
-					// Saving event information in a tag
-					TagHandle th = node.find_tag_w("MotionEventTag");
-					shawn::IntegerDoubleMapTag* mt;
-					if ( th.is_not_null() )
-						mt = dynamic_cast<IntegerDoubleMapTag*>(th.get());
-					else mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
+				
+					//cout << "Object " << object_id_ << " hits node " << node.id() << " (" << node.real_position() << ") at position " << intercept << " at " << intercept_time << endl;
+					double urv = *urv_;
+					//cout << "miss rate=" << missing_detection_rate_ << " urv=" << urv << endl;
+					// with dete
+					if (urv >= missing_detection_rate_) 
 					{
-						const IntegerDoubleMapTag::Map& m = mt->value();
-						std::ostringstream ossint, ossdouble;
-						ossint << m.size();
-						ossdouble << intercept_time;
-						
-						mt->add_indexed_entry( ossint.str(), ossdouble.str());
-						mt->set_persistency(true);
-						node.add_tag(mt);
+						// Saving event information in a tag
+						TagHandle th = node.find_tag_w("MotionEventTag");
+						shawn::IntegerDoubleMapTag* mt;
+						if ( th.is_not_null() )
+							mt = dynamic_cast<IntegerDoubleMapTag*>(th.get());
+						else mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
+						{
+							const IntegerDoubleMapTag::Map& m = mt->value();
+							std::ostringstream ossint, ossdouble;
+							ossint << m.size();
+							ossdouble << intercept_time;
+							
+							mt->add_indexed_entry( ossint.str(), ossdouble.str());
+							mt->set_persistency(true);
+							node.add_tag(mt);
+						}
 					}
 				}
 				else set_in_range_of_node(&node, false);

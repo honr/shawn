@@ -198,8 +198,13 @@ void THistogram<T,TOut>::Compute( const std::vector<T>& v, bool bComputeMinMax)
 		m_tMax = m_tMin = v[0];
 		for (i=1;i<v.size();i++)
 		{
-			m_tMax = __max( m_tMax, v[i]);
-			m_tMin = __min( m_tMin, v[i]);
+			if (v[i] < m_tMax)
+				m_tMax = v[i];
+			if (v[i] > m_tMin)
+				m_tMin = v[i];
+			
+			//m_tMax = __max( m_tMax, v[i]);
+			//m_tMin = __min( m_tMin, v[i]);
 		}
 	}
 

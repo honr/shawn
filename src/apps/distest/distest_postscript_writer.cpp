@@ -6,7 +6,7 @@
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 
-#include "distest_postscript_writer.h"
+#include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_DISTEST
 
 #include <limits>
@@ -54,7 +54,7 @@ namespace distest {
 
 
 	// ----------------------------------------------------------------------
-	inline void DIPostscriptWriter::
+	void DIPostscriptWriter::
 		calcOffset(const shawn::World& world)
 	{
 		x0 = y0 = std::numeric_limits<double>::max();
@@ -101,7 +101,7 @@ namespace distest {
 
 
 	// ----------------------------------------------------------------------
-	inline void DIPostscriptWriter::
+	void DIPostscriptWriter::
 		showpage() 
 	{
 
@@ -194,7 +194,7 @@ namespace distest {
 
 
 	// ----------------------------------------------------------------------
-	inline void DIPostscriptWriter::
+	void DIPostscriptWriter::
 		setcolor(enum Color color)  
 	{
 		switch(color) {
@@ -211,28 +211,28 @@ namespace distest {
 	}
 
 	// ----------------------------------------------------------------------
-	inline void DIPostscriptWriter::
+	void DIPostscriptWriter::
 		setcolor(double r, double g, double b)  
 	{
 		psfile_ << r << " " << g << " " <<  b << " setrgbcolor" << std::endl;
 	}
 
 	// ----------------------------------------------------------------------
-	inline void DIPostscriptWriter::
+	void DIPostscriptWriter::
 		moveto(double x, double y)  
 	{
 		psfile_ << x << " " << y << " moveto" << std::endl;
 	}
 
 	// ----------------------------------------------------------------------
-	inline void DIPostscriptWriter::
+	void DIPostscriptWriter::
 		setlinewidth2(double width /* = 0.0 */)
 	{
 		psfile_ << width << " setlinewidth" << std::endl;
 	}
 
 	// ----------------------------------------------------------------------
-	inline void DIPostscriptWriter::
+	void DIPostscriptWriter::
 		newpage()
 	{
 		if( eps_ && pageNo_ > 1 )
@@ -247,7 +247,7 @@ namespace distest {
 	}
 
 	// ----------------------------------------------------------------------
-	inline void DIPostscriptWriter::
+	void DIPostscriptWriter::
 		circle(double x, double y, double radius, bool filled /* = false */, int start_angle /* = 0 */, int end_angle /*= 360 */)  
 	{
 		psfile_ << x << " " << y << " " << radius << " " << start_angle << " " << end_angle << " arc " <<
@@ -255,7 +255,7 @@ namespace distest {
 	}
 
 	// ----------------------------------------------------------------------
-	inline void DIPostscriptWriter::
+	void DIPostscriptWriter::
 		line(double x1, double y1, double x2, double y2)
 	{
 		psfile_ << x1 << " " << y1 << " moveto" << endl <<
@@ -263,21 +263,21 @@ namespace distest {
 	}
 
 	// ----------------------------------------------------------------------
-	inline void DIPostscriptWriter::
+	void DIPostscriptWriter::
 		stroke()
 	{
 		psfile_ << "stroke" << endl;
 	}
 
 	// ----------------------------------------------------------------------
-	inline void DIPostscriptWriter::
+	void DIPostscriptWriter::
 		lineto(double x, double y)
 	{
 		psfile_ << x << " " << y << " lineto" << endl;
 	}
 
 	// ----------------------------------------------------------------------
-	inline void DIPostscriptWriter::
+	void DIPostscriptWriter::
 		cross(double x, double y) 
 	{
 		psfile_ << x << " 2.0 sub " << y << " moveto" << endl <<
@@ -288,7 +288,7 @@ namespace distest {
 	}
 
 	// ----------------------------------------------------------------------
-	inline void DIPostscriptWriter::
+	void DIPostscriptWriter::
 		silly_triangle(double x, double y) 
 	{
 		psfile_ << x << " 2.0 sub " << y << " 2.0 add moveto" << endl <<

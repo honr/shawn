@@ -368,7 +368,7 @@ namespace shawn
 
 		ok = target.world().can_communicate_uni( target, source); 
 
-		if (!ok) cout << "can not communicate uni " << target.id() << "," << source.id() << endl;
+		//if (!ok) cout << "can not communicate uni " << target.id() << "," << source.id() << endl;
 		if (ok) {
 		
 			int to_subtractor = 0; 

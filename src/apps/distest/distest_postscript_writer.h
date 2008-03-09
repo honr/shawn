@@ -44,23 +44,23 @@ enum Color { grey, red, green, blue, yellow, orange, black, pink};
 		DIPostscriptWriter(std::ostream& psfile, SimulationController& sc );
 		~DIPostscriptWriter(void);
 
-		inline void calcOffset(const shawn::World&);
+		void calcOffset(const shawn::World&);
 
-		inline void setcolor(enum Color color);
-		inline void setcolor(double r, double g, double b);
+		void setcolor(enum Color color);
+		void setcolor(double r, double g, double b);
 		
-		inline void line(double x1, double y1, double x2, double y2);
-		inline void lineto(double x, double y);
-		inline void stroke();
+		void line(double x1, double y1, double x2, double y2);
+		void lineto(double x, double y);
+		void stroke();
 
-		inline void circle(double x, double y, double radius, bool filled = false, int start_angle = 0, int end_angle = 360);
+		void circle(double x, double y, double radius, bool filled = false, int start_angle = 0, int end_angle = 360);
 
-		inline void cross(double x, double y);
-		inline void silly_triangle(double x, double y);
-		inline void moveto(double x, double y);
+		void cross(double x, double y);
+		void silly_triangle(double x, double y);
+		void moveto(double x, double y);
 
 		void setlinewidth2(double width = 0.0 );
-		inline void showpage();
+		void showpage();
 		void setcolor2(double X, double Y, double Z);
 		void line2(double x1, double y1, double x2, double y2);
 		void proline2(Vec from, Vec to);
