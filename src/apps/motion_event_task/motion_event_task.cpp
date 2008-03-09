@@ -161,7 +161,7 @@ namespace motion_event
 				for (int i=0; i<(int)errorDet; ++i) // TODO
 				{
 					random_variable = *urv_;
-					cout << "node=" << it->id() << " i=" << i << " urv=" << random_variable << endl;
+					//cout << "node=" << it->id() << " i=" << i << " urv=" << random_variable << endl;
 					if (random_variable < iterations)
 					{
 						shawn::Node& node = *it;
