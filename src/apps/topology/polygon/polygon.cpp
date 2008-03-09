@@ -256,7 +256,7 @@ namespace polygon
 				intersection_points.push_back(ipoint);	
 			}
 		}
-		cout<<"intersection_points.size()="<<intersection_points.size()<<endl;
+		//cout<<"intersection_points.size()="<<intersection_points.size()<<endl;
 		if ((intersection_points.size() % 2) == 0)
 		{	// p is not positioned on bounded side		
 			return false;
