@@ -46,6 +46,8 @@ public class ShawnProcess {
 
 	private LinkedList<String> commandHistory = new LinkedList<String>();
 
+	private BufferedWriter historyTraceStream = null;
+
 	// --------------------------------------------------------------------------------
 	/**
 	 * @param executablePath
@@ -242,6 +244,16 @@ public class ShawnProcess {
 			// Now forcibly terminate shawn if still running
 			shawn.destroy();
 
+			//Close history trace stream
+			if (historyTraceStream != null) {
+				try {
+					historyTraceStream.flush();
+					historyTraceStream.close();
+				} catch (Throwable t) {
+					log.error("Error while closing historyTraceStream: " + t, t);
+				}
+			}
+
 			log.debug("Terminated shawn process, isRunning[" + isRunning() + "]");
 		} catch (Throwable t) {
 			log.error("Error while destroying shawn process: " + t, t);
@@ -259,6 +271,15 @@ public class ShawnProcess {
 		commandHistory.addLast(cmdLine);
 		while (commandHistory.size() > historySize)
 			commandHistory.removeFirst();
+
+		if (historyTraceStream != null) {
+			try {
+				historyTraceStream.write(cmdLine + "\n");
+				historyTraceStream.flush();
+			} catch (IOException e) {
+				log.error("Unable to write history stream: " + e, e);
+			}
+		}
 	}
 
 	// --------------------------------------------------------------------------------
@@ -280,6 +301,19 @@ public class ShawnProcess {
 
 		w.flush();
 		w.close();
+	}
+
+	// --------------------------------------------------------------------------------
+	/**
+	 * @throws IOException
+	 */
+	public synchronized void traceHistory(String outfile) throws IOException {
+		if (historyTraceStream != null) {
+			historyTraceStream.flush();
+			historyTraceStream.close();
+		}
+		log.info("Tracing history to " + outfile);
+		historyTraceStream = new BufferedWriter(new FileWriter(new File(outfile)));
 	}
 
 	// --------------------------------------------------------------------------------
