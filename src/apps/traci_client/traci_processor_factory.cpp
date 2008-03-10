@@ -27,6 +27,7 @@ namespace traci
    register_factory( SimulationController& sc )
       throw()
    {
+      std::cout << "TraCIProcessorFactory registered" << std::endl;
       sc.processor_keeper_w().add( new TraCIProcessorFactory );
    }
    // ----------------------------------------------------------------------

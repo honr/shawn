@@ -28,12 +28,14 @@ namespace traci{
 	target_time_(0.0),
 	mi_(NULL)
 	{
+		std::cout << "TraCINodeMovementCreator ctor" << std::endl;
 	}
 
    TraCINodeMovementCreator::
 	   ~TraCINodeMovementCreator(void)
    {
 	   if (socket_) close();
+	   std::cout << "TraCINodeMovementCreator dtor" << std::endl;
    }
 
    std::string 

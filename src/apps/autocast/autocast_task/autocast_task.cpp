@@ -31,11 +31,15 @@ namespace autocast
 
    AutoCastTask::
    AutoCastTask()
-   {}
+   {
+	   std::cout << "AutoCastTask ctor" << std::endl;
+   }
    // ----------------------------------------------------------------------
    AutoCastTask::
    ~AutoCastTask()
-   {}
+   {
+	   std::cout << "AutoCastTask dtor" << std::endl;
+   }
    // ----------------------------------------------------------------------
    std::string
    AutoCastTask::

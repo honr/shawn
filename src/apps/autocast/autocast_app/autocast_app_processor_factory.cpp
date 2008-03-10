@@ -27,6 +27,7 @@ namespace autocast
    register_factory( SimulationController& sc )
       throw()
    {
+      std::cout << "AutoCastAppProcessorFactory registered" << std::endl;
       sc.processor_keeper_w().add( new AutoCastAppProcessorFactory );
    }
    // ----------------------------------------------------------------------
