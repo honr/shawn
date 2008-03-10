@@ -16,9 +16,7 @@
 #include "sys/node_movements/playback/random_direction_node_movement_creator.h"
 #include "sys/event_scheduler.h"
 #include "sys/simulation/simulation_task_keeper.h"
-#ifdef ENABLE_TRACINODEMOVEMENTCREATOR
-#include "apps/TraCIClient/TraCINodeMovementCreator.h"
-#endif
+#include "apps/traci_client/traci_node_movement_creator.h"
 #include <string>
 
 namespace shawn
@@ -61,12 +59,12 @@ namespace shawn
       }
 	  else if(sc.environment_w().optional_string_param("mode","")=="TraCI")
 	  {
-#ifdef ENABLE_TRACINODEMOVEMENTCREATOR
+#ifdef ENABLE_TRACICLIENT
 		  shawn::KeeperManagedHandle kmh = sc.simulation_task_keeper_w().find_managed_w("TraCI");
 		  traci::TraCINodeMovementCreator * tnmc = dynamic_cast<traci::TraCINodeMovementCreator*>( kmh.get() );
 		  sc.world_w().movement_controller_w().set_node_movement_creator( tnmc );
 		  sc.world_w().movement_controller_w().start();
-#elif(!ENABLE_TRACINODEMOVEMENTCREATOR)
+#elif(!ENABLE_TRACICLIENT)
 		  std::cerr << "TraCI node movement not built!" << std::endl;
 		  abort();
 #endif
