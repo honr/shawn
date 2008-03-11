@@ -142,6 +142,7 @@ namespace autocast
 	   shawn::EventScheduler::EventHandle update_timer_;
 	   shawn::EventScheduler::EventHandle answer_timer_;
 	   shawn::EventScheduler::EventHandle request_timer_;
+	   shawn::EventScheduler::EventHandle flood_timer_;
 
 	   /// Statistics
 	   unsigned int packets_sent_total_;
@@ -158,10 +159,10 @@ namespace autocast
 	   bool booted_;
 	   static int uid_counter_;
 
-	   unsigned int neighbors_count_;
+	   /*unsigned int neighbors_count_;
 	   unsigned int real_neighbors_count_;
 	   double velocity_count_;
-	   double update_time_count_;
+	   double update_time_count_;*/
 
    };
 

@@ -54,11 +54,12 @@ namespace autocast
 							 update_timer_(NULL),
 							 answer_timer_(NULL),
 							 request_timer_(NULL),
+							 /*NEW*/flood_timer_(NULL)/*,
 							 /*FOR DEBUG PURPOSES*/
-							 neighbors_count_(0),
+							 /*neighbors_count_(0),
 							 real_neighbors_count_(0),
 							 velocity_count_(0),
-							 update_time_count_(0)
+							 update_time_count_(0)*/
 
    {}
    // ----------------------------------------------------------------------
@@ -179,17 +180,22 @@ namespace autocast
 		   }
 	   }
 	   /// For request
+	   /*NEW*/bool need_to_request = false;
 	   for(std::set<unsigned int>::iterator it = received_ids.begin(); it != received_ids.end(); ++it){
 		   if(complete_DataUnits_.find(*it) == complete_DataUnits_.end()){
 			   unknown_DataUnit_ids_.insert(*it);
+			   /*NEW*/need_to_request = true;
 		   }
 	   }
 
-	   if (need_to_answer){
+	   // If answer_timer_ is not NULL, it's pending
+	   if (answer_timer_ || need_to_answer){
 			/// Answer fast
-			double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__process_message",0.001);
-			double ub2 = owner().world().simulation_controller().environment().optional_double_param("_ub2__process_message",0.02);
-			double at = now + min_update_time_ * uniform_random(lb2,ub2);
+			/*OLD*///double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__process_message",0.001);
+			/*OLD*///double ub2 = owner().world().simulation_controller().environment().optional_double_param("_ub2__process_message",0.02);
+		    /*NEW*/double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__process_message",0.0275);
+			/*NEW*/double ub2 = owner().world().simulation_controller().environment().optional_double_param("_ub2__process_message",0.0325);
+			double at = now + /*OLD*//* min_update_time_ * */ uniform_random(lb2,ub2);
 
 			if ( answer_timer_ ){
 				owner_w().world_w().scheduler_w().delete_event(answer_timer_);
@@ -197,22 +203,38 @@ namespace autocast
 			}
 			answer_timer_ = owner_w().world_w().scheduler_w().new_event(*this,at,NULL);
 
-	   }else if(need_to_flood){
-			double lb3 = owner().world().simulation_controller().environment().optional_double_param("_lb3__process_message",0.04);
-			double ub3 = owner().world().simulation_controller().environment().optional_double_param("_ub3__process_message",0.06);
-			double at = now + min_update_time_ * uniform_random(lb3,ub3);
+	   }else if(/*The flood timer is new!*/flood_timer_ || need_to_flood){
+			/*OLD*///double lb3 = owner().world().simulation_controller().environment().optional_double_param("_lb3__process_message",0.04);
+			/*OLD*///double ub3 = owner().world().simulation_controller().environment().optional_double_param("_ub3__process_message",0.06);
+		    double lb3 = owner().world().simulation_controller().environment().optional_double_param("_lb3__process_message",0.0575);
+			double ub3 = owner().world().simulation_controller().environment().optional_double_param("_ub3__process_message",0.0625);
+			double at = now + /*OLD*//*min_update_time_ * */ uniform_random(lb3,ub3);
 
-			if ( answer_timer_ ){
+			/*OLD*//*if ( answer_timer_ ){
 				owner_w().world_w().scheduler_w().delete_event(answer_timer_);
 				answer_timer_ = NULL;
 			}
-			answer_timer_ = owner_w().world_w().scheduler_w().new_event(*this,at,NULL);
+			answer_timer_ = owner_w().world_w().scheduler_w().new_event(*this,at,NULL);*/
+			if ( flood_timer_ ){
+				owner_w().world_w().scheduler_w().delete_event(flood_timer_);
+				flood_timer_ = NULL;
+			}
+			flood_timer_ = owner_w().world_w().scheduler_w().new_event(*this,at,NULL);
 	   }
 
 
-	   if ( request_timer_ ){
+	   /*OLD*//*if ( request_timer_ ){
 		   owner_w().world_w().scheduler_w().delete_event(request_timer_);
 		   request_timer_ = NULL;
+	   }*/
+	   /*NEW*/
+	   if ( request_timer_ || need_to_request ){
+		   double at = now + uniform_random(0.0875,0.0925);
+		   if ( request_timer_ ){
+			   owner_w().world_w().scheduler_w().delete_event(request_timer_);
+			   request_timer_ = NULL;
+		   }
+		   request_timer_ = owner_w().world_w().scheduler_w().new_event(*this,at,NULL);
 	   }
        if(unknown_DataUnit_ids_.size()){
 		   double lb4 = owner().world().simulation_controller().environment().optional_double_param("_lb4__process_message",0.1);
@@ -228,17 +250,17 @@ namespace autocast
    work( void )
       throw()
    {
-	   neighbors_count_+=neighborhood_.neighborhood_size();
+	   /*neighbors_count_+=neighborhood_.neighborhood_size();
 	   real_neighbors_count_+=owner().get_adjacent_nodes().size();
 	   velocity_count_+=owner().movement().velocity().euclidean_norm();
-	   update_time_count_+=update_time_;
+	   update_time_count_+=update_time_;*/
 
 	   if (simulation_round() == max_iterations_ - 1){
 		    KeeperManagedHandle kmh = owner_w().world_w().simulation_controller_w().simulation_task_keeper_w().find_managed_w("AutoCastTask");
 			assert(kmh.is_not_null());
 			autocast::AutoCastTask* act = dynamic_cast<autocast::AutoCastTask*>( kmh.get() );
 			if (act){
-				act->process_sent_statistic(&owner(),packets_sent_total_,bytes_sent_total_,dataUnits_sent_total_,dataUnits_bytes_sent_total_,received_messages_ids_total_.size(),received_DataUnits_total_,received_DataUnit_ids_total_.size(),1.0*neighbors_count_/(simulation_round()+1),1.0*real_neighbors_count_/(simulation_round()+1),velocity_count_/(simulation_round()+1),update_time_count_/(simulation_round()+1));
+				act->process_sent_statistic(&owner(),packets_sent_total_,bytes_sent_total_,dataUnits_sent_total_,dataUnits_bytes_sent_total_,received_messages_ids_total_.size(),received_DataUnits_total_,received_DataUnit_ids_total_.size()/*,1.0*neighbors_count_/(simulation_round()+1),1.0*real_neighbors_count_/(simulation_round()+1),velocity_count_/(simulation_round()+1),update_time_count_/(simulation_round()+1)*/);
 			}
 
 			// And at least
@@ -280,6 +302,10 @@ namespace autocast
 		   // Set the pointer NULL
 		   answer_timer_ = NULL;
 	   }
+	   if(eh == flood_timer_){
+		    // Set the pointer NULL
+			flood_timer_ = NULL;
+	   }
 	   if(eh == request_timer_){
 		   // Set the pointer NULL
 		   request_timer_ = NULL;
@@ -310,11 +336,17 @@ namespace autocast
 		   answer_timer_ = NULL;
 	   }
 
+	   if( flood_timer_ ){
+		   owner_w().world_w().scheduler_w().delete_event(flood_timer_);
+		   flood_timer_ = NULL;
+	   }
+
 	   if ( update_timer_ ) 
 	   {
 		   owner_w().world_w().scheduler_w().delete_event(update_timer_);
 		   update_timer_ = NULL;
 	   }
+
 	   if ( request_timer_ ){
 			owner_w().world_w().scheduler_w().delete_event(request_timer_);
 			request_timer_ = NULL;
