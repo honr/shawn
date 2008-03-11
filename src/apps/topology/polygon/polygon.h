@@ -19,9 +19,10 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <algorithm>
 
 
-using namespace std;
+//using namespace std;
 using std::vector;
 using std::pair;
 

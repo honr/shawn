@@ -6,7 +6,6 @@
 #include <math.h>
 #include <iostream>
 
-using namespace std;
 using std::vector;
 using std::pair;
 
