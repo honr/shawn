@@ -65,11 +65,17 @@ namespace shawn
          for (World::node_iterator it=sc_.world_w().begin_nodes_w(); it!=sc_.world_w().end_nodes_w(); ++it)
          {
             NodeMovement &nm = it->movement_w();
-            if (nm.name() == "NoMovement") return generateNewMovement(*it, RANDOMDIRECTION_STARTNOW);
+			// Creating a new (vanilla) nmt_info for new movement
+			nmt_info info;
+			info.node = &(*it);
+			Vec vector;
+			info.rest_vector = vector;
+			info.rest_speed = 0.0;
+            if (nm.name() == "NoMovement") return generateNewMovement(info, RANDOMDIRECTION_STARTNOW);
             LinearMovement *lm = dynamic_cast<LinearMovement*>(&nm);
-            if ( ( lm != NULL ) & ( lm->position() == lm->destination() ) )
+            if ( lm  && ( lm->position() == lm->destination() ) )
             {
-               return generateNewMovement(*it, RANDOMDIRECTION_STARTNOW);
+               return generateNewMovement(info, RANDOMDIRECTION_STARTNOW);
             }
          }
       }
@@ -78,10 +84,9 @@ namespace shawn
       if (next_movement_times_.size() > 0)
       {
          double startTime = next_movement_times_.begin()->first;
-         Node *n = next_movement_times_.begin()->second;
-         assert (n != NULL);
+         nmt_info info = next_movement_times_.begin()->second;
          next_movement_times_.erase(next_movement_times_.begin());
-         return generateNewMovement(*n, startTime);
+         return generateNewMovement(info, startTime);
       }
 
       return NULL;
@@ -94,11 +99,11 @@ namespace shawn
 	 */
    MovementInfo* 
    	RandomDirectionNodeMovementCreator::
-   	generateNewMovement(Node &node, double startTime)
+	generateNewMovement(nmt_info& info, double startTime)
    {
       // Generate a new movement
       MovementInfo* mi = new MovementInfo();
-      mi->set_node(&node);
+	  mi->set_node(info.node);
       if (startTime < 0.0) 
       {
          mi->set_urgency(MovementInfo::Immediately);
@@ -112,42 +117,67 @@ namespace shawn
       LinearMovement* lm = new LinearMovement();
 
       // Get movement vector
-      double direction = urvDirection_;
-      double speed = urvSpeed_;
-      Vec vector(sin(direction) * speed, cos(direction) * speed, 0.0);
+	  NodeMovement &nm = info.node->movement_w();
+	  lm = dynamic_cast<LinearMovement*>(&nm);
+	  Vec vector;
+	  double direction = 0;
+	  // Fetching the old speed
+	  double speed = info.rest_speed;
+	  if ( info.rest_vector.euclidean_norm() == 0 ){
+	    // Complete new move
+		direction = urvDirection_;
+		speed = urvSpeed_;
+		Vec v_temp(sin(direction) * speed, cos(direction) * speed, 0.0);
+		vector = v_temp;
+	  }else{
+	    // Scheduled move
+		vector = info.rest_vector;
+	  }
+
       double intersectTime = std::numeric_limits<double>::max();
 
       // Get x intersection
       if (vector.x() < 0)
       {
-         double t = (0 - node.real_position().x()) / vector.x();
+		 double t = (0 - info.node->real_position().x()) / vector.x();
          if (t < intersectTime) 
         	 intersectTime = t;
       } 
       else if (vector.x() > 0)
       {
-         double t = (width_ - node.real_position().x()) / vector.x();
+         double t = (width_ - info.node->real_position().x()) / vector.x();
          if (t < intersectTime) 
         	 intersectTime = t;
       }
       // Get y intersection
       if (vector.y() < 0)
       {
-         double t = (0 - node.real_position().y()) / vector.y();
+         double t = (0 - info.node->real_position().y()) / vector.y();
          if (t < intersectTime) 
         	 intersectTime = t;
       } 
       else if (vector.y() > 0)
       {
-         double t = (height_ - node.real_position().y()) / vector.y();
+         double t = (height_ - info.node->real_position().y()) / vector.y();
          if (t < intersectTime) 
         	 intersectTime = t;
       }
 
-      lm->set_parameters(speed, node.real_position() + (vector * intersectTime), sc_.world_w());
+	  lm->set_parameters(speed, info.node->real_position() + (vector * intersectTime), sc_.world_w());
       mi->set_node_movement(lm);
+
+	  // Remaining movement
+	  double rest_length = (vector * intersectTime).euclidean_norm() - vector.euclidean_norm();
+	  double alpha = acos(vector.x()/vector.euclidean_norm());
+	  Vec rest_vector(rest_length * cos(2*PI - alpha),rest_length * sin(2*PI - alpha),0.0);
+	  // Creating a new nmt_info for the scheduled movement
+	  nmt_info new_info;
+	  new_info.node = info.node;
+	  new_info.rest_vector = rest_vector;
+	  new_info.rest_speed = speed;
+
       // Schedule, when the node will need a new movement
-      next_movement_times_.insert(std::make_pair(startTime+intersectTime,&node));
+      next_movement_times_.insert(std::make_pair(startTime+intersectTime,new_info));
 
       return mi;
    }
