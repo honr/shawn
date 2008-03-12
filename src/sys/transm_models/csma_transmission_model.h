@@ -74,7 +74,7 @@ namespace shawn
 			* If message has not been sent yet, deliver() will be called.
 			* Otherwise message has been transfered and will be deleted from sending processor's MessageList
 		  */
-		  virtual void CsmaTransmissionModel::timeout(EventScheduler & event_scheduler, EventScheduler::EventHandle event_handle, double time, EventScheduler::EventTagHandle & event_tag_handle) throw();
+		  virtual void timeout(EventScheduler & event_scheduler, EventScheduler::EventHandle event_handle, double time, EventScheduler::EventTagHandle & event_tag_handle) throw();
 		  ///@}
 
 		 /**
