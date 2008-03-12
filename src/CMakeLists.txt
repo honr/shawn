@@ -198,8 +198,8 @@
 
 	set( appsType APPS )
 	set( appsPath apps )
-	set( outFileEnabled _apps_enable_cmake.h )
-	set( outFileInit _apps_init_cmake.h )
+	set( outFileEnabled ../buildfiles/_apps_enable_cmake.h )
+	set( outFileInit ../buildfiles/_apps_init_cmake.h )
 
 	include( ModuleCfg.cmake )
 
