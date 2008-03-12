@@ -6,6 +6,7 @@
 #include "apps/topology/polygon/segment_2d.h"
 #include <math.h>
 #include <iostream>
+#include <vector>
 #include "sys/util/defutils.h"
 
 namespace polygon
@@ -54,17 +55,20 @@ namespace polygon
 	// ----------------------------------------------------------------------	
 	
 
-	Bbox2D 
+	Box 
 		Segment2D::
 		get_Bbox(void) const 
 		throw()
 	{
-		Bbox2D box;
-		vector<Vec>  seg;
-		seg.push_back(source_);
-		seg.push_back(sink_);
-		box.getBoundingBox(seg);
-		return box;
+		double min_x = min(source_.x(), sink_.x());
+		double max_x = max(source_.x(), sink_.x());
+		double min_y = min(source_.y(), sink_.y());
+		double max_y = max(source_.y(), sink_.y());
+		
+		Vec lower = Vec(min_x, min_y, 0.0);
+		Vec upper = Vec(max_x, max_y, 0.0);
+		
+		return Box(lower, upper);
 	}	
 
 	// ----------------------------------------------------------------------		
@@ -74,15 +78,13 @@ namespace polygon
 		point_on_segment(const Vec& p) const 
 		throw()
 	{	
-		Bbox2D bbox; 
-		vector<Vec> segment;
-		segment.push_back(source_);
-		segment.push_back(sink_);
-		bbox.getBoundingBox(segment);
-		double bbox_min_x = bbox.get_min_x();
-		double bbox_max_x = bbox.get_max_x();
-		double bbox_min_y = bbox.get_min_y();
-		double bbox_max_y = bbox.get_max_y();
+		Box bbox = get_Bbox();
+		Vec lower = bbox.lower();
+		Vec upper = bbox.upper();
+		double bbox_min_x = lower.x();
+		double bbox_max_x = upper.x();
+		double bbox_min_y = lower.y();
+		double bbox_max_y = upper.y();
 		
 		double p_x = p.x();
 		double p_y = p.y();

@@ -12,10 +12,9 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
-#include "apps/topology/polygon/bbox_2d.h"
+#include "sys/misc/box.h"
 #include "apps/topology/polygon/segment_2d.h"
 #include "apps/topology/polygon/jarvis_march.h"
-#include "apps/topology/polygon/polygon.h"
 #include <vector>
 #include <string>
 #include <stdexcept>
@@ -103,9 +102,9 @@ namespace polygon
 
 	  /** This method computes and returns the bounding box of a polygon.	
 	  *
-	  *  \return Bbox2D 	: the smallest bounding box of a polygon
+	  *  \return Box 	: the smallest bounding box of a polygon
 	  */	  
-	  virtual Bbox2D getBoundingBox(void) const throw();	
+	  virtual Box getBoundingBox(void) const throw();	
 	  
 	  /** This method returns true if a point lies inside a polygon's area and 
 	  * returns false if the point lies outside.	

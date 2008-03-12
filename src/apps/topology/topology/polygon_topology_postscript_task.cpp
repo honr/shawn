@@ -87,16 +87,18 @@ namespace topology
 	{
 		//Paint parameters
 		{
-			Bbox2D p_bbox = p.get_outer_bbox(); // returns bounding box of the polygon topology
+			Box p_bbox = p.get_outer_bbox(); // returns bounding box of the polygon topology
+			Vec lower = p_bbox.lower();
+			Vec upper = p_bbox.upper();
 
 			shawn::Vec ur = sc.world_w().upper_right();
 			shawn::Vec ll = sc.world_w().lower_left();
 		
 			//Compute lower_left of p_bbox and ll and upper_right of p_bbox an ur. Then save these computed values in ll and ur.
-			double min_x = std::min(p_bbox.get_min_x(),ll.x());
-			double max_x = std::max(p_bbox.get_max_x(),ur.x());
-			double min_y = std::min(p_bbox.get_min_y(),ll.y());
-			double max_y = std::max(p_bbox.get_max_y(),ur.y());
+			double min_x = std::min(lower.x(),ll.x());
+			double max_x = std::max(upper.x(),ur.x());
+			double min_y = std::min(lower.y(),ll.y());
+			double max_y = std::max(upper.y(),ur.y());
 			ur = shawn::Vec(max_x, max_y, 0.0);
 			ll = shawn::Vec(min_x, min_y, 0.0);
 			

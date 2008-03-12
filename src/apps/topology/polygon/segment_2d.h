@@ -12,7 +12,7 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
-#include "apps/topology/polygon/bbox_2d.h"
+#include "sys/misc/box.h"
 #include "sys/vec.h"
 
 using namespace std;
@@ -50,9 +50,9 @@ public:
 	
 	/** This method returns the smallest bounding box of the segment.
 	*
-	*  \return Bbox2D : returns the bounding box of the segment
+	*  \return Box : returns the bounding box of the segment
 	*/	
-	Bbox2D get_Bbox(void) const throw();
+	Box get_Bbox(void) const throw();
 	
 	/** This method returns true if the point lies on the segment else returns false.
 	*

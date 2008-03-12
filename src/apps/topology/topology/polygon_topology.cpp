@@ -74,15 +74,17 @@ namespace topology
 		const throw()
 	{
 		assert( outer_!=NULL );
-		Bbox2D bb = outer_->getBoundingBox();
+		Box bb = outer_->getBoundingBox();
+		
+		Vec lower = bb.lower();
+		Vec upper = bb.upper();
 
-		return Box( Vec( bb.get_min_x(), bb.get_min_y(), 0.0 ),
-				Vec( bb.get_max_x(), bb.get_max_y(), 0.0 ) );
+		return Box(lower,upper);
 
 	}
 
 	// ----------------------------------------------------------------------
-	Bbox2D
+	Box
 		PolygonTopology::
 		get_outer_bbox( void )
 		const throw()

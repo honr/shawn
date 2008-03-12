@@ -92,19 +92,6 @@ namespace polygon
 		delete_point(const Vec& p1) 
 		throw()
 	{
-
-/*		vector<Vec> helping_polygon;
-		for(int i=0; i<((int)polygon_.size());i++)
-		{			
-			Vec p2=polygon_[i];
-			if(!(p1==p2))
-			{
-				helping_polygon.push_back(p2);
-			}
-		}
-		polygon_=helping_polygon;
-		segments_ = get_segments();	// compute the segments of the polygon 
-*/
 		iterator it = find(p1);
 		if( it != polygon_.end() )
 		{
@@ -131,16 +118,6 @@ namespace polygon
 		throw()
 	{
 		
-/*		for(int i=0; i<((int)polygon_.size());i++)
-		{			
-			Vec p2=polygon_[i];
-			if(p1==p2)
-			{
-				return true;
-			}
-		}
-		return false;
-*/
 		return std::find(polygon_.begin(), polygon_.end(), p1) != polygon_.end();
 	}	
 	
@@ -152,16 +129,6 @@ namespace polygon
 		throw()
 	{
 		
-/*		for(int i=0; i<((int)vec.size());i++)
-		{			
-			Vec p2=vec[i];
-			if(p1==p2)
-			{
-				return true;
-			}
-		}
-		return false;
-*/
 		return std::find(vec.begin(), vec.end(), p1) != vec.end();
 		
 	} 
@@ -215,14 +182,58 @@ namespace polygon
 	
 // ----------------------------------------------------------------------
 	
-	Bbox2D 
+	Box 
 		Polygon::
 		getBoundingBox(void) const 
 		throw() 
 	{
-		Bbox2D bbox;
-		bbox = bbox.getBoundingBox(polygon_);
-		return bbox;
+		double x;
+		double y;
+		
+		double min_x;
+		double max_x;
+		double min_y;
+		double max_y;
+		
+		for(vector<Vec>::const_iterator it=polygon_.begin(); it!=polygon_.end(); it++)
+		{
+			Vec p = *it;
+			x = p.x();
+			y = p.y();
+			
+			if(it==polygon_.begin())
+			{
+				min_x = x;
+				max_x = x;
+				min_y = y;
+				max_y = y;
+			}
+			else
+			{
+				if(x<min_x)
+				{
+					min_x = x;
+				}
+				if(x>max_x)
+				{
+					max_x = x;
+				}
+				if(y<min_y)
+				{
+					min_y = y;
+				}
+				if(y>max_y)
+				{
+					max_y = y;
+				}
+			}
+			
+		}
+		
+		Vec lower = Vec(min_x, min_y, 0.0);
+		Vec upper = Vec(max_x, max_y, 0.0);
+		
+		return Box(lower, upper);
 	}				
 	
 	// ----------------------------------------------------------------------
@@ -234,10 +245,9 @@ namespace polygon
 	{
 		
 		// is p located inside or outside the polygon?
-		Bbox2D bbox; 
-		bbox.getBoundingBox(polygon_);
-		double bbox_min_x = bbox.get_min_x();
-		double bbox_min_y = bbox.get_min_y();
+		Box bbox = getBoundingBox();
+		double bbox_min_x = bbox.lower().x();
+		double bbox_min_y = bbox.lower().y();
 		
 		Vec  p_not_in_bbox = Vec(bbox_min_x-1,bbox_min_y-1, 0.0); // point outside the bounding box of the polygon.
 		
@@ -255,7 +265,6 @@ namespace polygon
 				intersection_points.push_back(ipoint);	
 			}
 		}
-		//cout<<"intersection_points.size()="<<intersection_points.size()<<endl;
 		if ((intersection_points.size() % 2) == 0)
 		{	// p is not positioned on bounded side		
 			return false;

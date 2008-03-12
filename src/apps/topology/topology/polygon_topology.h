@@ -12,7 +12,7 @@
 #include "shawn_config.h"		
 
 #include "apps/topology/polygon/polygon.h"
-#include "apps/topology/polygon/bbox_2d.h"
+#include "sys/misc/box.h"
 #include "apps/topology/topology/topology_2d.h"
 #include <vector>
 
@@ -40,7 +40,7 @@ namespace topology
       virtual std::string description( void ) const throw();
       virtual bool value( const shawn::Vec& ) const throw();
       virtual shawn::Box domain( void ) const throw();
-      virtual Bbox2D get_outer_bbox(void) const throw();
+      virtual Box get_outer_bbox(void) const throw();
 
       // PolygonTopology will delete this one!
       // passed polygon must be is_simple() !
