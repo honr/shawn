@@ -4,6 +4,7 @@
 
 #include "apps/topology/polygon/polygon.h"
 #include <math.h>
+#include "sys/util/defutils.h"
 #include <iostream>
 
 using std::vector;
@@ -135,7 +136,7 @@ namespace polygon
 	
 	// ----------------------------------------------------------------------
 	
-	vector<Vec> 
+	const vector<Vec>& 
 		Polygon::
 		get_poly_vector(void) const 
 		throw()
@@ -249,22 +250,52 @@ namespace polygon
 		double bbox_min_x = bbox.lower().x();
 		double bbox_min_y = bbox.lower().y();
 		
-		Vec  p_not_in_bbox = Vec(bbox_min_x-1,bbox_min_y-1, 0.0); // point outside the bounding box of the polygon.
+		Vec  p_not_in_bbox = Vec(bbox_min_x - 1,bbox_min_y - 2, 0.0); // point outside the bounding box of the polygon.
 		
-		Segment2D seg1 = Segment2D(p_not_in_bbox, p);
+		Segment2D seg1 = Segment2D(p_not_in_bbox, p); // control-segment
 		Segment2D seg2;
 		
 		vector<Vec> intersection_points;
-		for (vector<Segment2D>::const_iterator it1=segments_.begin(); it1!=segments_.end(); it1++)
-		{
-			seg2 = *it1;
-			Vec ipoint;
-			bool existing_intersection = seg1.check_for_intersections(seg2, ipoint); // compute the number of intersection points of seg1 with als segments of the polygon
-			if(existing_intersection && (!contains_point(ipoint, intersection_points)))
+		
+		bool intersec_with_poly_edge = true;
+		
+		while(intersec_with_poly_edge)
+		{	
+			intersec_with_poly_edge = false;
+			
+			for (vector<Segment2D>::const_iterator it1=segments_.begin(); it1!=segments_.end(); it1++)
 			{
-				intersection_points.push_back(ipoint);	
+				seg2 = *it1;
+				Vec ipoint;
+				bool existing_intersection = seg1.check_for_intersections(seg2, ipoint); // compute the number of intersection points of seg1 with als segments of the polygon
+				if(existing_intersection && (!contains_point(ipoint, intersection_points)))
+				{
+					intersection_points.push_back(ipoint);	
+				}
 			}
+		
+	
+			Vec intersec_point;	// Ensure that control-segment does not go through an edge of the polygon!
+			Vec poly_point;
+			for(int i=0; i<((int)intersection_points.size()); i++)
+			{
+				intersec_point=intersection_points[i];
+				for(int j=0; j<((int)polygon_.size()); j++){
+					poly_point= polygon_[j];
+					if(EQDOUBLE(intersec_point.x(), poly_point.x()) && EQDOUBLE(intersec_point.y(), poly_point.y())) // ipoint is an edge of the polygon! => start new computation with new p_not_in_bbox
+					{	// The control-segment goes through an edge of the polygon! Try again with another control-segment!
+						intersec_with_poly_edge == true;
+						double random_value1 = rand() % 10;
+						double random_value2 = rand() % 10;	
+						p_not_in_bbox = Vec(p_not_in_bbox.x()-random_value1, p_not_in_bbox.y()-random_value2, 0.0);	// prepare for a new control-segment
+						seg1 = Segment2D(p_not_in_bbox, p);
+						intersection_points.clear();						
+					}			
+				}
+			}
+      
 		}
+			
 		if ((intersection_points.size() % 2) == 0)
 		{	// p is not positioned on bounded side		
 			return false;
@@ -347,8 +378,7 @@ namespace polygon
 	{
 		JarvisMarch jm;
 		vector<Vec> convex_hull = jm.compute_convex_hull(polygon_);
-		Polygon poly_convex = Polygon(convex_hull);
-		return poly_convex;
+		return Polygon(convex_hull);
 	}
 
 	  // ----------------------------------------------------------------------

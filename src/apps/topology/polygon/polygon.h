@@ -92,7 +92,7 @@ namespace polygon
 	  *
 	  *  \return vector<Vec> 	: returns the member variable polygon_
 	  */ 	  
-	  virtual vector<Vec> get_poly_vector(void) const throw();	
+	  virtual const vector<Vec>& get_poly_vector(void) const throw();	
 	   
 	  /** This method computes the segments of a polygon consisting of ordered corners and returns them in a vector.	
 	  *

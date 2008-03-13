@@ -39,20 +39,20 @@ public:
 	*
 	*  \return Vec : returns the source
 	*/  	
-	Vec get_source(void) const throw();
+	const Vec& get_source(void) const throw();
 	
 	/** This method returns the sink point of the segment.
 	*
 	*  \return Vec : returns the sink
 	*/ 	
-	Vec get_sink(void) const throw();
+	const Vec& get_sink(void) const throw();
 	
 	
 	/** This method returns the smallest bounding box of the segment.
 	*
 	*  \return Box : returns the bounding box of the segment
 	*/	
-	Box get_Bbox(void) const throw();
+	const Box& get_Bbox(void) const throw();
 	
 	/** This method returns true if the point lies on the segment else returns false.
 	*

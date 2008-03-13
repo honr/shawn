@@ -33,7 +33,7 @@ namespace polygon
 	
 	// ----------------------------------------------------------------------	
 
-	Vec 
+	const Vec& 
 		Segment2D::
 		get_source(void) const 
 		throw()
@@ -44,7 +44,7 @@ namespace polygon
 	// ----------------------------------------------------------------------	
 	
 
-	Vec 
+	const Vec& 
 		Segment2D::
 		get_sink(void) const 
 		throw()
@@ -55,7 +55,7 @@ namespace polygon
 	// ----------------------------------------------------------------------	
 	
 
-	Box 
+	const Box& 
 		Segment2D::
 		get_Bbox(void) const 
 		throw()
