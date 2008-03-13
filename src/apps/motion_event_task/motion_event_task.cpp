@@ -44,7 +44,10 @@ namespace motion_event
 		missing_detection_rate_ = 0.0;
 		in_range_of_nodes_.clear();
 		urv_ = new UniformRandomVariable();
+		urv_->set_upper_bound(1.0);
+		urv_->init();
 		nrv_ = new NormalRandomVariable();
+		nrv_->init();
 	}
 	// ----------------------------------------------------------------------
 	MotionEventTask::
@@ -94,8 +97,13 @@ namespace motion_event
 			missing_detection_rate_ = sc.environment().optional_double_param("missingDetRate", 0.0);
 			in_range_of_nodes_.clear();
 			
-			urv_->set_upper_bound(1.0);
-			urv_->init();
+			if (urv_->upper_bound() != 1.0)
+			{
+				delete urv_;
+				urv_ = new UniformRandomVariable();
+				urv_->set_upper_bound(1.0);
+				urv_->init();
+			}
 			
 			for (shawn::World::node_iterator iter = sc.world_w().begin_nodes_w(); iter != sc.world_w().end_nodes_w(); ++iter) 
 			{
@@ -152,42 +160,48 @@ namespace motion_event
 			double errorDet = sc.environment().required_double_param("errorDetectionsPerTimeRange");
 			double timeRange = sc.environment().optional_double_param("errorDetectionTimeRange", 86400.0);
 			
-			urv_->set_upper_bound(timeRange);
-			urv_->init();
-			double random_variable = 0;
-				
-			for( shawn::World::node_iterator it = sc.world_w().begin_nodes_w(); it != sc.world_w().end_nodes_w(); ++it )
+			if (errorDet > 0)
 			{
-				for (int i=0; i<(int)errorDet; ++i) // TODO
+				if (urv_->upper_bound() != timeRange)
 				{
-					random_variable = *urv_;
-					//cout << "node=" << it->id() << " i=" << i << " urv=" << random_variable << endl;
-					if (random_variable < iterations)
-					{
-						shawn::Node& node = *it;
-						
-						// Saving event information in a tag
-						TagHandle th = node.find_tag_w("MotionEventTag");
-						shawn::IntegerDoubleMapTag* mt;
-						if ( th.is_not_null() )
-							mt = dynamic_cast<IntegerDoubleMapTag*>(th.get());
-						else mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
-						{
-							const IntegerDoubleMapTag::Map& m = mt->value();
-							std::ostringstream ossint, ossdouble;
-							ossint << m.size();
-							ossdouble << random_variable;
-							
-							mt->add_indexed_entry( ossint.str(), ossdouble.str());
-							mt->set_persistency(true);
-							node.add_tag(mt);
-						}
-					}
+					delete urv_;
+					urv_ = new UniformRandomVariable();
+					urv_->set_upper_bound(timeRange);
+					urv_->init();
 				}
-				
+				double random_variable = 0;
+					
+				for( shawn::World::node_iterator it = sc.world_w().begin_nodes_w(); it != sc.world_w().end_nodes_w(); ++it )
+				{
+					for (int i=0; i<(int)errorDet; ++i) 
+					{
+						random_variable = *urv_;
+						//cout << "node=" << it->id() << " i=" << i << " urv=" << random_variable << endl;
+						if (random_variable < iterations)
+						{
+							shawn::Node& node = *it;
+							
+							// Saving event information in a tag
+							TagHandle th = node.find_tag_w("MotionEventTag");
+							shawn::IntegerDoubleMapTag* mt;
+							if ( th.is_not_null() )
+								mt = dynamic_cast<IntegerDoubleMapTag*>(th.get());
+							else mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
+							{
+								const IntegerDoubleMapTag::Map& m = mt->value();
+								std::ostringstream ossint, ossdouble;
+								ossint << m.size();
+								ossdouble << random_variable;
+								
+								mt->add_indexed_entry( ossint.str(), ossdouble.str());
+								mt->set_persistency(true);
+								node.add_tag(mt);
+							}
+						}
+					}		
+				}
 			}
 		}
-
 	}
 	// ----------------------------------------------------------------------
 	void 
@@ -215,53 +229,54 @@ namespace motion_event
 				//Minimum distance between node and moving event
 				double distance = ((cross_product((n - start_pos), direction)).euclidean_norm())/dir_norm;
 	
-				//cout << "Distance: " << distance << endl;
-				
 				//computation of node projection on the line of the moving event 
 				double lambda = ( (n - start_pos) * direction ) / (dir_norm * dir_norm) ;
 				Vec intercept = start_pos + (direction * lambda);
 
-				//cout << "Nod_pos: " << n.x() << "," << n.y() << "," << n.z() << endl;
-				//cout << "Dest: " << dest_pos.x() << "," << dest_pos.y() << "," << dest_pos.z() << endl;
-				//cout << "Distance: " << euclidean_distance(n, dest_pos) << " <= " << detection_range_ << endl;
-				
 				//If object was not in the detection range of node before
 				if ( !in_range_of_node(&node) ) 
 				{
 					//compute the time, at which the node remarks the motion event
-					//NormalRandomVariable* var = new NormalRandomVariable;
-					nrv_->set_standard_deviation(standard_deviation_);
-					nrv_->init();
+					if (nrv_->standard_deviation() != standard_deviation_)
+					{
+						delete nrv_;
+						nrv_ = new NormalRandomVariable();
+						nrv_->set_standard_deviation(standard_deviation_);
+						nrv_->init();
+					}
 					double random_variable = *nrv_;
-					while (random_variable < (-1.0)*max_time_error_ || random_variable > max_time_error_)
+					
+					while (random_variable < ((-1.0)*max_time_error_/velocity_) || random_variable > (max_time_error_/velocity_))
 						random_variable = *nrv_;
 					double intercept_time = start_time_ + random_variable + euclidean_distance(start_pos, intercept)/velocity_;
-					//delete var;
 					//cout << "intercept= " << start_time_ + euclidean_distance(start_pos, intercept)/velocity_ << endl;
-					//cout << "Object " << object_id_ << " hits node " << node.id() << " (" << node.real_position() << ") at position " << intercept << " at " << intercept_time << endl;
-
+					
 					double urv = *urv_;
 					//cout << "miss rate=" << missing_detection_rate_ << " urv=" << urv << endl;
-					// with dete
+					// 
 					if (urv >= missing_detection_rate_) 
 					{
+						//cout << "Object " << object_id_ << " hits node " << node.id() << " (" << node.real_position() << ") at position " << intercept << " at " << intercept_time << endl;
+
 						// Saving event information in a tag
 						TagHandle th = node.find_tag_w("MotionEventTag");
 						shawn::IntegerDoubleMapTag* mt;
 						if ( th.is_not_null() )
 							mt = dynamic_cast<IntegerDoubleMapTag*>(th.get());
-						else mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
-						{
-							const IntegerDoubleMapTag::Map& m = mt->value();
-							std::ostringstream ossint, ossdouble;
-							ossint << m.size();
-							ossdouble << intercept_time;
-							
-							mt->add_indexed_entry( ossint.str(), ossdouble.str());
-							mt->set_persistency(true);
-							node.add_tag(mt);
-						}
+						else
+							mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
+						
+						const IntegerDoubleMapTag::Map& m = mt->value();
+						std::ostringstream ossint, ossdouble;
+						ossint << m.size();
+						ossdouble << intercept_time;
+						
+						mt->add_indexed_entry( ossint.str(), ossdouble.str());
+						mt->set_persistency(true);
+						node.add_tag(mt);
+						
 					}
+					//else cout << "node " << node.id() << " misses event" << endl;
 				}
 			}
 			// If person does not leave the detection range of the node set in_range_of_node = true
@@ -312,19 +327,24 @@ namespace motion_event
 					else set_in_range_of_node(&node, false);
 
 					//compute the time, at which the node remarks the motion event
-					nrv_->set_standard_deviation(standard_deviation_);
-					nrv_->init();
+					if (nrv_->standard_deviation() != standard_deviation_)
+					{
+						delete nrv_;
+						nrv_ = new NormalRandomVariable();
+						nrv_->set_standard_deviation(standard_deviation_);
+						nrv_->init();
+					}
 					double random_variable = *nrv_;
 					while (random_variable < (-1.0)*max_time_error_ || random_variable > max_time_error_)
 						random_variable = *nrv_;
 					double intercept_time = start_time_ + random_variable + euclidean_distance(start_pos, intercept)/velocity_;
 				
-					//cout << "Object " << object_id_ << " hits node " << node.id() << " (" << node.real_position() << ") at position " << intercept << " at " << intercept_time << endl;
-					double urv = *urv_;
+					double urv = *urv_ + 0.00000001;
 					//cout << "miss rate=" << missing_detection_rate_ << " urv=" << urv << endl;
 					// with dete
 					if (urv >= missing_detection_rate_) 
 					{
+						//cout << "Object " << object_id_ << " hits node " << node.id() << " (" << node.real_position() << ") at position " << intercept << " at " << intercept_time << endl;
 						// Saving event information in a tag
 						TagHandle th = node.find_tag_w("MotionEventTag");
 						shawn::IntegerDoubleMapTag* mt;
