@@ -195,7 +195,7 @@ namespace autocast
 			/*OLD*///double ub2 = owner().world().simulation_controller().environment().optional_double_param("_ub2__process_message",0.02);
 		    /*NEW*/double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__process_message",0.0275);
 			/*NEW*/double ub2 = owner().world().simulation_controller().environment().optional_double_param("_ub2__process_message",0.0325);
-			double at = now + /*OLD*//* min_update_time_ * */ uniform_random(lb2,ub2);
+			double at = now + min_update_time_ * uniform_random(lb2,ub2);
 
 			if ( answer_timer_ ){
 				owner_w().world_w().scheduler_w().delete_event(answer_timer_);
@@ -208,7 +208,7 @@ namespace autocast
 			/*OLD*///double ub3 = owner().world().simulation_controller().environment().optional_double_param("_ub3__process_message",0.06);
 		    double lb3 = owner().world().simulation_controller().environment().optional_double_param("_lb3__process_message",0.0575);
 			double ub3 = owner().world().simulation_controller().environment().optional_double_param("_ub3__process_message",0.0625);
-			double at = now + /*OLD*//*min_update_time_ * */ uniform_random(lb3,ub3);
+			double at = now + min_update_time_ * uniform_random(lb3,ub3);
 
 			/*OLD*//*if ( answer_timer_ ){
 				owner_w().world_w().scheduler_w().delete_event(answer_timer_);
