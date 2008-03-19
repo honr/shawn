@@ -113,8 +113,40 @@ namespace motion_event
 				in_range_of_nodes_.push_back(p);
 			}
 	
+			std::string path = sc.environment().required_string_param("object");
+			
+			// Save path in environment tag
+			/*
+			TagHandle th = sc.environment_w().find_tag_w("ObjectPathTag");
+			shawn::IntegerStringMapTag* mts;
+			if ( th.is_not_null() )
+				mts = dynamic_cast<IntegerStringMapTag*>(th.get());
+			else 
+				mts = new shawn::IntegerStringMapTag("ObjectPathTag");
+			//const IntegerStringMapTag::Map& m = mts->value();
+			std::ostringstream ossint, ossdouble;
+			ossint << mts->value().size();
+			mts->add_indexed_entry( ossint.str(), path);
+			mts->set_persistency(true);
+			sc.environment_w().add_tag(mts);
+			
+			th = sc.environment_w().find_tag_w("ObjectVelTag");
+			shawn::IntegerDoubleMapTag* mtv;
+			if ( th.is_not_null() )
+				mtv = dynamic_cast<IntegerDoubleMapTag*>(th.get());
+			else 
+				mtv = new shawn::IntegerDoubleMapTag("ObjectVelTag");
+			//const IntegerDoubleMapTag::Map& mv = mtv->value();
+			ossdouble << velocity_;
+			mtv->add_indexed_entry( ossint.str(), ossdouble.str());
+			mtv->set_persistency(true);
+			sc.environment_w().add_tag(mtv);
+			*/
+			// End saving in environment tag
+				
+			
 			// Reading of positions (vectors) of the object
-			StrTok tok(sc.environment().required_string_param("object"), ",;() ");
+			StrTok tok(path, ",;() ");
 			StrTok::iterator it = tok.begin();
 			for(int i=0; i<tok.size()-3; i+=3)
 			{
@@ -133,23 +165,7 @@ namespace motion_event
 	
 				Vec position = Vec( x_pos, y_pos, z_pos );
 				Vec destination = Vec( x_dest, y_dest, z_dest );
-			/*
-				TagHandle th = sc.environment_w().find_tag_w("ObjectPathTag");
-				shawn::IntegerDoubleMapTag* mt;
-				if ( th.is_not_null() )
-					mt = dynamic_cast<IntegerStringMapTag*>(th.get());
-				else mt = new shawn::IntegerStringMapTag("ObjectPathTag");
-				{
-					const IntegerDoubleMapTag::Map& m = mt->value();
-					std::ostringstream ossint, ossdouble;
-					ossint << m.size();
-					ossdouble << position;
-					
-					//mt->add_indexed_entry( ossint.str(), ossdouble.str());
-					mt->set_persistency(true);
-					sc.environment_w().add_tag(mt);
-				}*/
-				
+			
 				single_line(sc, position, destination);
 			}
 		}
@@ -187,16 +203,14 @@ namespace motion_event
 							if ( th.is_not_null() )
 								mt = dynamic_cast<IntegerDoubleMapTag*>(th.get());
 							else mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
-							{
-								const IntegerDoubleMapTag::Map& m = mt->value();
-								std::ostringstream ossint, ossdouble;
-								ossint << m.size();
-								ossdouble << random_variable;
-								
-								mt->add_indexed_entry( ossint.str(), ossdouble.str());
-								mt->set_persistency(true);
-								node.add_tag(mt);
-							}
+
+							//const IntegerDoubleMapTag::Map& m = mt->value();
+							std::ostringstream ossint, ossdouble;
+							ossint << mt->value().size();
+							ossdouble << random_variable;
+							mt->add_indexed_entry( ossint.str(), ossdouble.str());
+							mt->set_persistency(true);
+							node.add_tag(mt);
 						}
 					}		
 				}
@@ -266,9 +280,9 @@ namespace motion_event
 						else
 							mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
 						
-						const IntegerDoubleMapTag::Map& m = mt->value();
+						//const IntegerDoubleMapTag::Map& m = mt->value();
 						std::ostringstream ossint, ossdouble;
-						ossint << m.size();
+						ossint << mt->value().size();
 						ossdouble << intercept_time;
 						
 						mt->add_indexed_entry( ossint.str(), ossdouble.str());
@@ -351,16 +365,16 @@ namespace motion_event
 						if ( th.is_not_null() )
 							mt = dynamic_cast<IntegerDoubleMapTag*>(th.get());
 						else mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
-						{
 							const IntegerDoubleMapTag::Map& m = mt->value();
-							std::ostringstream ossint, ossdouble;
-							ossint << m.size();
-							ossdouble << intercept_time;
 							
-							mt->add_indexed_entry( ossint.str(), ossdouble.str());
-							mt->set_persistency(true);
-							node.add_tag(mt);
-						}
+						std::ostringstream ossint, ossdouble;
+						ossint << m.size();
+						ossdouble << intercept_time;
+						
+						mt->add_indexed_entry( ossint.str(), ossdouble.str());
+						mt->set_persistency(true);
+						node.add_tag(mt);
+						
 					}
 				}
 				else set_in_range_of_node(&node, false);
