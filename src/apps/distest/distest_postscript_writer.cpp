@@ -30,7 +30,7 @@ namespace distest {
 //		eps ? eps_header() : ps_header();
 		ps_header();
 		calcOffset(sc.world());
-		newpage();
+		//newpage();
 		setlinewidth2(0.1);
 
 
