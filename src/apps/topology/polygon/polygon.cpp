@@ -250,7 +250,7 @@ namespace polygon
 		double bbox_min_x = bbox.lower().x();
 		double bbox_min_y = bbox.lower().y();
 		
-		Vec  p_not_in_bbox = Vec(bbox_min_x - 1,bbox_min_y - 2, 0.0); // point outside the bounding box of the polygon.
+		Vec  p_not_in_bbox = Vec(bbox_min_x - 0.3,bbox_min_y + 0.4, 0.0); // point outside the bounding box of the polygon.
 		
 		Segment2D seg1 = Segment2D(p_not_in_bbox, p); // control-segment
 		Segment2D seg2;
