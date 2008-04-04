@@ -115,35 +115,6 @@ namespace motion_event
 	
 			std::string path = sc.environment().required_string_param("object");
 			
-			// Save path in environment tag
-			/*
-			TagHandle th = sc.environment_w().find_tag_w("ObjectPathTag");
-			shawn::IntegerStringMapTag* mts;
-			if ( th.is_not_null() )
-				mts = dynamic_cast<IntegerStringMapTag*>(th.get());
-			else 
-				mts = new shawn::IntegerStringMapTag("ObjectPathTag");
-			//const IntegerStringMapTag::Map& m = mts->value();
-			std::ostringstream ossint, ossdouble;
-			ossint << mts->value().size();
-			mts->add_indexed_entry( ossint.str(), path);
-			mts->set_persistency(true);
-			sc.environment_w().add_tag(mts);
-			
-			th = sc.environment_w().find_tag_w("ObjectVelTag");
-			shawn::IntegerDoubleMapTag* mtv;
-			if ( th.is_not_null() )
-				mtv = dynamic_cast<IntegerDoubleMapTag*>(th.get());
-			else 
-				mtv = new shawn::IntegerDoubleMapTag("ObjectVelTag");
-			//const IntegerDoubleMapTag::Map& mv = mtv->value();
-			ossdouble << velocity_;
-			mtv->add_indexed_entry( ossint.str(), ossdouble.str());
-			mtv->set_persistency(true);
-			sc.environment_w().add_tag(mtv);
-			*/
-			// End saving in environment tag
-				
 			
 			// Reading of positions (vectors) of the object
 			StrTok tok(path, ",;() ");
@@ -202,9 +173,9 @@ namespace motion_event
 							shawn::IntegerDoubleMapTag* mt;
 							if ( th.is_not_null() )
 								mt = dynamic_cast<IntegerDoubleMapTag*>(th.get());
-							else mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
+							else 
+								mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
 
-							//const IntegerDoubleMapTag::Map& m = mt->value();
 							std::ostringstream ossint, ossdouble;
 							ossint << mt->value().size();
 							ossdouble << random_variable;
@@ -266,12 +237,10 @@ namespace motion_event
 					//cout << "intercept= " << start_time_ + euclidean_distance(start_pos, intercept)/velocity_ << endl;
 					
 					double urv = *urv_;
-					//cout << "miss rate=" << missing_detection_rate_ << " urv=" << urv << endl;
-					// 
+					//cout << "miss rate=" << missing_detection_rate_ << " urv=" << urv << endl; 
 					if (urv >= missing_detection_rate_) 
 					{
 						//cout << "Object " << object_id_ << " hits node " << node.id() << " (" << node.real_position() << ") at position " << intercept << " at " << intercept_time << endl;
-
 						// Saving event information in a tag
 						TagHandle th = node.find_tag_w("MotionEventTag");
 						shawn::IntegerDoubleMapTag* mt;
@@ -280,7 +249,6 @@ namespace motion_event
 						else
 							mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
 						
-						//const IntegerDoubleMapTag::Map& m = mt->value();
 						std::ostringstream ossint, ossdouble;
 						ossint << mt->value().size();
 						ossdouble << intercept_time;
@@ -355,7 +323,7 @@ namespace motion_event
 				
 					double urv = *urv_ + 0.00000001;
 					//cout << "miss rate=" << missing_detection_rate_ << " urv=" << urv << endl;
-					// with dete
+					
 					if (urv >= missing_detection_rate_) 
 					{
 						//cout << "Object " << object_id_ << " hits node " << node.id() << " (" << node.real_position() << ") at position " << intercept << " at " << intercept_time << endl;
@@ -364,11 +332,11 @@ namespace motion_event
 						shawn::IntegerDoubleMapTag* mt;
 						if ( th.is_not_null() )
 							mt = dynamic_cast<IntegerDoubleMapTag*>(th.get());
-						else mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
-							const IntegerDoubleMapTag::Map& m = mt->value();
-							
+						else
+							mt = new shawn::IntegerDoubleMapTag("MotionEventTag");
+						
 						std::ostringstream ossint, ossdouble;
-						ossint << m.size();
+						ossint << mt->value().size();
 						ossdouble << intercept_time;
 						
 						mt->add_indexed_entry( ossint.str(), ossdouble.str());
@@ -405,17 +373,22 @@ namespace motion_event
 			return (*it).second;
 		}
 		return false;
-	}// ----------------------------------------------------------------------
+	}
+	// ----------------------------------------------------------------------
+	// better: use bitset
 	void
 	MotionEventTask::
 	set_in_range_of_node(shawn::Node* n, bool b)
 	{
-		//cout << "in range of node " << n->id() << " = " << b << endl;
 		for (std::list<std::pair<shawn::Node*,bool> >::iterator it = in_range_of_nodes_.begin(); it != in_range_of_nodes_.end(); it++)
-		if ((*it).first == n)
-		(*it).second = b;
+			if ((*it).first == n)
+			{
+				(*it).second = b;
+				break;
+			}
 	}
-
+	// ----------------------------------------------------------------------
+	
 
 	}
 #endif
