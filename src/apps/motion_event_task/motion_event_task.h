@@ -35,12 +35,26 @@ namespace motion_event
 	* according to the given positions without stop. The positions are specified 
 	* through vectors (x-, y- and z-coordinate). 
 	* 
-	* Each node in the world has the same detection range (approximated by a circle). 
+	* Each node in the world has the same detection range (approximated by a square). 
 	* When an object crosses the detection range of one node, the task adds a 
 	* "MotionEventTag" to this node witch contains the time of the crossing multiplied
 	* with an error.
 	* 
-	* The given standard deviation (standard_deviation) and maximum error (max_time_error) influence this error.  
+	* The given standard deviation (standard_deviation) and maximum error (max_time_error) influence this error.
+	* 
+	* There are two types in this task with the following functions:
+	* type = object: 
+	* Adds all MotionEventTags to the world caused by this object. 
+	* Parameters like start_time and velocity must be set.
+	* 
+	* type = errorDetections: 
+	* Adds MotionEventTags to the world caused by error detections (false positives).
+	* The parameter 'errorDetectionsPerTimeRange' specifies the absolute number of these error detections, 
+	* the time range is set to one day per default. 
+	* The parameter 'TimeRange' must be greater than or equal to the number of simulations rounds or
+	* you have to implement the other case! If a simulation has less rounds than this
+	* value, a uniform distributed random variable decides how much error detections are at least
+	* during the simulation.
 	*/
    class MotionEventTask
       : public shawn::SimulationTask
@@ -48,10 +62,14 @@ namespace motion_event
    public:
       MotionEventTask();
       virtual ~MotionEventTask();
-
+      /** The name is motion_event_task
+       */
       virtual std::string name( void ) const throw();
+      /** A generator for motion events in the world
+       */
       virtual std::string description( void ) const throw();
 
+      // Main method
       virtual void run( shawn::SimulationController& sc )
          throw( std::runtime_error );
 
@@ -69,13 +87,14 @@ namespace motion_event
 	   
 	   /** \brief Velocity of the object
 	    *
-	    *  The velcoity of one person does not change in one simulation.
+	    * The velcoity of one person does not change in one simulation. 1 correspond to 1 meter/simulation round.
 	    */
 	   double velocity_;
 	   
 	   /** \brief Detection range of each nodes in the world.
 	    *
-	    *  The range of the nodes is approximated by a circle.
+	    * The range of the nodes is approximated by a square lieing on edge in the world. 
+	    * The parameter is shortest distance to the four edges.  
 	    */
 	   double detection_range_;
 	   
@@ -86,16 +105,18 @@ namespace motion_event
 	   /** \brief Standard deviation for the error added to (or subtracted from) the time of detection
 	    *
 	    * The default value is 0. So a nodes detects an object when this is at the nearest point of 
-	    * the node. If the standard deviation is greater than 0, a random error is added to this time of 
-	    * detection.
+	    * the node. If the standard deviation is greater than 0, the absolute value of a 
+	    * normal distributed random error is added 
+	    * to this time of detection.
 	    */
 	   double standard_deviation_;
 	   
-	   /** \brief Maximum of the error added to the time of detection
+	   /** \brief Maximum of the error added to the time of detection. If the absolute random value is bigger
+	    * than this variable, a new value is generated until it is smaller.
 	    */
 	   double max_time_error_;
 	   
-	   /** \brief Rate of ghost detections and missing object detections  
+	   /** \brief Rate of not detected events. (Computed by a uniform distributed random variable.)  
 	    */
 	   double missing_detection_rate_;
 	   
