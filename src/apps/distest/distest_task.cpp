@@ -24,6 +24,7 @@
 #include <fstream>
 #include <vector>
 #include <math.h>
+#include <cstring>
 
 using namespace shawn;
 using namespace std;

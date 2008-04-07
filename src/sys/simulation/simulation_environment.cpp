@@ -7,6 +7,7 @@
  ************************************************************************/
 
 #include <string>
+#include <cstdlib>
 #include "sys/simulation/simulation_environment.h"
 #include "sys/util/string_conv.h"
 

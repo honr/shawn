@@ -5,6 +5,8 @@
 ** under the terms of the BSD License. Refer to the shawn-licence.txt **
 ** file in the root of the Shawn source tree for further details.     **
 ************************************************************************/
+
+#include <cstdlib>
 #include <iostream>
 #include "sys/processor.h"
 #include "sys/node.h"

@@ -46,7 +46,7 @@ namespace spyglass
 		virtual ~Spyglass();
 
 	private:
-		static Spyglass* Spyglass::spyglass_;
+		static Spyglass* spyglass_;
 		std::string spyglass_outfile_;
 	};
 

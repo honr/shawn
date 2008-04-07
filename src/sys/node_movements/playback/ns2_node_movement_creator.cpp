@@ -10,6 +10,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <cstring>
 #include "sys/node_movements/playback/ns2_node_movement_creator.h"
 #include "sys/node_movements/playback/movement_controller.h"
 #include "sys/node_movements/playback/movement_info.h"

@@ -17,6 +17,7 @@
 #include <iostream>
 #include <cfloat>
 #include <cassert>
+#include <cmath>
 #include "sys/node.h"
 #include "apps/autocast/autocast_app/autocast_app_processor.h"
 #include "apps/autocast/autocast/autocast_processor.h"

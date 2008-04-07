@@ -19,6 +19,7 @@
 #include "sys/node.h"
 
 #include <fstream>
+#include <limits>
 
 #define _MIN_(x,y) ( (x)<(y) ? (x) : (y) )
 #define _MAX_(x,y) ( (x)<(y) ? (y) : (x) )

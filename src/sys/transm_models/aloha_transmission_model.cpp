@@ -6,6 +6,8 @@
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 
+#include <cstring>
+#include <algorithm>
 #include "sys/transm_models/aloha_transmission_model.h"
 #include "sys/edge_model.h"
 #include "sys/world.h"

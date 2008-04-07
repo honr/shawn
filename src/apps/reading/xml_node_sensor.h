@@ -21,6 +21,7 @@
 #include "sys/node.h"
 #include "sys/vec.h"
 #include <map>
+#include <climits>
 
 namespace xmlreading
 {

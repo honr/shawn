@@ -17,6 +17,7 @@
 #include "sys/util/string_conv.h"
 #include "sys/misc/number_formatter.h"
 
+#include <cstdlib>
 #include <sstream>
 #include <math.h>
 #include <cassert>

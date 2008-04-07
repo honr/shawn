@@ -11,6 +11,7 @@
 
 #include <valarray>
 #include <vector>
+#include <cassert>
 
 
 /*! \brief A histogram class
@@ -138,7 +139,7 @@ public:
 	//! return number of containers
 	unsigned int GetSize() const							{	return m_vCounters.size();};
 	//! returns i-th counter
-	unsigned int operator [] (unsigned int i) const					{	ASSERT( i < m_vCounters.size() ); return m_vCounters[i];};
+	unsigned int operator [] (unsigned int i) const					{	assert( i < m_vCounters.size() ); return m_vCounters[i];};
 	//! return the computed histogram
 	const std::vector<unsigned int>& GetHistogram() const	{	return m_vCounters;};
 	//! return the computed histogram, in TOuts

@@ -12,6 +12,7 @@
 #include <map>
 #include <string>
 #include <stdexcept>
+#include <cstdlib>
 
 #include "sys/util/handle_keeper_base.h"
 #include "sys/logging/logger.h"

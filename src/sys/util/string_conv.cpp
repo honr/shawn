@@ -9,6 +9,8 @@
 #include "sys/util/string_conv.h"
 #include "shawn_config.h"
 
+#include <cstdlib>
+#include <cstring>
 #include <string>
 #include <stdexcept>
 

@@ -10,6 +10,7 @@
 
 #include "sys/world.h"
 #include "sys/misc/node_change_listener.h"
+#include <cstdlib>
 #include <cassert>
 #include <vector>
 

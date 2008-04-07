@@ -15,6 +15,7 @@
 #include "sys/world.h"
 #include "sys/node.h"
 #include <fstream>
+#include <limits>
 
 using namespace std;
 using namespace shawn;

@@ -15,6 +15,7 @@
 #include <sstream>
 #include <limits>
 #include <string>
+#include <cstring>
 
 #include "sys/shawn_sys_init.h"
 #include "apps/apps_init.h"

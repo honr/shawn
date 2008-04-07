@@ -17,6 +17,7 @@
 #include <list>
 #include <map>
 #include <cmath>
+#include <limits>
 
 
 #ifndef M_PI

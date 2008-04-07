@@ -22,6 +22,7 @@
 #include "sys/event_scheduler.h"
 #include "sys/world.h"
 #include "sys/vec.h"
+#include <climits>
 
 
 namespace xmlreading

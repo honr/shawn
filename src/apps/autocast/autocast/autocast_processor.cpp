@@ -260,7 +260,8 @@ namespace autocast
 			assert(kmh.is_not_null());
 			autocast::AutoCastTask* act = dynamic_cast<autocast::AutoCastTask*>( kmh.get() );
 			if (act){
-				act->process_sent_statistic(&owner(),packets_sent_total_,bytes_sent_total_,dataUnits_sent_total_,dataUnits_bytes_sent_total_,received_messages_ids_total_.size(),received_DataUnits_total_,received_DataUnit_ids_total_.size()/*,1.0*neighbors_count_/(simulation_round()+1),1.0*real_neighbors_count_/(simulation_round()+1),velocity_count_/(simulation_round()+1),update_time_count_/(simulation_round()+1)*/);
+#warning THIS IS NON FUNCTIONAL, CORRECT THE LINE BELOW HERE
+				//act->process_sent_statistic(&owner(),packets_sent_total_,bytes_sent_total_,dataUnits_sent_total_,dataUnits_bytes_sent_total_,received_messages_ids_total_.size(),received_DataUnits_total_,received_DataUnit_ids_total_.size()/*,1.0*neighbors_count_/(simulation_round()+1),1.0*real_neighbors_count_/(simulation_round()+1),velocity_count_/(simulation_round()+1),update_time_count_/(simulation_round()+1)*/);
 			}
 
 			// And at least

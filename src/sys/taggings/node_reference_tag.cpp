@@ -6,6 +6,7 @@
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 
+#include <cstdlib>
 #include "sys/taggings/node_reference_tag.h"
 #include "sys/node.h"
 #include "sys/world.h"

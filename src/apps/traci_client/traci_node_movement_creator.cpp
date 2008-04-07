@@ -11,6 +11,7 @@
 #include "sys/misc/tokenize.h"
 #include <string>
 #include <limits>
+#include <cmath>
 #ifdef ENABLE_TRACICLIENT
 
 

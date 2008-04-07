@@ -11,6 +11,7 @@
 #ifdef ENABLE_ROUTING
 
 #include "apps/routing/geo/geo_routing.h"
+#include "apps/routing/geo/geo_routing_processor.h"
 #include "apps/routing/routing.h"
 #include "sys/misc/observable.h"
 #include "sys/vec.h"

@@ -13,6 +13,7 @@
 #include "apps/localization/neighborhood/localization_neighbor_info.h"
 
 #include <climits>
+#include <cmath>
 
 
 namespace localization
@@ -211,7 +212,7 @@ namespace localization
 //       check, too. They are just a little bit worse than the ones of
 //       K. Langendoen, but the tendency is almost the same.
             if ( real_dist >= 1 )
-               stat_abs_err += abs( ( it->second->distance() - real_dist ));
+               stat_abs_err += std::abs( ( it->second->distance() - real_dist ));
          }
    }
    // ----------------------------------------------------------------------

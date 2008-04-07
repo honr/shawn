@@ -10,6 +10,7 @@
 #define __SHAWN_SYS_EDGE_MODELS_GRID_EDGE_MODEL_H
 
 
+#include <cstdlib>
 #include <cassert>
 #include <cmath>
 #include <set>
