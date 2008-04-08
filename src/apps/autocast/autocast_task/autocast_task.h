@@ -25,6 +25,11 @@
 
 namespace autocast
 {
+ /**
+  * The AutoCastTask gathers statistical data from the AutoCastProcessor.
+  *
+  * @author Torsten Teubler
+  */
    class AutoCastTask
       : public shawn::SimulationTask
    {
@@ -40,7 +45,7 @@ namespace autocast
 
 	  void process_latencies(const autocast::ConstDataUnitHandle&, const shawn::Node*, const shawn::SimulationController&) throw();
 
-	  void process_sent_statistic(const shawn::Node* node, int packet_sent, int byte_sent , int dataUnit_sent, int dataUnit_byte_sent, int packet_received, int dataUnits_received ,int received_DataUnit_ids, double neighbors_count, double real_neighbors_count, double velocity, double update_time) throw();
+	  void process_sent_statistic(const shawn::Node* node, int packet_sent, int byte_sent , int dataUnit_sent, int dataUnit_byte_sent, int packet_received, int dataUnits_received ,int received_DataUnit_ids/*, double neighbors_count, double real_neighbors_count, double velocity, double update_time*/) throw();
 
    private:
 	   struct latencies_line{
@@ -63,10 +68,10 @@ namespace autocast
 			int packets_received;
 			int dataUnits_received;
 			int received_DataUnit_ids;
-			double neighbors_count_;
+			/*double neighbors_count_;
 			double real_neighbors_count_;
 			double velocity_;
-			double update_time_;
+			double update_time_;*/
 	   };
 	   std::vector<sent_statistics_line*> sent_statistics_;
 

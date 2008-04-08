@@ -23,7 +23,6 @@
 #include <string>
 #include <iostream>
 #include <cassert>
-#include <cmath>
 
 namespace autocast
 {
@@ -109,11 +108,11 @@ namespace autocast
 				  << "hdcsRcvd" << "\t"
 				  << "rcvdHDCids" << "\t"
 				  << "activeTime" << "\t"
-				  << "startStopTimes" << "\t"
+				  << "startStopTimes" /*<< "\t"
 				  << "neighbors_" << "\t"
 				  << "real_neighbors_" << "\t"
 				  << "velocity_" << "\t"
-				  << "update_time_"
+				  << "update_time_"*/
 				  << std::endl;
 		  for(std::vector<sent_statistics_line*>::iterator it = sent_statistics_.begin(); it != sent_statistics_.end(); it++){
 				file_op << (*it)->node_addr << "\t"
@@ -125,11 +124,11 @@ namespace autocast
 						<< (*it)->dataUnits_received << "\t"
 						<< (*it)->received_DataUnit_ids << "\t"
 						<< 3600.000000 << "\t"
-						<< "\"0 3600 \"" << "\t"
+						<< "\"0 3600 \"" /*<< "\t"
 						<< (*it)->neighbors_count_ << "\t"
 						<< (*it)->real_neighbors_count_ << "\t"
 						<< (*it)->velocity_ << "\t"
-						<< (*it)->update_time_
+						<< (*it)->update_time_*/
 						<< std::endl;
 				// Delete the previous printed line
 				delete (*it);
@@ -160,7 +159,7 @@ namespace autocast
    // ----------------------------------------------------------------------
    void
 	   AutoCastTask::
-	   process_sent_statistic(const shawn::Node* node, int packet_sent, int byte_sent , int dataUnit_sent, int dataUnit_byte_sent, int packets_received, int dataUnits_received, int received_DataUnit_ids, double neighbors_count, double real_neighbors_count, double velocity, double update_time)
+	   process_sent_statistic(const shawn::Node* node, int packet_sent, int byte_sent , int dataUnit_sent, int dataUnit_byte_sent, int packets_received, int dataUnits_received, int received_DataUnit_ids/*, double neighbors_count, double real_neighbors_count, double velocity, double update_time*/)
 	   throw()
    {
 	   sent_statistics_line * line = new sent_statistics_line();
@@ -172,10 +171,10 @@ namespace autocast
 	   line->packets_received = packets_received;
 	   line->dataUnits_received = dataUnits_received;
 	   line->received_DataUnit_ids = received_DataUnit_ids;
-	   line->neighbors_count_ = neighbors_count;
+	   /*line->neighbors_count_ = neighbors_count;
 	   line->real_neighbors_count_ = real_neighbors_count;
 	   line->velocity_ = velocity;
-	   line->update_time_ = update_time;
+	   line->update_time_ = update_time;*/
 	   sent_statistics_.push_back(line);
    }
 
