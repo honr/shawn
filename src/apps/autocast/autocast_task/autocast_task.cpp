@@ -23,6 +23,7 @@
 #include <string>
 #include <iostream>
 #include <cassert>
+#include <cmath>
 
 namespace autocast
 {
