@@ -29,10 +29,10 @@ namespace autocast {
 																						radius_(radius)
 	{}
 
-	bool DistributionAreaCircle::is_inside(double x, double y) const
+	bool DistributionAreaCircle::is_inside(double x, double y, double offset) const
 	{
 		// Compute distance to center
-		return ( (x-X_)*(x-X_) + (y-Y_)*(y-Y_) <= radius_*radius_ );
+		return ( (x-X_)*(x-X_) + (y-Y_)*(y-Y_) <= (radius_+offset)*(radius_+offset) );
 	}
 
 	DistributionArea* DistributionAreaCircle::copy() const

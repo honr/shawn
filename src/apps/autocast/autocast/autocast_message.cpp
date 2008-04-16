@@ -116,6 +116,16 @@ namespace autocast
    {
 	   return complete_DataUnits_;
    }
+   
+   // ----------------------------------------------------------------------
+   const std::set<unsigned int>& 
+	   AutoCastMessage::
+	   stale_ids() 
+	   const 
+	   throw()
+   {
+		return stale_ids_; 
+   }
    // ----------------------------------------------------------------------
    void 
 	   AutoCastMessage::
@@ -129,9 +139,16 @@ namespace autocast
 	   AutoCastMessage::
 	   insert_complete_DataUnit(const ConstDataUnitHandle& duh)
    {
-	   //std::cerr << "Before complete_DataUnits_.insert(duh);" << std::endl;
 	   complete_DataUnits_.insert(duh);
 	   autoCast_message_size_ += duh->size();
+   }
+   // ----------------------------------------------------------------------
+   void 
+	   AutoCastMessage::
+	   insert_stale_id(unsigned int id)
+   {
+	   stale_ids_.insert(id);
+	   autoCast_message_size_ += 4;
    }
    // ----------------------------------------------------------------------
    int 

@@ -55,9 +55,15 @@ namespace autocast
 	  virtual bool send_to(const ConstDataUnitHandle&, shawn::Processor* creator = NULL) throw();
 	  bool booted() const throw();
 
+<<<<<<< .mine
+   protected:
+		void set_state(const Processor::ProcessorState&) throw();
+
+=======
   protected:
 	void set_state(const Processor::ProcessorState&) throw();
 
+>>>>>>> .r185
    private:
 	  /// An internal data structure to local save ONE DataUnit. This is
 	  /// virtually a "cell" stored in complete_DataUnits_.
@@ -104,6 +110,7 @@ namespace autocast
 				   if(ac_app) duh_ = ac_app->refresh(duh_);
 			   }
 		   }
+
 	   private:
 		   ConstDataUnitHandle duh_;
 		   int unknown_count_;
@@ -115,6 +122,7 @@ namespace autocast
 	   
 	   typedef std::map<int,LocalDataUnit*> DataUnitsMap;
 	   DataUnitsMap complete_DataUnits_;
+	   DataUnitsMap stale_DataUnits_;
 
 	   /// Fetching startup parameters
 	   void fetch_parameters();

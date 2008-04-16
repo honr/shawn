@@ -20,7 +20,7 @@ namespace autocast {
 	{
 	}
 
-	bool DistributionArea::is_inside(double x, double y) const
+	bool DistributionArea::is_inside(double x, double y, double offset) const
 	{
 		return false;
 	}

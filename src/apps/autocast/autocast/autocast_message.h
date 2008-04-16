@@ -49,11 +49,15 @@ namespace autocast
 
 	const std::set<unsigned int>& known_DataUnits() const throw();
 
+	const std::set<unsigned int>& stale_ids() const throw();
+
 	const std::set<ConstDataUnitHandle>& complete_DataUnits() const throw();
 
 	void insert_id(const unsigned int id);
 
 	void insert_complete_DataUnit(const ConstDataUnitHandle& duh);
+
+	void insert_stale_id(const unsigned int id);
 
 	int size() const throw();
 	
@@ -77,6 +81,7 @@ namespace autocast
 		std::set<unsigned int> known_DataUnits_;
 		// This are the complete DataUnits the sender sends
 		std::set<ConstDataUnitHandle> complete_DataUnits_;
+		std::set<unsigned int> stale_ids_;
 		/// The still unused packet type
 		int packet_type_;
 		/// The unique ID

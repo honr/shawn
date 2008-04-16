@@ -30,8 +30,10 @@ namespace autocast {
 																	   Y_(y)
 	{}
 
-	bool DistributionAreaPoint::is_inside(double x, double y) const
+	bool DistributionAreaPoint::is_inside(double x, double y, double offset) const
 	{
+		// Radius
+		if (offset > 0) return ( (x-X_)*(x-X_) + (y-Y_)*(y-Y_) <= offset*offset );
 		// the dots have to be very near to each other
 		return ( EQDOUBLE(x,X_) && EQDOUBLE(y,Y_) );
 	}

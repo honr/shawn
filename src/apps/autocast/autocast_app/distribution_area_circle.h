@@ -32,7 +32,7 @@ namespace autocast {
 		DistributionAreaCircle(double x, double y, double radius);
 
 		/// returns true if a given point is inside the HDCs´ area
-		virtual bool is_inside(double x, double y) const;
+		virtual bool is_inside(double x, double y, double offset=0) const;
 
 		/// returns a pointer to a copy of this object
 		virtual DistributionArea* copy() const;
