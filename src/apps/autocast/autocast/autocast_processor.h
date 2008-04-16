@@ -55,15 +55,9 @@ namespace autocast
 	  virtual bool send_to(const ConstDataUnitHandle&, shawn::Processor* creator = NULL) throw();
 	  bool booted() const throw();
 
-<<<<<<< .mine
    protected:
 		void set_state(const Processor::ProcessorState&) throw();
 
-=======
-  protected:
-	void set_state(const Processor::ProcessorState&) throw();
-
->>>>>>> .r185
    private:
 	  /// An internal data structure to local save ONE DataUnit. This is
 	  /// virtually a "cell" stored in complete_DataUnits_.
