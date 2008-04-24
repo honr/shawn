@@ -117,7 +117,7 @@ namespace shawn
 	protected:
 
 		/// Callback handler for Expat opening tag events. Real handling is delegeated to parse_xml().
-		virtual void handle_start_element(std::string name, shawn::xml::AttList atts) throw(std::runtime_error);
+		virtual void handle_start_element(std::string name, shawn::xml::AttList& atts) throw(std::runtime_error);
 
 		/// Callback handler for Expat closing tag events. Real handling is delegeated to parse_xml().
 		virtual void handle_end_element(std::string name) throw(std::runtime_error);
@@ -126,23 +126,23 @@ namespace shawn
 		/** Creates Nodes in the world (Location and Tags are currently read). Also tags for the shwan::World are
 		* read and attached to the world. Only called if not in skipping mode.
 		*/
-		void parse_xml(std::string name, shawn::xml::AttList atts, bool opening_tag) throw(std::runtime_error);        
+		void parse_xml(std::string name, shawn::xml::AttList& atts, bool opening_tag) throw(std::runtime_error);        
 
 		///Handles &lt;scenario&gt; tags
-		void handle_tag_scenario(shawn::xml::AttList atts, bool opening_tag);        
+		void handle_tag_scenario(shawn::xml::AttList& atts, bool opening_tag);        
 		///Handles &lt;world&gt; tags
-		void handle_tag_world(shawn::xml::AttList atts, bool opening_tag);        
+		void handle_tag_world(shawn::xml::AttList& atts, bool opening_tag);        
 		///Handles &lt;snapshot&gt; tags
-		void handle_tag_snapshot(shawn::xml::AttList atts, bool opening_tag);        
+		void handle_tag_snapshot(shawn::xml::AttList& atts, bool opening_tag);        
 		///Handles &lt;node&gt; tags
-		void handle_tag_node(shawn::xml::AttList atts, bool opening_tag);        
+		void handle_tag_node(shawn::xml::AttList& atts, bool opening_tag);        
 		///Handles &lt;location&gt; tags
-		void handle_tag_location(shawn::xml::AttList atts, bool opening_tag);        
+		void handle_tag_location(shawn::xml::AttList& atts, bool opening_tag);        
 		///Handles &lt;sizehint&gt; tags
-		void handle_tag_sizehint(shawn::xml::AttList atts, bool opening_tag);        
+		void handle_tag_sizehint(shawn::xml::AttList& atts, bool opening_tag);        
 
 		/** Callback handler from SAXSkipReader. Invoked if the target tag in the XML file has been reached. */
-		virtual void skip_target_reached(std::string name, shawn::xml::AttList atts);
+		virtual void skip_target_reached(std::string name, shawn::xml::AttList& atts);
 
 		virtual void add_node(shawn::Node*); //add nodes to world - can be rimplemented in subclasses in order to trigger the addition of nodes
 

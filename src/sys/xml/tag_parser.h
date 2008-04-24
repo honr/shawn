@@ -28,13 +28,13 @@ namespace shawn
 			virtual ~TagParser();
 
 			///
-			virtual void handle_open_tag_tag(shawn::xml::AttList atts, shawn::TagContainer& tc) throw();
+			virtual void handle_open_tag_tag(shawn::xml::AttList& atts, shawn::TagContainer& tc) throw();
 
 			///
-			virtual void handle_close_tag_tag(shawn::xml::AttList atts, shawn::TagContainer& tc) throw();      
+			virtual void handle_close_tag_tag(shawn::xml::AttList& atts, shawn::TagContainer& tc) throw();      
 
 			///
-			virtual void handle_tag_entry(shawn::xml::AttList atts) throw();
+			virtual void handle_tag_entry(shawn::xml::AttList& atts) throw();
 
 			///
 			void set_tag_factory_keeper(TagFactoryKeeper&);

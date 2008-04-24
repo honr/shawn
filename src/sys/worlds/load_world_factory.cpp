@@ -64,7 +64,7 @@ namespace shawn
     // ----------------------------------------------------------------------
     void 
     	LoadWorldFactory::
-    	skip_target_reached(std::string, AttList atts) 
+    	skip_target_reached(std::string, AttList& atts) 
     {
         cerr << "Load World: Snapshot found: " << attribute("id", atts) << endl;
     }
@@ -72,7 +72,7 @@ namespace shawn
     // ----------------------------------------------------------------------
     void 
     	LoadWorldFactory::
-    	handle_start_element(string name, AttList atts) 
+    	handle_start_element(string name, AttList& atts) 
         throw(runtime_error)
     {
         SAXSkipReader::handle_start_element(name, atts);
@@ -88,16 +88,17 @@ namespace shawn
     	throw(runtime_error)
     {
         SAXSkipReader::handle_end_element(name);
+        AttList a;
 
         if( !skipping() )
-            parse_xml(name, AttList(), false);
+            parse_xml(name, a, false);
     }
 
 
     // ----------------------------------------------------------------------
     inline void 
     	LoadWorldFactory::
-    	parse_xml(string name, AttList atts, bool opening_tag) 
+    	parse_xml(string name, AttList& atts, bool opening_tag) 
     	throw(runtime_error) 
     {
         if( parsing_state_ == Done )
@@ -133,7 +134,7 @@ namespace shawn
     // ----------------------------------------------------------------------
     inline void 
         LoadWorldFactory::
-        handle_tag_scenario(AttList atts, bool opening_tag)
+        handle_tag_scenario(AttList& atts, bool opening_tag)
     {
         opening_tag? parsing_state_ = Scenario : parsing_state_ = Done;
     }
@@ -141,7 +142,7 @@ namespace shawn
     // ----------------------------------------------------------------------
     inline void 
         LoadWorldFactory::
-        handle_tag_world(AttList atts, bool opening_tag)    
+        handle_tag_world(AttList& atts, bool opening_tag)    
     {
         opening_tag ? parsing_state_ = World : parsing_state_ = Snapshot;
     }
@@ -149,7 +150,7 @@ namespace shawn
     // ----------------------------------------------------------------------
     inline void 
         LoadWorldFactory::
-        handle_tag_snapshot(AttList atts, bool opening_tag)    
+        handle_tag_snapshot(AttList& atts, bool opening_tag)    
     {
         if (opening_tag) 
             parsing_state_ = Snapshot;
@@ -164,7 +165,7 @@ namespace shawn
     // ----------------------------------------------------------------------
     inline void 
         LoadWorldFactory::
-        handle_tag_node(AttList atts, bool opening_tag)        
+        handle_tag_node(AttList& atts, bool opening_tag)        
     {
         if( opening_tag ) 
         {
@@ -195,7 +196,7 @@ namespace shawn
 
     inline void 
         LoadWorldFactory::
-        handle_tag_location(AttList atts, bool opening_tag)        
+        handle_tag_location(AttList& atts, bool opening_tag)        
     {
         if(!opening_tag)
             return;
@@ -219,7 +220,7 @@ namespace shawn
     // ----------------------------------------------------------------------
     inline void 
         LoadWorldFactory::
-        handle_tag_sizehint(AttList atts, bool opening_tag)       
+        handle_tag_sizehint(AttList& atts, bool opening_tag)       
     {
         if(!opening_tag)
             return;

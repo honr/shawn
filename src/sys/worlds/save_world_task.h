@@ -41,12 +41,12 @@ namespace shawn
 			virtual std::string description( void ) const throw();
 
         protected:
-            virtual bool check_skip_target_reached(std::string name, shawn::xml::AttList atts, bool opening_tag);
-            virtual void skip_target_reached(std::string name, shawn::xml::AttList atts);
+            virtual bool check_skip_target_reached(std::string name, shawn::xml::AttList& atts, bool opening_tag);
+            virtual void skip_target_reached(std::string name, shawn::xml::AttList& atts);
             virtual void clear_skip_target();
             virtual bool skipping();
 
-            virtual void handle_start_element(std::string name, shawn::xml::AttList atts) throw(std::runtime_error);
+            virtual void handle_start_element(std::string name, shawn::xml::AttList& atts) throw(std::runtime_error);
 			virtual void handle_end_element(std::string name) throw(std::runtime_error);
 			virtual void construct_snapshot_id( shawn::SimulationController& ) throw( std::runtime_error );
 

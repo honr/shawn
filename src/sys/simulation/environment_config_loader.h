@@ -44,16 +44,16 @@ namespace shawn
 	protected:
 
 		/// Callback handler for Expat opening tag events. Real handling is delegated to parse_xml().
-		virtual void handle_start_element(std::string name, shawn::xml::AttList atts) throw(std::runtime_error);
+		virtual void handle_start_element(std::string name, shawn::xml::AttList& atts) throw(std::runtime_error);
 
 		/// Callback handler for Expat closing tag events. Real handling is delegated to parse_xml().
 		virtual void handle_end_element(std::string name) throw(std::runtime_error);
 
 		///Keeps the current parsing state and extracts the relevant information from the XML file.
-		void parse_xml(std::string name, shawn::xml::AttList atts, bool opening_tag) throw(std::runtime_error);        
+		void parse_xml(std::string name, shawn::xml::AttList& atts, bool opening_tag) throw(std::runtime_error);        
 
 		///Callback handler from SAXSkipReader. Invoked if the target tag in the XML file has been reached.
-		virtual void skip_target_reached(std::string name, shawn::xml::AttList atts);
+		virtual void skip_target_reached(std::string name, shawn::xml::AttList& atts);
 
 	private:
 		ParsingState parsing_state_;			///< The current parsing state

@@ -33,13 +33,13 @@ namespace shawn
     // ----------------------------------------------------------------------
     void 
     	EnvironmentConfigLoader::
-    	skip_target_reached(string, AttList atts) 
+    	skip_target_reached(string, AttList& atts) 
     {}
 
     // ----------------------------------------------------------------------
     void 
     	EnvironmentConfigLoader::
-    	handle_start_element(string name, AttList atts) 
+    	handle_start_element(string name, AttList& atts) 
         throw(runtime_error)
     {
         SAXSkipReader::handle_start_element(name, atts);
@@ -55,14 +55,15 @@ namespace shawn
     	throw(runtime_error)
     {
         SAXSkipReader::handle_end_element(name);
+        AttList a;
         if( !skipping() )
-            parse_xml(name, AttList(), false);
+            parse_xml(name, a, false);
     }
 
     // ----------------------------------------------------------------------
     inline void 
     	EnvironmentConfigLoader::
-    	parse_xml(string name, AttList atts, bool opening_tag) 
+    	parse_xml(string name, AttList& atts, bool opening_tag) 
     	throw(runtime_error) 
     {
         if( parsing_state_ == Done )

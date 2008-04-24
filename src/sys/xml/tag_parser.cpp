@@ -27,7 +27,7 @@ namespace shawn
 		// ----------------------------------------------------------------------
 		void
 			TagParser::
-			handle_open_tag_tag(AttList atts, TagContainer& tc) 
+			handle_open_tag_tag(AttList& atts, TagContainer& tc) 
 			throw()
 		{
 			string name  = attribute("name", atts);
@@ -66,7 +66,7 @@ namespace shawn
 		// ----------------------------------------------------------------------
 		void
 			TagParser::
-			handle_close_tag_tag(AttList atts, TagContainer& tc) 
+			handle_close_tag_tag(AttList& atts, TagContainer& tc) 
 			throw() 
 		{
 			current_tags_.pop();
@@ -75,7 +75,7 @@ namespace shawn
 		// ----------------------------------------------------------------------
 		void 
 			TagParser::
-			handle_tag_entry(AttList atts)
+			handle_tag_entry(AttList& atts)
 			throw()
 		{
 			string index = attribute("index", atts);

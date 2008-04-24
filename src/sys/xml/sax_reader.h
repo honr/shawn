@@ -8,7 +8,11 @@
 #ifndef __SHAWN_SYS_XML_SAX_READER_H
 #define __SHAWN_SYS_XML_SAX_READER_H
 
-#include <sys/xml/irrxml/irrXML.h>
+extern "C" 
+{
+	#include "sys/xml/expat/expat.h"
+}
+
 #include <stdlib.h>
 #include <set>
 #include <map>
@@ -25,7 +29,7 @@ namespace shawn
 		typedef std::multimap<std::string, std::string> AttList;	
 	
         /// Extracts the value of an attribute. Returns default_val if not existing
-        std::string attribute(std::string name, AttList atts, std::string default_val = "");
+        std::string attribute(std::string name, AttList& atts, std::string default_val = "");
     
 		
         // -------------------------------------------------------------------
@@ -73,7 +77,7 @@ namespace shawn
         protected:
 
             /// Empty stub
-            virtual void handle_start_element(std::string name, AttList atts) throw(std::runtime_error);
+            virtual void handle_start_element(std::string name, AttList& atts) throw(std::runtime_error);
             /// Empty stub
             virtual void handle_end_element(std::string name) throw(std::runtime_error);
 
@@ -86,8 +90,11 @@ namespace shawn
             void open_file() throw(std::runtime_error);
 
             std::string document_uri_;      ///< The xml file's uri
-            irr::io::IrrXMLReader* irr_;	///< Instance of the IrrXML parser
-            std::deque<std::string> element_stack_; 
+            std::ifstream* is_;             ///< The stream to read from
+            XML_Parser parser;              ///< The expat sax parser instance
+
+            friend void saxreader_start(void *userdata, const char *name, const char **atts);
+            friend void saxreader_end(void *userdata, const char *name);
         };
 
 
@@ -108,7 +115,7 @@ namespace shawn
             ///@{
 
 	            ///Checks if the skip target has been reached and calls skip_target_reached if yes.
-	            virtual void handle_start_element(std::string name, AttList atts) throw(std::runtime_error);
+	            virtual void handle_start_element(std::string name, AttList& atts) throw(std::runtime_error);
 	
 	            //Checks if the skip target has been reached and calls skip_target_reached if yes.
 	            virtual void handle_end_element(std::string name) throw(std::runtime_error);
@@ -125,10 +132,10 @@ namespace shawn
 	            virtual bool skipping() = 0;
 	            
 	            ///Called by SAXSkipReader handle_(start|end)_element to check whether a skip target has been reached
-	            virtual bool check_skip_target_reached(std::string name, AttList atts, bool opening_tag) = 0;
+	            virtual bool check_skip_target_reached(std::string name, AttList& atts, bool opening_tag) = 0;
 	            
 	            ///Called by the SAXSkipReader once check_skip_target_reached returns true
-	            virtual void skip_target_reached(std::string name, AttList atts) = 0;
+	            virtual void skip_target_reached(std::string name, AttList& atts) = 0;
 
             ///@}
 
@@ -160,13 +167,13 @@ namespace shawn
         protected:
 
             ///Called by the SAXSimpleSkipReader once the desired tag is encounterd.
-            virtual void skip_target_reached(std::string, AttList atts) = 0;
+            virtual void skip_target_reached(std::string, AttList& atts) = 0;
 
             ///@name Skipping
             ///@{
 
             ///Returns true if the skip target set by set_skip_target and set_skip_target_add_attr has been reached
-            virtual bool check_skip_target_reached(string name, AttList atts, bool opening_tag);
+            virtual bool check_skip_target_reached(string name, AttList& atts, bool opening_tag);
             ///Clears the skip target
             virtual void clear_skip_target();
             ///Returns whether we are in skipping mode

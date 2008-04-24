@@ -59,10 +59,10 @@ namespace shawn
 
         protected:
         	
-			virtual void start_element(std::string name, AttList atts) throw(std::runtime_error) = 0;
+			virtual void start_element(std::string name, AttList& atts) throw(std::runtime_error) = 0;
 			virtual void end_element(std::string name) throw(std::runtime_error) = 0;
 
-            virtual void handle_start_element(std::string name, AttList atts) throw(std::runtime_error);
+            virtual void handle_start_element(std::string name, AttList& atts) throw(std::runtime_error);
             virtual void handle_end_element(std::string name) throw(std::runtime_error);
 		
 		private:

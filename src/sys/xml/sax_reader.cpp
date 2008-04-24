@@ -14,17 +14,36 @@
 #include <sstream>
 
 using namespace std;
-using namespace irr;
-using namespace irr::io;
 
 namespace shawn
 {
 	namespace xml
 	{
 
+		// ----------------------------------------------------------------------
+	    /// Expat C-style callback funcion
+		void XMLCALL saxreader_start(void *userdata, const char *name, const char **atts)
+		{
+			SAXReader* ptr = (SAXReader*) userdata;
+			
+			AttList a;   
+			for(; *atts; atts += 2)
+				a.insert( pair<string, string>( atts[0], atts[1] ) );
+			
+			ptr->handle_start_element(name, a);
+		}
+	
+		// ----------------------------------------------------------------------
+	    /// Expat C-style callback funcion
+		void XMLCALL saxreader_end(void *userdata, const char *name)
+		{
+			SAXReader* ptr = (SAXReader*) userdata;
+			ptr->handle_end_element(name);
+		}
+	
 	    // ----------------------------------------------------------------------
 	    std::string 
-	        attribute(string name, AttList atts, std::string default_val /* = "" */)
+	        attribute(string name, AttList& atts, std::string default_val /* = "" */)
 	    {
 	    	for(AttList::iterator it = atts.begin(), end = atts.end(); it!=end; ++it)
 	    		if( it->first == name )
@@ -41,7 +60,7 @@ namespace shawn
         SAXReader::
             SAXReader() 
             : document_uri_(""), 
-              irr_(NULL), 
+              is_(NULL), 
               stop_flag_(false)
         {}
 
@@ -77,9 +96,10 @@ namespace shawn
             throw() 
         {
             //Destroy the parser if existing
-            if( irr_ ) {
-                delete irr_;
-                irr_ = NULL;
+            if( is_ ) 
+            {
+            	delete is_;
+                is_ = NULL;
             }
 
             stop_flag_ = false;
@@ -91,15 +111,17 @@ namespace shawn
             open_file() 
             throw(std::runtime_error) 
         {
-        	//Create a new parser
         	assert( document_uri_.c_str() != NULL );
-        	ifstream f(document_uri_.c_str());
-        	irr_ = createIrrXMLReader( document_uri_.c_str() );
-        	if(!f || !irr_)
-        	{
-				std::cerr << "SAXReader: Unable to read file ("<< document_uri_.c_str() << ")"<< std::endl;
-				throw std::runtime_error("SAXReader: Unable to read file");
-        	}
+
+			is_ = new std::ifstream();
+			is_->open(document_uri_.c_str(), std::ios::in);
+			
+			if( ! (*is_) ) 
+			{
+				std::cerr << "SAXReader: Unable to open file ("<< document_uri_.c_str() <<
+					") for reading: " << strerror(errno) << std::endl;
+				throw std::runtime_error("Unable to open XML file");
+			}
         }
 
 		// ----------------------------------------------------------------------
@@ -108,71 +130,29 @@ namespace shawn
             parse() 
             throw(std::runtime_error) 
         {
+            char buf[16384];
+            int len;
+            
             //Open the file
             open_file();
 
+            //Create the SAX parser and register the C-Style handlers which will call back on this object instace
+			parser = XML_ParserCreate(NULL);
+			XML_SetUserData(parser, (void*)this);
+			XML_SetElementHandler(parser, saxreader_start, saxreader_end);
+			
             //Read the file until the end of file
-            while( irr_ && irr_->read() && !stop_flag_ ) 
+            while( !is_->eof() && !stop_flag_ ) 
             {
-            	
-            	switch( irr_->getNodeType()) 
-            	{
-            	//No xml node. This is usually the node if you did not read anything yet
-            	case EXN_NONE: 
-            		break;
-            		
-                //A xml element, like <foo>. 
-            	case EXN_ELEMENT:
-            		{
-            			AttList atts;            		
-	            		for(int i = 0 ; i < irr_->getAttributeCount(); ++i)
-	            			atts.insert( pair<string, string>(string(irr_->getAttributeName(i)), string(irr_->getAttributeValue(i))));
-	            		
-
-	            		element_stack_.push_front(irr_->getNodeName());
-	                    handle_start_element(irr_->getNodeName(), atts);
-	                    if( !irr_->isEmptyElement() )
-	                    	break; //Do not break on an empty element, e.g. <foo/> 
-            		}
-            		
-                //End of an xml element, like </foo>. 
-            	case EXN_ELEMENT_END:
-                    handle_end_element(irr_->getNodeName());
-
-                    if(element_stack_.front() != irr_->getNodeName() ) 
-                    {
-                    	ostringstream os;
-                    	os << 	"Invalid XML, expected closing tag for '" << element_stack_.front() << 
-                    			"', but got '" << irr_->getNodeName() << "'" << endl;
-                    	os << "Current XML stack: " << endl;
-                    	
-                    	for(deque<string>::reverse_iterator it = element_stack_.rbegin(), end = element_stack_.rend(); it!=end; ++it)
-                    		os << "\t" << *it << endl;
-                    	
-                    	throw std::runtime_error(os.str());
-                    }
-            		element_stack_.pop_front();
-            		if (element_stack_.size() == 0)
-            			interrupt();
-            		
-            		break;
-            		
-                //Text within a xml element: <foo> this is the text. </foo>. 
-            	case EXN_TEXT:
-            		break;
-            		
-                //An xml comment like <!-- I am a comment --> or a DTD definition. 
-            	case EXN_COMMENT:
-            		break;
-            		
-                //An xml cdata section like <![CDATA[ this is some CDATA ]]>. 
-            	case EXN_CDATA:
-            		break;
-            		
-                //Unknown element. 
-            	case EXN_UNKNOWN:
-            		break;
-            	}
+            	is_->read( buf, sizeof(buf) );
+				len = is_->gcount();
+				
+				if (XML_Parse(parser, buf, len, is_->eof()) == XML_STATUS_ERROR)
+				{
+					std::cerr << XML_ErrorString(XML_GetErrorCode(parser)) << "at line " << XML_GetCurrentLineNumber(parser) << std::endl;
+				    reset();
+				    throw std::runtime_error("Error in parsing XML input");
+				}
             }
 
             //Done -> Close the file and free all associated memory
@@ -191,7 +171,7 @@ namespace shawn
 		// ----------------------------------------------------------------------
         void 
         	SAXReader::
-        	handle_start_element(std::string name, AttList atts) 
+        	handle_start_element(std::string name, AttList& atts) 
             throw(std::runtime_error)
         {}
 
@@ -220,7 +200,7 @@ namespace shawn
         /// 
         void 
         	SAXSkipReader::
-        	handle_start_element(std::string name, AttList atts) 
+        	handle_start_element(std::string name, AttList& atts) 
             throw(std::runtime_error)
         {
             SAXReader::handle_start_element(name, atts);
@@ -299,7 +279,7 @@ namespace shawn
 		// ----------------------------------------------------------------------
         bool 
         	SAXSimpleSkipReader::
-            check_skip_target_reached(string name, AttList atts, bool opening_tag) 
+            check_skip_target_reached(string name, AttList& atts, bool opening_tag) 
         {
             string tmp;
 

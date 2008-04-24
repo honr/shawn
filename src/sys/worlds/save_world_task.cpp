@@ -162,7 +162,7 @@ namespace shawn
     */
     void 
     	SimulationTaskSaveWorld::
-    	skip_target_reached(string name, AttList atts) 
+    	skip_target_reached(string name, AttList& atts) 
     {
         //Check if the next snapshot time is greater than our desired insert time
         if( name == "snapshot" )
@@ -189,7 +189,7 @@ namespace shawn
     */
     bool 
     	SimulationTaskSaveWorld::
-    	check_skip_target_reached(string name, AttList, bool opening_tag) 
+    	check_skip_target_reached(string name, AttList&, bool opening_tag) 
     {
         //Check if we are past the insertion point
         if(insert_done_)
@@ -236,7 +236,7 @@ namespace shawn
     */
     void 
     	SimulationTaskSaveWorld::
-    	handle_start_element(string name, AttList atts) 
+    	handle_start_element(string name, AttList& atts) 
         throw(runtime_error)
     {
         SAXSkipReader::handle_start_element(name, atts);
