@@ -108,7 +108,7 @@ namespace xmlreading
 	protected:
 		///@name sax parser methods
 		/// Callback handler for Expat opening tag events. Real handling is delegated to parse().
-		void start_element(std::string, shawn::xml::AttList) throw(std::runtime_error);
+		void start_element(std::string, shawn::xml::AttList&) throw(std::runtime_error);
 		///
 		/// Callback handler for Expat closing tag events. Real handling is delegated to parse().
 		void end_element(std::string) throw(std::runtime_error);

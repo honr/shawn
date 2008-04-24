@@ -38,7 +38,7 @@ namespace xmlreading
 	// ----------------------------------------------------------------------
 	void 
 		XMLReadingParser::
-		start_element(std::string name, AttList attList) 
+		start_element(std::string name, AttList& attList) 
 		throw(runtime_error)
 	{
 		if(!reading_initialized_)

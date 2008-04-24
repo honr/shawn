@@ -114,7 +114,7 @@ namespace reading
 	//--------------------------------------------------------------
 	void 
 		XMLReadingParserTask::
-		start_element(const std::string name, shawn::xml::AttList attList) 
+		start_element(const std::string name, shawn::xml::AttList& attList) 
 		throw(std::runtime_error)
 	{
 		TRACE("XMLREADINGPARSERTASK: parsing reading tag");

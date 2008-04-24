@@ -102,18 +102,18 @@ namespace topology
           * @return Polygon type
           * @throws std::runtime_error If the polygon type is invalid
           */
-        PolygonType polygon_type(shawn::xml::AttList atts)  throw(std::runtime_error);
+        PolygonType polygon_type(shawn::xml::AttList& atts)  throw(std::runtime_error);
 
         /** Callback handler for opening xml tags
           */
-        virtual void handle_start_element(std::string name, shawn::xml::AttList atts) throw(std::runtime_error);
+        virtual void handle_start_element(std::string name, shawn::xml::AttList& atts) throw(std::runtime_error);
 
         /** Callback handler for closing xml tags
           */
         virtual void handle_end_element(std::string name) throw(std::runtime_error);
         
         /** */
-       Vec to_point(shawn::xml::AttList atts) const throw(std::runtime_error);
+       Vec to_point(shawn::xml::AttList& atts) const throw(std::runtime_error);
     };
 
 }

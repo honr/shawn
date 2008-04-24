@@ -78,7 +78,7 @@ namespace reading
 	//--------------------------------------------------------------
 	void 
 		XMLNodeReadingParserTask::
-		start_element(std::string name, shawn::xml::AttList attList) 
+		start_element(std::string name, shawn::xml::AttList& attList) 
 		throw(std::runtime_error)
 	{
 		attList_ = attList;

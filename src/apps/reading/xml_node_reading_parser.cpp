@@ -30,7 +30,7 @@ namespace xmlreading
 		delete settings_;
 	}
 	// ----------------------------------------------------------------------
-	void XMLNodeReadingParser::start_element(std::string name, AttList attList) throw(runtime_error)
+	void XMLNodeReadingParser::start_element(std::string name, AttList& attList) throw(runtime_error)
 	{
 		TRACE_PARSER("XML_NODE_READING_PARSER");
 		attList_ = attList;

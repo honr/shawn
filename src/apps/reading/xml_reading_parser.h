@@ -67,7 +67,7 @@ namespace xmlreading
 		xmlreading::Readings* parserreadings_;
 		xmlreading::XMLReadingBase* xmlreadingbase_;
 		shawn::EventScheduler::EventHandle event_handle_;
-		//shawn::xml::SAXInterruptibleReader::AttList attList_;
+
 	public:
 		///@name construction/destruction
         	///@{
@@ -97,7 +97,7 @@ namespace xmlreading
 
 	protected:
 		/// Callback handler for Expat opening tag events. Real handling is delegated to parse().
-		virtual void start_element(std::string, shawn::xml::AttList) throw(std::runtime_error);
+		virtual void start_element(std::string, shawn::xml::AttList&) throw(std::runtime_error);
 		
 		/// Callback handler for Expat closing tag events. Real handling is delegated to parse().
 		virtual void end_element(std::string name) throw(std::runtime_error);

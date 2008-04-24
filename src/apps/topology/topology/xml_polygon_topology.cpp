@@ -78,7 +78,7 @@ namespace topology
 	// ----------------------------------------------------------------------
 	void
 		XMLPolygonTopology::
-		handle_start_element(string name, AttList atts) 
+		handle_start_element(string name, AttList& atts) 
 		throw(std::runtime_error)
 	{
 		if( parsing_state_ == UnknownState && "topology" == name )
@@ -154,7 +154,8 @@ namespace topology
 		}
 		else if( parsing_state_ == TagState && "tag" == name )
 		{
-			handle_close_tag_tag(AttList(), tags_w(*polygon_));
+			AttList a;
+			handle_close_tag_tag(a, tags_w(*polygon_));
 			parsing_state_ = PolygonState;
 			tag_count_++;
 		}
@@ -164,7 +165,7 @@ namespace topology
 	// ----------------------------------------------------------------------
 	Vec
 		XMLPolygonTopology::
-		to_point(AttList atts) 
+		to_point(AttList& atts) 
 		const throw(std::runtime_error)
 	{
 		double x = conv_string_to_double( attribute("x", atts, "0.0") );
@@ -175,7 +176,7 @@ namespace topology
 	// ----------------------------------------------------------------------
 	XMLPolygonTopology::PolygonType
 		XMLPolygonTopology::
-		polygon_type(AttList atts) 
+		polygon_type(AttList& atts) 
 		throw(runtime_error)
 	{       
 		if( attribute("type", atts, "unknown") ==  "outer")
