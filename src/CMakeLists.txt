@@ -36,7 +36,7 @@
 	file( GLOB_RECURSE shawnSourcesFrontendCPP frontend/*.cpp )
 	file( GLOB_RECURSE shawnSourcesFrontendH frontend/*.h )
 	
-	file( GLOB_RECURSE shawnSourcesSysCPP sys/*.cpp )
+	file( GLOB_RECURSE shawnSourcesSysCPP sys/*.cpp sys/*.c )
 	file( GLOB_RECURSE shawnSourcesSysH sys/*.h )
 	
 	#file( GLOB_RECURSE shawnSourcesConfig shawn_config.h )
@@ -186,6 +186,11 @@
 	# that should be excluded, when an App is used by another program
 
 	add_definitions( -DSHAWN )
+
+	# Add flags for expat
+	
+	add_definitions( -DHAVE_EXPAT_CONFIG_H )
+	add_definitions( -DXML_STATIC )
 
 
 #=============
