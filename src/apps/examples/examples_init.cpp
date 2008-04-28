@@ -10,6 +10,7 @@
 #ifdef ENABLE_EXAMPLES
 
 #include "apps/examples/simulationtask/exampletask.h"
+#include "apps/examples/simulationtask/connectivity_task.h"
 #include "apps/examples/processor/helloworld_processor_factory.h"
 #include "apps/examples/processor/helloworld_random_processor_factory.h"
 #include "apps/examples/tag/tag_test.h"
@@ -22,6 +23,7 @@ extern "C" void init_examples( shawn::SimulationController& sc )
 	std::cout << "Initialising examples" << std::endl;
 	
 	sc.simulation_task_keeper_w().add( new exampletask::ExampleTask );
+	sc.simulation_task_keeper_w().add( new examples::ConnectivityTask );
 	
 	helloworld::HelloworldProcessorFactory::register_factory(sc);
 	helloworld::HelloworldRandomProcessorFactory::register_factory(sc);
