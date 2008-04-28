@@ -19,6 +19,7 @@ extern "C"
 #include <deque>
 #include <stdexcept>
 #include <string>
+#include <sys/xml/xml_obj.h>
 
 using namespace std;
 
@@ -62,8 +63,14 @@ namespace shawn
             * After parsing is complete, reset() is invoked
             */
             void parse() throw(std::runtime_error);
+            
+            //
+            
+            void parse_Object(XMLObj * xml_obj) throw(std::runtime_error);
 
-			virtual void parsing_done() throw();
+            //
+            
+            virtual void parsing_done() throw();
 
             /// Reset the entire parsing state and close the current file.
             virtual void reset() throw();

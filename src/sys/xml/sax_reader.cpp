@@ -160,6 +160,31 @@ namespace shawn
             reset();
 
         }
+        
+        
+        void SAXReader::parse_Object(XMLObj * flegsens_xml_obj) throw(std::runtime_error) {
+            char buf[16384];
+            int len;
+            //Create the SAX parser and register the C-Style handlers which will call back on this object instace
+			parser = XML_ParserCreate(NULL);
+			XML_SetUserData(parser, (void*)this);
+			XML_SetElementHandler(parser, saxreader_start, saxreader_end);
+		
+            while( !flegsens_xml_obj->eof() && !stop_flag_ ) {
+            	flegsens_xml_obj->read( buf, sizeof(buf) );
+				len = flegsens_xml_obj->gcount();
+				
+				if (XML_Parse(parser, buf, len, flegsens_xml_obj->eof()) == XML_STATUS_ERROR)
+				{
+					std::cerr << XML_ErrorString(XML_GetErrorCode(parser)) << "at line " << XML_GetCurrentLineNumber(parser) << std::endl;
+				    reset();
+				    throw std::runtime_error("Error in parsing XML input");
+				}
+            }
+            //Done -> Close the file and free all associated memory
+			parsing_done();
+            reset();
+        }
 
 		// ----------------------------------------------------------------------
 		void 

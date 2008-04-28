@@ -15,6 +15,7 @@
 #include "sys/worlds/rect_world_factory.h"
 #include "sys/worlds/cuboid_world_factory.h"
 #include "sys/worlds/load_world_factory.h"
+#include "sys/worlds/flegsens_world_factory.h"
 #include "sys/util/defutils.h"
 #include "sys/misc/tokenize.h"
 
@@ -30,6 +31,8 @@ namespace shawn
         sc.simulation_task_keeper_w().add( new SimulationTaskRectWorldFactory );
         sc.simulation_task_keeper_w().add( new SimulationTaskCuboidWorldFactory );
         sc.simulation_task_keeper_w().add( new SimulationTaskLoadWorldFactory );
+        sc.simulation_task_keeper_w().add( new SimulationTaskFlegsensWorldFactory );
+        
     }
 
 
@@ -190,13 +193,79 @@ namespace shawn
     }
 
 
+    
 
 
+    
+    
+    
+    
 
+    SimulationTaskFlegsensWorldFactory::
+    SimulationTaskFlegsensWorldFactory()
+     {}
+     // ----------------------------------------------------------------------
+    SimulationTaskFlegsensWorldFactory::
+         ~SimulationTaskFlegsensWorldFactory()
+     {}
+     // ----------------------------------------------------------------------
+     std::string
+     SimulationTaskFlegsensWorldFactory::
+         name( void )
+         const throw()
+     {
+         return "flegsens_world";
+     }
+     // ----------------------------------------------------------------------
+     std::string
+     SimulationTaskFlegsensWorldFactory::
+         description( void )
+         const throw()
+     {
+         return "flegsens world creator";
+     }
+     // ----------------------------------------------------------------------
+     ProcessorWorldFactory*
+     SimulationTaskFlegsensWorldFactory::
+         create_factory( SimulationController& sc )
+         throw( std::runtime_error )
+     {
+    	 FlegsensWorldFactory* cwf = new FlegsensWorldFactory;
 
+    	 cwf->set_parameters(
+    			 	sc.environment().required_int_param("x_count"),
+    			 	sc.environment().required_int_param("y_count"),
+    	            sc.environment().required_double_param("x_dist"),
+    	            sc.environment().required_double_param("y_dist"),
+    	            sc.environment().required_double_param("x_off"),
+    	            sc.environment().required_int_param("gps_row1"),
+    	            sc.environment().required_int_param("gps_row1_interval"),
+    	            sc.environment().required_int_param("gps_row1_offset"),
+    	            sc.environment().required_int_param("gps_row2"),
+    	            sc.environment().required_int_param("gps_row2_interval"),
+    	            sc.environment().required_int_param("gps_row2_offset"));
+    	 
+         return cwf;
+     }
 
+     void
+     SimulationTaskFlegsensWorldFactory::
+         set_node_count( SimulationController&,
+         ProcessorWorldFactory& )
+         throw( std::runtime_error )
+     {
+         // nothing -- FlegSens needs no count (see xml)
+     }
 
-
+     
+     
+     
+     
+     
+     
+     
+     
+     
 
     SimulationTaskLoadWorldFactory::
         SimulationTaskLoadWorldFactory()

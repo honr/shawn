@@ -79,12 +79,33 @@ namespace shawn
          throw( std::runtime_error );
    };
 
+   
+   
+   
+   
+   class SimulationTaskFlegsensWorldFactory
+         : public SimulationTaskProcessorWorldFactory
+      {
+      public:
+    	  SimulationTaskFlegsensWorldFactory();
+         virtual ~SimulationTaskFlegsensWorldFactory();
+
+         virtual std::string name( void ) const throw();
+         virtual std::string description( void ) const throw();
+
+
+      protected:
+         virtual ProcessorWorldFactory* create_factory( SimulationController& )
+            throw( std::runtime_error );
+         virtual void set_node_count( SimulationController&,
+                                            ProcessorWorldFactory& ) throw( std::runtime_error );
+      };
 
 
 
 
 
-   class SimulationTaskLoadWorldFactory
+class SimulationTaskLoadWorldFactory
       : public SimulationTaskProcessorWorldFactory
    {
    public:
