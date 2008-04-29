@@ -9,7 +9,7 @@
 #ifndef __SHAWN_APPS_MOTION_EVENT_TASK_MOTION_EVENT_TASK_INIT_H
 #define __SHAWN_APPS_MOTION_EVENT_TASK_MOTION_EVENT_TASK_INIT_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 
 #ifdef ENABLE_MOTIONEVENTTASK
 

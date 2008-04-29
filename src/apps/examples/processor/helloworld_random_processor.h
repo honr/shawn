@@ -7,7 +7,7 @@
  ************************************************************************/
 #ifndef __SHAWN_APPS_EXAMPLES_HELLOWORLD_RANDOM_PROCESSOR_H__
 #define __SHAWN_APPS_EXAMPLES_HELLOWORLD_RANDOM_PROCESSOR_H__
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_EXAMPLES
 
 #include "apps/examples/processor/helloworld_processor.h"

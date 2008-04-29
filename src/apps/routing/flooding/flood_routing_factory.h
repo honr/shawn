@@ -9,7 +9,7 @@
 #ifndef __SHAWN_APPS_ROUTING_FLOOD_ROUTING_FACTORY_H
 #define __SHAWN_APPS_ROUTING_FLOOD_ROUTING_FACTORY_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_ROUTING
 
 #include "apps/routing/routing.h"

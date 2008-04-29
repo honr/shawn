@@ -7,7 +7,7 @@
  ************************************************************************/
 #ifndef __SHAWN_APPS_TOPOLOGY_DEFAULT_NODE_GEN_H
 #define __SHAWN_APPS_TOPOLOGY_DEFAULT_NODE_GEN_H
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
 #include "apps/topology/node_gen/node_gen.h"

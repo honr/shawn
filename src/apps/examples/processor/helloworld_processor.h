@@ -7,7 +7,7 @@
  ************************************************************************/
 #ifndef __SHAWN_APPS_EXAMPLES_PROCESSOR_PROCESSOR_H
 #define __SHAWN_APPS_EXAMPLES_PROCESSOR_PROCESSOR_H
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_EXAMPLES
 
 #include "sys/processor.h"

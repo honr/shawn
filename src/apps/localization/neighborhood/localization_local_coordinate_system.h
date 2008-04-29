@@ -8,7 +8,7 @@
 #ifndef __SHAWN_APPS_LOCALIZATION_NEIGHBORHOOD_LOCAL_COORDINATE_SYSTEM_H
 #define __SHAWN_APPS_LOCALIZATION_NEIGHBORHOOD_LOCAL_COORDINATE_SYSTEM_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_LOCALIZATION
 
 #include "sys/node.h"

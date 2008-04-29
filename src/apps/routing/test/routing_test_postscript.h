@@ -7,7 +7,7 @@
 ************************************************************************/
 #ifndef __SHAWN_APPS_ROUTING_TEST_ROUTING_TEST_POSTSCRIPT_H
 #define __SHAWN_APPS_ROUTING_TEST_ROUTING_TEST_POSTSCRIPT_H
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_ROUTING
 
 #include "sys/simulation/simulation_task.h"

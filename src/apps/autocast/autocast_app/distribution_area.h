@@ -13,7 +13,7 @@
 #ifndef distributionarea_h
 #define distributionarea_h
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_AUTOCAST
 
 namespace autocast {

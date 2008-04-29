@@ -7,7 +7,7 @@
  ************************************************************************/
 #ifndef __SHAWN_APPS_XML_NODE_READING_PARSER_H
 #define __SHAWN_APPS_XML_NODE_READING_PARSER_H
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef	ENABLE_READING
 
 #ifndef TRACE_PARSER

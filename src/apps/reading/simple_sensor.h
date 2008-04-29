@@ -9,7 +9,7 @@
 #ifndef __SHAWN_APPS_SIMPLE_SENSOR_H
 #define __SHAWN_APPS_SIMPLE_SENSOR_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef	ENABLE_READING
 
 #include "apps/reading/sensor.h"

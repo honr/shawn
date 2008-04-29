@@ -9,7 +9,7 @@
 #ifndef __SHAWN_APPS_TOPOLOGY_CONSTANT_ELEVATION_TASK_H
 #define __SHAWN_APPS_TOPOLOGY_CONSTANT_ELEVATION_TASK_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
 #include "sys/simulation/simulation_controller.h"

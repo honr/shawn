@@ -8,7 +8,7 @@
 #ifndef __SHAWN_APPS_LOCALIZATION_PROCESSOR_H
 #define __SHAWN_APPS_LOCALIZATION_PROCESSOR_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_LOCALIZATION
 
 #include "apps/localization/neighborhood/localization_neighbor_info.h"

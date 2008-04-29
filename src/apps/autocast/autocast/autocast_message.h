@@ -14,7 +14,7 @@
 #ifndef __SHAWN_PROTO_AUTOCAST_MESSAGE_H
 #define __SHAWN_PROTO_AUTOCAST_MESSAGE_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_AUTOCAST
 
 #include <set>

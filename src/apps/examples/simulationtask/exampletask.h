@@ -7,7 +7,7 @@
  ************************************************************************/
 #ifndef __SHAWN_APPS_EXAMPLETASK_H
 #define __SHAWN_APPS_EXAMPLETASK_H
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_EXAMPLES
 
 #include "sys/simulation/simulation_controller.h"

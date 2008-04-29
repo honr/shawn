@@ -8,7 +8,7 @@
 #ifndef __SHAWN_PROTO_TRACINODEMOVEMENTCREATOR_H
 #define __SHAWN_PROTO_TRACINODEMOVEMENTCREATOR_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_TRACICLIENT
 #include "sys/processor.h"
 #include "traci_processor.h"

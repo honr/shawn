@@ -1,7 +1,7 @@
 #ifndef AUTOCAST_TEST_DATAUNIT
 #define AUTOCAST_TEST_DATAUNIT
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_AUTOCAST
 #include "dataunit.h"
 

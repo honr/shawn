@@ -7,7 +7,7 @@
  ************************************************************************/
 #ifndef __SHAWN_APPS_TOPOLOGY_NODE_GEN_KEEPER_H
 #define __SHAWN_APPS_TOPOLOGY_NODE_GEN_KEEPER_H
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
 #include "sys/util/handle_keeper.h"

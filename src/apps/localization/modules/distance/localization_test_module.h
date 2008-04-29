@@ -8,7 +8,7 @@
 #ifndef __SHAWN_APPS_LOCALIZATION_MODULES_DISTANCE_TEST_MODULE_
 #define __SHAWN_APPS_LOCALIZATION_MODULES_DISTANCE_TEST_MODULE_
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_LOCALIZATION
 
 #include "apps/localization/modules/localization_module.h"

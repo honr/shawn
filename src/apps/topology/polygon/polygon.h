@@ -9,7 +9,7 @@
 #ifndef POLYGON_H_
 #define POLYGON_H_
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
 #include "sys/misc/box.h"

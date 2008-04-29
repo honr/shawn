@@ -9,7 +9,7 @@
 #ifndef __SHAWN_APPS_XML_NODE_SENSOR_BASE_H
 #define __SHAWN_APPS_XML_NODE_SENSOR_BASE_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef	ENABLE_READING
 
 //#define MAX_DOUBLE 1E+300 	// Definition for infinite double value

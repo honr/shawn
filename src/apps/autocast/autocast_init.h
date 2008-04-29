@@ -14,7 +14,7 @@
 #ifndef __SHAWN_LEGACYAPPS_AUTOCAST_INIT_H
 #define __SHAWN_LEGACYAPPS_AUTOCAST_INIT_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_AUTOCAST
 
 namespace shawn

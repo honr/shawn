@@ -9,7 +9,7 @@
 #ifndef __SHAWN_APPS_ROUTING_GEO_TEST_GEO_OBSERVER_H
 #define __SHAWN_APPS_ROUTING_GEO_TEST_GEO_OBSERVER_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_ROUTING
 
 #include "apps/routing/geo/geo_routing.h"

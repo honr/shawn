@@ -9,7 +9,7 @@
 #ifndef __SHAWN_APPS_VALUE_COLLECTION_H
 #define __SHAWN_APPS_VALUE_COLLECTION_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_DISTEST
 /*
 #include "sys/simulation/simulation_controller.h"

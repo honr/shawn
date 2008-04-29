@@ -7,7 +7,7 @@
  ************************************************************************/
 #ifndef _SHAWN_APPS_TOPOLOGY_TOPOLOGY_TOPOLOGY_INIT_H
 #define _SHAWN_APPS_TOPOLOGY_TOPOLOGY_TOPOLOGY_INIT_H
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
 namespace shawn

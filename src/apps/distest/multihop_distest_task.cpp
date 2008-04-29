@@ -6,7 +6,7 @@
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_DISTEST
 
 #include "apps/distest/multihop_distest_task.h"

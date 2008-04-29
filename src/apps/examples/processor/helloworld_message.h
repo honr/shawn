@@ -7,7 +7,7 @@
  ************************************************************************/
 #ifndef __SHAWN_EXAMPLES_PROCESSOR_HELLOWORLD_MESSAGE_H
 #define __SHAWN_EXAMPLES_PROCESSOR_HELLOWORLD_MESSAGE_H
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_EXAMPLES
 
 #include "sys/message.h"

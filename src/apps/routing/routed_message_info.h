@@ -9,7 +9,7 @@
 #ifndef __SHAWN_SYS_ROUTING_ROUTED_MESSAGE_INFO_H
 #define __SHAWN_SYS_ROUTING_ROUTED_MESSAGE_INFO_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_ROUTING
 
 #include "sys/message.h"

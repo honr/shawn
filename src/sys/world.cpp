@@ -23,7 +23,7 @@
 #include "sys/processors/processor_factory.h"
 #include "apps/reading/reading_keeper.h"
 #include "sys/util/handle_keeper.h"
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 
 using namespace std;
 

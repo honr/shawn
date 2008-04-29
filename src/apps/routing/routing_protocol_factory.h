@@ -9,7 +9,7 @@
 #ifndef __SHAWN_APPS_ROUTING_PROTOCOL_FACTORY_INIT_H
 #define __SHAWN_APPS_ROUTING_PROTOCOL_FACTORY_INIT_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_ROUTING
 
 #include "sys/simulation/simulation_controller.h"

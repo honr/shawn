@@ -8,7 +8,7 @@
 #ifndef __SHAWN_APPS_LOCALIZATION_MODULE_H
 #define __SHAWN_APPS_LOCALIZATION_MODULE_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_LOCALIZATION
 
 #include "sys/message.h"

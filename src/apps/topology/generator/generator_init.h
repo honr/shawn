@@ -8,7 +8,7 @@
 #ifndef _SHAWN_APPS_TOPOLOGY_GENERATOR_GENERATOR_INIT_H
 #define _SHAWN_APPS_TOPOLOGY_GENERATOR_GENERATOR_INIT_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
 namespace shawn

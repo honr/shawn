@@ -11,7 +11,7 @@
 
 #ifdef SHAWN
      #include <shawn_config.h>
-     #include "../buildfiles/_apps_enable_cmake.h"
+     #include "_apps_enable_cmake.h"
      #ifdef ENABLE_TCPIP
             #define BUILD_TCPIP
      #endif

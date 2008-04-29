@@ -9,7 +9,7 @@
 #ifndef  __SHAWN_APPS_XML_NODE_READINGS_SPECIFICATIONS_H
 #define __SHAWN_APPS_XML_NODE_READINGS_SPECIFICATIONS_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef	ENABLE_READING
 
 #include "apps/reading/xml_readings_specifications.h"

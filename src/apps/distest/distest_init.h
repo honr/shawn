@@ -9,7 +9,7 @@
 #ifndef __SHAWN_APPS_DIST_ESTINIT_H
 #define __SHAWN_APPS_DIST_ESTINIT_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_DISTEST
 
 namespace shawn

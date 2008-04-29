@@ -8,7 +8,7 @@
 #ifndef __SHAWN_APPS_LOCALIZATION_MESSAGES_DISTANCE_DV_HOP_MESSAGES_H
 #define __SHAWN_APPS_LOCALIZATION_MESSAGES_DISTANCE_DV_HOP_MESSAGES_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_LOCALIZATION
 
 #include "sys/message.h"

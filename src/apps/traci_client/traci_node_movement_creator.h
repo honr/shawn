@@ -9,7 +9,7 @@
 #ifndef __SHAWN_LEGACYAPPS_TRACINODEMOVEMENTCREATOR_H
 #define __SHAWN_LEGACYAPPS_TRACINODEMOVEMENTCREATOR_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 //#include "sys/event_scheduler.h"
 #include "sys/node_movements/playback/movement_info.h"
 #include "sys/node_movements/playback/node_movement_creator.h"

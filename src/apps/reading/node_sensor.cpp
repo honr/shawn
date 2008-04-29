@@ -8,7 +8,7 @@
 
 #include "apps/reading/node_sensor.h"
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef	ENABLE_READING
 
 namespace reading

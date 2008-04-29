@@ -9,7 +9,7 @@
 #ifndef __SHAWN_APPS_TEMPERATURE_PACKET_H
 #define __SHAWN_APPS_TEMPERATURE_PACKET_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_SPYGLASS
 
 #include "apps/spyglass/spyglass_packet.h"

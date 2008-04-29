@@ -9,7 +9,7 @@
 #ifndef JARVIS_MARCH_H_
 #define JARVIS_MARCH_H_
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
 #include "apps/topology/polygon/polygon.h"

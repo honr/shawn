@@ -8,7 +8,7 @@
 #ifndef __SHAWN_APPS_LOCALIZATION_MATH_SIMPLE_MATRIX_H
 #define __SHAWN_APPS_LOCALIZATION_MATH_SIMPLE_MATRIX_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_LOCALIZATION
 #include "sys/util/refcnt_pointer.h"
 #include "sys/util/refcnt_pointable.h"

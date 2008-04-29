@@ -10,7 +10,7 @@
 #ifndef __SHAWN_SYS_SIMULATION_SIMULATION_CONTROLLER_H
 #define __SHAWN_SYS_SIMULATION_SIMULATION_CONTROLLER_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 
 #include "shawn_config.h"
 #include "sys/simulation/simulation_environment.h"

@@ -9,7 +9,7 @@
 #ifndef __SHAWN_APPS_SENSOR_CHANGED_TASK_H
 #define __SHAWN_APPS_SENSOR_CHANGED_TASK_H
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_READING
 
 #include "sys/simulation/simulation_controller.h"

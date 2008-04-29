@@ -8,7 +8,7 @@
 
 #ifndef __SHAWN_APPS_TOPOLOGY_POINT_GEN_POINT_GEN_H
 #define __SHAWN_APPS_TOPOLOGY_POINT_GEN_POINT_GEN_H
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
 #include "apps/reading/simple_reading.h"

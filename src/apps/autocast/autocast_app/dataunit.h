@@ -11,7 +11,7 @@
 #ifndef ns_autocastdataunit_h
 #define ns_autocastdataunit_h
 
-#include "../buildfiles/_apps_enable_cmake.h"
+#include "_apps_enable_cmake.h"
 #ifdef ENABLE_AUTOCAST
 
 #include "sys/util/refcnt_pointer.h"
