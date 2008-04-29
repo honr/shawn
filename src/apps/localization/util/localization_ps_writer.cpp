@@ -58,14 +58,16 @@ namespace localization
    LocalizationPsWriter::
    ps_header()
    {
-      pageSize = new Vec(596, 842);
-
+    // 43 = 1.5 cm = RAND
+    // 595 = 21 cm = DINA4 Breite
+    // 842 = 29 cm = DINA4 Höhe
+    // pageSize = new Vec(842, 150);
+    pageSize = new Vec(596, 842);
       psfile_ << "%!PS-Adobe-2.0" << std::endl
          << "%%BoundingBox: 0 0 "<< pageSize->x() <<" " << pageSize->y() << std::endl
-         << "%%Pages: (atend)" << std::endl
+         << "%%Pages: 3" << std::endl
          << "%%PageOrder: Ascend" << std::endl
          << "%%EndComments" << endl;
-
    }
    // ----------------------------------------------------------------------
 	void LocalizationPsWriter::
