@@ -24,8 +24,17 @@
 #=============
 
 	get_filename_component( EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/../buildfiles ABSOLUTE CACHE )
-	get_filename_component( LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/../lib ABSOLUTE CACHE )
+	get_filename_component( LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/../buildfiles ABSOLUTE CACHE )
 
+#=============
+# Set the default build type to "Release"
+#=============
+
+	IF(NOT CMAKE_BUILD_TYPE)
+		SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
+	ENDIF(NOT CMAKE_BUILD_TYPE)
+
+	
 #=============
 # Collect all source files recursively to be compiled
 #=============
@@ -108,14 +117,20 @@
 	
 		link_directories( ${LIB_PATH_CGAL} )
 						  
-		include_directories( ./
-							 ${INCLUDE_PATH_CGAL}
-	                         ${INCLUDE_PATH_CGAL_COMPILER_CONFIG}
-	                         ${INCLUDE_PATH_BOOST} )
+		include_directories	( 
+								./
+								../buildfiles
+								${INCLUDE_PATH_CGAL}
+								${INCLUDE_PATH_CGAL_COMPILER_CONFIG}
+								${INCLUDE_PATH_BOOST} 
+							)
 	                         
 	else ( OPT_ENABLE_CGAL )
 	
-		include_directories( ./ )
+		include_directories	(
+								./
+								../buildfiles
+						 	)
 		
 	endif ( OPT_ENABLE_CGAL )
 
