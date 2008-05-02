@@ -118,7 +118,7 @@ namespace shawn
 						
 		SimulationController* sim_controller_;	///< Pointer to the simulation controller
 		
-		XMLObj flegsens_xml_world;
+		xml::XMLObj flegsens_xml_world;
 	private:	
 		shawn::Node* current_node_;///< The node that is currently filled with data
 		

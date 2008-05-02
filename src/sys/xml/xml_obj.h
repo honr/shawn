@@ -18,6 +18,9 @@
 namespace shawn
 {
 
+    namespace xml 
+    {
+
 		class XMLObj {
 		public:
 			///
@@ -37,6 +40,8 @@ namespace shawn
 			std::vector<std::string> xml_data_;
 			int current_line_read_;			
 		};
+
+    }
 
 }
 
