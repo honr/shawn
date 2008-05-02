@@ -64,7 +64,7 @@ namespace reading
 		// Parse 
 		parse();
 		
-		TRACE("XMLREADINGPARSERTASK: creating reading factory obj");
+		READING_TRACE("XMLREADINGPARSERTASK: creating reading factory obj");
 		// Build correct reading and register the Object in the reading keeper
 		xmlreading::XMLReadingFactory* xmlreadingfactory_ = new xmlreading::XMLReadingFactory();
 		xmlreadingfactory_->build_appropriate_reading(sc, type, data, reading_name_);
@@ -117,17 +117,17 @@ namespace reading
 		start_element(const std::string name, shawn::xml::AttList& attList) 
 		throw(std::runtime_error)
 	{
-		TRACE("XMLREADINGPARSERTASK: parsing reading tag");
+		READING_TRACE("XMLREADINGPARSERTASK: parsing reading tag");
 		attList_ = attList;
 		if("reading" == name)
 		{
-			TRACE("XMLREADINGPARSERTASK: get type");
+			READING_TRACE("XMLREADINGPARSERTASK: get type");
 			AttList::iterator pos = attList_.find("type");
 			type = pos->second;
-			TRACE("XMLREADINGPARSERTASK: get data");
+			READING_TRACE("XMLREADINGPARSERTASK: get data");
 			pos = attList_.find("data");
 			data = pos->second;
-			TRACE("XMLREADINGPARSERTASK: done");
+			READING_TRACE("XMLREADINGPARSERTASK: done");
 		}
 		if("settings" == name)
 			interrupt();

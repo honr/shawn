@@ -45,7 +45,7 @@ namespace xmlreading
 		{	
 			if("reading" == name)
 			{
-				TRACE_PARSER("XMLREADINGPARSER: parsing reading data");
+				READING_TRACE("XMLREADINGPARSER: parsing reading data");
 				ReadingData* rd = new ReadingData;
 				AttList::const_iterator pos = attList.find("type");
 				rd->type = pos->second;
@@ -57,7 +57,7 @@ namespace xmlreading
 		}
 		else if(!settings_parsed_ && "setting" == name)
 		{
-			TRACE_PARSER("XMLREADINGPARSER: parsing setting data");
+			READING_TRACE("XMLREADINGPARSER: parsing setting data");
 			SettingData* sd = new SettingData; 
 			AttList::const_iterator pos =attList.find("name");
 			sd->name = pos->second;
@@ -69,7 +69,7 @@ namespace xmlreading
 		}
 		else if("time" == name)
 		{
-			TRACE_PARSER("XMLREADINGPARSER: parsing time tag");
+			READING_TRACE("XMLREADINGPARSER: parsing time tag");
 			AttList::const_iterator pos = attList.find("t_val");
 			if( pos != attList.end() ) 
 			{
@@ -79,7 +79,7 @@ namespace xmlreading
 		}
 		else if("value" == name)
 		{
-			TRACE_PARSER("XMLREADINGPARSER: parsing value tag");
+			READING_TRACE("XMLREADINGPARSER: parsing value tag");
 			AttList::const_iterator pos = attList.find("pos_x");
 			double x = shawn::conv_string_to_double(pos->second);
 			
@@ -109,7 +109,7 @@ namespace xmlreading
 	{
 		if("time" == name)
 		{
-			TRACE_PARSER("XMLREADINGPARSER: parsing end time tag");
+			READING_TRACE("XMLREADINGPARSER: parsing end time tag");
 			if( t_val >= xmlreadingbase_->current_time_ )
 			{
 				interrupt();
@@ -119,7 +119,7 @@ namespace xmlreading
 		}
 		else if("reading" == name)
 		{
-			TRACE_PARSER("XMLREADINGPARSER: parsing end reading tag");
+			READING_TRACE("XMLREADINGPARSER: parsing end reading tag");
 			parsing_done_ = true;
 			xmlreadingbase_->set_next_event();
 		}
@@ -131,7 +131,7 @@ namespace xmlreading
 		update_readings(shawn::Vec v, Values values) 
 		throw()
 	{
-		TRACE_PARSER("XMLREADINGPARSER: update parser readings");
+		READING_TRACE("XMLREADINGPARSER: update parser readings");
 		pair<shawn::Vec, Values> vec (v, values);
 		parserreadings_->insert(vec);
 		
@@ -155,7 +155,7 @@ namespace xmlreading
 		set_next_parse_event_time() 
 		throw()
 	{
-		TRACE_PARSER("XMLREADINGPARSER: set next parse event time: ");
+		READING_TRACE("XMLREADINGPARSER: set next parse event time: ");
 		next_parse_event_time_ = t_val;
 	}
 	
@@ -165,9 +165,9 @@ namespace xmlreading
 		timeout(shawn::EventScheduler& event_scheduler, shawn::EventScheduler::EventHandle event_handle, double time, shawn::EventScheduler::EventTagHandle& event_tag_handle) 
 		throw()
 	{
-		TRACE_PARSER("XMLREADINGPARSER: parse event at: "<<next_parse_event_time_);
+		READING_TRACE("XMLREADINGPARSER: parse event at: "<<next_parse_event_time_);
 		
-		TRACE_READINGS(show_parser_readings());
+		//TRACE_READINGS(show_parser_readings());
 		
 		xmlreadingbase_->current_time_ = next_parse_event_time_;
 		xmlreadingbase_->receiving_new_values(*parserreadings_);
@@ -180,7 +180,7 @@ namespace xmlreading
 		show_parser_readings() 
 		throw()
 	{
-		TRACE_PARSER("XMLREADINGPARSER: showing parser readings");
+		READING_TRACE("XMLREADINGPARSER: showing parser readings");
 		for(Readings::iterator it = parserreadings_->begin(); it!= parserreadings_->end(); ++it)
 		{
 			std::cout<<"	"<<it->first.x()<<" "<<it->first.y()<<" "<<it->first.z()<<"   "<<it->second.first<<" "<<it->second.second<<std::endl;

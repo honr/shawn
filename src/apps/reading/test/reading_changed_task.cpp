@@ -10,6 +10,7 @@
  #ifdef ENABLE_READING
  
 #include "apps/reading/test/reading_changed_task.h"
+#include "apps/reading/reading.h"
  
  namespace reading
  {
@@ -43,7 +44,7 @@
          run( shawn::SimulationController& sc )
          throw( std::runtime_error )
      {
-         TRACE(description());
+    	 READING_TRACE(description());
 	 require_world( sc );
 	 world_ = &sc.world_w();
 	 assert ( world_ != NULL);
@@ -51,32 +52,32 @@
 	 sc.reading_keeper_w().add( new reading::RandomHeatReading(sc));
 	 reading::ReadingKeeper::Handle rh = sc.reading_keeper_w().find_w("randomheat_reading");
          rh->init();
-	 TRACE("READING_CHANGED_TASK: search for randomheat reading")
+         READING_TRACE("READING_CHANGED_TASK: search for randomheat reading");
 	 
 	 if( !rh.is_null() )
          {
-              TRACE("READING_CHANGED_TASK:	randomheat reading found");
-	      TRACE("READING_CHANGED_TASK: generating new boxes for examination purposes");
+		 READING_TRACE("READING_CHANGED_TASK:	randomheat reading found");
+		 READING_TRACE("READING_CHANGED_TASK: generating new boxes for examination purposes");
 	      shawn::Box b_1(shawn::Vec(10,10,10), shawn::Vec(20,20,20));
-	      TRACE("READING_CHANGED_TASK: b_1((10,10,10),(20,20,20))");
+	      READING_TRACE("READING_CHANGED_TASK: b_1((10,10,10),(20,20,20))");
 	      shawn::Box b_2(shawn::Vec(100,100,100), shawn::Vec(20,20,20));
-	      TRACE("READING_CHANGED_TASK: b_2((100,100,100),(20,20,20))");
+	      READING_TRACE("READING_CHANGED_TASK: b_2((100,100,100),(20,20,20))");
 	      shawn::Box b_3(shawn::Vec(3,5,100), shawn::Vec(9,10,10));
-	      TRACE("READING_CHANGED_TASK: b_3((3,5,100),(9,10,10))");
+	      READING_TRACE("READING_CHANGED_TASK: b_3((3,5,100),(9,10,10))");
 	      	      
-	      TRACE("READING_CHANGED_TASK: filling vector ReadingChangedHandlerList with <ReadingChangedHandler, Box>-pairs");
+	      READING_TRACE("READING_CHANGED_TASK: filling vector ReadingChangedHandlerList with <ReadingChangedHandler, Box>-pairs");
 	      
 	      rh->add_changed_handler(this, b_1);
               rh->add_changed_handler(this, b_2);
 	      rh->add_changed_handler(this, b_3);
 	      
-	      TRACE("	done");
+	      READING_TRACE("	done");
 	 }   
     }
     // ----------------------------------------------------------------------
     void ReadingChangedTask::reading_changed(reading::Reading& r, shawn::Box& b) throw()
     {
-    	TRACE("READING_CHANGED_TASK: got new values...need to inform all listeners");
+    	READING_TRACE("READING_CHANGED_TASK: got new values...need to inform all listeners");
 	
     }
     // ----------------------------------------------------------------------

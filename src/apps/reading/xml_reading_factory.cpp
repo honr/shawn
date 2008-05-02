@@ -18,28 +18,28 @@ namespace xmlreading
 	//----------------------------------------------------------------------
 	void XMLReadingFactory::build_appropriate_reading(shawn::SimulationController& sc, std::string& type, std::string& data, std::string& reading_name_) throw()
 	{
-		TRACE("XML_READING_FACTORY: building appropriate reading");
+		READING_TRACE("XML_READING_FACTORY: building appropriate reading");
 		if(type == "simple")
 		{
 			if(data == "int")
 			{
-				TRACE("XMLREADINGFACTORY: building and registering XMLIntegerReading");
+				READING_TRACE("XMLREADINGFACTORY: building and registering XMLIntegerReading");
 				sc.reading_keeper_w().add( new XMLIntegerReading(reading_name_));
 			}else if(data == "double")
 			{
-				TRACE("XMLREADINGFACTORY: building and registering XMLDoubleReading");
+				READING_TRACE("XMLREADINGFACTORY: building and registering XMLDoubleReading");
 				sc.reading_keeper_w().add( new XMLDoubleReading(reading_name_));
 			}else if(data =="bool")
 			{
-				TRACE("XMLREADINGFACTORY: building and registering XMLBoolReading");
+				READING_TRACE("XMLREADINGFACTORY: building and registering XMLBoolReading");
 				sc.reading_keeper_w().add( new XMLBoolReading(reading_name_));
 			}else if(data == "string")
 			{
-				TRACE("XMLREADINGFACTORY: building and registering XMLStringReading");
+				READING_TRACE("XMLREADINGFACTORY: building and registering XMLStringReading");
 				sc.reading_keeper_w().add( new XMLStringReading(reading_name_));
 			} else
 			{
-				TRACE("No appropriate ReadingData found!");
+				READING_TRACE("No appropriate ReadingData found!");
 			}
 		}else ABORT_NOT_IMPLEMENTED;
 	}

@@ -82,7 +82,7 @@ namespace xmlreading
 		/** Prepares the actual parsing process */
 		virtual void prepare_parsing(shawn::SimulationController& sc) throw()
 		{
-			TRACE("XMLREADING: prepare parsing");
+			READING_TRACE("XMLREADING: prepare parsing");
 			set_world(sc.world_w());
 			
 			/** Sets the relative path to the XML file which has to be parsed */
@@ -103,7 +103,7 @@ namespace xmlreading
 		/** When the parser delivers new setting data the XMLReading needs to get those information in order to inform his listeners about what to do with the values received out of the xml reading file. Here it is done by copying the information into a local (public) setting data variable.  */
 		virtual void receive_and_pass_settings(xmlreading::Settings& settings, std::string& reading_data_type) throw()
 		{
-			TRACE("XMLREADING: receive and pass settings");
+			READING_TRACE("XMLREADING: receive and pass settings");
 			xmlsettings_ = &settings;
 			has_listeners();
 			if(rbv_not_empty)
@@ -117,13 +117,13 @@ namespace xmlreading
 					it->first->receiving_settings(*xmlsettings_, reading_data_type);
 				}*/
 			}
-			else TRACE("XMLReading: no listeners");
+			else READING_TRACE("XMLReading: no listeners");
 		}
 		//-------------------------------------------------------------
 		/** When the parser delivers new values they need to be inserted into the local Readings varaible (xmlreadings) and erased out of the Readings variable parserreadings in order to prepare the next event. */ 
 		virtual void receiving_new_values(xmlreading::Readings& parserreadings) throw()
 		{	
-			TRACE("XMLREADING: receiving new values");
+			READING_TRACE("XMLREADING: receiving new values");
 			bool insert = false;
 			xmlparserreadings_ = &parserreadings;
 			refresh_value_durations();
@@ -162,39 +162,39 @@ namespace xmlreading
 				}
 				xmlparserreadings_->erase(rp);
 			}
-			TRACE_READINGS(show_xmlreadings());
+			//READING_TRACE_READINGS(show_xmlreadings());
 		}
 		///@name event handling
 		///@{
 		/** Sets the next event in relation to the next parse event of the parser and the next invalidation event of the reading*/
 		virtual void set_next_event() throw()
 		{		
-			TRACE("XMLREADING: set next event");
+			READING_TRACE("XMLREADING: set next event");
 			set_next_invalidation_event_time();
 			if(xmlreadings_->size() == 0 && !xmlreadingparser_->parsing_done_)
 			{
-				TRACE("Initializing parsing event at: "<<xmlreadingparser_->get_next_parse_event_time());
+				READING_TRACE("Initializing parsing event at: "<<xmlreadingparser_->get_next_parse_event_time());
 				
 				event_handle_ = world_->scheduler_w().new_event(*xmlreadingparser_, 
 				xmlreadingparser_->get_next_parse_event_time(), NULL);
 				
 			}else if(xmlreadings_->size() != 0 && xmlreadingparser_->parsing_done_)
 			{
-				TRACE("Initializing invalidation event at: "<<next_invalidation_event_time_);
+				READING_TRACE("Initializing invalidation event at: "<<next_invalidation_event_time_);
 				event_handle_ = world_->scheduler_w().new_event(*this, next_invalidation_event_time_, NULL);
    				
 			}else if(xmlreadings_->size() == 0 && xmlreadingparser_->parsing_done_)
 			{
-				TRACE("Done parsing & passing values");
+				READING_TRACE("Done parsing & passing values");
 								
 			}else if(xmlreadings_->size() !=0 && next_invalidation_event_time_ <= xmlreadingparser_->get_next_parse_event_time())
 			{	
-				TRACE("Initializing invalidation event at: "<<next_invalidation_event_time_);
+				READING_TRACE("Initializing invalidation event at: "<<next_invalidation_event_time_);
 				event_handle_ = world_->scheduler_w().new_event(*this, next_invalidation_event_time_, NULL);
 				
 			}else if(xmlreadings_->size() !=0 && next_invalidation_event_time_ > xmlreadingparser_->get_next_parse_event_time())
 			{
-				TRACE("Initializing parsing event at: "<<xmlreadingparser_->get_next_parse_event_time());
+				READING_TRACE("Initializing parsing event at: "<<xmlreadingparser_->get_next_parse_event_time());
 				event_handle_ = world_->scheduler_w().new_event(*xmlreadingparser_, xmlreadingparser_->get_next_parse_event_time(), NULL);
 			
 			}
@@ -202,7 +202,7 @@ namespace xmlreading
 		///
 		virtual void timeout(shawn::EventScheduler& event_scheduler, shawn::EventScheduler::EventHandle event_handle, double time, shawn::EventScheduler::EventTagHandle& event_tag_handle) throw()
 		{
-			TRACE("XMLREADING: invalidation event at: "<<next_invalidation_event_time_);
+			READING_TRACE("XMLREADING: invalidation event at: "<<next_invalidation_event_time_);
 			current_time_ = next_invalidation_event_time_;
 			notify_reading_changed_handlers();
 			set_next_event();
@@ -227,9 +227,9 @@ namespace xmlreading
 		  * have to be informed about changes in their area ( domain ).*/    
 		virtual void notify_reading_changed_handlers() throw()
 		{
-			TRACE("XMLREADING: notify reading changed handlers");
+			READING_TRACE("XMLREADING: notify reading changed handlers");
 			refresh_value_durations();
-			TRACE_READINGS(show_xmlreadings());
+			//READING_TRACE(show_xmlreadings());
 			for(Readings::iterator xml = xmlreadings_->begin(); xml != xmlreadings_->end(); ++xml)
 			{
 				if(xml->second.second <= 0)
@@ -248,7 +248,7 @@ namespace xmlreading
 		  * the actual simulation time.*/ 
 		virtual void refresh_value_durations() throw()
 		{	
-			TRACE("XMLREADING: refresh value durations");
+			READING_TRACE("XMLREADING: refresh value durations");
 			past_world_time_ = current_time_ - last_event_time_;
 			for(Readings::iterator it = xmlreadings_->begin(); it!=xmlreadings_->end(); ++it)
 			{
@@ -262,7 +262,7 @@ namespace xmlreading
 		/** Sets the next invalidation event time. The invalidation event time is addicted to the values durations. */
 		virtual void set_next_invalidation_event_time() throw()
 		{
-			TRACE("XMLREADING: set next invalidation event time");
+			READING_TRACE("XMLREADING: set next invalidation event time");
 			next_invalidation_event_time_ = INT_MAX;
 			if(xmlreadings_ != NULL)
 			{
@@ -283,7 +283,7 @@ namespace xmlreading
 		/** Checks, if there are any listeners (reading changed handlers)*/
 		virtual void lookup_reading_changed_handlers(Readings::iterator iter, bool insert) throw()
 		{
-			TRACE("XMLREADING: lookup reading changed handlers");
+			READING_TRACE("XMLREADING: lookup reading changed handlers");
 			if(rbv_not_empty)
 			{
 #ifndef WIN32
@@ -306,7 +306,7 @@ namespace xmlreading
 				}
 */
 			} else {
-				TRACE("No Listeners available");
+				READING_TRACE("No Listeners available");
 			}
 		}
 		///

@@ -18,27 +18,28 @@ namespace xmlreading
 	//----------------------------------------------------------------------
 	void XMLNodeSensorFactory::build_appropriate_sensor(shawn::SimulationController& sc,shawn::Node& n, std::string& type, std::string& data, std::string& reading_name_) throw()
 	{
-		TRACE("XML_SENSOR_READING_FACTORY: build approproiate sensor");
+		READING_TRACE("XML_SENSOR_READING_FACTORY: build approproiate sensor");
 		if(type == "simple")
 		{
 			if(data == "int")
 			{
-				TRACE("XML_SENSOR_READING_FACTORY: building and registering XMLNodeIntegerSensor");
+				READING_TRACE("XML_SENSOR_READING_FACTORY: building and registering XMLNodeIntegerSensor");
 				sc.sensor_keeper_w().add( new XMLNodeIntegerSensor(n, reading_name_));
 			}else if(data == "double")
 			{
-				TRACE("XML_SENSOR_READING_FACTORY: building and registering XMLNodeDoubleSensor");
+				READING_TRACE("XML_SENSOR_READING_FACTORY: building and registering XMLNodeDoubleSensor");
 				sc.sensor_keeper_w().add( new XMLNodeDoubleSensor(n, reading_name_));
 			}else if(data =="bool")
 			{
-				TRACE("XML_SENSOR_READING_FACTORY: building and registering XMLNodeBoolSensor");
+				READING_TRACE("XML_SENSOR_READING_FACTORY: building and registering XMLNodeBoolSensor");
 				sc.sensor_keeper_w().add( new XMLNodeBoolSensor(n, reading_name_));
 			}else if(data == "string")
 			{
-				TRACE("XML_SENSOR_READING_FACTORY: building and registering XMLNodeStringSensor");
+				READING_TRACE("XML_SENSOR_READING_FACTORY: building and registering XMLNodeStringSensor");
 				sc.sensor_keeper_w().add( new XMLNodeStringSensor(n, reading_name_));
-			} else
-				TRACE("No appropriate NodeReadingData found!");
+			} else {
+				READING_TRACE("No appropriate NodeReadingData found!");
+			}
 		}else ABORT_NOT_IMPLEMENTED;
 	}
 } 

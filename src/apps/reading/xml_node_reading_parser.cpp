@@ -32,14 +32,14 @@ namespace xmlreading
 	// ----------------------------------------------------------------------
 	void XMLNodeReadingParser::start_element(std::string name, AttList& attList) throw(runtime_error)
 	{
-		TRACE_PARSER("XML_NODE_READING_PARSER");
+		READING_TRACE("XML_NODE_READING_PARSER");
 		attList_ = attList;
 		
 		if(!reading_initialized_)
 		{	
 			if("reading" == name)
 			{
-				TRACE_PARSER("	ReadingData parsed");
+				READING_TRACE("	ReadingData parsed");
 				ReadingData* rd = new ReadingData;
 				AttList::iterator pos = attList_.find("type");
 				rd->type = pos->second;
@@ -53,7 +53,7 @@ namespace xmlreading
 		{
 			if("setting" == name)
 			{
-				TRACE_PARSER("	SettingData parsed");
+				READING_TRACE("	SettingData parsed");
 				SettingData* sd = new SettingData; 
 				AttList::iterator pos =attList_.find("name");
 				sd->name = pos->second;
@@ -66,7 +66,7 @@ namespace xmlreading
 		}
 		if("time" == name)
 		{
-			TRACE_PARSER("	time tag parsed");
+			READING_TRACE("	time tag parsed");
 			AttList::iterator pos = attList_.find("t_val");
 			if( pos != attList.end() ) 
 			{
@@ -76,7 +76,7 @@ namespace xmlreading
 		}
 		if("node" == name)
 		{
-			TRACE_PARSER("	node tag parsed");
+			READING_TRACE("	node tag parsed");
 			AttList::iterator pos = attList_.find("id");
 			int id = shawn::conv_string_to_int(pos->second);
 			pos = attList_.find("val");
@@ -92,7 +92,7 @@ namespace xmlreading
 	{
 		if("time" == name)
 		{
-			TRACE_PARSER("XML_NODE_REAIDNG_PARSER:	closing time tag parsed");
+			READING_TRACE("XML_NODE_REAIDNG_PARSER:	closing time tag parsed");
 			if( t_val > node_sensor_->current_time_ )
 				{
 					interrupt();
@@ -101,7 +101,7 @@ namespace xmlreading
 		}
 		if("reading" == name)
 		{
-			TRACE_PARSER("XML_NODE_READING_PARSER: closing reading tag parsed");
+			READING_TRACE("XML_NODE_READING_PARSER: closing reading tag parsed");
 			parsing_done_ = true;
 			node_sensor_->set_next_event();
 		}
@@ -109,9 +109,9 @@ namespace xmlreading
 	// ----------------------------------------------------------------------
 	void XMLNodeReadingParser::insert_node_reading(int& id, xmlreading::Values& value) throw()
 	{
-		TRACE_PARSER("XML_NODE_READING_PARSER:	insert node reading");
+		READING_TRACE("XML_NODE_READING_PARSER:	insert node reading");
 		pair<int, xmlreading::Values> new_reading (id, value);
-		TRACE_PARSER("	to be inserted: id: "<<id<<" val: "<<value.first<<" dur: "<<value.second);
+		READING_TRACE("	to be inserted: id: "<<id<<" val: "<<value.first<<" dur: "<<value.second);
 		parser_readings_->insert(new_reading);
 		for(xmlreading::NodeReadings::iterator it = parser_readings_->begin(); it!= parser_readings_->end(); ++it)
 		{
@@ -129,22 +129,22 @@ namespace xmlreading
 	// ----------------------------------------------------------------------
 	void XMLNodeReadingParser::set_next_parse_event_time() throw()
 	{
-		TRACE_PARSER("XML_NODE_READING_PARSER: set next parse event time");
+		READING_TRACE("XML_NODE_READING_PARSER: set next parse event time");
 		next_parse_event_time_ = t_val;
 	}
 	// ----------------------------------------------------------------------
 	void XMLNodeReadingParser::timeout(shawn::EventScheduler& event_scheduler, shawn::EventScheduler::EventHandle event_handle, double time, shawn::EventScheduler::EventTagHandle& event_tag_handle) throw()
 	{
-		TRACE_PARSER("XML_NODE_READING_PARSER: parse event at: "<<next_parse_event_time_);
+		READING_TRACE("XML_NODE_READING_PARSER: parse event at: "<<next_parse_event_time_);
 		node_sensor_->current_time_ = next_parse_event_time_;
-		TRACE_READINGS(show_parser_readings());
+		//TRACE_READINGS(show_parser_readings());
 		node_sensor_->receive_new_values(*parser_readings_);
 		parse();
 	}
 	// ----------------------------------------------------------------------
 	void XMLNodeReadingParser::show_parser_readings() throw()
 	{
-		TRACE_PARSER("XML_NODE_READING_PARSER: show node readings");
+		READING_TRACE("XML_NODE_READING_PARSER: show node readings");
 		for(NodeReadings::iterator it = parser_readings_->begin(); it!= parser_readings_->end(); ++it)
 		{
 			std::cout<<"node_id: "<<it->first<<" val: "<<it->second.first<<" duration: "<<it->second.second<<std::endl;

@@ -57,7 +57,7 @@ namespace reading
 			{	
 				if(nsch == it->first && components_node == it->second )
 				{ 
-					TRACE("NODE_SENSOR: allready registered");
+					READING_TRACE("NODE_SENSOR: allready registered");
 					pair_exists = true;
 				}
 			}
@@ -72,7 +72,7 @@ namespace reading
 		/**	removes a node sensor changed handler (listener) from the current sensor */
 		virtual void remove_node_sensor_changed_handler(NodeSensorChangedHandler* nsch, shawn::Node* components_node) throw()
 		{
-			TRACE("NODE_SENSOR: removing listener");
+			READING_TRACE("NODE_SENSOR: removing listener");
 			for(NodeSensorChangedHandlerList::iterator it = nschl_.begin(); it != nschl_.end(); ++it)
 			{
 				if( nsch == it->first && components_node == it->second ) 

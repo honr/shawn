@@ -57,7 +57,7 @@ namespace reading
 	 */
 	void sensor_changed(reading::Sensor& s, shawn::Vec& v)
 	{
-		TRACE("I am a sensor changed listener & somebody told me, that there are new things for me to process with");
+		READING_TRACE("I am a sensor changed listener & somebody told me, that there are new things for me to process with");
 	};
 	///@}
 	private:

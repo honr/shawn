@@ -40,7 +40,7 @@ namespace xmlreading
 		///@{
 		XMLSensor(shawn::Node& n, reading::SimpleReading<T>& sr, shawn::Vec v = shawn::Vec(10,10,10)) : reading::SimpleSensor<T>(n, sr, v )
 		{
-			TRACE("XMLSENSOR: initial_zone: "<< reading::SimpleSensor<T>::get_initial_zone().lower() << " "<< reading::SimpleSensor<T>::get_initial_zone().upper());
+			READING_TRACE("XMLSENSOR: initial_zone: "<< reading::SimpleSensor<T>::get_initial_zone().lower() << " "<< reading::SimpleSensor<T>::get_initial_zone().upper());
 			reading::SimpleSensor<T>::sr_.add_changed_handler(this, reading::SimpleSensor<T>::get_initial_zone());
 			sensor_settings_ = new xmlreading::Settings;
 			sensor_readings_ = new SensorDomainValues;
@@ -74,7 +74,7 @@ namespace xmlreading
 		///
 		virtual void reading_changed(reading::Reading& r, shawn::Box& b) throw()
 		{
-			TRACE("XMLSENSOR: reading changed");
+			READING_TRACE("XMLSENSOR: reading changed");
 			if(interpolation)
 				interpolate();
 			shawn::Vec v = reading::SimpleSensor<T>::n_.real_position();
@@ -86,7 +86,7 @@ namespace xmlreading
 		///
 		virtual void receiving_settings(xmlreading::Settings& settings, std::string& reading_data_type) throw()
 		{
-			TRACE("XMLSENSOR: receiving settings");
+			READING_TRACE("XMLSENSOR: receiving settings");
 			sensor_settings_ = &settings;
 			reading_data_type_ = reading_data_type;
 			adopt_settings();
@@ -94,7 +94,7 @@ namespace xmlreading
 		///
 		virtual void insert_domain_value(const shawn::Vec& vector, std::string& value) throw()
 		{
-			TRACE("XMLSENSOR: insert domain value");
+			READING_TRACE("XMLSENSOR: insert domain value");
 			for(SensorDomainValues::iterator it = sensor_readings_->begin(); it != sensor_readings_->end(); ++it)
 			{
 				if(it->first == vector)
@@ -105,7 +105,7 @@ namespace xmlreading
 			}
 			std::pair<shawn::Vec, std::string> domain_val (vector, value);
 			sensor_readings_->insert(domain_val);
-			TRACE_READINGS(show_sensor_readings());
+			//TRACE_READINGS(show_sensor_readings());
 			calculate_relative_position_vector(vector);
 			
 			//std::cout<<"sensor_node_id:      "<<n_.id()<<std::endl;
@@ -115,7 +115,7 @@ namespace xmlreading
 		///
 		virtual void erase_domain_value(const shawn::Vec& vector) throw()
 		{
-			TRACE("XMLSENSOR: erase domain value");
+			READING_TRACE("XMLSENSOR: erase domain value");
 			for(SensorDomainValues::iterator it = sensor_readings_->begin(); it!=sensor_readings_->end(); ++it)
 			{
 				if(it->first == vector)
@@ -138,7 +138,7 @@ namespace xmlreading
 		  **/
 		virtual double interpolate() throw()
 		{
-			TRACE("XMLSENSOR: interpolate");
+			READING_TRACE("XMLSENSOR: interpolate");
 			interpolated = 0;
 			if(reading_data_type_ == "string" | reading_data_type_ == "bool")
 				std::cerr<<"No interpolation possible with string or bool values!"<<std::endl;
@@ -201,7 +201,7 @@ namespace xmlreading
 		  **/
 		void calculate_relative_position_vector(const shawn::Vec& vector) throw()
 		{
-			TRACE("XMLSENSOR: calculate relative position vector");
+			READING_TRACE("XMLSENSOR: calculate relative position vector");
 			shawn::Vec node_position = reading::SimpleSensor<T>::n_.real_position();
 			shawn::Vec* pos_vector = new shawn::Vec((node_position.x() - vector.x()),(node_position.y() - vector.y()),(node_position.z() - vector.z()));
 			calculate_euklidian_scalar_product(pos_vector, vector);
@@ -211,7 +211,7 @@ namespace xmlreading
 		/**	This method calculates the euklidian scalar produkt regarding a passed position vector **/
 		void calculate_euklidian_scalar_product(shawn::Vec* position_vector, const shawn::Vec& vector) throw()
 		{
-			TRACE("XMLSENSOR: calculate euklidian scalar product");
+			READING_TRACE("XMLSENSOR: calculate euklidian scalar product");
 			double x = position_vector->x();
 			double y = position_vector->y();
 			double z = position_vector->z();
@@ -226,13 +226,13 @@ namespace xmlreading
 				}
 			}
 			euklid_->insert(result);
-			TRACE_READINGS(show_euklidian_value_map());
+			//TRACE_READINGS(show_euklidian_value_map());
 		}
 		///
 		/** Erases an euklidian scalar product value out of the scalar product map */
 		void erase_euklidian_value(const shawn::Vec& vector) throw()
 		{
-			TRACE("XMLSENSOR: erase euklidian scalar product");
+			READING_TRACE("XMLSENSOR: erase euklidian scalar product");
 			for(EuklidianScalarProduktMap::iterator enm = euklid_->begin(); enm != euklid_->end(); ++enm)
 			{
 				if(enm->second == vector)
@@ -241,7 +241,7 @@ namespace xmlreading
 					break;
 				}	
 			}
-			TRACE_READINGS(show_euklidian_value_map());
+			//TRACE_READINGS(show_euklidian_value_map());
 		}
 		///@}
 		// ----------------------------------------------------------------------
@@ -254,7 +254,7 @@ namespace xmlreading
 		  **/
 		virtual void adopt_settings() throw()
 		{
-			TRACE("XMLSENSOR: adopting settings");
+			READING_TRACE("XMLSENSOR: adopting settings");
 			for(xmlreading::Settings::iterator it = sensor_settings_->begin(); it!=sensor_settings_->end(); ++it)
 			{  
 				std::string setting_name_ = (*it)->name;
@@ -262,7 +262,7 @@ namespace xmlreading
 				{
 					interpolation = true;
 					interpolate();
-					TRACE("XMLSENSOR: interpolated value is: "<<interpolated);
+					READING_TRACE("XMLSENSOR: interpolated value is: "<<interpolated);
 				}else 
 				{
 					std::cerr<<"No appropriate setting found"<<std::endl;
@@ -273,7 +273,7 @@ namespace xmlreading
 		/** With this method you can see the current sensor readings map with its values */
 		void show_sensor_readings() throw()
 		{
-			TRACE("XMLSENSOR: showing readings");
+			READING_TRACE("XMLSENSOR: showing readings");
 			for(SensorDomainValues::iterator it = sensor_readings_->begin(); it != sensor_readings_->end(); ++it)
 			{
 				std::cout<<"pos: "<<it->first.x()<<" "<<it->first.y()<<" "<<it->first.z()<<"  val: "<<it->second<<std::endl;
@@ -284,7 +284,7 @@ namespace xmlreading
 		/** With this method you can see the current euklidian value map with its values. */
 		void show_euklidian_value_map() throw()
 		{
-			TRACE("XMLSENSOR: showing euklidian value map");
+			READING_TRACE("XMLSENSOR: showing euklidian value map");
 			for(EuklidianScalarProduktMap::iterator it = euklid_->begin(); it!= euklid_->end(); ++it)
 			{
 				std::cout<<"euklid: "<<it->first<<" Vector: "<<it->second.x()<<" "<<it->second.y()<<" "<<it->second.z()<<std::endl;

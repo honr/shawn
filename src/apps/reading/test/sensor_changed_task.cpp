@@ -46,7 +46,7 @@
          run( shawn::SimulationController& sc )
          throw( std::runtime_error )
      {
-     	 TRACE(description());
+    	 READING_TRACE(description());
 	 require_world( sc );
 	 world_ = &sc.world_w();
 	 assert(world_->node_count()>0);
@@ -54,31 +54,31 @@
 	 
 	 sc.reading_keeper_w().add( new reading::RandomHeatReading(sc));
 	 
-	 TRACE("search for randomheat reading");
+	 READING_TRACE("search for randomheat reading");
 	 reading::ReadingKeeper::Handle rh = sc.reading_keeper_w().find_w("randomheat_reading");
-         TRACE("     done");
+	 READING_TRACE("     done");
 	 reading::IntegerReading* ir = dynamic_cast<reading::IntegerReading*>(rh.get());
 	 ir->init();
-	 TRACE("creating new integer sensor");
+	 READING_TRACE("creating new integer sensor");
 	 is_ = new reading::IntegerSensor(n, *ir);
-	 TRACE("     done");
+	 READING_TRACE("     done");
 	 
 	 if( !rh.is_null() )
          {
               
-	      TRACE("generating new box for examination purposes");
+		 READING_TRACE("generating new box for examination purposes");
 	      shawn::Box b_1(shawn::Vec(3,5,100), shawn::Vec(10,10,10));
-	      TRACE("b_1((3,5,100),(10,10,10)))");
-	      TRACE("     done");
+	      READING_TRACE("b_1((3,5,100),(10,10,10)))");
+	      READING_TRACE("     done");
 	      	      
-	      TRACE("filling vector RBVec with <ReadingChangedHandler, Box>-pairs, here just one integer sensor");
+	      READING_TRACE("filling vector RBVec with <ReadingChangedHandler, Box>-pairs, here just one integer sensor");
 	      rh->add_changed_handler(is_, b_1);
               
-	      TRACE("     done");
+	      READING_TRACE("     done");
 	      
-	      TRACE("filling vector 'SensorChangedHandlerVector' with sensor listeners");
+	      READING_TRACE("filling vector 'SensorChangedHandlerVector' with sensor listeners");
 	      is_->add_sensor_changed_handler(this);
-	      TRACE("     done"); 
+	      READING_TRACE("     done"); 
 	 }   
      }
     // ----------------------------------------------------------------------

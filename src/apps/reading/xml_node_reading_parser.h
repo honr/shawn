@@ -10,8 +10,8 @@
 #include "_apps_enable_cmake.h"
 #ifdef	ENABLE_READING
 
-#ifndef TRACE_PARSER
-#define TRACE_PARSER(x)  std::cout << x << std::endl;	//show comments
+#ifndef READING_TRACE
+#define READING_TRACE(x)  std::cout << x << std::endl;	//show comments
 #endif
 
 #include "sys/xml/tag_parser.h"

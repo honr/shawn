@@ -85,7 +85,7 @@ namespace xmlreading
 		/** Prepares the actual parsing process */
 		void prepare_parsing(shawn::SimulationController& sc) throw()
 		{
-			TRACE("XML_NODE_SENSOR: prepare parsing process");
+			READING_TRACE("XML_NODE_SENSOR: prepare parsing process");
 			world_ = &(sc.world_w());
 			/** Sets the relative path to the XML file which has to be parsed */
 			reading_file_ = sc.environment().required_string_param("reading_file");
@@ -99,7 +99,7 @@ namespace xmlreading
 		///
 		virtual void receive_settings(xmlreading::Settings& settings, std::string& reading_data_type) throw()
 		{
-			TRACE("XML_NODE_SENSOR: receive settings");
+			READING_TRACE("XML_NODE_SENSOR: receive settings");
 			sensor_settings_ = &settings;
 			reading_data_type_ = reading_data_type;
 		}
@@ -107,7 +107,7 @@ namespace xmlreading
 		/** When the parser delivers new values they need to be inserted into the local Node_Readings varaible (xmlreadings) and erased out of the Node_Readings variable parserreadings in order to prepare the next event. */ 
 		virtual void receive_new_values(xmlreading::NodeReadings& parser_node_readings) throw()
 		{	
-			TRACE("XML_NODE_SENSOR: receiving new values");
+			READING_TRACE("XML_NODE_SENSOR: receiving new values");
 			parser_readings_ = &parser_node_readings;
 			refresh_value_durations();
 			for(NodeReadings::iterator pnr = parser_readings_->begin(); pnr!= parser_readings_->end(); ++pnr)
@@ -141,7 +141,7 @@ namespace xmlreading
 				}
 				parser_readings_->erase(pnr);
 			}
-			TRACE_READINGS(show_sensor_readings());
+			//TRACE_READINGS(show_sensor_readings());
 		}
 		///
 		/** This method erases all node reading values whose duration is null */
@@ -159,13 +159,13 @@ namespace xmlreading
 				}
 			
 			}
-			TRACE_READINGS(show_sensor_readings());
+			//TRACE_READINGS(show_sensor_readings());
 		}
 		///
 		/** Sets the next event in relation to the next parse event of the parser and the next invalidation event of the reading*/
 		virtual void set_next_event() throw()
 		{		
-			TRACE("XML_NODE_SENSOR: set next event");
+			READING_TRACE("XML_NODE_SENSOR: set next event");
 			set_next_invalidation_event_time();
 	
 			node_reading_parser_->set_next_parse_event_time();
@@ -196,7 +196,7 @@ namespace xmlreading
 		///@{
 		virtual void timeout(shawn::EventScheduler& event_scheduler, shawn::EventScheduler::EventHandle event_handle, double time, shawn::EventScheduler::EventTagHandle& event_tag_handle) throw()
 		{
-			TRACE("XML_NODE_SENSOR: invalidation event at: "<<next_invalidation_event_time_);
+			READING_TRACE("XML_NODE_SENSOR: invalidation event at: "<<next_invalidation_event_time_);
 			current_time_ = next_invalidation_event_time_;
 			erase_sensor_readings();
 			set_next_event();
@@ -225,7 +225,7 @@ namespace xmlreading
 		  * the actual simulation time.*/ 
 		virtual void refresh_value_durations() throw()
 		{	
-			TRACE("XML_NODE_SENSOR: refresh value durations");
+			READING_TRACE("XML_NODE_SENSOR: refresh value durations");
 			past_world_time_ = current_time_ - last_event_time_;
 	
 			for(NodeReadings::iterator it = sensor_readings_->begin(); it!=sensor_readings_->end(); ++it)
@@ -235,13 +235,13 @@ namespace xmlreading
 					it->second.second = 0.0;
 			}
 			last_event_time_ = current_time_;
-			TRACE_READINGS(show_sensor_readings());
+			//TRACE_READINGS(show_sensor_readings());
 		}
 		///
 		/** Sets the next invalidation event time. The invalidation event time is addicted to the values durations. */
 		virtual void set_next_invalidation_event_time() throw()
 		{
-			TRACE("XML_NODE_SENSOR: set next invalidation event time");
+			READING_TRACE("XML_NODE_SENSOR: set next invalidation event time");
 			next_invalidation_event_time_ = INT_MAX;
 			if(sensor_readings_ != NULL)
 			{
@@ -261,7 +261,7 @@ namespace xmlreading
 		/** Checks, if there are any listeners (reading changed handlers)*/
 		virtual void lookup_node_sensor_listener(NodeReadings::iterator iter) throw()
 		{
-			TRACE("NODE_SENSOR: lookup sensor changed handlers");
+			READING_TRACE("NODE_SENSOR: lookup sensor changed handlers");
 			if(nschl_not_empty)
 			{
 
@@ -277,8 +277,9 @@ namespace xmlreading
 						it->first->node_sensor_changed(*this);
 					}
 				}
-			} else 
-				TRACE("No Listeners available");
+			} else  {
+				READING_TRACE("No Listeners available");
+			}
 		}
 		///
 		/** checks if the sensor has listeners*/

@@ -12,8 +12,8 @@
 #include "_apps_enable_cmake.h"
 #ifdef	ENABLE_READING
 
-#ifndef TRACE
-#define TRACE(x) //std::cout<<x<<std::endl;	//show comments
+#ifndef READING_TRACE
+#define READING_TRACE(x) //std::cout<<x<<std::endl;	//show comments
 #endif
 
 #include "sys/util/keeper_managed.h"

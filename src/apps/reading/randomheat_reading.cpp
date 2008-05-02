@@ -50,36 +50,36 @@
 	void RandomHeatReading::init( void) throw()
      {
 	//assert( world_ != NULL );
-	TRACE("RANDOMHEAT_READING: initialize new event");
+	READING_TRACE("RANDOMHEAT_READING: initialize new event");
 	event_handle_ = sc_->world_w().scheduler_w().new_event(*this, 4.1, NULL);
-	TRACE("RANDOMHEAT_READING:	initialization completed");
+	READING_TRACE("RANDOMHEAT_READING:	initialization completed");
      }
      // ----------------------------------------------------------------------
      void RandomHeatReading::timeout(shawn::EventScheduler& event_scheduler, shawn::EventScheduler::EventHandle event_handle, double time, shawn::EventScheduler::EventTagHandle& event_tag_handle) throw()
      {
 	int count = 0;
-	TRACE("RANDOMHEAT_READING: here we assume, that the reading has new values for this box");
+	READING_TRACE("RANDOMHEAT_READING: here we assume, that the reading has new values for this box");
 	shawn::Box b_(shawn::Vec(3,5,100), shawn::Vec(10,10,10)); 
-	TRACE("RANDOMHEAT_READING: time: "<< time << "   reading has changed in box((3,5,100), (10,10,10))");
+	READING_TRACE("RANDOMHEAT_READING: time: "<< time << "   reading has changed in box((3,5,100), (10,10,10))");
 	
-	TRACE("RANDOMHEAT_READING: search for intersecting boxes");
-	TRACE("if the box with the new values intersects with other boxes, they also have to be informed about new values") 
+	READING_TRACE("RANDOMHEAT_READING: search for intersecting boxes");
+	READING_TRACE("if the box with the new values intersects with other boxes, they also have to be informed about new values") 
 	for(ReadingChangedHandlerList::iterator it = rbv.begin(); it != rbv.end(); ++it)
 	{
 		count++;
-		TRACE("box: " << count);
+		READING_TRACE("box: " << count);
 		
 		if( b_.intersects(it->second) )
 		{
-			TRACE("RANDOMHEAT_READING: intersection found");
-			TRACE("RANDOMHEAT_READING:	get corresponding ReadingChangedHandler (listener) object");
+			READING_TRACE("RANDOMHEAT_READING: intersection found");
+			READING_TRACE("RANDOMHEAT_READING:	get corresponding ReadingChangedHandler (listener) object");
 			reading::ReadingChangedHandler* rch_ = (it)->first;
-			TRACE("RANDOMHEAT_READING:	reading_changed() for this listener");
+			READING_TRACE("RANDOMHEAT_READING:	reading_changed() for this listener");
 			rch_->reading_changed(*this, it->second);   
 		}
 		else
 		{
-			TRACE("	nothing to do");
+			READING_TRACE("	nothing to do");
 		}
 	} 
      }

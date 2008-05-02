@@ -13,9 +13,6 @@
 #ifdef	ENABLE_READING
 
 //#define MAX_DOUBLE 1E+300 	// Definition for infinite double value
-#ifndef TRACE_READINGS
-#define TRACE_READINGS(x) x			//show all reading maps
-#endif
 
 #include "apps/reading/xml_node_readings_specifications.h"
 

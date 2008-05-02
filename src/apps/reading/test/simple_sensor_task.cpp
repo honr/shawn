@@ -33,7 +33,7 @@ namespace reading
 	void SimpleSensorTask::run(shawn::SimulationController& sc)
 	throw (std::runtime_error)
 	{
-		TRACE(description());
+		READING_TRACE(description());
 		
 		sc.reading_keeper_w().add( new reading::RandomHeatReading(sc));
 		
@@ -50,19 +50,19 @@ namespace reading
 		
 		reading::IntegerReading* ir = dynamic_cast<reading::IntegerReading*> (rh.get());
 		
-		TRACE("SimpleSensor declaration, in this case an IntegerSensor");
+		READING_TRACE("SimpleSensor declaration, in this case an IntegerSensor");
 		is_ = new reading::IntegerSensor(n, *ir);
 		is_->set_granularity(gran);
 		
 		if(world_ ->simulation_round() == 0)
 		{
-			TRACE("Initialize new node movement");
+			READING_TRACE("Initialize new node movement");
 			shawn::NoMovement* jm = new shawn::NoMovement();
 			jm->set_position(v);
 			n.set_movement(jm);
 			
-			TRACE("current position of node n " << n.real_position());
-			TRACE("current box of the sensor is: " << is_->get_updated_zone());
+			READING_TRACE("current position of node n " << n.real_position());
+			READING_TRACE("current box of the sensor is: " << is_->get_updated_zone());
 			
 			
 		}
@@ -73,23 +73,23 @@ namespace reading
 			jm->set_parameters(10, v, *world_);
 			n.set_movement(jm);
 			
-			TRACE("current position of node n " << n.real_position());
-			TRACE("destination position: 	   " << v);
-		        TRACE("current box of the sensor is: "<< is_->get_updated_zone());
+			READING_TRACE("current position of node n " << n.real_position());
+			READING_TRACE("destination position: 	   " << v);
+			READING_TRACE("current box of the sensor is: "<< is_->get_updated_zone());
 			
 			
 		} 
 		else
 		{
-			TRACE("current position of node n " << n.real_position());
-			TRACE("current box of the sensor is: "<< is_->get_updated_zone());
+			READING_TRACE("current position of node n " << n.real_position());
+			READING_TRACE("current box of the sensor is: "<< is_->get_updated_zone());
 		}
 	}
 	//-------------------------------------------------------------
 	void SimpleSensorTask::timeout(shawn::EventScheduler& event_scheduler, shawn::EventScheduler::EventHandle event_handle, double time, shawn::EventScheduler::EventTagHandle& event_tag_handle) throw()
 	{
 		shawn::Node& n = *(world_->begin_nodes_w());
-		TRACE("SimpleSensorTask::timeout(time:"<<time<<"):pos : " << n.real_position());
+		READING_TRACE("SimpleSensorTask::timeout(time:"<<time<<"):pos : " << n.real_position());
 	}	
 }
 

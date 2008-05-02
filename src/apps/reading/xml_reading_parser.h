@@ -12,8 +12,6 @@
 #include "_apps_enable_cmake.h"
 #ifdef	ENABLE_READING
 
-#define TRACE_PARSER(x) //std::cout << x << std::endl;	//show comments
-
 #include "apps/reading/xml_readings_specifications.h"
 #include "sys/xml/sax_interruptible_reader.h"
 #include "apps/reading/xml_reading_base.h"

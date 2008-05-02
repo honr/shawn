@@ -13,7 +13,7 @@
 #ifdef	ENABLE_READING
 
 //#define MAX_DOUBLE 1E+300 	// Definition for infinite double value
-#define TRACE_READINGS(x) //x			//show all reading maps
+//#define TRACE_READINGS(x) //x			//show all reading maps
 
 #include "apps/reading/xml_readings_specifications.h"
 #include "sys/simulation/simulation_controller.h"

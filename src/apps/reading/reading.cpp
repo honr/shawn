@@ -41,7 +41,7 @@ namespace reading
 	{	
 		if(rch == it->first && b == it->second )
 		{ 
-			TRACE("READING: <ReadingChangedHandler, Box>-pair already registered");
+			READING_TRACE("READING: <ReadingChangedHandler, Box>-pair already registered");
 			pair_exists = true;
 		}
 	}
