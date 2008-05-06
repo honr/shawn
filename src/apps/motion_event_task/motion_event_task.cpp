@@ -143,7 +143,7 @@ namespace motion_event
 		else
 		if (type == "errorDetections")
 		{
-			double iterations = sc.environment().required_int_param("max_iterations");
+			double iterations = sc.environment().required_double_param("duration");
 			double errorDet = sc.environment().required_double_param("errorDetectionsPerTimeRange");
 			double timeRange = sc.environment().optional_double_param("errorDetectionTimeRange", 86400.0);
 			
