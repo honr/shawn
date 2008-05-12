@@ -2,6 +2,7 @@
 #include "sys/node_movements/playback/movement_controller.h"
 #include "sys/node_movements/playback/movement_info.h"
 #include "sys/node_movements/linear_movement.h"
+#include "sys/node_movements/no_movement.h"
 #include "sys/node_movement.h"
 #include "sys/node.h"
 #include "sys/world.h"
@@ -118,7 +119,6 @@ namespace shawn
 
       // Get movement vector
 	  NodeMovement &nm = info.node->movement_w();
-	  lm = dynamic_cast<LinearMovement*>(&nm);
 	  Vec vector;
 	  double direction = 0;
 	  // Fetching the old speed
@@ -162,7 +162,6 @@ namespace shawn
          if (t < intersectTime) 
         	 intersectTime = t;
       }
-
 	  lm->set_parameters(speed, info.node->real_position() + (vector * intersectTime), sc_.world_w());
       mi->set_node_movement(lm);
 
