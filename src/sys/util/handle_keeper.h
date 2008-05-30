@@ -102,6 +102,18 @@ namespace shawn
          return ent->second;
       }
 
+      /** Returns whether a given name (identifier) already exists in the set of handles
+       */
+      virtual bool has( const std::string& n )
+         throw( )
+      {
+    	  for( typename HandleMapType::const_iterator it = handle_map_.begin(), endit = handle_map_.end(); it != endit; ++it )
+    		  if( it->first == n )
+    			  return true;
+    	  return false;
+      }
+      
+      
 	  virtual typename HandleMapType::iterator begin_handles_w(void)
 		  throw()
 	  {
