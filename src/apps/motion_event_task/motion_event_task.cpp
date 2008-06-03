@@ -13,6 +13,8 @@
 #include "sys/simulation/simulation_controller.h"
 #include "sys/event_scheduler.h"
 #include "sys/vec.h"
+#include "apps/topology/polygon/polygon.h"
+#include "apps/topology/polygon/jarvis_march.h"
 
 #include "sys/taggings/basic_tags.h"
 #include "sys/taggings/map_tags.h"
@@ -193,14 +195,28 @@ namespace motion_event
 	MotionEventTask::
 	single_line(shawn::SimulationController& sc, const shawn::Vec start_pos, const shawn::Vec dest_pos) 
 	{
+		/*
 		Vec lower_left = Vec(min(start_pos.x(), dest_pos.x()), min(start_pos.y(), dest_pos.y()), min(start_pos.z(), dest_pos.z()) );
 		Vec upper_right = Vec(max(start_pos.x(), dest_pos.x()), max(start_pos.y(), dest_pos.y()), max(start_pos.z(), dest_pos.z()) );
 		lower_left -= Vec(detection_range_, detection_range_, 0);
 		upper_right += Vec(detection_range_, detection_range_, 0);
-		
 		Box outer_box = Box(lower_left, upper_right);
-		Box dest_box = Box(dest_pos - Vec(detection_range_, detection_range_, 0), dest_pos + Vec(detection_range_, detection_range_, 0));
+		*/
+		Vec det_range = Vec(detection_range_, detection_range_, 0);
+		vector<Vec> start_dest_boxes;
+		start_dest_boxes.push_back(start_pos + det_range);
+		start_dest_boxes.push_back(start_pos + Vec(-1, 1, 0)*det_range);
+		start_dest_boxes.push_back(start_pos + Vec(1, -1, 0)*det_range);
+		start_dest_boxes.push_back(start_pos + Vec(-1, -1, 0)*det_range);
+		start_dest_boxes.push_back(dest_pos + det_range);
+		start_dest_boxes.push_back(dest_pos + Vec(-1, 1, 0)*det_range);
+		start_dest_boxes.push_back(dest_pos + Vec(1, -1, 0)*det_range);
+		start_dest_boxes.push_back(dest_pos + Vec(-1, -1, 0)*det_range);
 		
+		polygon::JarvisMarch jm = polygon::JarvisMarch();
+		polygon::Polygon convex_hull = polygon::Polygon(jm.compute_convex_hull(start_dest_boxes));
+		
+		Box dest_box = Box(dest_pos - det_range, dest_pos + det_range);
 		Vec direction = dest_pos - start_pos;
 		double dir_norm = direction.euclidean_norm();
 		for( shawn::World::node_iterator it = sc.world_w().begin_nodes_w(); it != sc.world_w().end_nodes_w(); ++it )
@@ -208,8 +224,8 @@ namespace motion_event
 			shawn::Node& node = *it;
 			//cout << "Node: " << it->id() << endl;
 			Vec n = node.real_position();
-			
-			if (outer_box.contains(n))
+			//if (outer_box.contains(n))
+			if (convex_hull.bounded_side(n) || convex_hull.on_boundary(n))
 			{
 				//Minimum distance between node and moving event
 				double distance = ((cross_product((n - start_pos), direction)).euclidean_norm())/dir_norm;
