@@ -103,6 +103,17 @@ namespace shawn
 		*/
 		virtual bool process_message( const ConstMessageHandle& ) throw();
 
+		/** This method is called by the transmission model 
+		* if a Message has been sent out and if a processor is set as sender_proc_ 
+		* of the message. Overload this method in derived
+		*  Processors to produce specific protocols/algorithms.
+		*
+		*  \return \c true iff the Processor recognizes the passed
+		*  message to be of "his own type". This makes the Node stop
+		*  processing the message by passing it to all his Processors.
+		*/
+		virtual bool process_sent_indication( const ConstMessageHandle& ) throw();
+
 		/** Called once in each simulation round. Used for periodic tasks
 		*  like collecting sensor values and generating messages if someting
 		*  interesting has happened.

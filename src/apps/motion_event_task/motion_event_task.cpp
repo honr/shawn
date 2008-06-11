@@ -97,6 +97,7 @@ namespace motion_event
 			standard_deviation_ = sc.environment().optional_double_param("standard_deviation", 0.0);
 			max_time_error_ = sc.environment().optional_double_param("max_time_error", MAX_ERROR);
 			missing_detection_rate_ = sc.environment().optional_double_param("missingDetRate", 0.0);
+			bool disc_range = sc.environment().optional_double_param("disc_instead_of_rect_range", false);
 			in_range_of_nodes_.clear();
 			
 			if (urv_->upper_bound() != 1.0)
@@ -139,7 +140,10 @@ namespace motion_event
 				Vec position = Vec( x_pos, y_pos, z_pos );
 				Vec destination = Vec( x_dest, y_dest, z_dest );
 			
-				single_line(sc, position, destination);
+				if (!disc_range)
+					single_line(sc, position, destination);
+				else
+					single_line_disc_range(sc, position, destination);
 			}
 		}
 		else

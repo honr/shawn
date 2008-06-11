@@ -120,11 +120,18 @@ namespace shawn
 		deliver_messages() throw(){}
 
 	void CsmaTransmissionModel::
-		deliver(csma_msg* msg) throw(){
+		deliver(csma_msg* msg) throw()
+		{
 			//Checks if medium is free
 			listening(msg);
 			//When medium is free msg->isSending() otherwise not
-			if(msg->isSending()){
+			if(msg->isSending())
+			{
+				// TODO: Is this the correct position to indicate that the message has been sent?
+				const Message* m = dynamic_cast<const Message*>(msg->pmi->msg_.get());
+				if (m->has_sender_proc())
+		        	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi->msg_) );
+				
 				Node* source = msg->pmi->src_;
 				deliver_num_++;
 				/*std::cout <<"csma: "<< "Source Node: " <<  source->id() 
@@ -137,7 +144,7 @@ namespace shawn
 					}
 				//Define a new Event for the end of the transmision. (Specified by msg->isSending())
 				event_handle_= world_w().scheduler_w().new_event(*this, msg->deliver_time + msg->duration_,msg);
-				}
+			}
 		}
 
 	void CsmaTransmissionModel::

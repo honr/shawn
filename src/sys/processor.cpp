@@ -78,7 +78,14 @@ namespace shawn
 		process_message( const ConstMessageHandle& )
 		throw()
 	{ return false; }
-
+	
+	// ----------------------------------------------------------------------
+	bool
+		Processor::
+		process_sent_indication( const ConstMessageHandle& )
+		throw()
+	{ return false; }
+	
 	// ----------------------------------------------------------------------
 	void
 		Processor::

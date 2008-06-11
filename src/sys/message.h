@@ -17,6 +17,7 @@
 namespace shawn
 {
    class Node;
+   class Processor;
 
    DECLARE_HANDLES(Message);
 
@@ -91,6 +92,27 @@ namespace shawn
        *  Set via set_timestamp() automatically from within
        *  Processor::send() resp. Node::send().
        */
+      
+      ///@name Message properties
+      ///@{
+      /** Processor of the sender. Set via set_sender_proc() by Processor.
+       */
+      const Processor& sender_proc( void )
+         const throw();
+      /** Processor of the sender. Set via set_sender_proc() by Processor.
+       */
+      Processor& sender_proc_w( void )
+         const throw();
+      /** \return \c true if sender processor has already been set, \c false if sender is
+       *  still NULL..
+       */
+      bool has_sender_proc( void )
+         const throw();
+      /** Simulation round when message was sent.
+       *  Set via set_timestamp() automatically from within
+       *  Processor::send() resp. Node::send().
+       */
+      
       int timestamp_simulation_round( void )
          const throw();
       /** Time when message was sent.
@@ -104,6 +126,10 @@ namespace shawn
        */
       void set_source( Node& ) throw();
       /** Called by Processor::send() resp. Node::send().
+       *  \external
+       */
+      void set_sender_proc( Processor& ) throw();
+      /** Called by Processor::send() resp. Node::send().
        *  \internal
        */
       void set_timestamp( int, double ) throw();
@@ -115,6 +141,7 @@ namespace shawn
    private:
 
       mutable Node* source_;
+      mutable Processor* sender_proc_;
       int stamp_round_;
       double stamp_time_;
 		int size_;

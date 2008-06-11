@@ -68,6 +68,32 @@ namespace shawn
       return source_ != NULL;
    }
    // ----------------------------------------------------------------------
+   const Processor&
+   Message::
+   sender_proc( void )
+      const throw()
+   {
+      assert( sender_proc_ != NULL );
+      return *sender_proc_;
+   }
+   // ----------------------------------------------------------------------
+   Processor&
+   Message::
+   sender_proc_w( void )
+      const throw()
+   {
+      assert( sender_proc_ != NULL );
+      return *sender_proc_;
+   }
+   // ----------------------------------------------------------------------
+   bool
+   Message::
+   has_sender_proc( void )
+      const throw()
+   {
+      return sender_proc_ != NULL;
+   }
+   // ----------------------------------------------------------------------
    int
    Message::
    timestamp_simulation_round( void )
@@ -91,6 +117,12 @@ namespace shawn
    set_source( Node& v ) 
       throw()
    { source_=&v; }
+   // ----------------------------------------------------------------------
+   void
+   Message::
+   set_sender_proc( Processor& v ) 
+      throw()
+   { sender_proc_=&v; }
    // ----------------------------------------------------------------------
    void
    Message::
