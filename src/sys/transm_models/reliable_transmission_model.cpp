@@ -11,13 +11,18 @@
 #include "sys/world.h"
 #include <algorithm>
 
+using namespace shawn;
+
+#define EPSILON_TIME 0.00001
+
 namespace shawn
 {
 
     // ----------------------------------------------------------------------
     ReliableTransmissionModel::
         ReliableTransmissionModel(bool immediate_delivery_ /* = false */)
-        : immediate_delivery_(immediate_delivery_)
+        : immediate_delivery_(immediate_delivery_),
+        next_timeout_(NULL)
     {}
 
     // ----------------------------------------------------------------------
@@ -65,10 +70,9 @@ namespace shawn
         send_message( TransmissionModel::MessageInfo& mi )
         throw()
     {
-        if( immediate_delivery_ )
-            deliver_one_message(mi);
-        else
-            queued_messages_.push( &mi );
+    	queued_messages_.push( &mi );
+        if( immediate_delivery_ && next_timeout_ == NULL)
+        	next_timeout_ = world_w().scheduler_w().new_event(*this, world_w().scheduler_w().current_time() + EPSILON_TIME, NULL);
     }
 
     // ----------------------------------------------------------------------
@@ -96,6 +100,16 @@ namespace shawn
             deliver_one_message( *mi );
         }
     }
+
+    // ----------------------------------------------------------------------
+	void
+		ReliableTransmissionModel::
+		timeout (EventScheduler &, EventScheduler::EventHandle, double, EventScheduler::EventTagHandle &)
+		throw ()
+   	{
+       	deliver_messages();
+       	next_timeout_ = NULL;
+   	}
 
     // ----------------------------------------------------------------------
     void

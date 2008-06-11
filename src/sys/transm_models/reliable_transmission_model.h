@@ -10,6 +10,7 @@
 #define __SHAWN_SYS_TRANS_MODELS_RELIABLE_H
 
 #include "sys/transmission_model.h"
+#include "sys/event_scheduler.h"
 
 #include <queue>
 
@@ -21,7 +22,9 @@ namespace shawn
     * they will be delivered at the beginning of a new simulation round, just before Processor::work()
     * is called.
     */
-    class ReliableTransmissionModel : public TransmissionModel 
+    class ReliableTransmissionModel
+		: public TransmissionModel,
+		  public EventScheduler::EventHandler
     {
     public:
         ///@name Construction, destruction and lifecycle support
@@ -41,7 +44,7 @@ namespace shawn
 
         ///Mobility is depending on mobility support from the edge model
         /** The edge model is used to determine the 1-hop neighbours
-        * which will receive the message 
+        * which will receive the message
         */
         virtual bool supports_mobility( void ) const throw(std::logic_error);
 
@@ -53,6 +56,8 @@ namespace shawn
 
         ///@}
 
+        virtual void timeout (EventScheduler &, EventScheduler::EventHandle, double, EventScheduler::EventTagHandle &) throw ();
+
     private:
         bool immediate_delivery_;
 
@@ -62,6 +67,8 @@ namespace shawn
         ///The messages that have been sent by the nodes and are waiting for delivery
         std::queue<TransmissionModel::MessageInfo*> aired_messages_;
         std::queue<TransmissionModel::MessageInfo*> queued_messages_;
+
+        EventScheduler::EventHandle next_timeout_;
 
     };
 
