@@ -34,14 +34,15 @@ namespace shawn{
 		{
 		public:
 
-			TransmissionModel::MessageInfo *pmi;
+			TransmissionModel::MessageInfo *pmi_;
 
 			///The vector which stores the neighbours of the source node
 			std::vector<msg_destination*> destinations_;
-			double deliver_time;
-			double backoff;
+			double deliver_time_;
+			double backoff_;
 			double duration_;
-			bool sending;
+			bool sending_;
+			int sending_attempts_;
 
 			/**
 			*@brief construction of structure csma_msg
@@ -50,12 +51,10 @@ namespace shawn{
 			*a negative value to show that the message has not got any backoff time yet.
 			*/
 			csma_msg(){}
-			csma_msg( TransmissionModel::MessageInfo* mi, double duration,double backoff_): pmi(mi), duration_(duration)
+			csma_msg( TransmissionModel::MessageInfo* mi, double duration,double backoff):
+			  pmi_(mi), duration_(duration), deliver_time_(mi->time_), sending_(false),
+			  backoff_(random(0.001,backoff)), sending_attempts_(0)
 				{
-				pmi = mi;
-				deliver_time = mi->time_;
-				sending = false;
-				backoff=random(0.001,backoff_);
 				}
 
 			/**
@@ -65,7 +64,7 @@ namespace shawn{
 			*/
 			~csma_msg()
 				{
-				delete pmi;
+				delete pmi_;
 				for( std::vector<msg_destination*>::iterator dest_it=destinations_.begin();
 					dest_it!=destinations_.end(); dest_it++ )
 					{
@@ -78,7 +77,7 @@ namespace shawn{
 			*/
 			bool operator < ( csma_msg msg )
 				{
-				return deliver_time < msg.deliver_time;
+				return deliver_time_ < msg.deliver_time_;
 				}
 
 			/**
@@ -102,14 +101,15 @@ namespace shawn{
 			* @brief Should be set if message is sent.
 			*/
 			void setSending(){
-				sending = true;
+				sending_ = true;
 				}
 			/**
 			* Returns wether message will be send.
 			* @ret bool
 			*/
 			bool isSending(){
-				return sending;
+				return sending_;
 				}
+			
 		};
 	}

@@ -22,17 +22,22 @@ namespace shawn
 	 * A processor waits for the medium to be free before sending. 
 	 * If a neighbor is already sending, the new message will be delayed until the end of
 	 * the transmission plus a backoff time
-	 * In this implementation one can define parameters for the mediums bandwidth and the upper bound for 
-	 * the randomy chosen backoff
+	 * The parameters for this model are:
+	 * bandwith: the medium's bandwith in bits/sec
+	 * backoff: fixed (not variable) backoff in sec.
+	 * sending_jitter: defines the upperbound of the jitter that is use to simulate the
+	 *                  "asynchronous behaviour" of the nodes. 
+	 * sending_jitter_lb: defines the lower_bound of the sending jitter.  
 	 * This module can be called by:
-	 * transm_model=csma bandwidth=1 backoff=0.5    
+	 * transm_model=csma bandwidth=9600 backoff=0.05 sending_jitter=0.02 sending_jitter_lb= 0.001
 	 */
 	class CsmaTransmissionModel : public TransmissionModel,EventScheduler::EventHandler
 	{
 	public:
 		///@name construction, destruction and support for life cycle
 		///@{
-		CsmaTransmissionModel(int bandwidth, double backoff, double sending_jitter, double sending_jitter_lb);
+		CsmaTransmissionModel(int bandwidth, double backoff, double sending_jitter, double sending_jitter_lb,
+		    int max_sending_attempts, int backoff_factor_base);
 		~CsmaTransmissionModel();
 		/**
 		 *@brief Initialize the csma transmission model
@@ -124,6 +129,7 @@ namespace shawn
 		 *@param pmsg the message whose source node's neighbors to be determined
 		 */
 		void find_destinations( csma_msg* pmsg );
+		
 
 		///Number of received messages
 		int received_;
@@ -156,6 +162,10 @@ namespace shawn
 		double sending_jitter_;
 
 		double sending_jitter_lb_;
+		// Maximum number of attempts to send a message
+		int max_sending_attempts_;
+		//Factor specifying the base of the factor for increasing backoff 
+		int backoff_factor_base_;
 
 		///The messages that have been sent by the nodes and are waiting for delivery
 		typedef std::set<csma_msg*> MessageList;

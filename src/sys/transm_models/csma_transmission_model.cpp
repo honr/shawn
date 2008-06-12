@@ -11,11 +11,12 @@
 #include "sys/world.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_environment.h"
+#include <cmath>
 
 namespace shawn
 	{
 	CsmaTransmissionModel::
-		CsmaTransmissionModel(int bandwidth, double backoff, double sending_jitter, double sending_jitter_lb) :
+		CsmaTransmissionModel(int bandwidth, double backoff, double sending_jitter, double sending_jitter_lb,int max_sending_attempts,int backoff_factor_base) :
 	received_(0), 
 		dropped_(0), 
 		packet_failure_(0), 
@@ -26,7 +27,9 @@ namespace shawn
 		bandwidth_(bandwidth),
 		neighbors_(NULL),
 		sending_jitter_(sending_jitter),
-		sending_jitter_lb_(sending_jitter_lb)
+		sending_jitter_lb_(sending_jitter_lb),
+		max_sending_attempts_(max_sending_attempts),
+		backoff_factor_base_(backoff_factor_base)
 		{
 		}
 
@@ -91,7 +94,7 @@ namespace shawn
 		// If sending jitter is set, deliver time will be changed. ( Needed to avoid same deliver times due to 
 		// processors sending at the beginning of a round.)
 		mi.time_=( sending_jitter_ > 0.0 ) ? ( new_msg->random( sending_jitter_lb_, sending_jitter_ ) + mi.time_) : ( mi.time_ );
-		new_msg->deliver_time = mi.time_;
+		new_msg->deliver_time_ = mi.time_;
 		find_destinations( new_msg );
 		//Adds a message to the DynamicNodeArray
 		MessageList* m = &((*neighbors_)[*(mi.src_)]);
@@ -104,10 +107,24 @@ namespace shawn
 	{
 		csma_msg* msg = dynamic_cast<csma_msg* >(event_tag_handle.get());
 		if(msg != NULL){
-			if(!msg->sending)
+			if(!msg->sending_)
 				deliver(msg); // If the message has not been send yet.
 			else    //Otherwise the transmission has terminated
-				(*neighbors_)[*(msg->pmi->src_)].erase(msg);
+			  {
+			    // TODO: Is this the correct position to indicate that the message has been sent?
+                                const Message* m = msg->pmi_->msg_.get();
+                                if (m->has_sender_proc())
+                                (m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi_->msg_) );
+                                
+                                deliver_num_++;
+                                for(unsigned int i=0; i< msg->destinations_.size(); i++){
+                                        //All receiving nodes will check, if they already receive a message 
+                                        receive(msg->destinations_[i]->dest_node_,msg);
+                                        }
+                                
+				(*neighbors_)[*(msg->pmi_->src_)].erase(msg);
+				
+			  }
 
 			}
 		else
@@ -127,23 +144,8 @@ namespace shawn
 			//When medium is free msg->isSending() otherwise not
 			if(msg->isSending())
 			{
-				// TODO: Is this the correct position to indicate that the message has been sent?
-				const Message* m = msg->pmi->msg_.get();
-				if (m->has_sender_proc())
-		        	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi->msg_) );
-				
-				Node* source = msg->pmi->src_;
-				deliver_num_++;
-				/*std::cout <<"csma: "<< "Source Node: " <<  source->id() 
-					<< ". Msg. send time: " <<  msg->deliver_time
-					<< ". Msg. deliver time: " <<  msg->pmi->time_
-					<< std::endl;*/
-				for(unsigned int i=0; i< msg->destinations_.size(); i++){
-					//All receiving nodes will check, if they already receive a message 
-					receive(msg->destinations_[i]->dest_node_,msg);
-					}
-				//Define a new Event for the end of the transmision. (Specified by msg->isSending())
-				event_handle_= world_w().scheduler_w().new_event(*this, msg->deliver_time + msg->duration_,msg);
+			  //Define a new Event for the end of the transmision. (Specified by msg->isSending())
+			  event_handle_= world_w().scheduler_w().new_event(*this, msg->deliver_time_ + msg->duration_,msg);
 			}
 		}
 
@@ -153,21 +155,21 @@ namespace shawn
 			bool sending = false;
 			//All neighbors are checked here
 			EdgeModel::adjacency_iterator it, endit;
-			for( it = world_w().begin_adjacent_nodes_w( *msg->pmi->src_ ),
-				endit = world_w().end_adjacent_nodes_w( *msg->pmi->src_ );
+			for( it = world_w().begin_adjacent_nodes_w( *msg->pmi_->src_ , EdgeModel::CD_IN),
+				endit = world_w().end_adjacent_nodes_w( *msg->pmi_->src_ );
 				it != endit;
 			++it )
 				{
-				if(msg->pmi->src_->id() ==it->id()) continue;
+				if(msg->pmi_->src_->id() ==it->id()) continue;
 				MessageList* m = &((*neighbors_)[*it]);
 				MessageList::iterator iter = m->begin();
 				//Each neighbors messages are tested
 				for(; iter!=m->end();++iter){
 					csma_msg* temp = *iter;
-					if(msg->deliver_time > temp->deliver_time && msg->deliver_time <= temp->deliver_time + temp->duration_)
+					if(msg->deliver_time_ > temp->deliver_time_ && msg->deliver_time_ <= temp->deliver_time_ + temp->duration_)
 						{
 						/*std::cout <<"csma: "<< "Node " << temp->pmi->src_->id() << " is interfering" << std::endl;*/
-						double time_fin = temp->deliver_time + temp->duration_;
+						double time_fin = temp->deliver_time_ + temp->duration_;
 						sending = true;
 						nextFreeTime = (nextFreeTime>= time_fin)? (nextFreeTime):(time_fin);
 						}
@@ -179,11 +181,26 @@ namespace shawn
 				msg->setSending();
 				}
 			else{
-				//std::cout<<"csma: "<<"Other node sending. Message from node: "<<msg->pmi->src_->id() <<" delayed"<< std::endl;
-				msg->deliver_time= nextFreeTime + msg->backoff;
+			      if(msg->sending_attempts_< max_sending_attempts_){ 
+
+			        msg->deliver_time_= nextFreeTime + msg->backoff_ * (int)(pow(backoff_factor_base_,msg->sending_attempts_)) ;
 				//New Event. To the next time the medium is free + a backoff
-				event_handle_ = world_w().scheduler_w().new_event(*this,msg->deliver_time,msg);
-				}
+	                        ++msg->sending_attempts_;
+				event_handle_ = world_w().scheduler_w().new_event(*this,msg->deliver_time_,msg);
+				
+			      }
+			      else{
+                                const Message* m = msg->pmi_->msg_.get();
+                                if (m->has_sender_proc())
+                                (m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi_->msg_) );
+			        //  Maximum number of sending atempts have been reached 
+			        // therefore message will be dropped.
+			        
+			        (*neighbors_)[*(msg->pmi_->src_)].erase(msg);
+			        std::cout<< "CSMA: Node "<<msg->pmi_->src_<< ": Maximum number of sending attempts have been reached. Message will be dropped."<< std::endl;
+			      }
+			}
+			      
 		}
 
 	void CsmaTransmissionModel::
@@ -191,12 +208,12 @@ namespace shawn
 			bool inUse=false;
 			EdgeModel::adjacency_iterator it, endit;
 			// The target checks if one of it's neighbors (others than the msgs. one) is already sending
-			for( it = world_w().begin_adjacent_nodes_w( *target),
-				endit = world_w().end_adjacent_nodes_w( *target );
+			for( it = world_w().begin_adjacent_nodes_w( *target,EdgeModel::CD_IN),
+				endit = world_w().end_adjacent_nodes_w( *target);
 				it != endit;
 			++it )
 				{
-				if(msg->pmi->src_->id() != it->id()){
+				if(msg->pmi_->src_->id() != it->id()){
 					MessageList* m = &((*neighbors_)[*it]);
 					MessageList::iterator iter = m->begin();
 					//Here all messages of one node is checked
@@ -204,7 +221,7 @@ namespace shawn
 						// First condition ckecks if a node not adjacent to the sender is delivering a msg. to target at the moment 
 						// as well as if sender and receiver are delivering at the same moment.
 						// This procedure correlates with reality. Both nodes are sending and cannot "hear" the other one
-						if((msg->deliver_time >= (*iter)->deliver_time && msg->deliver_time <= (*iter)->deliver_time + (*iter)->duration_) )
+						if((msg->deliver_time_ >= (*iter)->deliver_time_ && msg->deliver_time_ <= (*iter)->deliver_time_ + (*iter)->duration_) )
 							{
 							inUse = true;
 							break;
@@ -224,12 +241,12 @@ namespace shawn
 				/*std::cout<<"csma: "<<"Node:"<< target->id() << "received msg. from node:"
 					<< msg->pmi->src_->id()<< std::endl;*/
 				++received_;
-				double cur_delay=(msg->deliver_time-msg->pmi->time_);
+				double cur_delay=(msg->deliver_time_-msg->pmi_->time_);
 				average_delay_ +=cur_delay; 
 				if( deliver_num_>1 )
 					jitter_ += (cur_delay>last_delay_)? cur_delay-last_delay_ : last_delay_-cur_delay;
 				last_delay_ = cur_delay;
-				target->receive(ConstMessageHandle(msg->pmi->msg_));
+				target->receive(ConstMessageHandle(msg->pmi_->msg_));
 				}
 
 		}
@@ -239,12 +256,12 @@ namespace shawn
 		find_destinations( csma_msg* pmsg )
 		{
 		EdgeModel::adjacency_iterator it, endit;
-		for( it = world_w().begin_adjacent_nodes_w( *pmsg->pmi->src_ ),
-			endit = world_w().end_adjacent_nodes_w( *pmsg->pmi->src_ );
+		for( it = world_w().begin_adjacent_nodes_w( *pmsg->pmi_->src_ , EdgeModel::CD_OUT),
+			endit = world_w().end_adjacent_nodes_w( *pmsg->pmi_->src_ );
 			it != endit;
 		++it )
 			{
-			if(pmsg->pmi->src_->id()!= it->id())
+			if(pmsg->pmi_->src_->id()!= it->id())
 				pmsg->push_new_destination( &(*it) );
 			}
 		}
