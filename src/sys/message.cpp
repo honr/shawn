@@ -15,6 +15,7 @@ namespace shawn
    Message::
    Message()
       : source_      ( NULL ),
+        sender_proc_ ( NULL ),
         stamp_round_ ( -1 ),
         stamp_time_  ( -1.0 ),
 		  size_ ( 1 )
