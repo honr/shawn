@@ -51,7 +51,7 @@ namespace shawn
 		sending_jitter = sc.environment().optional_double_param( "jitter_upper_bound",sending_jitter );
 		double sending_jitter_lb = sc.environment().optional_double_param( "jitter_lower_bound",0.001 );
 		//if (sending_jitter > 0.0) assert(sending_jitter >= sending_jitter_lb); 
-		int max_sending_attempts =  sc.environment().optional_int_param("max_sending_attempts",5);
+		int max_sending_attempts =  sc.environment().optional_int_param("max_sending_attempts",3);
 		int backoff_factor_base =  sc.environment().optional_int_param("backoff_factor_base",1);
 		return new CsmaTransmissionModel(bandwidth,backoff,sending_jitter,sending_jitter_lb,max_sending_attempts,backoff_factor_base);
    }

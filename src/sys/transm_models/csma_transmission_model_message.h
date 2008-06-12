@@ -43,6 +43,7 @@ namespace shawn{
 			double duration_;
 			bool sending_;
 			int sending_attempts_;
+			bool collision_;
 
 			/**
 			*@brief construction of structure csma_msg
@@ -53,7 +54,7 @@ namespace shawn{
 			csma_msg(){}
 			csma_msg( TransmissionModel::MessageInfo* mi, double duration,double backoff):
 			  pmi_(mi), duration_(duration), deliver_time_(mi->time_), sending_(false),
-			  backoff_(random(0.001,backoff)), sending_attempts_(0)
+			  backoff_(random(0.001,backoff)), sending_attempts_(0), collision_(false)
 				{
 				}
 
