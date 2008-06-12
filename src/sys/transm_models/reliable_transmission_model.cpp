@@ -123,7 +123,7 @@ namespace shawn
             ABORT_INCONSISTENT_CONFIGURATION("Unicast is not supported by the reliable transmission model. Implement it -> NOW.");
         }
         //std::cout << "deliver one, now " << world_w().scheduler_w().current_time() << std::endl;
-        const Message* m = dynamic_cast<const Message*>(mi.msg_.get());
+        const Message* m = mi.msg_.get();
 		if (m->has_sender_proc())
         	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(mi.msg_) );
         

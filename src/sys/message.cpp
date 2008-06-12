@@ -86,14 +86,6 @@ namespace shawn
       return *sender_proc_;
    }
    // ----------------------------------------------------------------------
-   bool
-   Message::
-   has_sender_proc( void )
-      const throw()
-   {
-      return sender_proc_ != NULL;
-   }
-   // ----------------------------------------------------------------------
    int
    Message::
    timestamp_simulation_round( void )

@@ -107,7 +107,8 @@ namespace shawn
        *  still NULL..
        */
       bool has_sender_proc( void )
-         const throw();
+         const throw(){return sender_proc_ != NULL;}
+      
       /** Simulation round when message was sent.
        *  Set via set_timestamp() automatically from within
        *  Processor::send() resp. Node::send().

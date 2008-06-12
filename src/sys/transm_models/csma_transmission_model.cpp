@@ -128,7 +128,7 @@ namespace shawn
 			if(msg->isSending())
 			{
 				// TODO: Is this the correct position to indicate that the message has been sent?
-				const Message* m = dynamic_cast<const Message*>(msg->pmi->msg_.get());
+				const Message* m = msg->pmi->msg_.get();
 				if (m->has_sender_proc())
 		        	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi->msg_) );
 				

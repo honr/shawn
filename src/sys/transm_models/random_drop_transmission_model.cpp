@@ -71,7 +71,7 @@ namespace shawn
         received_++;
         
         // TODO: What should be done if there are several transmission models in use?
-        const Message* m = dynamic_cast<const Message*>(mi.msg_.get());
+        const Message* m = mi.msg_.get();
 		if (m->has_sender_proc())
         	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(mi.msg_) );
         
