@@ -12,7 +12,7 @@
 #include "sys/event_scheduler.h"
 #include <sys/misc/dynamic_node_array.h>
 #include "sys/transm_models/csma_transmission_model_message.h"
-#include <set>
+#include <list>
 
 namespace shawn
 {
@@ -90,15 +90,7 @@ namespace shawn
         virtual void deliver_messages() throw();
 		///@}
 
-		///@name Delivers a message.
-		/**
-		* This method implements the CSMA/CA algorithm.
-		* The processor listens if a neighbor is sending. 
-		* If no neighbor is sending, it will deliver its message, otherwise
-		* it will delay the message to the end of the transmission plus a random backoff.
-		*@param msg Pointer to the message to be send
-		*/
-		void deliver(csma_msg* msg) throw();
+	
 		///}
 		private:
 		///@name Method which tests if medium is free
@@ -108,7 +100,20 @@ namespace shawn
 		* If medium is free, message is set to sending otherwise not.
 		*@param msg Pointer to the message to be send
 		*/
-		void listening(csma_msg* msg) throw();
+	//	void listening(csma_msg* msg) throw();
+			
+			
+		///@name Delivers a message.
+		/**
+		* This method implements the CSMA/CA algorithm.
+		* The processor listens if a neighbor is sending. 
+		* If no neighbor is sending, it will deliver its message, otherwise
+		* it will delay the message to the end of the transmission plus a random backoff.
+		*@param msg Pointer to the message to be send
+		*/
+		void start_send(csma_msg* msg) throw();
+		void end_send(csma_msg* msg) throw();
+			
 		///}
 		///@name Method in which a given node will receive a message
 		///@{
@@ -119,18 +124,23 @@ namespace shawn
 		*@param target Pointer to the target node
 		*@param msg Pointer to the message to be send
 		*/
-		void receive(Node* target, csma_msg* msg) throw();
+		void start_receive(Node* target, csma_msg* msg) throw();
+		void end_receive(Node* target, csma_msg* msg) throw();
 		///@}
 
+		 /**
+		 */ 
+        void handle_next_message(csma_msg *new_msg) throw();
+		///@}
 		/**
 		 *@brief Find the neighbors of the node who send a message
 		 *
 		 *Find all the destinations of a new-coming message, which are the neighbours of its source node
 		 *@param pmsg the message whose source node's neighbors to be determined
 		 */
-		void find_destinations( csma_msg* pmsg );
+	//	void find_destinations( csma_msg* pmsg );
 		
-
+/*
 		///Number of received messages
 		int received_;
 
@@ -151,7 +161,7 @@ namespace shawn
 
 		///The delay of last message
 		double last_delay_;
-
+*/
 		///Backoff that will be waited after a message has been delayed
 		double backOff_;
 		///Bandwidth, defines the throughput
@@ -168,9 +178,21 @@ namespace shawn
 		int backoff_factor_base_;
 
 		///The messages that have been sent by the nodes and are waiting for delivery
-		typedef std::set<csma_msg*> MessageList;
+		typedef std::list<csma_msg*> MessageList;
+		
+		class CsmaState
+		{
+		public: 
+			CsmaState(): outgoing_messages_(MessageList()), destinations_(std::set<Node*>()), current_message_(NULL), busy_until_(0)
+			{}
+			MessageList outgoing_messages_;
+			std::set<Node*> destinations_;
+			csma_msg *current_message_;
+			double busy_until_;
+
+		} ;
 		/// List of nodes in transmission range.
-		DynamicNodeArray<MessageList>*  neighbors_;
+		DynamicNodeArray<CsmaState>*  nodes_;
 	};
 }
 #endif
