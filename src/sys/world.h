@@ -67,8 +67,8 @@ public:
       SimulationTaskList;
       ///
       typedef
-      std::set<NodeChangeListener*>
-      NodeChangeListenerSet;
+      std::list<NodeChangeListener*>
+      NodeChangeListenerList;
 
       ///@name construction / destruction
       ///@{
@@ -87,7 +87,7 @@ public:
       virtual void add_node( Node& ) throw(std::logic_error);
       /** Removes a node from the world. First, the observers are informed
        *  that the node will no longer be available. Then, the associated
-       *  members of the NodeChangeListenerSet are informed. At last, the
+       *  members of the NodeChangeListenerList are informed. At last, the
        *  node is destroyed and marked as deleted in the internal
        *  representation.
        *
@@ -353,7 +353,7 @@ public:
       ///
       std::string uuid_;
       ///
-      NodeChangeListenerSet node_change_listeners_;
+      NodeChangeListenerList node_change_listeners_;
       ///
       std::set<std::string> default_processors_;
       ///@}

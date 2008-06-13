@@ -169,7 +169,7 @@ namespace shawn
       }
 
       // Notify the registered listeners that a new node has been added
-      for ( NodeChangeListenerSet::iterator
+      for ( NodeChangeListenerList::iterator
                it = node_change_listeners_.begin();
                it != node_change_listeners_.end();
                ++it )
@@ -182,7 +182,7 @@ namespace shawn
       throw( std::logic_error )
    {
       // Notify the registered listeners that a node is going to be removed
-      for ( NodeChangeListenerSet::iterator
+      for ( NodeChangeListenerList::iterator
                it = node_change_listeners_.begin();
                it != node_change_listeners_.end();
                ++it )
@@ -765,7 +765,7 @@ namespace shawn
    add_node_change_listener( NodeChangeListener& ncl )
       throw()
    {
-      node_change_listeners_.insert(&ncl);
+      node_change_listeners_.push_back(&ncl);
    }
    // ----------------------------------------------------------------------
    void
@@ -773,9 +773,8 @@ namespace shawn
    remove_node_change_listener( NodeChangeListener& ncl )
       throw()
    {
-      assert( node_change_listeners_.find(&ncl) !=
-              node_change_listeners_.end() );
-      node_change_listeners_.erase(&ncl);
+      assert( node_change_listeners_.find(&ncl) != node_change_listeners_.end() );
+      node_change_listeners_.remove(&ncl);
       if( ncl.invalidate() )
          delete &ncl;
    }
@@ -785,9 +784,7 @@ namespace shawn
    invalidate_node_change_listeners( void )
       throw()
    {
-      for( NodeChangeListenerSet::iterator it = node_change_listeners_.begin();
-           it != node_change_listeners_.end();
-           ++it )
+      for( NodeChangeListenerList::iterator it = node_change_listeners_.begin(); it != node_change_listeners_.end(); ++it )
          if( (**it).invalidate() )
             delete *it;
    }

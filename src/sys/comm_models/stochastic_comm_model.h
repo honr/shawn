@@ -9,14 +9,15 @@
 #ifndef __SHAWN_SYS_COMM_MODELS_STOCHASTIC_COMM_MODEL_H
 #define __SHAWN_SYS_COMM_MODELS_STOCHASTIC_COMM_MODEL_H
 
+#include "sys/misc/random/uniform_random_variable.h"
 #include "sys/communication_model.h"
-#include <vector>
-
+#include "sys/misc/dynamic_node_array.h"
+#include "sys/misc/node_change_listener.h"
+#include <set>
 
 
 namespace shawn
 {
-
 
    class StochasticCommunicationModel
       : public CommunicationModel
@@ -30,64 +31,54 @@ namespace shawn
       ///
       virtual ~StochasticCommunicationModel();
       ///
-      virtual void
-      init( void )
-         throw();
+      virtual void init( void ) throw();
       ///@}
 
       
       ///@name communication range
       ///@{
       ///
-      virtual void
-      set_transmission_range( double )
-         throw();
+      virtual void set_transmission_range( double ) throw();
       ///
-      virtual double
-      transmission_range( void )
-         const throw();
+      virtual double transmission_range( void ) const throw();
       ///@}
 
       ///@name CommunicationModel interface
       ///@{
       ///
-      virtual bool
-      can_communicate_bidi( const Node&,
-                            const Node& )
-         const throw();
+      virtual bool can_communicate_bidi( const Node&, const Node& ) const throw();
+      
       ///
-      virtual bool
-      can_communicate_uni( const Node&,
-                           const Node& )
-         const throw();
+      virtual bool can_communicate_uni( const Node&, const Node& ) const throw();
+      
       /// returns whether communication_upper_bound() returns a useful value
-      virtual bool
-      exists_communication_upper_bound( void )
-         const throw();
+      virtual bool exists_communication_upper_bound( void ) const throw();
+      
       /** if exists_communication_upper_bound(), nodes whose euclidean
        *  distance exceeds communication_upper_bound() can never communicate
        *  in any direction
        */
-      virtual double
-      communication_upper_bound( void )
-         const throw();
+      virtual double communication_upper_bound( void ) const throw();
+      
       ///
-      virtual bool
-      is_status_available_on_construction( void )
-         const throw();
+      virtual bool is_status_available_on_construction( void ) const throw();
+   
       ///@}
 
    private:
       double range_;
 	  int mode_;
 	  double smooth_factor_;
-	  bool ready_;
-//	  std::vector<std::vector<bool> >* connectivity_;
-	  std::vector<std::vector<bool> > connectivity_;
+	  bool support_mobility_;
+	  UniformRandomVariable urv;
+	  DynamicNodeArray< std::set<const Node*> >*  connectivity_;
 
-	  //list<vector<bool> > connectivity_;
-
+	  ///
 	  void calculate_connectivity();
+
+	  ///
+	  bool has_connection( const Node& u, const Node& v ) const throw() ;
+	  
    };
    
 
