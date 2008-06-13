@@ -73,7 +73,7 @@ namespace shawn
         // TODO: What should be done if there are several transmission models in use?
         const Message* m = mi.msg_.get();
 		if (m->has_sender_proc())
-        	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(mi.msg_) );
+        	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(mi.msg_), shawn::Processor::SHAWN_TX_STATE_SUCCESS, 1 );
         
         if( drop_message(mi) )
             dropped_++;

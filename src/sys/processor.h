@@ -45,6 +45,39 @@ namespace shawn
 #endif
    {
    public:
+	   /** 
+     * Collection of possible return values of the State of the radio. The are handed
+     * over the a Sender's confirm method if a Sender was handed over when callign Radio::send. */
+    typedef enum 
+      {
+		SHAWN_TX_STATE_SUCCESS = 0,             /**< Success (0x00) */
+		SHAWN_TX_STATE_BUFFER_OVERFLOW = 1,		/**< Radio send queue full (0x01) */
+		SHAWN_TX_STATE_RADIO_NOT_ACTIVE = 2,	/**< Radio switched off (0x00) */
+		SHAWN_TX_STATE_BEACON_LOSS = 0xE0,      /**< Beacon loss after synchronisation request (0xE0) */
+		SHAWN_TX_STATE_CHANNEL_ACCESS_FAILURE,  /**< CSMA/CA channel access failure (0xE1) */
+		SHAWN_TX_STATE_DENIED,                  /**< GTS request denied (0xE2) */
+		SHAWN_TX_STATE_DISABLE_TRX_FAILURE,     /**< Could not disable transmit or receive (0xE3) */
+		SHAWN_TX_STATE_FAILED_SECURITY_CHECK,   /**< Incoming frame failed security check (0xE4) */
+		SHAWN_TX_STATE_FRAME_TOO_LONG,          /**< Frame too long after security processing to be sent (0xE5) */
+		SHAWN_TX_STATE_INVALID_GTS,             /**< GTS transmission failed (0xE6) */
+		SHAWN_TX_STATE_INVALID_HANDLE,          /**< Purge request failed to find entry in queue (0xE7) */
+		SHAWN_TX_STATE_INVALID_PARAMETER,       /**< Out-of-range parameter in primitive (0xE8) */
+		SHAWN_TX_STATE_NO_ACK,                  /**< No acknowledgement received when expected (0xE9) */
+		SHAWN_TX_STATE_NO_BEACON,               /**< Scan failed to find any beacons (0xEA) */
+		SHAWN_TX_STATE_NO_DATA,                 /**< No response data after a data request (0xEB) */
+		SHAWN_TX_STATE_NO_SHORT_ADDRESS,        /**< No allocated short address for operation (0xEC) */
+		SHAWN_TX_STATE_OUT_OF_CAP,              /**< Receiver enable request could not be executed as CAP finished (0xED) */
+		SHAWN_TX_STATE_PAN_ID_CONFLICT,         /**< PAN ID conflict has been detected (0xEE) */
+		SHAWN_TX_STATE_REALIGNMENT,             /**< Coordinator realignment has been received (0xEF) */
+		SHAWN_TX_STATE_TRANSACTION_EXPIRED,     /**< Pending transaction has expired and data discarded (0xF0) */
+		SHAWN_TX_STATE_TRANSACTION_OVERFLOW,    /**< No capacity to store transaction (0xF1) */
+		SHAWN_TX_STATE_TX_ACTIVE,               /**< Receiver enable request could not be executed as in transmit state (0xF2) */
+		SHAWN_TX_STATE_UNAVAILABLE_KEY,         /**< Appropriate key is not available in ACL (0xF3) */
+		SHAWN_TX_STATE_UNSUPPORTED_ATTRIBUTE,   /**< PIB Set/Get on unsupported attribute (0xF4) */
+		SHAWN_TX_STATE_BUSY,          			/**< an other error occured (0xF5) */
+		SHAWN_TX_STATE_UNKNOWN_ERROR          	/**< an other error occured (0xF6) */
+      } tx_state;
+			
 
       enum ProcessorState
          {
@@ -112,7 +145,7 @@ namespace shawn
 		*  message to be of "his own type". This makes the Node stop
 		*  processing the message by passing it to all his Processors.
 		*/
-		virtual bool process_sent_indication( const ConstMessageHandle& ) throw();
+		virtual bool process_sent_indication( const ConstMessageHandle&, tx_state state, int tries ) throw();
 
 		/** Called once in each simulation round. Used for periodic tasks
 		*  like collecting sensor values and generating messages if someting

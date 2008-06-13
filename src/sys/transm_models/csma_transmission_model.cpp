@@ -114,10 +114,9 @@ namespace shawn
 			  {
 				    //std::cout <<"csma: "<< msg->pmi_->src_->id() << " sending done at " << world().current_time() << std::endl;
 			
-					// TODO: Is this the correct position to indicate that the message has been sent?
-	                const Message* m = msg->pmi_->msg_.get();
+					const Message* m = msg->pmi_->msg_.get();
 	                if (m->has_sender_proc())
-	                (m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi_->msg_) );
+	                	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi_->msg_), shawn::Processor::SHAWN_TX_STATE_SUCCESS, msg->sending_attempts_ );
 	                
 	                deliver_num_++;
 	                for(unsigned int i=0; i< msg->destinations_.size(); i++)
@@ -156,7 +155,9 @@ namespace shawn
 	void CsmaTransmissionModel::
 		listening(csma_msg* msg) throw(){
 			double nextFreeTime=world().current_time();
-			//std::cout <<"csma: "<< msg->pmi_->src_->id() << " listening at " << nextFreeTime << std::endl;
+#ifdef SHAWN_CSMA_DEBUG
+			std::cout <<"csma: "<< msg->pmi_->src_->id() << " listening at " << nextFreeTime << std::endl;
+#endif
 			bool sending = false;
 			//All neighbors are checked here
 			EdgeModel::adjacency_iterator it, endit;
@@ -168,46 +169,53 @@ namespace shawn
 				if(msg->pmi_->src_->id() ==it->id()) continue;
 				MessageList* m = &((*neighbors_)[*it]);
 				MessageList::iterator iter = m->begin();
-				//Each neighbors messages are tested
+				//All neighbor's messages are tested
 				for(; iter!=m->end();++iter){
 					csma_msg* temp = *iter;
 					if(msg->deliver_time_ > temp->deliver_time_ && msg->deliver_time_ <= temp->deliver_time_ + temp->duration_)
-						{
-						//std::cout <<"csma: "<< "Node " << temp->pmi_->src_->id() << " is interfering with me: " << msg->pmi_->src_->id() << std::endl;
+					{
+#ifdef SHAWN_CSMA_DEBUG
+						std::cout <<"csma: "<< "Node " << temp->pmi_->src_->id() << " is interfering with me: " << msg->pmi_->src_->id() << std::endl;
+#endif
 						double time_fin = temp->deliver_time_ + temp->duration_;
 						sending = true;
 						nextFreeTime = (nextFreeTime>= time_fin)? (nextFreeTime):(time_fin);
-						}
-// Case when two messages are send at the same time is dealt with at the receiving node.
+					}
+// Case when two messages are send at the same time is treated at the receiving node.
 					}
 				}
 			if(!sending)
 			{
-				//std::cout <<"csma: "<< msg->pmi_->src_->id() << " start sending at " << world().current_time() << std::endl;
+#ifdef SHAWN_CSMA_DEBUG
+				std::cout <<"csma: "<< msg->pmi_->src_->id() << " start sending at " << world().current_time() << std::endl;
+#endif
 				//If no neighbor is sending a message this message will be send
 				msg->setSending();
 			}
 			else{
-			    //std::cout <<"csma: "<< msg->pmi_->src_->id() << " media access fail at " << world().current_time() << std::endl;
-			  
+#ifdef SHAWN_CSMA_DEBUG
+			    std::cout <<"csma: "<< msg->pmi_->src_->id() << " media access fail at " << world().current_time() << std::endl;
+#endif			  
 				if(msg->sending_attempts_< max_sending_attempts_)
 			      { 
 
-			        msg->deliver_time_= world().current_time() + msg->backoff_ * (int)(pow(backoff_factor_base_,msg->sending_attempts_)) ;
-			        //New Event to now + backoff
-	                ++msg->sending_attempts_;
-	                event_handle_ = world_w().scheduler_w().new_event(*this,msg->deliver_time_,msg);
+					  msg->deliver_time_= world().current_time() + msg->backoff_ * (int)(pow(backoff_factor_base_,msg->sending_attempts_)) ;
+				      //New Event to now + backoff
+		              ++msg->sending_attempts_;
+		              event_handle_ = world_w().scheduler_w().new_event(*this,msg->deliver_time_,msg);
 				
 			      }
-			      else{
-			    	  //std::cout<< "CSMA: Node "<<msg->pmi_->src_->id() << ": Maximum number of sending attempts have been reached. Message will be dropped."<< std::endl;
-                                const Message* m = msg->pmi_->msg_.get();
-                                if (m->has_sender_proc())
-                                (m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi_->msg_) );
-			        //  Maximum number of sending atempts have been reached 
-			        // therefore message will be dropped.
-			        
-			        (*neighbors_)[*(msg->pmi_->src_)].erase(msg);
+			      else
+			      {
+				      //std::cout<< "CSMA: Node "<<msg->pmi_->src_->id() << ": Maximum number of sending attempts have been reached. Message will be dropped."<< std::endl;
+	                  const Message* m = msg->pmi_->msg_.get(); 
+	                  if (m->has_sender_proc())
+	                  {
+	                	  (m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi_->msg_), shawn::Processor::SHAWN_TX_STATE_CHANNEL_ACCESS_FAILURE, msg->sending_attempts_ );
+	                  }
+	                  //  Maximum number of sending atempts have been reached 
+				      // therefore message will be dropped.
+				      (*neighbors_)[*(msg->pmi_->src_)].erase(msg);
 			        
 			      }
 			}
@@ -227,10 +235,10 @@ namespace shawn
 				it != endit;
 			++it )
 			{
-				//std::cout <<"csma: msg from "<< msg->pmi_->src_->id() << " for " << target->id() << " iterating " << std::endl;
-			  
 				if(msg->pmi_->src_->id() != it->id())
 				{
+					//std::cout <<"csma: msg from "<< msg->pmi_->src_->id() << " for " << target->id() << " testing neighbour " << it->id() << std::endl;
+			  
 					MessageList* m = &((*neighbors_)[*it]);
 					MessageList::iterator iter = m->begin();
 					//Here all messages of one node is checked
@@ -239,16 +247,15 @@ namespace shawn
 						// First condition ckecks if a node not adjacent to the sender is delivering a msg. to target at the moment 
 						// as well as if sender and receiver are delivering at the same moment.
 						// This procedure correlates with reality. Both nodes are sending and cannot "hear" the other one
-						//std::cout <<"csma: msg from "<< msg->pmi_->src_->id() << " for " << target->id() << " collision with " << it->id() << std::endl;
-						if ( ((msg->deliver_time_ <= (*iter)->deliver_time_) && (msg->deliver_time_ + msg->duration_ >= (*iter)->deliver_time_))
-								|| ((msg->deliver_time_ <= (*iter)->deliver_time_ + (*iter)->duration_) && (msg->deliver_time_ + msg->duration_ >= (*iter)->deliver_time_ + (*iter)->duration_))
-								|| ((msg->deliver_time_ >= (*iter)->deliver_time_) && (msg->deliver_time_ + msg->duration_ <= (*iter)->deliver_time_ + (*iter)->duration_)))
+						//if((msg->deliver_time >= (*iter)->deliver_time && msg->deliver_time <= (*iter)->deliver_time + (*iter)->duration_) )
+						//if ( ((msg->deliver_time_ <= (*iter)->deliver_time_) && (msg->deliver_time_ + msg->duration_ >= (*iter)->deliver_time_))
+							//	|| ((msg->deliver_time_ <= (*iter)->deliver_time_ + (*iter)->duration_) && (msg->deliver_time_ + msg->duration_ >= (*iter)->deliver_time_ + (*iter)->duration_))
+							//	|| ((msg->deliver_time_ >= (*iter)->deliver_time_) && (msg->deliver_time_ + msg->duration_ <= (*iter)->deliver_time_ + (*iter)->duration_)))
+						if ( (msg->deliver_time_ + msg->duration_ >= (*iter)->deliver_time_ ) && (*iter)->isSending())
 						{
 							//std::cout <<"csma: msg from "<< msg->pmi_->src_->id() << " for " << target->id() << " collision with " << it->id() << std::endl;
-			  
 							(*iter)->collision_ = true;
 							inUse = true;
-							
 						}					
 					}
 				

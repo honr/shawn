@@ -18,7 +18,7 @@ namespace shawn
         sender_proc_ ( NULL ),
         stamp_round_ ( -1 ),
         stamp_time_  ( -1.0 ),
-		  size_ ( 1 )
+        size_ ( 1 )
    {}
    // ----------------------------------------------------------------------
    Message::

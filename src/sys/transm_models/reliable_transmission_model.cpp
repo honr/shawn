@@ -125,7 +125,7 @@ namespace shawn
         //std::cout << "deliver one, now " << world_w().scheduler_w().current_time() << std::endl;
         const Message* m = mi.msg_.get();
 		if (m->has_sender_proc())
-        	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(mi.msg_) );
+        	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(mi.msg_), shawn::Processor::SHAWN_TX_STATE_SUCCESS, 1 );
         
         for( EdgeModel::adjacency_iterator it = world_w().begin_adjacent_nodes_w( *mi.src_ ),
              endit = world_w().end_adjacent_nodes_w( *mi.src_ ); it != endit; ++it )

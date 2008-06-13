@@ -145,7 +145,8 @@ namespace shawn
       mutable Processor* sender_proc_;
       int stamp_round_;
       double stamp_time_;
-		int size_;
+      int size_;
+      
    };
 
 

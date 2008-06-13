@@ -82,7 +82,7 @@ namespace shawn
 	// ----------------------------------------------------------------------
 	bool
 		Processor::
-		process_sent_indication( const ConstMessageHandle& )
+		process_sent_indication( const ConstMessageHandle&, tx_state state, int tries )
 		throw()
 	{ return false; }
 	
