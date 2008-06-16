@@ -9,6 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <limits>
+#include <algorithm>
 #include "sys/world.h"
 #include "sys/constants.h"
 #include "sys/event_scheduler.h"
@@ -773,7 +774,8 @@ namespace shawn
    remove_node_change_listener( NodeChangeListener& ncl )
       throw()
    {
-      assert( node_change_listeners_.find(&ncl) != node_change_listeners_.end() );
+	  assert ( std::find( node_change_listeners_.begin(), node_change_listeners_.end(), &ncl) != 
+		       node_change_listeners_.end() );
       node_change_listeners_.remove(&ncl);
       if( ncl.invalidate() )
          delete &ncl;
