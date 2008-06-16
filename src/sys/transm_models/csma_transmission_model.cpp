@@ -13,6 +13,8 @@
 #include "sys/simulation/simulation_environment.h"
 #include <cmath>
 
+//#define CSMA_DEBUG
+
 namespace shawn
 	{
 	CsmaTransmissionModel::
@@ -122,7 +124,7 @@ namespace shawn
 				
 				while( ((*nodes_)[*(msg->pmi_->src_)].busy_until_ > msg->deliver_time_) && (msg->sending_attempts_< max_sending_attempts_))
 				{
-					msg->deliver_time_= world().current_time() + msg->backoff_ * (int)(pow(backoff_factor_base_,msg->sending_attempts_)) ;
+					msg->deliver_time_= world().current_time() + shawn::uniform_random_0i_1i()*msg->backoff_ * (int)(pow(backoff_factor_base_,msg->sending_attempts_)) ;
 				    //New Event to now + backoff
 		            ++msg->sending_attempts_;
 				}
@@ -149,11 +151,11 @@ namespace shawn
 			  {
 				    
 					const Message* m = msg->pmi_->msg_.get();
-	                if (m->has_sender_proc())
-	                	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi_->msg_), shawn::Processor::SHAWN_TX_STATE_SUCCESS, msg->sending_attempts_ );
 	                
 	                //deliver_num_++;
 	                end_send(msg);
+	                if (m->has_sender_proc())
+	                	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi_->msg_), shawn::Processor::SHAWN_TX_STATE_SUCCESS, msg->sending_attempts_ );
 	                
 	                /*
 	                for(unsigned int i=0; i< msg->destinations_.size(); i++)
@@ -179,7 +181,9 @@ namespace shawn
 	void CsmaTransmissionModel::
 		start_send(csma_msg* msg) throw()
 		{
-		//std::cout <<"csma: "<< msg->pmi_->src_->id() << " start sending at " << world().current_time() << std::endl;
+#ifdef CSMA_DEBUG
+		std::cout <<"csma: "<< msg->pmi_->src_->id() << " start sending at " << world().current_time() << std::endl;
+#endif				
 			
 		//TODO: Start sending at the exactly at the same time?
 			(*nodes_)[*(msg->pmi_->src_)].busy_until_ = msg->deliver_time_ + msg->duration_;
@@ -215,7 +219,9 @@ namespace shawn
 	void CsmaTransmissionModel::
 		end_send(csma_msg* msg) throw()
 		{
-			//std::cout <<"csma: "<< msg->pmi_->src_->id() << " sending done at " << world().current_time() << std::endl;
+#ifdef CSMA_DEBUG
+			std::cout <<"csma: "<< msg->pmi_->src_->id() << " end  sending at " << world().current_time() << std::endl;
+#endif				
 			
 			if ((*nodes_)[*(msg->pmi_->src_)].current_message_ == msg)
 			{
@@ -341,10 +347,15 @@ namespace shawn
 			if ((*nodes_)[*target].current_message_ == msg)
 			{
 				(*nodes_)[*target].current_message_ = NULL;
+#ifdef CSMA_DEBUG
+				std::cout <<"csma:     "<< target->id()<< " receives msg from " <<  msg->pmi_->src_->id() << " at " << world().current_time() << std::endl;
+#endif				
 				target->receive(ConstMessageHandle(msg->pmi_->msg_));
 			}
-			//else
-				//std::cout << " collision " << std::endl;
+#ifdef CSMA_DEBUG
+			else
+				std::cout <<"csma: ---- COLLISION at "<< target->id()<< " of msg from " <<  msg->pmi_->src_->id() << " at " << world().current_time() << std::endl;
+#endif				
 			
 		}
 	
