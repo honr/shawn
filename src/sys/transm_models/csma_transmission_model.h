@@ -183,12 +183,18 @@ namespace shawn
 		class CsmaState
 		{
 		public: 
-			CsmaState(): outgoing_messages_(MessageList()), destinations_(std::set<Node*>()), current_message_(NULL), busy_until_(0)
+			CsmaState(): 
+				outgoing_messages_(MessageList()), 
+				destinations_(std::set<Node*>()), 
+				current_message_(NULL), 
+				busy_until_(0),
+				clean_rx_busy_until_(0)
 			{}
 			MessageList outgoing_messages_;
 			std::set<Node*> destinations_;
 			csma_msg *current_message_;
 			double busy_until_;
+			double clean_rx_busy_until_;
 
 		} ;
 		/// List of nodes in transmission range.

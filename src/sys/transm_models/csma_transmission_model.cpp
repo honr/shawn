@@ -13,6 +13,7 @@
 #include "sys/simulation/simulation_environment.h"
 #include <cmath>
 
+
 //#define CSMA_DEBUG
 
 namespace shawn
@@ -326,7 +327,7 @@ namespace shawn
 			if ( (*nodes_)[*target].busy_until_ <= msg->deliver_time_ ) 
 			{
 				(*nodes_)[*target].current_message_ = msg;
-				
+				(*nodes_)[*(msg->pmi_->src_)].clean_rx_busy_until_ = msg->deliver_time_ + msg->duration_;
 			}
 			else
 			{
@@ -362,8 +363,11 @@ namespace shawn
 	void CsmaTransmissionModel::
 	handle_next_message(csma_msg *new_msg) throw()
 	{
-		new_msg->pmi_->time_ = world().current_time();
-		// std::cout << "hande next:: duration " << new_msg->duration_ <<  std::endl;
+#ifdef CSMA_DEBUG		
+		if (((*nodes_)[*(new_msg->pmi_->src_)].clean_rx_busy_until_) > world().current_time())
+			std::cout << "hande next:: delayed csma "  <<  std::endl;
+#endif
+		new_msg->pmi_->time_ = std::max((*nodes_)[*(new_msg->pmi_->src_)].clean_rx_busy_until_, world().current_time());
 		// If sending jitter is set, deliver time will be changed. ( Needed to avoid same deliver times due to 
 		// processors sending at the beginning of a round.)
 		if ( sending_jitter_ > 0.0 )
