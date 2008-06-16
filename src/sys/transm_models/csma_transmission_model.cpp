@@ -137,6 +137,9 @@ namespace shawn
 						world_w().scheduler_w().new_event(*this, msg->deliver_time_ ,msg);
 					else
 					{
+						const Message* m = msg->pmi_->msg_.get();
+						if (m->has_sender_proc())
+		                	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi_->msg_), shawn::Processor::SHAWN_TX_STATE_CHANNEL_ACCESS_FAILURE, msg->sending_attempts_ );
 						(*nodes_)[*(msg->pmi_->src_)].outgoing_messages_.pop_front();
 						if (!((*nodes_)[*(msg->pmi_->src_)].outgoing_messages_).empty())
 						{
