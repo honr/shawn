@@ -86,7 +86,6 @@ namespace shawn
       return pl_type_;
    }
    // ----------------------------------------------------------------------
-
    int
    SimulationTaskLocalizationAnchorPlacement::
    outer_grid( SimulationController& sc, int anchor_cnt )
@@ -115,8 +114,6 @@ namespace shawn
       return anchor_cnt;
    }
    // ----------------------------------------------------------------------
-
-
    int
    SimulationTaskLocalizationAnchorPlacement::
    inner_grid( SimulationController& sc, int anchor_cnt )
@@ -145,16 +142,14 @@ namespace shawn
       return anchor_cnt;
    }
    // ----------------------------------------------------------------------
-
-
    void
    SimulationTaskLocalizationAnchorPlacement::
    random_set( SimulationController& sc, int anchor_cnt )
       throw()
    {
-	   assert(anchor_cnt ==0);
-	   if ( anchor_cnt == 0 )
-		   return;
+      assert( anchor_cnt != 0 );
+      if ( anchor_cnt == 0 )
+         return;
 
       int cnt = 0;
       LocalizationProcessorType *lpt;
@@ -199,7 +194,7 @@ namespace shawn
       if ( best ) best->set_proc_type( LocalizationProcessorType::anchor );
    }
    // ----------------------------------------------------------------------
-int
+   int
 	SimulationTaskLocalizationAnchorPlacement::
 	tag(SimulationController& sc)
 	   throw()
