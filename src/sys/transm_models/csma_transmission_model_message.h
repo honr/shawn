@@ -39,7 +39,7 @@ namespace shawn{
 			///The vector which stores the neighbours of the source node
 			//std::vector<msg_destination*> destinations_;
 			double deliver_time_;
-			double backoff_;
+//			double backoff_;
 			double duration_;
 			bool sending_;
 			int sending_attempts_;
@@ -51,11 +51,14 @@ namespace shawn{
 			*a negative value to show that the message has not got any backoff time yet.
 			*/
 			csma_msg(){}
-			csma_msg( TransmissionModel::MessageInfo* mi, double duration,double backoff):
-			  pmi_(mi), duration_(duration), deliver_time_(mi->time_), sending_(false),
-			  backoff_(random(0.001,backoff)), sending_attempts_(0)
-				{
-				}
+			csma_msg( TransmissionModel::MessageInfo* mi, double duration) :
+				pmi_(mi), 
+				duration_(duration), 
+				deliver_time_(mi->time_), 
+				sending_(false),
+				sending_attempts_(0)
+			{
+			}
 
 			/**
 			*@brief destruction of structure csma_msg
@@ -77,10 +80,11 @@ namespace shawn{
 			*@brief < Operator for csma_msg
 			*@param msg Other message
 			*/
-			bool operator < ( csma_msg msg )
+			/*bool operator < ( csma_msg msg )
 				{
 				return deliver_time_ < msg.deliver_time_;
 				}
+				*/
 
 			/**
 			*@brief Push a destination node into the vector destination_
@@ -96,6 +100,7 @@ namespace shawn{
 			* @param lowerBound Random value's lowerBound
 			* @param upperBound Random value's upperBound
 			*/
+			
 			double random(double lowerBound, double upperBound) throw(){
 				return (lowerBound + shawn::uniform_random_0i_1i()*(upperBound - lowerBound));
 				}
@@ -109,9 +114,11 @@ namespace shawn{
 			* Returns wether message will be send.
 			* @ret bool
 			*/
+			/*
 			bool isSending(){
 				return sending_;
 				}
+				*/
 			
 		};
 	}

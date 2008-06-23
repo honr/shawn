@@ -212,6 +212,17 @@ namespace shawn
                return;
    }
    // ----------------------------------------------------------------------
+   void
+   Node::
+   receive_dropped( const ConstMessageHandle& cmh )
+      throw()
+   {
+      for( ProcessorList::iterator it = processors_.begin(), endit = processors_.end(); it != endit; ++it )
+         if( (**it).state() == Processor::Active )
+            if( (**it).process_dropped_message(cmh) )
+               return;
+   }
+   // ----------------------------------------------------------------------
    void 
    Node::
    send( const MessageHandle& mh )
@@ -691,13 +702,15 @@ namespace shawn
    Node::
    sync_to_tags( void )
       throw()
-   { ABORT_NOT_IMPLEMENTED; }
+   { ABORT_NOT_IMPLEMENTED; 
+   }
    // ----------------------------------------------------------------------
    void
    Node::
    sync_from_tags( void )
       throw( std::runtime_error )
-   { ABORT_NOT_IMPLEMENTED; }
+   { ABORT_NOT_IMPLEMENTED; 
+   }
    // ----------------------------------------------------------------------
    void
    Node::

@@ -139,6 +139,10 @@ namespace shawn
       ///@}
 	  virtual void setSize( int )throw();
 
+      ///
+      void set_ack( bool ack );
+      ///@}
+	  bool is_ack( );
    private:
 
       mutable Node* source_;
@@ -146,6 +150,7 @@ namespace shawn
       int stamp_round_;
       double stamp_time_;
       int size_;
+      bool ack_;
       
    };
 

@@ -105,6 +105,11 @@ namespace shawn
       virtual void send( const MessageHandle& ) throw();
       ///Called whenever the node receives a message.
       virtual void receive( const ConstMessageHandle& ) throw();
+		/** This method is called if a Node would have received a Message (with 
+		 * regard to the communication model) but that message was dropped by the
+		 * transmission model. Distributes the information to all processors
+		 */
+      virtual void receive_dropped( const ConstMessageHandle& ) throw();
 	  
 	  ///@}
 	  //---------------------------------------------------------------------

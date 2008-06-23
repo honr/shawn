@@ -18,7 +18,8 @@ namespace shawn
         sender_proc_ ( NULL ),
         stamp_round_ ( -1 ),
         stamp_time_  ( -1.0 ),
-        size_ ( 1 )
+        size_( 1 ),
+        ack_(false)
    {}
    // ----------------------------------------------------------------------
    Message::
@@ -144,6 +145,21 @@ namespace shawn
 		size_=size;
    }
 
+   // ----------------------------------------------------------------------
+   void  
+   Message::
+   set_ack( bool ack )
+   {
+	   ack_=ack;
+   }
+   
+   // ----------------------------------------------------------------------
+   bool  
+   Message::
+   is_ack( )
+   {
+	   return ack_;
+   }
 
 }
 

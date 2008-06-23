@@ -16,7 +16,11 @@
 
 namespace shawn
 {
-	/**
+
+
+
+
+/**
 	 *@brief A CsmaTransmissionmodel senses the channel before it delivers a message.
 	 * This class implements the CSMA/CA transmission model.
 	 * A processor waits for the medium to be free before sending. 
@@ -36,8 +40,8 @@ namespace shawn
 	public:
 		///@name construction, destruction and support for life cycle
 		///@{
-		CsmaTransmissionModel(int bandwidth, double backoff, double sending_jitter, double sending_jitter_lb,
-		    int max_sending_attempts, int backoff_factor_base);
+		CsmaTransmissionModel(double short_inter_frame_spacing, double long_inter_frame_spacing, int max_short_inter_frame_spacing_size, int bandwidth, double backoff, double sending_jitter, double sending_jitter_lb, int max_sending_attempts, int backoff_factor_base,int min_backoff_exponent, int max_backoff_exponent);
+
 		~CsmaTransmissionModel();
 		/**
 		 *@brief Initialize the csma transmission model
@@ -111,8 +115,8 @@ namespace shawn
 		* it will delay the message to the end of the transmission plus a random backoff.
 		*@param msg Pointer to the message to be send
 		*/
-		void start_send(csma_msg* msg) throw();
-		void end_send(csma_msg* msg) throw();
+		inline void start_send(csma_msg* msg) throw();
+		inline void end_send(csma_msg* msg) throw();
 			
 		///}
 		///@name Method in which a given node will receive a message
@@ -124,13 +128,13 @@ namespace shawn
 		*@param target Pointer to the target node
 		*@param msg Pointer to the message to be send
 		*/
-		void start_receive(Node* target, csma_msg* msg) throw();
-		void end_receive(Node* target, csma_msg* msg) throw();
+		inline void start_receive(Node* target, csma_msg* msg) throw();
+		inline void end_receive(Node* target, csma_msg* msg) throw();
 		///@}
 
 		 /**
 		 */ 
-        void handle_next_message(csma_msg *new_msg) throw();
+       inline void handle_next_message(csma_msg *new_msg) throw();
 		///@}
 		/**
 		 *@brief Find the neighbors of the node who send a message
@@ -162,6 +166,14 @@ namespace shawn
 		///The delay of last message
 		double last_delay_;
 */
+        ///Duration a short inter frame spacing (SIFS)
+        double short_inter_frame_spacing_;
+
+        ///Duration a long inter frame spacing (LIFS)
+        double long_inter_frame_spacing_;
+        
+        /// maximum packet size of packets followed by a short inter frame spacing
+        int max_short_inter_frame_spacing_size_;
 		///Backoff that will be waited after a message has been delayed
 		double backOff_;
 		///Bandwidth, defines the throughput
@@ -172,29 +184,62 @@ namespace shawn
 		double sending_jitter_;
 
 		double sending_jitter_lb_;
+		
 		// Maximum number of attempts to send a message
 		int max_sending_attempts_;
+		
 		//Factor specifying the base of the factor for increasing backoff 
 		int backoff_factor_base_;
-
+		
+		/// minimum backoff exponent (for first medium access)
+		int min_backoff_exponent_; 
+		
+		/// maximum backoff exponent
+		int max_backoff_exponent_; 
+		
 		///The messages that have been sent by the nodes and are waiting for delivery
 		typedef std::list<csma_msg*> MessageList;
+		
+		DECLARE_HANDLES(NodeInfo);		
+		
+		class NodeInfo : public EventScheduler::EventTag
+		{
+		public:
+			NodeInfo (Node* n): n_(n) {}
+			Node* n_;
+			
+			
+		};
 		
 		class CsmaState
 		{
 		public: 
+			/*CsmaState(CsmaSate& e) :
+				EventScheduler::EventTag(e),
+				outgoing_messages_(e.outgoing_messages_), 
+				destinations_(e.destinations_), 
+				current_message_(e.current_message_), 
+				busy_until_(e.busy_until_),
+				clean_rx_busy_until_(e.clean_rx_busy_until_),
+				ifs_end_(e.ifs_end_)
+			{
+			}*/
 			CsmaState(): 
 				outgoing_messages_(MessageList()), 
 				destinations_(std::set<Node*>()), 
 				current_message_(NULL), 
 				busy_until_(0),
-				clean_rx_busy_until_(0)
+				//clean_rx_busy_until_(0),
+				ifs_end_(0),
+				busy_(false)
 			{}
 			MessageList outgoing_messages_;
 			std::set<Node*> destinations_;
 			csma_msg *current_message_;
 			double busy_until_;
-			double clean_rx_busy_until_;
+			//double clean_rx_busy_until_;
+			double ifs_end_;
+			bool busy_;
 
 		} ;
 		/// List of nodes in transmission range.
