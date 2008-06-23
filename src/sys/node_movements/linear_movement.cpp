@@ -21,9 +21,9 @@ namespace shawn
 #define LM_DEBUG(x);
 
     LinearMovement::
-        LinearMovement()
+		LinearMovement() : event_handle_(NULL)
     {
-        event_handle_ = NULL;
+        //event_handle_ = NULL;
     }
     // ----------------------------------------------------------------------
     LinearMovement::

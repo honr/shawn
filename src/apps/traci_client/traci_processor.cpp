@@ -25,7 +25,7 @@ using namespace shawn;
 namespace traci
 {
    TraCIProcessor::
-	   TraCIProcessor() : disabled_(true)
+	   TraCIProcessor() : disabled_(false)
    {}
    // ----------------------------------------------------------------------
    TraCIProcessor::
@@ -37,7 +37,6 @@ namespace traci
    boot( void )
       throw()
    {
-		// Boot
    }
    // ----------------------------------------------------------------------
    bool

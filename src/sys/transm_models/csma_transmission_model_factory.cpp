@@ -81,6 +81,7 @@ namespace shawn
 			backoff_factor_base = 2;
 			min_backoff_exponent = 3;
 			max_backoff_exponent = 5;
+		}
 		else if( type == "802.11b" )
 		{
 			cout << "CSMA transmission model factory: Setting parameters to fit IEEE 802.11b" << endl;

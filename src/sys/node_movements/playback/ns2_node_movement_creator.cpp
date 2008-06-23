@@ -53,6 +53,7 @@ namespace shawn
         if (! inputfile_->is_open())
         {
             WARN(sc_->logger(), "The File containing the movement orders could not be opened");
+			abort();
             return NULL;
         }
         else

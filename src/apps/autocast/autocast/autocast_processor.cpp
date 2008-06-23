@@ -77,9 +77,9 @@ namespace autocast
 		neighborhood_.set_owner(&owner());
 		fetch_parameters();
 		
-		//double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__boot",0.9);
-		//double ub1 = owner().world().simulation_controller().environment().optional_double_param("_ub1__boot",1.1);
-		update_timer_ = owner_w().world_w().scheduler_w().new_event(*this,fabs(max_startup_time_) * uniform_random(0.9,1.1),NULL);
+		double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__boot",0.9);
+		double ub1 = owner().world().simulation_controller().environment().optional_double_param("_ub1__boot",1.1);
+		update_timer_ = owner_w().world_w().scheduler_w().new_event(*this,fabs(max_startup_time_) * uniform_random(lb2,ub1),NULL);
 		max_iterations_ = owner().world().simulation_controller().environment().required_int_param("max_iterations");
    }
    // ----------------------------------------------------------------------
@@ -122,10 +122,10 @@ namespace autocast
 	   int barker = owner().world().simulation_controller().environment().optional_int_param("_barker__process_message",5);
 
 	   /// Two of the neighborhood should flood the information or answer with unknown data
-	   //double lb1 = owner().world().simulation_controller().environment().optional_double_param("_lb1__process_message",0.0);
-	   //double ub1 = owner().world().simulation_controller().environment().optional_double_param("_ub1__process_message",1.0);
-	   //double factor = owner().world().simulation_controller().environment().optional_double_param("_factor__process_message",1.0);
-	   answer_decision = (neighborhood_size <= barker || uniform_random(0.0,1.0) <= (/*1.0 **/ barker / neighborhood_size));
+	   double lb1 = owner().world().simulation_controller().environment().optional_double_param("_lb1__process_message",0.0);
+	   double ub1 = owner().world().simulation_controller().environment().optional_double_param("_ub1__process_message",1.0);
+	   double factor = owner().world().simulation_controller().environment().optional_double_param("_factor__process_message",1.0);
+	   answer_decision = (neighborhood_size <= barker || uniform_random(lb1,ub1) <= (factor * barker / neighborhood_size));
 
 	   /// Get the known ID's from the sender
 	   /// received_ids saves the ID's received in this "receiving round"
@@ -192,11 +192,13 @@ namespace autocast
 		   }
 	   }
 
-	   if ( need_to_answer || answer_timer_ ){
+	   if ( need_to_answer || /*Timer pending*/answer_timer_ ){
 			/// Answer fast
-		    //double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__process_message",0.0275);
-			//double ub2 = owner().world().simulation_controller().environment().optional_double_param("_ub2__process_message",0.0325);
-			double at = now + uniform_random(0.0275,0.0325);
+			//double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__process_message",0.001);
+			//double ub2 = owner().world().simulation_controller().environment().optional_double_param("_ub2__process_message",0.02);
+		    double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__process_message",0.0275);
+			double ub2 = owner().world().simulation_controller().environment().optional_double_param("_ub2__process_message",0.0325);
+			double at = now + /*min_update_time_ * */uniform_random(lb2,ub2);
 
 			if ( answer_timer_ ){
 				owner_w().world_w().scheduler_w().delete_event(answer_timer_);
@@ -206,9 +208,11 @@ namespace autocast
 
 	   }/*else*/
 	   if( need_to_flood || /*Timer pending*/flood_timer_ ){
-		    //double lb3 = owner().world().simulation_controller().environment().optional_double_param("_lb3__process_message",0.0575);
-			//double ub3 = owner().world().simulation_controller().environment().optional_double_param("_ub3__process_message",0.0625);
-			double at = now + uniform_random(0.0575,0.0625);
+			//double lb3 = owner().world().simulation_controller().environment().optional_double_param("_lb3__process_message",0.04);
+			//double ub3 = owner().world().simulation_controller().environment().optional_double_param("_ub3__process_message",0.06);
+		    double lb3 = owner().world().simulation_controller().environment().optional_double_param("_lb3__process_message",0.0575);
+			double ub3 = owner().world().simulation_controller().environment().optional_double_param("_ub3__process_message",0.0625);
+			double at = now + /*min_update_time_ * */uniform_random(lb3,ub3);
 
 			if ( flood_timer_ ){
 				owner_w().world_w().scheduler_w().delete_event(flood_timer_);
@@ -222,11 +226,12 @@ namespace autocast
 		   owner_w().world_w().scheduler_w().delete_event(request_timer_);
 		   request_timer_ = NULL;
 	   }
-
        if( unknown_DataUnit_ids_.size() ){
-		   //double lb4 = owner().world().simulation_controller().environment().optional_double_param("_lb4__process_message",0.0875);
-		   //double ub4 = owner().world().simulation_controller().environment().optional_double_param("_ub4__process_message",0.0925);
-		   double at = now + uniform_random(0.0875,0.0925);
+		   //double lb4 = owner().world().simulation_controller().environment().optional_double_param("_lb4__process_message",0.1);
+		   //double ub4 = owner().world().simulation_controller().environment().optional_double_param("_ub4__process_message",0.2);
+		   double lb4 = owner().world().simulation_controller().environment().optional_double_param("_lb4__process_message",0.0875);
+		   double ub4 = owner().world().simulation_controller().environment().optional_double_param("_ub4__process_message",0.0925);
+		   double at = now + /*min_update_time_ * */uniform_random(lb4,ub4);
 		   request_timer_ = owner_w().world_w().scheduler_w().new_event(*this,at,NULL);
        }
 	   return true;
@@ -306,9 +311,9 @@ namespace autocast
 	   throw()
    {
 	   double now = owner().world().simulation_controller().world().scheduler().current_time();
-	   //double lb = owner().world().simulation_controller().environment().optional_double_param("_lb__update",0.95);
-	   //double ub = owner().world().simulation_controller().environment().optional_double_param("_ub__update",1.05);
-	   double time_interval = get_update_time() * uniform_random(0.95,1.05);
+	   double lb = owner().world().simulation_controller().environment().optional_double_param("_lb__update",0.95);
+	   double ub = owner().world().simulation_controller().environment().optional_double_param("_ub__update",1.05);
+	   double time_interval = get_update_time() * uniform_random(lb,ub);
 
 	   local_update();
 	   unknown_DataUnit_ids_.clear();
@@ -529,13 +534,12 @@ namespace autocast
 		int neighborhood_size = neighborhood_.neighborhood_size();
 
 		double range = owner().world().simulation_controller().environment().required_double_param("range");
-		/*double standard_neighbors = owner().world().simulation_controller().environment().optional_double_param("_standard_neighbors__get_update_time",4.0);
+		double standard_neighbors = owner().world().simulation_controller().environment().optional_double_param("_standard_neighbors__get_update_time",4.0);
 		double alpha = owner().world().simulation_controller().environment().optional_double_param("_alpha__get_update_time",1.0);
 		double delta_r = owner().world().simulation_controller().environment().optional_double_param("_delta_r__get_update_time",0.1);
-		double add_to_velocity = owner().world().simulation_controller().environment().optional_double_param("_add_to_velocity__get_update_time",0.01);*/
+		double add_to_velocity = owner().world().simulation_controller().environment().optional_double_param("_add_to_velocity__get_update_time",0.01);
 
-		//update_time_ = (1 - alpha) * update_time_ + alpha * (neighborhood_size + 1)*(neighborhood_size + 1)/((double)standard_neighbors + 1) * (range * delta_r)/(owner().movement().velocity().euclidean_norm() + add_to_velocity); 
-		update_time_ = (neighborhood_size + 1)*(neighborhood_size + 1)/5.0 * (range * 0.1)/(owner().movement().velocity().euclidean_norm() + 0.01);  
+		update_time_ = (1 - alpha) * update_time_ + alpha * (neighborhood_size + 1)*(neighborhood_size + 1)/((double)standard_neighbors + 1) * (range * delta_r)/(owner().movement().velocity().euclidean_norm() + add_to_velocity); 
 		if (update_time_ < min_update_time_) update_time_ = min_update_time_;
 		if (update_time_ > max_update_time_) update_time_ = max_update_time_;
 		return update_time_;

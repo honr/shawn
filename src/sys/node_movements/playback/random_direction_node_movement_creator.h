@@ -14,6 +14,7 @@
 #include "sys/node_movements/playback/node_movement_creator.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/node_movement.h"
+//#include "sys/taggings/group_tag.h"
 #include "sys/node.h"
 #include <string>
 #include <map>
@@ -52,19 +53,12 @@ namespace shawn
 		virtual void reset();
 
 	private:
-
-	  struct nmt_info{
-	     Node* node;
-		 Vec rest_vector;
-		 double rest_speed;
-	  };
-
-      MovementInfo* generateNewMovement(nmt_info& info, double startTime);
+      MovementInfo* generateNewMovement(Node &node, double startTime);
 
       SimulationController &sc_;
       
       // Map to save times, when nodes will fall from the border of the world
-      std::multimap<double, nmt_info> next_movement_times_;
+      std::multimap<double, Node*> next_movement_times_;
 
       // Random Variable for getting speeds
       shawn::UniformRandomVariable urvSpeed_;
