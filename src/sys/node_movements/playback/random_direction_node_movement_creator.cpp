@@ -7,6 +7,7 @@
 #include "sys/world.h"
 #include <string>
 #include <cfloat>
+#include <cmath>
 
 #define RANDOMDIRECTION_STARTNOW -1.0
 #define PI 3.14159265
