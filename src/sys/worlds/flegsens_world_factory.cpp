@@ -70,17 +70,26 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 	double y_orig = 100.0;
 	
 	int ext_rotate_alpha_d = w.simulation_controller_w().environment_w().optional_int_param("flegsens_world_rotation", 0);
-	ext_rotate_alpha_d = max(min(ext_rotate_alpha_d,90),0);
+	
+	while (ext_rotate_alpha_d>=360) {
+		ext_rotate_alpha_d = ext_rotate_alpha_d - 360;
+	}
+	while (ext_rotate_alpha_d < 0) {
+		ext_rotate_alpha_d = 360+ext_rotate_alpha_d;
+	}
+	cout << "Rotating the world by " << ext_rotate_alpha_d << " degrees. " << endl;
+	
+	// ext_rotate_alpha_d = max(min(ext_rotate_alpha_d,90),0);
 	double pi = 3.1415926535897932384626433832795;
 	
 	double rotate_alpha = (((double)ext_rotate_alpha_d)/90)*(pi/2);
 		
-	double x = x_orig+0.0;
-	double y = y_orig+0.0;
+	double x = 0.0;
+	double y = 0.0;
 	double x2=0.0;
 	double y2=0.0;
-	double x_center = x_orig+(((x_count_-1)*x_dist_)/2);
-	double y_center = y_orig+(((y_count_-1)*y_dist_)/2);
+	double x_center = (((x_count_-1)*x_dist_)/2);
+	double y_center = (((y_count_-1)*y_dist_)/2);
 	/*
 	cout << "ext_rotate_alpha_d" << ext_rotate_alpha_d << endl;
 	cout << "rotate_alpha" << rotate_alpha << endl;
@@ -93,14 +102,45 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 	double z = 0.0;
 	bool is_anchor = false;
 	
+	double min_x = 0.0;
+	double min_y = 0.0;
+
+	
+	// Create x and y position of all nodes
+	for (int j=0; j<y_count_; j++) {
+		for (int i=0; i<x_count_; i++) {
+			x = (i*x_dist_) + (x_off_*(j%2));
+			y = (j*y_dist_);
+			z = 0.0;
+			if (ext_rotate_alpha_d!=0) {
+				// Rotate the coordinate_system
+				x = x - x_center;
+				y = y - y_center;
+				x2 = (x*cos(rotate_alpha))-(y*sin(rotate_alpha));
+				y2 = (x*sin(rotate_alpha))+(y*cos(rotate_alpha));
+				x = x2 + x_center;
+				y = y2 + y_center;
+			}
+			min_x = min(min_x, x);
+			min_y = min(min_y, y);
+		}
+	}
+	
+	
+	
+	x = 0.0;
+	y = 0.0;
+	x2=0.0;
+	y2=0.0;
+	
 	flegsens_xml_world.appendLine("<scenario>");
 	flegsens_xml_world.appendLine("<snapshot id=\"0\">");
 	
 	// Create x and y position of all nodes
 	for (int j=0; j<y_count_; j++) {
 		for (int i=0; i<x_count_; i++) {
-			x = x_orig + (i*x_dist_) + (x_off_*(j%2));
-			y = y_orig + (j*y_dist_);
+			x = (i*x_dist_) + (x_off_*(j%2));
+			y = (j*y_dist_);
 			z = 0.0;
 			if (ext_rotate_alpha_d!=0) {
 				// Rotate the coordinate_system
@@ -114,7 +154,10 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 			
 			sprintf(text_buf, "<node id=\"node_%d-%d\">", i,j);
 			flegsens_xml_world.appendLine(text_buf);
-									
+			
+			x = x + x_orig - min_x;
+			y = y + y_orig - min_y;
+			
 			sprintf(text_buf, "<location x=\"%f.2\" y=\"%f.2\" z=\"%f.2\" />", x,y,z);
 			flegsens_xml_world.appendLine(text_buf);	
 			
