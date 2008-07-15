@@ -327,7 +327,14 @@ namespace tcpip
 
 		if( ::connect( socket_, (sockaddr const*)&address, sizeof(address) ) < 0 )
 			BailOnSocketError("tcpip::Socket::connect() @ connect");
-	}
+
+		if( socket_ >= 0 )
+		{
+			int x = 1;
+			setsockopt(socket_, IPPROTO_TCP, TCP_NODELAY, (const char*)&x, sizeof(x));
+		}
+
+    }
 
 	// ----------------------------------------------------------------------
 	void 
