@@ -142,7 +142,7 @@ namespace shawn
       ///
       void set_ack( bool ack );
       ///@}
-	  bool is_ack( );
+	  bool is_ack( ) const;
    private:
 
       mutable Node* source_;

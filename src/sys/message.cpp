@@ -156,7 +156,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    bool  
    Message::
-   is_ack( )
+   is_ack( ) const
    {
 	   return ack_;
    }
