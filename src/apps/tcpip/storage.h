@@ -75,26 +75,26 @@ public:
 	virtual unsigned char readChar() throw(std::invalid_argument);
 	virtual void writeChar(unsigned char) throw();
 
-	virtual int readByte() throw();
+	virtual int readByte() throw(std::invalid_argument);
 	virtual void writeByte(int) throw(std::invalid_argument);
 //	virtual void writeByte(unsigned char) throw();
 
-	virtual int readUnsignedByte() throw();
+	virtual int readUnsignedByte() throw(std::invalid_argument);
 	virtual void writeUnsignedByte(int) throw(std::invalid_argument);
 
-	virtual std::string readString() throw();
+	virtual std::string readString() throw(std::invalid_argument);
 	virtual void writeString(std::string s) throw();
 
-	virtual int readShort() throw();
+	virtual int readShort() throw(std::invalid_argument);
 	virtual void writeShort(int) throw(std::invalid_argument);
 
-	virtual int readInt() throw();
+	virtual int readInt() throw(std::invalid_argument);
 	virtual void writeInt(int) throw();
 
-	virtual float readFloat() throw();
+	virtual float readFloat() throw(std::invalid_argument);
 	virtual void writeFloat( float ) throw();
 
-    virtual double readDouble() throw();
+    virtual double readDouble() throw(std::invalid_argument);
     virtual void writeDouble( double ) throw();
 
 	virtual void writePacket(unsigned char* packet, int length);

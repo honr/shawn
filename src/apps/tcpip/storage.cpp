@@ -112,11 +112,11 @@ namespace tcpip
 	* Reads a char form the array
 	* @return The read char (between 0 and 255)
 	*/
-	unsigned char Storage::readChar()	throw(std::invalid_argument)
+	unsigned char Storage::readChar() throw(std::invalid_argument)
 	{
 		if ( !valid_pos() )
 		{
-			throw  std::invalid_argument("Storage::readChar(): invalid position");
+			throw std::invalid_argument("Storage::readChar(): invalid position");
 		}
 		char hb = *iter_;
 		++iter_;
@@ -138,7 +138,7 @@ namespace tcpip
 	* Reads a byte form the array
 	* @return The read byte (between -128 and 127)
 	*/
-	int Storage::readByte()	throw()
+	int Storage::readByte()	throw(std::invalid_argument)
 	{
 		int i = static_cast<int>(readChar());
 		if (i < 128) return i; 
@@ -163,7 +163,7 @@ namespace tcpip
 	* Reads an unsigned byte form the array
 	* @return The read byte (between 0 and 255)
 	*/
-	int Storage::readUnsignedByte()	throw()
+	int Storage::readUnsignedByte()	throw(std::invalid_argument)
 	{
 		return static_cast<int>(readChar());
 	}
@@ -186,7 +186,7 @@ namespace tcpip
 	* Reads a string form the array
 	* @return The read string
 	*/
-	std::string Storage::readString() throw()
+	std::string Storage::readString() throw(std::invalid_argument)
 	{
 		string tmp;
 		int len = readInt();
@@ -215,7 +215,7 @@ namespace tcpip
 	*
 	* @return the unspoiled integer value (between -32768 and 32767)
 	*/
-	int Storage::readShort() throw()
+	int Storage::readShort() throw(std::invalid_argument)
 	{
                 short value = 0;
                 unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
@@ -265,7 +265,7 @@ namespace tcpip
 	*
 	* @return the unspoiled integer value (between -2.147.483.648 and 2.147.483.647)
 	*/
-	int Storage::readInt() throw()
+	int Storage::readInt() throw(std::invalid_argument)
 	{
                 int value = 0;
                 unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
@@ -315,7 +315,7 @@ namespace tcpip
 	*
 	* @return the unspoiled float value
 	*/
-	float Storage::readFloat() throw()
+	float Storage::readFloat() throw(std::invalid_argument)
 	{
                 float value = 0;
                 unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
@@ -378,7 +378,7 @@ namespace tcpip
         }
 
         // ----------------------------------------------------------------------
-        double Storage::readDouble( ) throw ()
+        double Storage::readDouble( ) throw (std::invalid_argument)
 	{
                 double value = 0;
                 unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
