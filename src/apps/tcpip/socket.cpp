@@ -134,6 +134,7 @@ namespace tcpip
 		if( server_socket_ == -1 && socket_ == -1 
 		    && init_windows_sockets_ && instance_count_ == 0 )
 				WSACleanup();
+                windows_sockets_initialized_ = false;
 #endif
 	}
 
