@@ -31,6 +31,9 @@
 //#define DISABLE_LOGGING
 #define DISABLE_LOGLEVEL_DEBUG
 
+
+#define SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
+
 #endif
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn_config_template.h,v $
