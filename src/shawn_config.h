@@ -32,7 +32,7 @@
 #define DISABLE_LOGLEVEL_DEBUG
 
 
-#define SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
+//#define SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
 
 #endif
 /*-----------------------------------------------------------------------
