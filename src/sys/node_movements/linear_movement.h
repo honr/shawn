@@ -101,7 +101,7 @@ namespace shawn
       ///The calculated arrival time, which can be calculated using arrival_time()
       double arrival_time_;
       ///A reference of the world instance
-      World * world_;
+      //World * world_; -> now protected in class node_movement
       ///The current event which is used to calculate bounding box crossings
       EventScheduler::EventHandle event_handle_;
    };

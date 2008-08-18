@@ -115,7 +115,6 @@ namespace shawn
 		///
 		virtual void boxes_changed() throw() = 0;
 
-    private:
         ///
         World* world_;
         ///

@@ -29,11 +29,18 @@ namespace shawn
     LinearMovement::
         ~LinearMovement()
     {
+       bool has_event_handle = (event_handle_ != NULL);
         if ((event_handle_ != NULL)&&(!world_->scheduler_w().empty()))
         {
             world_->scheduler_w().delete_event(event_handle_);
             event_handle_ = NULL;
         }
+
+        if ((event_handle_ = world_->scheduler().find_event(*this)) != NULL)
+        {
+            world_->scheduler_w().delete_event(event_handle_);
+        }
+         assert( world_->scheduler().find_event(*this) == NULL );
     }
     // ----------------------------------------------------------------------
     void
@@ -164,7 +171,7 @@ namespace shawn
         throw()
     {
         LM_DEBUG("timeout(time:"<<time<<"): Entering" );
-
+         assert (node_ != NULL);
         event_handle_ = NULL;
         movement_update_boxes();
         boxes_changed();
@@ -193,6 +200,7 @@ namespace shawn
         if (box_exit_time <= arrival_time_ && box_exit_time != std::numeric_limits<double>::max())
         {
             LM_DEBUG("boxes_changed: New event created" );
+            assert(node_ != NULL);
             event_handle_ = (world_->scheduler_w().new_event(*this, box_exit_time, NULL));
         } 
         else
