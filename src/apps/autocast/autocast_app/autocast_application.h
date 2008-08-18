@@ -35,17 +35,11 @@ namespace autocast {
 		// Refresh the DataUnit
 		virtual const autocast::ConstDataUnitHandle& refresh( const ConstDataUnitHandle& ) const throw() = 0;
 
-		virtual int application_id() const throw()
-		{
-			return application_id_;
-		}
-
 	protected:
-		AutoCastApplication(int id) : application_id_(id)
+		AutoCastApplication()
 		{}
 	private:
 		AutoCastApplication(const AutoCastApplication&);
-		int application_id_;
 	};
 
 }

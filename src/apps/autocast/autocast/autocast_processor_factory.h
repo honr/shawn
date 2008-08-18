@@ -42,6 +42,7 @@ namespace autocast
       virtual shawn::Processor* create( void ) throw();
 
       static void register_factory( shawn::SimulationController& ) throw();
+	  static const std::string PROC_NAME;
    };
 
 }

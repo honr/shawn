@@ -37,7 +37,7 @@ int autocast::AutoCastAppProcessor::dataUnit_id_counter_ = 0;
 namespace autocast
 {
    AutoCastAppProcessor::
-	   AutoCastAppProcessor() : AutoCastApplication(1),
+	   AutoCastAppProcessor() : AutoCastApplication(),
 								disseminate_every_n_round_(1),
 								sending_point_x_(0),
 								sending_point_y_(0)
@@ -144,7 +144,7 @@ namespace autocast
 														owner().world().scheduler().current_time(),
 														max_life_time,
 														priority,
-														application_id(),
+														/*application id: */1,
 														area,
 														dataUnit_size);
 	   AutoCastProcessor * acp = owner_w().get_processor_of_type_w<AutoCastProcessor>();

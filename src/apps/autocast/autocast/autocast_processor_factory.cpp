@@ -27,6 +27,8 @@ using namespace shawn;
 namespace autocast
 {
 
+   const std::string autocast::AutoCastProcessorFactory::PROC_NAME = "AutoCast";
+
    void
    AutoCastProcessorFactory::
    register_factory( SimulationController& sc )
@@ -52,7 +54,7 @@ namespace autocast
    AutoCastProcessorFactory::
    name( void )
       const throw()
-   { return "AutoCast"; }
+   { return autocast::AutoCastProcessorFactory::PROC_NAME; }
    // ----------------------------------------------------------------------
    std::string 
    AutoCastProcessorFactory::
