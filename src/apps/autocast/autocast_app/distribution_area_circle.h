@@ -20,7 +20,7 @@
 
 namespace autocast {
 
-	using namespace std;
+//	using namespace std;
 
 	class DistributionAreaCircle: public DistributionArea
 	{

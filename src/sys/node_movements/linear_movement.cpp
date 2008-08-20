@@ -35,12 +35,13 @@ namespace shawn
             world_->scheduler_w().delete_event(event_handle_);
             event_handle_ = NULL;
         }
-
+/*
         if ((event_handle_ = world_->scheduler().find_event(*this)) != NULL)
         {
             world_->scheduler_w().delete_event(event_handle_);
         }
          assert( world_->scheduler().find_event(*this) == NULL );
+*/
     }
     // ----------------------------------------------------------------------
     void

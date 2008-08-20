@@ -97,7 +97,7 @@ namespace motion_event
 			standard_deviation_ = sc.environment().optional_double_param("standard_deviation", 0.0);
 			max_time_error_ = sc.environment().optional_double_param("max_time_error", MAX_ERROR);
 			missing_detection_rate_ = sc.environment().optional_double_param("missingDetRate", 0.0);
-			bool disc_range = sc.environment().optional_double_param("disc_instead_of_rect_range", false);
+			bool disc_range = sc.environment().optional_bool_param("disc_instead_of_rect_range", false);
 			in_range_of_nodes_.clear();
 			
 			if (urv_->upper_bound() != 1.0)
@@ -122,7 +122,7 @@ namespace motion_event
 			// Reading of positions (vectors) of the object
 			StrTok tok(path, ",;() ");
 			StrTok::iterator it = tok.begin();
-			for(int i=0; i<tok.size()-3; i+=3)
+			for(unsigned int i=0; i<tok.size()-3; i+=3)
 			{
 				double x_pos = conv_string_to_double( *it );
 				it++;

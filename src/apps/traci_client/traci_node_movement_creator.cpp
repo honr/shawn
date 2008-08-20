@@ -372,7 +372,7 @@ namespace traci{
 	   // Node ID
 	   out.writeInt(node.id());
 	   // Max speed
-	   out.writeFloat(max_speed);
+	   out.writeFloat(static_cast<float>(max_speed));
 
 	   // Send command
 
@@ -418,10 +418,10 @@ namespace traci{
 	   // Position type
 	   out.writeUnsignedByte(POSITION_2D);
 	   // Position
-	   out.writeFloat(node.real_position().x());
-	   out.writeFloat(node.real_position().y());
+	   out.writeFloat(static_cast<float>(node.real_position().x()));
+	   out.writeFloat(static_cast<float>(node.real_position().y()));
 	   // Radius
-	   out.writeFloat(radius);
+	   out.writeFloat(static_cast<float>(radius));
 	   // Wait time
 	   out.writeDouble(wait_time);
 

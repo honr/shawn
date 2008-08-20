@@ -118,6 +118,7 @@ namespace shawn
 	   void move_event( EventHandle, double ) throw();
 	   ///@}
 
+//       const EventScheduler::EventHandle find_event( EventHandler& eh ) const; 
 
 	   ///@name Info Access
 	   ///@{

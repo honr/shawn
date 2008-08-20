@@ -178,7 +178,7 @@ namespace shawn
 #endif
 					while( (!msg->pmi_->msg_->is_ack())&& ((*nodes_)[*(msg->pmi_->src_)].busy_until_ > msg->deliver_time_) && (msg->sending_attempts_< max_sending_attempts_))
 					{
-						msg->deliver_time_= world().current_time() + shawn::uniform_random_0i_1i()*backOff_ * (int)(pow(backoff_factor_base_,std::min(min_backoff_exponent_+msg->sending_attempts_, max_backoff_exponent_))) ;
+						msg->deliver_time_= world().current_time() + shawn::uniform_random_0i_1i()*backOff_ * (int)(pow((float)backoff_factor_base_,std::min(min_backoff_exponent_+msg->sending_attempts_, max_backoff_exponent_))) ;
 					    //New Event to now + backoff
 			            ++msg->sending_attempts_;
 					}

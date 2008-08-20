@@ -19,7 +19,7 @@
 #include "distribution_area.h"
 
 namespace autocast {
-	using namespace std;
+//	using namespace std;
 
 	class DistributionAreaPoint: public DistributionArea
 	{

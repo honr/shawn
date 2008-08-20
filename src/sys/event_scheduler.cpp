@@ -160,6 +160,21 @@ namespace shawn
 		eh->dead_ = false;
 	}
 
+/*
+    // ----------------------------------------------------------------------
+   const EventScheduler::EventHandle 
+   EventScheduler::
+   find_event( EventHandler& eh ) 
+   const
+   {
+      for (EventSet::const_iterator it = events_.begin(); it != events_.end(); ++it){
+         if ( &eh == (*it)->handler_ ){
+            return *it;
+         }
+      }
+      return NULL;
+   }
+*/
 	// ----------------------------------------------------------------------
 	double
 		EventScheduler::
