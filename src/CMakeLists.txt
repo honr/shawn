@@ -91,48 +91,33 @@
 # Add include and library directories for the compiler/linker
 #=============
 
+    include_directories (
+        ./
+        ../buildfiles
+    )
+
 	if ( OPT_ENABLE_CGAL )
-	
 		if ( WIN32 AND NOT CYGWIN )
-	
 			set ( DEFAULT_CGAL_ROOT   )
-	
 			set( LIB_PATH_CGAL   CACHE PATH "Path to CGAL library" )
-	
 	        set( INCLUDE_PATH_CGAL   CACHE PATH "Path to CGAL includes" )
 	        set( INCLUDE_PATH_CGAL_COMPILER_CONFIG   CACHE PATH "Path to CGAL compiler config" )
 	        set( INCLUDE_PATH_BOOST   CACHE PATH "Path to Boost include path" )
-	
 		else ( WIN32 AND NOT CYGWIN )
-	
 			set ( DEFAULT_CGAL_ROOT   )
-	
 			set( LIB_PATH_CGAL   CACHE PATH "Path to CGAL library" )
-	
 	        set( INCLUDE_PATH_CGAL   CACHE PATH "Path to CGAL includes" )
 	        set( INCLUDE_PATH_CGAL_COMPILER_CONFIG   CACHE PATH "Path to CGAL compiler config" )
 	        set( INCLUDE_PATH_BOOST   CACHE PATH "Path to Boost include path" )
-	
 		endif ( WIN32 AND NOT CYGWIN )
-	
 		link_directories( ${LIB_PATH_CGAL} )
-						  
 		include_directories	( 
-								./
-								../buildfiles
 								${INCLUDE_PATH_CGAL}
 								${INCLUDE_PATH_CGAL_COMPILER_CONFIG}
 								${INCLUDE_PATH_BOOST} 
 							)
-	                         
-	else ( OPT_ENABLE_CGAL )
-	
-		include_directories	(
-								./
-								../buildfiles
-						 	)
-		
 	endif ( OPT_ENABLE_CGAL )
+
 
 #=============
 # Build target
@@ -152,36 +137,29 @@
 
 	if (  WIN32 AND NOT CYGWIN  )
 
-		
+        set ( SYSTEM_LIBS ws2_32.lib )
+
 		if ( OPT_ENABLE_CGAL )
-			
 			if ( LIB_PATH_CGAL )
 				set ( LIB_CGAL CGAL.lib )
 			endif ( LIB_PATH_CGAL )
-			
 		endif ( OPT_ENABLE_CGAL )
-		
-
-		set ( SYSTEM_LIBS ws2_32.lib )
 
 	else (  WIN32 AND NOT CYGWIN  )
 
+        set ( SYSTEM_LIBS dl )
+
 		if ( OPT_ENABLE_CGAL )
-			
 			if ( LIB_PATH_CGAL )
-				set ( LIB_CGAL libCGAL.a )
+				set ( LIB_CGAL CGAL boost_regex )
 			endif ( LIB_PATH_CGAL )
-			
 		endif ( OPT_ENABLE_CGAL )
 
-		set ( SYSTEM_LIBS dl )
-		
 	endif (  WIN32 AND NOT CYGWIN  )
 
-
-	IF(NOT BUILD_LIB_WITH_MAIN)
-		target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} )
-	ENDIF(NOT BUILD_LIB_WITH_MAIN)
+    IF(NOT BUILD_LIB_WITH_MAIN)
+        target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} )
+    ENDIF(NOT BUILD_LIB_WITH_MAIN)
 
 #=============
 # Compiler definitions
@@ -189,7 +167,7 @@
 
 	if( OPT_ENABLE_CGAL )
 	if ( LIB_PATH_CGAL )
-		add_definitions( -DHAVE_CGAL )
+		add_definitions( -DHAVE_CGAL -DHAVE_BOOST -DHAVE_BOOST_REGEX )
 	endif ( LIB_PATH_CGAL )
 	endif( OPT_ENABLE_CGAL )
 
