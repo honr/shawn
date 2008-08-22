@@ -39,7 +39,7 @@ namespace shawn
 		return TwoDFunction( sqrt(( x - x_offset )*( x - x_offset) + y * y));
 	}
 
-	
+
 	// ----------------------------------------------------------------------
 	double
 		CommunicationModelFunction::
@@ -53,7 +53,7 @@ namespace shawn
 		}
 		return integral;
 	}
-	
+
 	// ----------------------------------------------------------------------
 	double
 		CommunicationModelFunction::
@@ -111,7 +111,7 @@ namespace shawn
 		double max = 2.0;
 		int size = int((max-min)/step);
 		double std = stdIntegral( step );
-		vector<double> v(size);
+		vector<double> v(size+1);
 		int idx = 0;
 		for (double dist = 0.0; dist<1.9999; dist += step) {
 			double val = multIntegral( dist, step ) / std;
@@ -138,7 +138,7 @@ namespace shawn
 		if ( 1 + smooth_factor_ < x) return 0;
 		return ( -x/(2.0*smooth_factor_)+1.0/(2.0*smooth_factor_)+0.5);
 	}
-	
+
 	// ----------------------------------------------------------------------
 	double
 		CircleCommunicationModelFunction::
@@ -270,7 +270,7 @@ namespace shawn
 
 /*
 		for (double x1 = min_x_; x1 < max_x_; x1 += step ) {
-			cout << " x1: " << x1 << endl; 
+			cout << " x1: " << x1 << endl;
 			for (double y1 = min_y_; y1 < max_y_; y1 += step )
 				for (double x2 = min_x_; x2 < max_x_; x2 += step )
 					for (double y2 = min_y_; y2 < max_y_; y2 += step ) {
@@ -297,7 +297,7 @@ namespace shawn
 		}*/
 		for (int i=0; i<iterations_; i++)
 		for (double x1 = (-range); x1 < range; x1 += step ) {
-			cout << " i: " << i<< " x1: " << x1 << endl; 
+			cout << " i: " << i<< " x1: " << x1 << endl;
 			for (double y1 = (-range); y1 < range; y1 += step )
 				for (double x2 = (-3*range); x2 < (3*range); x2 += step )
 					for (double y2 = (-3*range); y2 < (3*range); y2 += step ) {
@@ -319,10 +319,10 @@ namespace shawn
 					}
 		}
 
-		for (int i = 0; i < size; i++ ) 
+		for (int i = 0; i < size; i++ )
 			if (total[i] > 0) v[i] = double(shared[i])/double(total[i]); else v[i]=0;
 
-		for (int i = 0; i < size; i++ ) 
+		for (int i = 0; i < size; i++ )
 //		cout << "i:" << i << " v:" << v[i] << " shared:" << shared[i] << " total: " << total[i] << endl;
 		v[v.size()-1]=0;
 		v[0]=1;
@@ -366,12 +366,12 @@ namespace shawn
 		bool ok = false;
 
 
-		ok = target.world().can_communicate_uni( target, source); 
+		ok = target.world().can_communicate_uni( target, source);
 
 		//if (!ok) cout << "can not communicate uni " << target.id() << "," << source.id() << endl;
 		if (ok) {
-		
-			int to_subtractor = 0; 
+
+			int to_subtractor = 0;
 			int from_subtractor = 0;
 			int next_subtractor = 0;
 			int prev_subtractor = 0;
@@ -385,14 +385,14 @@ namespace shawn
 			//if (next_subtractor == 0) cout << "NEXT == 0!!!" << endl;
 
 
-			//The world needs a size hint which indicates a common communication range     
+			//The world needs a size hint which indicates a common communication range
 			assert( source.world().has_size_hint() );
 
 			//Check how many neighbors the two nodes have in common
 			int intersect = 0;
 
 
-										
+
 			set<const Node*> source_neighbors = source.get_adjacent_nodes(EdgeModel::CD_IN);
 			set<const Node*> target_neighbors = target.get_adjacent_nodes(EdgeModel::CD_IN);
 
@@ -414,11 +414,11 @@ namespace shawn
 
 			count_set_differences( source_neighbors, target_neighbors, NULL, NULL, NULL, NULL, &intersect, NULL);
 
-			if (source_neighbors.find( &source ) != source_neighbors.end() && 
+			if (source_neighbors.find( &source ) != source_neighbors.end() &&
 				target_neighbors.find( &source ) != target_neighbors.end()) intersect -= from_subtractor;
-			if (source_neighbors.find( &target ) != source_neighbors.end() && 
+			if (source_neighbors.find( &target ) != source_neighbors.end() &&
 				target_neighbors.find( &target ) != target_neighbors.end()) intersect -= to_subtractor;
-			
+
 //			cout << "sourceSize=" << sourceSize << " targetSize=" << targetSize << " intersection=" << intersection << " from_subtrator=" << from_subtractor << " to_subtractor= " << to_subtractor << endl << flush;
 			assert( intersect >= 0);
 			intersection = intersect;
@@ -452,19 +452,19 @@ namespace shawn
 		//if ( myMode != M_BIDI_AVG) cout << "not using avg" << endl;
 //
 //
-//		
-//		if ( mode == M_UNI) 
-//			ok = target.world().can_communicate_uni(source, target); 
+//
+//		if ( mode == M_UNI)
+//			ok = target.world().can_communicate_uni(source, target);
 //		else
 //			ok = target.world().can_communicate_bidi(source, target);
 //
 
-		ok = target.world().can_communicate_uni( target, source); 
+		ok = target.world().can_communicate_uni( target, source);
 
 		if (!ok) cout << "can not communicate uni " << target.id() << "," << source.id() << endl;
 		if (ok) {
-		
-			int to_subtractor = 0; 
+
+			int to_subtractor = 0;
 			int from_subtractor = 0;
 			int next_subtractor = 0;
 			int prev_subtractor = 0;
@@ -478,14 +478,14 @@ namespace shawn
 			//if (next_subtractor == 0) cout << "NEXT == 0!!!" << endl;
 
 
-			//The world needs a size hint which indicates a common communication range     
+			//The world needs a size hint which indicates a common communication range
 			assert( source.world().has_size_hint() );
 
 			//Check how many neighbors the two nodes have in common
 			int intersection = 0;
 
 
-										
+
 			set<const Node*> source_neighbors = source.get_adjacent_nodes(IN);
 			set<const Node*> target_neighbors = target.get_adjacent_nodes(IN);
 
@@ -510,12 +510,12 @@ namespace shawn
 
 			count_set_differences( source_neighbors, target_neighbors, NULL, NULL, NULL, NULL, &intersection, NULL);
 
-//ACHTUNG: Die folgenden beiden Zeilen nur zwecks vergleichbarkeit mit Horst!!!			
-			if (source_neighbors.find( &source ) != source_neighbors.end() && 
+//ACHTUNG: Die folgenden beiden Zeilen nur zwecks vergleichbarkeit mit Horst!!!
+			if (source_neighbors.find( &source ) != source_neighbors.end() &&
 				target_neighbors.find( &source ) != target_neighbors.end()) intersection -= from_subtractor;
-			if (source_neighbors.find( &target ) != source_neighbors.end() && 
+			if (source_neighbors.find( &target ) != source_neighbors.end() &&
 				target_neighbors.find( &target ) != target_neighbors.end()) intersection -= to_subtractor;
-			
+
 //			intersection -= (to_subtractor + from_subtractor);
 
 //			cout << "sourceSize=" << sourceSize << " targetSize=" << targetSize << " intersection=" << intersection << " from_subtrator=" << from_subtractor << " to_subtractor= " << to_subtractor << endl << flush;
@@ -534,7 +534,7 @@ namespace shawn
 							totalNodes = std::max(sourceSize, targetSize);
 							break;
 				case M_UNI:
-				default: 
+				default:
 							totalNodes = sourceSize;
 							break;
 			}
@@ -562,11 +562,11 @@ namespace shawn
 		double sourceSize;
 		double targetSize;
 		double r = source.world().size_hint();
-		
+
 		bool ok = getFraction( source, target, sharedNodes, sourceSize, targetSize );
 		//cout << "sharedNodes:" << sharedNodes << " sourceSize:" << sourceSize << " targetSize:" << targetSize << endl;
 
-			
+
 		int myMode;
 		std::string direction_mode_;
 		if (mode == 0) {
@@ -591,7 +591,7 @@ namespace shawn
 							totalNodes = std::max(sourceSize, targetSize);
 							break;
 				case M_UNI:
-				default: 
+				default:
 							totalNodes = sourceSize;
 							break;
 			}
@@ -604,7 +604,7 @@ namespace shawn
 
 
 		if (ok) {
-		
+
 			//double fraction = double(sharedNodes)/double(totalNodes);
 /*
 			bool limit_to_r = (1 == target.world().simulation_controller().environment().optional_int_param("limit", 0));
@@ -640,10 +640,10 @@ namespace shawn
 		double sharedNodes;
 		double totalNodes;
 		double r = source.world().size_hint();
-		
+
 		bool ok = getFraction( source, target, sharedNodes, totalNodes );
 		if (ok) {
-		
+
 			double fraction = double(sharedNodes)/double(totalNodes);
 
 			bool limit_to_r = (1 == target.world().simulation_controller().environment().optional_int_param("limit", 0));
@@ -662,8 +662,8 @@ namespace shawn
 //				target.world().simulation_controller().distance_estimate_keeper().find( "perfect_estimate" )->estimate_distance( source, target, result2);
 //				cout << "correcting! n=" << totalNodes << " dist=" << result2 << " " << result << "+=" << r * correction[n] << endl;
 //				result += r * correction[n];
-//			}	
-//		
+//			}
+//
 
 		}
 
@@ -688,9 +688,9 @@ namespace shawn
 		}
 		assert( !overflow);
 		if (i==0) d=i; else {
-			
+
 			double corr = (fraction-estimation_table_[i])/(estimation_table_[i-1]-estimation_table_[i]);
-			d=double(i)- corr; 
+			d=double(i)- corr;
 		}
 		return d*step_*radius;
 
@@ -712,14 +712,14 @@ namespace shawn
 ///			cout << "i:" << i << " table[i]:"<<estimation_table_[i]<< endl;
 		}
 		assert( !overflow);
-		if (i==0) d=i; else d=i-0.5; 
+		if (i==0) d=i; else d=i-0.5;
 		return d*step_*radius;
 */
 
 
 
-/*		
-		
+/*
+
 			// Define SQRT(2)
 			const double wurzel2 = sqrt(2.0);
 
@@ -749,10 +749,10 @@ namespace shawn
 
 
 	}
- 
-	void 
+
+	void
 		NeighborhoodIntersectionDistanceEstimate::
-		set_mode(int newmode ) 
+		set_mode(int newmode )
 	{
 		mode = newmode;
 	}
@@ -776,9 +776,9 @@ namespace shawn
 	}
 
 	// ----------------------------------------------------------------------
-	void 
+	void
 		NeighborhoodIntersectionDistanceEstimate::
-		setCommunicationModelFunction( CommunicationModelFunction* cmf) 
+		setCommunicationModelFunction( CommunicationModelFunction* cmf)
 	{
 		delete cmf_;
 		cmf_ = cmf;
