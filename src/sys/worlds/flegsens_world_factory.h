@@ -75,6 +75,7 @@ namespace shawn
 		/** Actual parsing is triggered here */
 		virtual void fill_world( shawn::World& ) throw();
 
+		bool check_if_is_anchor(int index, int interval, int offset);
 		///@}
 
 	protected:

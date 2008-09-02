@@ -135,7 +135,9 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 	
 	flegsens_xml_world.appendLine("<scenario>");
 	flegsens_xml_world.appendLine("<snapshot id=\"0\">");
-	
+	bool force_anchor = false;
+	bool force_last_node_anchor = w.simulation_controller_w().environment_w().optional_bool_param("force_last_node_anchor", false);
+	//cout << "force_last_node_anchor = " << force_last_node_anchor << endl;
 	// Create x and y position of all nodes
 	for (int j=0; j<y_count_; j++) {
 		for (int i=0; i<x_count_; i++) {
@@ -159,12 +161,21 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 			y = y + y_orig - min_y;
 			
 			sprintf(text_buf, "<location x=\"%f.2\" y=\"%f.2\" z=\"%f.2\" />", x,y,z);
-			flegsens_xml_world.appendLine(text_buf);	
+			flegsens_xml_world.appendLine(text_buf);
 			
-			if ((j==gps_row1_)&&(((i+gps_row1_offset_)%gps_row1_interval_)==0)) {
+			if ( (force_last_node_anchor) && (j==gps_row2_) && (i==(x_count_-1)) ) {
+				force_anchor = true;
+			} else {
+				force_anchor = false;
+			}
+			
+			if (j==gps_row1_) {
+				is_anchor = check_if_is_anchor(i, gps_row1_interval_, gps_row1_offset_);
+			} else if (force_anchor) {
+				//cout << "force_anchor, i= " << i << " j= " << j <<endl;
 				is_anchor = true;
-			} else if ((j==gps_row2_)&&(((i+gps_row2_offset_)%gps_row2_interval_)==0)) {
-				is_anchor = true;
+			} else if (j==gps_row2_) {
+				is_anchor = check_if_is_anchor(i, gps_row2_interval_, gps_row2_offset_);
 			} else {
 				is_anchor = false;
 			}
@@ -184,6 +195,17 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 	parse_Object(&flegsens_xml_world);
 	sim_controller_ = NULL;
 	world_ = NULL;
+}
+
+bool FlegsensWorldFactory::check_if_is_anchor(int index, int interval, int offset) {
+	int counter = offset;
+	while (counter<=index) {
+		if (counter==index) {
+			return true;
+		}
+		counter = counter + interval;
+	}
+	return false;
 }
 
 // ----------------------------------------------------------------------
