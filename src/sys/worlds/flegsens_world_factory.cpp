@@ -170,12 +170,26 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 			}
 			
 			if (j==gps_row1_) {
-				is_anchor = check_if_is_anchor(i, gps_row1_interval_, gps_row1_offset_);
+				is_anchor = false;
+				int counter = gps_row1_offset_;
+				while (counter<=i) {
+					if (counter==i) {
+						is_anchor= true;
+					}
+					counter = counter + gps_row1_interval_;
+				}				
 			} else if (force_anchor) {
 				//cout << "force_anchor, i= " << i << " j= " << j <<endl;
 				is_anchor = true;
 			} else if (j==gps_row2_) {
-				is_anchor = check_if_is_anchor(i, gps_row2_interval_, gps_row2_offset_);
+				is_anchor = false;
+				int counter = gps_row2_offset_;
+				while (counter<=i) {
+					if (counter==i) {
+						is_anchor= true;
+					}
+					counter = counter + gps_row2_interval_;
+				}	
 			} else {
 				is_anchor = false;
 			}
@@ -195,17 +209,6 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 	parse_Object(&flegsens_xml_world);
 	sim_controller_ = NULL;
 	world_ = NULL;
-}
-
-bool FlegsensWorldFactory::check_if_is_anchor(int index, int interval, int offset) {
-	int counter = offset;
-	while (counter<=index) {
-		if (counter==index) {
-			return true;
-		}
-		counter = counter + interval;
-	}
-	return false;
 }
 
 // ----------------------------------------------------------------------
