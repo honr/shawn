@@ -85,7 +85,7 @@ namespace shawn
 		clone( void )
 		const throw()
 	{
-		std::cerr << "shawn::ListEdgeModel::ListIteratorHelper<NodeType, NodeHoodIt>::clone!" << std::endl << std::flush;
+		//std::cerr << "shawn::ListEdgeModel::ListIteratorHelper<NodeType, NodeHoodIt>::clone!" << std::endl << std::flush;
 		return new shawn::ListEdgeModel::ListIteratorHelper<NodeType,NodeHoodIt>
 			( edge_model_, base_type::direction_, node_, hood_it_, hood_end_it_ );
 	}
