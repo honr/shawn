@@ -53,7 +53,7 @@ namespace shawn
       {
          DEBUG(sc_->logger(), "MovementController::timeout_action() setting a delayed node movement");
 			NodeMovement* n =movement_info_->node_movement();
-         movement_info_->node()->set_movement(movement_info_->node_movement());
+         if (movement_info_->node()) movement_info_->node()->set_movement(movement_info_->node_movement());
          command_nr_++;
       }
 		movement_info_ = nmc_->next_movement();
@@ -71,7 +71,7 @@ namespace shawn
             {
             case MovementInfo::Immediately:
                DEBUG(sc_->logger(), "MovementController::timeout_action() - Immediately");
-               (movement_info_->node())->set_movement(movement_info_->node_movement());
+               if (movement_info_->node()) (movement_info_->node())->set_movement(movement_info_->node_movement());
                command_nr_++;
 
 // if ( movement_info_->node()->id() == 0 )

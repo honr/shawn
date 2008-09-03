@@ -74,8 +74,7 @@ namespace traci
 				if (!dynamic_cast<const traci::TraCIProcessor*>(it->get())){
 					traci::TraCIControlledProcessor * tcp = dynamic_cast<traci::TraCIControlledProcessor*>(it->get());
 					// Processors must be TraCI controllable using TraCI
-					assert(tcp);
-					tcp->set_state( Inactive );
+					if (tcp) tcp->set_state( Inactive );
 				}
 		}
 		disabled_ = true;
@@ -91,8 +90,7 @@ namespace traci
 				if (!dynamic_cast<const traci::TraCIProcessor*>(it->get())){
 					traci::TraCIControlledProcessor * tcp = dynamic_cast<traci::TraCIControlledProcessor*>(it->get());
 					// Processors must be TraCI controllable using TraCI
-					assert(tcp);
-					tcp->set_state( Active );
+					if (tcp) tcp->set_state( Active );
 				}
 		}
 		disabled_ = false;

@@ -63,6 +63,7 @@ namespace shawn
 		  shawn::KeeperManagedHandle kmh = sc.simulation_task_keeper_w().find_managed_w("TraCI");
 		  traci::TraCINodeMovementCreator * tnmc = dynamic_cast<traci::TraCINodeMovementCreator*>( kmh.get() );
 		  sc.world_w().movement_controller_w().set_node_movement_creator( tnmc );
+        tnmc->run(sc);
 		  sc.world_w().movement_controller_w().start();
 #elif(!ENABLE_TRACICLIENT)
 		  std::cerr << "TraCI node movement not built!" << std::endl;

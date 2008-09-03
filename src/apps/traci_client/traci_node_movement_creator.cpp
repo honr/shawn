@@ -83,13 +83,25 @@ namespace traci{
    {
 	   if (!socket_){
 		   std::cerr << "Error in method TraCINodeMovementCreator::next_movement, socket_ == NULL!" << std::endl;
-	       abort();
+	      abort();
 	   }
 
-	   //target_time_ = sc_.world().scheduler().current_time() + time_interval_;
-	   
+      
 	   // If in-storage is empty ask for new data from movement simulator (e.g. SUMO)
-	   if (in_.begin() == in_.end()){
+	   if (!in_.valid_pos()){
+         // If the right simulation time for sending the next question is not yet arrived ...
+         if (sc_.world().scheduler().current_time() < target_time_)
+         {
+            //... wait until then
+            mi_ = new shawn::MovementInfo();
+            mi_->set_urgency(shawn::MovementInfo::Delayed);
+            mi_->set_dispatch_time(target_time_);
+            mi_->set_node(NULL);
+            mi_->set_node_movement(NULL);
+            return mi_;
+         }
+         // If target_time is reached, ask for new movements
+	      target_time_ = sc_.world().scheduler().current_time() + time_interval_;
 		   check_for_unused_nodes();
 		   current_nodes_.clear();
 		   // Build command
@@ -162,7 +174,7 @@ namespace traci{
 	   y = in_.readFloat();
 
 	   // Increase Nodes
-	   if (sc_.world().node_count() < node_id){
+	   if (sc_.world().node_count() <= node_id){
 		   increase_nodes(node_id - sc_.world().node_count());
 	   }
 
@@ -187,8 +199,8 @@ namespace traci{
 	   }else{
 		    // Old node
 		    // Set node exactly to old destination
-		    const shawn::LinearMovement & old_lm = dynamic_cast<const shawn::LinearMovement&>(node->movement());
-			node->set_real_position(old_lm.destination());
+         const shawn::LinearMovement* old_lm = dynamic_cast<const shawn::LinearMovement*>(&node->movement());
+			if (old_lm) node->set_real_position(old_lm->destination());
 			lm = new shawn::LinearMovement();
 			if (dest_time > now){
 				velocity = sqrt( (node->real_position().x() - x)*(node->real_position().x() - x) +
