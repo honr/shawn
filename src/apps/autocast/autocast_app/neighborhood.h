@@ -31,7 +31,7 @@ namespace autocast {
 		Neighborhood(double);
 
 		/// Set owner
-		void set_owner(const shawn::Node*) throw();
+		void set_owner(const shawn::Node&) throw();
 		/// Get number of neighbors heard at least timeOut_ seconds before
 		int neighborhood_size();
 

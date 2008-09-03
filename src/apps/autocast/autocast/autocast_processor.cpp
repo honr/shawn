@@ -74,12 +74,13 @@ namespace autocast
    boot( void )
       throw()
    {
-		neighborhood_.set_owner(&owner());
+      neighborhood_.set_owner(owner());
 		fetch_parameters();
+	   double now = owner().world().scheduler().current_time();
 		
 		double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__boot",0.9);
 		double ub1 = owner().world().simulation_controller().environment().optional_double_param("_ub1__boot",1.1);
-		update_timer_ = owner_w().world_w().scheduler_w().new_event(*this,fabs(max_startup_time_) * uniform_random(lb2,ub1),NULL);
+		update_timer_ = owner_w().world_w().scheduler_w().new_event(*this,now+fabs(max_startup_time_) * uniform_random(lb2,ub1),NULL);
 		max_iterations_ = owner().world().simulation_controller().environment().required_int_param("max_iterations");
    }
    // ----------------------------------------------------------------------
@@ -595,12 +596,13 @@ namespace autocast
 		/// Cleaning up!
 		for(DataUnitsMap::iterator it = complete_DataUnits_.begin(); it != complete_DataUnits_.end(); ++it){
 			if (it->second) delete it->second;
-			complete_DataUnits_.erase(it);
 		}
+        complete_DataUnits_.clear();
+
 		for(DataUnitsMap::iterator it = stale_DataUnits_.begin(); it != stale_DataUnits_.end(); ++it){
 			if (it->second) delete it->second;
-			stale_DataUnits_.erase(it);
 		}
+        stale_DataUnits_.clear();
 		complete_DataUnits_.clear();
 		stale_DataUnits_.clear();
 		received_messages_ids_total_.clear();

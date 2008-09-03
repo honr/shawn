@@ -29,10 +29,10 @@ namespace autocast {
 
 	void 
 		Neighborhood::
-		set_owner(const shawn::Node* owner) 
+		set_owner(const shawn::Node& owner) 
 		throw()
 	{
-		owner_ = owner;
+		owner_ = &owner;
 	}
 
 	// ----------------------------------------------------------------------
@@ -47,7 +47,7 @@ namespace autocast {
 
 	int Neighborhood::neighborhood_size(double duration)
 	{
-		assert(owner_);
+		if (owner_ == NULL) return 0;
 		double now = owner_->world().scheduler().current_time();
 		int nh=0;
 		for (map< int,NeighborInfo >::iterator it=neighborhood_.begin(); it!=neighborhood_.end(); ++it)
@@ -61,7 +61,7 @@ namespace autocast {
 
 	int Neighborhood::get_neighborhood_changed(double duration)
 	{
-		assert(owner_);
+		if (owner_ == NULL) return 0;
 		double now = owner_->world().scheduler().current_time();
 		int nh=0;
 		for (map<int, NeighborInfo >::iterator it=neighborhood_.begin(); it!=neighborhood_.end(); ++it)
@@ -73,12 +73,12 @@ namespace autocast {
 	// ----------------------------------------------------------------------
 	void Neighborhood::append_to_neighborhood(int node_id, double next_update_time)
 	{
+		if (owner_ == NULL) return;
 		map<int, NeighborInfo >::iterator it;
 		if ((it = neighborhood_.find(node_id)) == neighborhood_.end())
 		{
 			// new neighbor
 			NeighborInfo ni;
-			assert(owner_);
 			ni.first_heard_time = owner_->world().scheduler().current_time();
 			ni.last_heard_time = ni.first_heard_time;
 			ni.next_update_time = next_update_time;
@@ -101,7 +101,8 @@ namespace autocast {
 
 	void Neighborhood::shrink_neighborhood_table()
 	{
-		assert(owner_);
+		if (owner_ == NULL) return;
+      //assert(owner_);
 		double now = owner_->world().scheduler().current_time();
 		for (map<int, NeighborInfo >::iterator it=neighborhood_.begin(); it!=neighborhood_.end(); )
 		{
