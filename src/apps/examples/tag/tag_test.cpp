@@ -45,6 +45,7 @@ namespace examples
 			description( void )
 			const throw()
 		{
+            return "";
 		}
 
 		// ----------------------------------------------------------------------
