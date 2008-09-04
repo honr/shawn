@@ -26,6 +26,7 @@ namespace traci{
 	remotehost_("localhost"),
 	remoteport_(8888),
 	time_interval_(1.0),
+   feed_time_(0.0),
 	target_time_(0.0),
 	mi_(NULL)
 	{
@@ -65,6 +66,7 @@ namespace traci{
 	   // Fetch parameters
 	   remoteport_ = sc_.environment().optional_int_param("remote_port",remoteport_);
 	   remotehost_ = sc_.environment().optional_string_param("remote_host",remotehost_);
+      feed_time_ =  sc_.environment().optional_double_param("feed_time",feed_time_);
 	   //target_time_ = sc_.environment().optional_double_param("target_time",target_time_);
 	   //time_interval_ = sc_.environment().optional_double_param("time_interval",time_interval_);
 
@@ -74,6 +76,42 @@ namespace traci{
 		   std::cerr << "Connection failed!" << std::endl;
 		   abort();
 	   }
+
+      if (feed_time_ - time_interval_ > 0.0)
+      {
+         // Let TraCI server run feed_time_ seconds of simulation time
+		   tcpip::Storage s;
+		   // Lenght of command
+		   s.writeByte(11);
+		   // CommandID
+		   s.writeChar(CMD_SIMSTEP);
+		   // Target time
+		   s.writeDouble(feed_time_ - time_interval_);
+		   // Result type (No positions needed)
+		   s.writeChar(POSITION_NONE);
+
+		   // Send command
+		   try{
+			   socket_->sendExact(s);
+		   }catch(tcpip::SocketException e){
+			   std::cerr << "Error in method TraCINodeMovementCreator::next_movement() while sending: " 
+						 << e.what() << std::endl;
+			   abort();
+		   }
+
+		   try{
+			   socket_->receiveExact(s);
+		   }catch(tcpip::SocketException e){
+			   std::cerr << "Error in method TraCINodeMovementCreator::next_movement while receiving: "
+						 << e.what() << std::endl;
+		   }
+		   
+		   // First result command serves as status information
+		   std::string description;
+		   extract_command_status(s, CMD_SIMSTEP, description);
+
+         // No node position informations requested
+      }
    }
 
    shawn::MovementInfo * 

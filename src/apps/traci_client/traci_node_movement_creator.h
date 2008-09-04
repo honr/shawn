@@ -87,6 +87,7 @@ namespace traci
 		int remoteport_;
 		double time_interval_;
 		double target_time_;
+      double feed_time_;
 		shawn::MovementInfo* mi_;
 		std::list<shawn::ProcessorFactoryHandle> processor_factories_;
 		std::set<int> current_nodes_;
