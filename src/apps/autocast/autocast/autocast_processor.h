@@ -1,15 +1,15 @@
 /************************************************************************
- ** This file is part of the network simulator Shawn.                  **
- ** Copyright (C) 2007 by AutoNomos (www.auto-nomos.de)                **
- ** This part of Shawn is free software; you can redistribute it and/or**
- ** modify it under the terms of the BSD License. Refer to the		   **
- ** shawn-licence.txt file in the root of the Shawn source tree for	   **
- ** further details.												   **
- **                                                                    **
- ** \author Axel Wegener <wegener@itm.uni-luebeck.de>				   **
- ** \author Torsten Teubler <teubler@itm.uni-luebeck.de>			   **
- **                                                                    **
- ************************************************************************/
+** This file is part of the network simulator Shawn.                  **
+** Copyright (C) 2007 by AutoNomos (www.auto-nomos.de)                **
+** This part of Shawn is free software; you can redistribute it and/or**
+** modify it under the terms of the BSD License. Refer to the		   **
+** shawn-licence.txt file in the root of the Shawn source tree for	   **
+** further details.												   **
+**                                                                    **
+** \author Axel Wegener <wegener@itm.uni-luebeck.de>				   **
+** \author Torsten Teubler <teubler@itm.uni-luebeck.de>			   **
+**                                                                    **
+************************************************************************/
 
 #ifndef __SHAWN_LEGACYAPPS_AUTOCAST_PROCESSOR_H
 #define __SHAWN_LEGACYAPPS_AUTOCAST_PROCESSOR_H
@@ -41,7 +41,7 @@ namespace autocast
 {
 
    class AutoCastProcessor
-	   : public shawn::Processor, public shawn::EventScheduler::EventHandler
+      : public shawn::Processor, public shawn::EventScheduler::EventHandler
    {
    public:
       AutoCastProcessor();
@@ -50,124 +50,125 @@ namespace autocast
       virtual void boot( void ) throw();
       virtual bool process_message( const shawn::ConstMessageHandle& ) throw();
       virtual void work( void ) throw();
-	  void timeout( shawn::EventScheduler&, shawn::EventScheduler::EventHandle, 
-		  double, shawn::EventScheduler::EventTagHandle& ) throw();
-	  virtual bool send_to(const ConstDataUnitHandle&, shawn::Processor* creator = NULL) throw();
-	  bool booted() const throw();
+      void timeout( shawn::EventScheduler&, shawn::EventScheduler::EventHandle, 
+         double, shawn::EventScheduler::EventTagHandle& ) throw();
+      virtual bool send_to(const ConstDataUnitHandle&, shawn::Processor* creator = NULL) throw();
+      bool booted() const throw();
 
    protected:
-		void set_state(const Processor::ProcessorState&) throw();
+      void set_state(const Processor::ProcessorState&) throw();
 
    private:
-	  /// An internal data structure to local save ONE DataUnit. This is
-	  /// virtually a "cell" stored in complete_DataUnits_.
-	  class LocalDataUnit{
-	   public:
-		   LocalDataUnit() : unknown_count_(0),
-							 last_send_time_(0),
-							 last_received_time_(0),
-							 creator_(NULL),
-							 refresh_before_send_(false),
-							 duh_(NULL)
-		   {}
-		   LocalDataUnit(const ConstDataUnitHandle& duh) : unknown_count_(0),
-														   last_send_time_(0),
-														   last_received_time_(0),
-														   creator_(NULL),
-														   refresh_before_send_(false),
-														   duh_(duh)
-		   {}
-		   LocalDataUnit(const LocalDataUnit& o) : unknown_count_(o.unknown_count()),
-												   last_send_time_(o.last_send_time()),
-												   last_received_time_(o.last_received_time()),
-												   creator_(o.creator()),
-												   refresh_before_send_(o.refresh_before_send()),
-												   duh_(o.dataUnit())
-		   {}
-		   ~LocalDataUnit(){}
-		   const ConstDataUnitHandle& dataUnit() const { return duh_; }
-		   int unknown_count() const { return unknown_count_; }
-		   double last_send_time() const { return last_send_time_; }
-		   double last_received_time() const { return last_received_time_; }
-		   const shawn::Processor * creator() const { return creator_; }
-		   bool refresh_before_send() const { return refresh_before_send_; }
-		   void dataUnit(const ConstDataUnitHandle& duh) { duh_ = duh; }
-		   void unknown_count(const int u) { unknown_count_ = u; }
-		   void last_send_time(const double l) { last_send_time_ = l; }
-		   void last_received_time(const double l) { last_received_time_ = l; }
-		   void creator(const shawn::Processor * c) { creator_ = c; };
-		   void refresh_before_send(const bool r) { refresh_before_send_ = r; }
-		   void refresh() {
-			   if (refresh_before_send_){
-				   const autocast::AutoCastApplication * ac_app = NULL;
-				   if (creator_) ac_app = dynamic_cast<const AutoCastApplication*>(creator_);
-				   if(ac_app) duh_ = ac_app->refresh(duh_);
-			   }
-		   }
+      /// An internal data structure to local save ONE DataUnit. This is
+      /// virtually a "cell" stored in complete_DataUnits_.
+      class LocalDataUnit{
+      public:
+         LocalDataUnit() : unknown_count_(0),
+            last_send_time_(0),
+            last_received_time_(0),
+            creator_(NULL),
+            refresh_before_send_(false),
+            duh_(NULL)
+         {}
+         LocalDataUnit(const ConstDataUnitHandle& duh) : unknown_count_(0),
+            last_send_time_(0),
+            last_received_time_(0),
+            creator_(NULL),
+            refresh_before_send_(false),
+            duh_(duh)
+         {}
+         LocalDataUnit(const LocalDataUnit& o) : unknown_count_(o.unknown_count()),
+            last_send_time_(o.last_send_time()),
+            last_received_time_(o.last_received_time()),
+            creator_(o.creator()),
+            refresh_before_send_(o.refresh_before_send()),
+            duh_(o.dataUnit())
+         {}
+         ~LocalDataUnit(){}
+         const ConstDataUnitHandle& dataUnit() const { return duh_; }
+         int unknown_count() const { return unknown_count_; }
+         double last_send_time() const { return last_send_time_; }
+         double last_received_time() const { return last_received_time_; }
+         const shawn::Processor * creator() const { return creator_; }
+         bool refresh_before_send() const { return refresh_before_send_; }
+         void dataUnit(const ConstDataUnitHandle& duh) { duh_ = duh; }
+         void unknown_count(const int u) { unknown_count_ = u; }
+         void last_send_time(const double l) { last_send_time_ = l; }
+         void last_received_time(const double l) { last_received_time_ = l; }
+         void creator(const shawn::Processor * c) { creator_ = c; };
+         void refresh_before_send(const bool r) { refresh_before_send_ = r; }
+         void refresh() {
+            if (refresh_before_send_){
+               const autocast::AutoCastApplication * ac_app = NULL;
+               if (creator_) ac_app = dynamic_cast<const AutoCastApplication*>(creator_);
+               if(ac_app) duh_ = ac_app->refresh(duh_);
+            }
+         }
 
-	   private:
-		   ConstDataUnitHandle duh_;
-		   int unknown_count_;
-		   double last_send_time_;
-		   double last_received_time_;
-		   const shawn::Processor * creator_;
-		   bool refresh_before_send_;
-	   };
-	   
-	   typedef std::map<int,LocalDataUnit*> DataUnitsMap;
-	   DataUnitsMap complete_DataUnits_;
-	   DataUnitsMap stale_DataUnits_;
+      private:
+         ConstDataUnitHandle duh_;
+         int unknown_count_;
+         double last_send_time_;
+         double last_received_time_;
+         const shawn::Processor * creator_;
+         bool refresh_before_send_;
+      };
 
-	   /// Fetching startup parameters
-	   void fetch_parameters();
-	   void clean_up() throw();
-	   double uniform_random(double lb = 0.0, double ub = 1.0, bool lbi = true, bool ubi = true);
-	   void local_update() throw();
-	   autocast::AutoCastProcessor::LocalDataUnit* handle_DataUnit(const ConstDataUnitHandle&, bool* is_new, bool logging) throw();
-	   void update() throw();
-	   void send_update_packet(const double) throw();
-	   double get_update_time() throw();
-	   LocalDataUnit * most_urgent_DataUnit() throw();
+      typedef std::map<int,LocalDataUnit*> DataUnitsMap;
+      DataUnitsMap complete_DataUnits_;
+      DataUnitsMap stale_DataUnits_;
+
+      /// Fetching startup parameters
+      void fetch_parameters();
+      void clean_up() throw();
+      double uniform_random(double lb = 0.0, double ub = 1.0, bool lbi = true, bool ubi = true);
+      void local_update() throw();
+      autocast::AutoCastProcessor::LocalDataUnit* handle_DataUnit(const ConstDataUnitHandle&, bool* is_new, bool logging) throw();
+      void update() throw();
+      void send_update_packet(const double) throw();
+      double get_update_time() throw();
+      LocalDataUnit * most_urgent_DataUnit() throw();
 
 
-	   /// This is the time it might take to start up a node
-	   double max_startup_time_;
-	   /// These are the time boundaries a node will wait tell it sends a update packet
-	   double min_update_time_;
-	   double max_update_time_;
-	   double dataUnit_max_live_time_;
-	   double max_update_packet_size_;
-	   double max_update_data_units_;
+      /// This is the time it might take to start up a node
+      double max_startup_time_;
+      /// These are the time boundaries a node will wait tell it sends a update packet
+      double min_update_time_;
+      double max_update_time_;
+      double dataUnit_max_live_time_;
+      double max_update_packet_size_;
+      double max_update_data_units_;
 
-	   /// Initialized with 1
-	   double update_time_;
+      /// Initialized with 1
+      double update_time_;
 
-	   std::multiset<unsigned int> received_messages_ids_total_;
-	   std::set<unsigned int> unknown_DataUnit_ids_; // For request
-	   shawn::EventScheduler::EventHandle update_timer_;
-	   shawn::EventScheduler::EventHandle answer_timer_;
-	   shawn::EventScheduler::EventHandle request_timer_;
-	   shawn::EventScheduler::EventHandle flood_timer_;
+      std::multiset<unsigned int> received_messages_ids_total_;
+      std::set<unsigned int> unknown_DataUnit_ids_; // For request
+      shawn::EventScheduler::EventHandle update_timer_;
+      shawn::EventScheduler::EventHandle answer_timer_;
+      shawn::EventScheduler::EventHandle request_timer_;
+      shawn::EventScheduler::EventHandle flood_timer_;
 
-	   /// Statistics
-	   unsigned int packets_sent_total_;
-	   unsigned int bytes_sent_total_;
-	   unsigned int dataUnits_sent_total_;
-	   unsigned int dataUnits_bytes_sent_total_;
-	   std::set<unsigned int> received_DataUnit_ids_total_;
-	   unsigned int received_DataUnits_total_;
+      /// Statistics
+      unsigned int packets_sent_total_;
+      unsigned int bytes_sent_total_;
+      unsigned int dataUnits_sent_total_;
+      unsigned int dataUnits_bytes_sent_total_;
+      std::set<unsigned int> received_DataUnit_ids_total_;
+      unsigned int received_DataUnits_total_;
 
-       /// Neighborhood stuff
-	   autocast::Neighborhood neighborhood_;
+      /// Neighborhood stuff
+      autocast::Neighborhood neighborhood_;
 
-	   int max_iterations_;
-	   bool booted_;
-	   static int uid_counter_;
+      int max_iterations_;
+      bool booted_;
+      static int uid_counter_;
 
-	   /*unsigned int neighbors_count_;
-	   unsigned int real_neighbors_count_;
-	   double velocity_count_;
-	   double update_time_count_;*/
+      bool logging_;
+      /*unsigned int neighbors_count_;
+      unsigned int real_neighbors_count_;
+      double velocity_count_;
+      double update_time_count_;*/
 
    };
 
@@ -177,8 +178,8 @@ namespace autocast
 #endif
 #endif
 /*-----------------------------------------------------------------------
- * Source  $HeadURL$
- * Version $LastChangedRevision$
- * Date    $LastChangedDate$
- *-----------------------------------------------------------------------*/
+* Source  $HeadURL$
+* Version $LastChangedRevision$
+* Date    $LastChangedDate$
+*-----------------------------------------------------------------------*/
 

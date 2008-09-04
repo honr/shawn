@@ -45,6 +45,7 @@ namespace autocast
 							 dataUnits_sent_total_(0),
 							 dataUnits_bytes_sent_total_(0),
 							 received_DataUnits_total_(0),
+                      logging_(true),
 							 max_update_packet_size_(AUTOCAST_MAX_PACKET_LENGTH),
 							 max_update_data_units_(AUTOCAST_DEFAULT_MAX_DATAUNITS_PER_PACKET),
 							 max_startup_time_(AUTOCAST_DEFAULT_STARTUP_TIME),
@@ -82,6 +83,7 @@ namespace autocast
 		double ub1 = owner().world().simulation_controller().environment().optional_double_param("_ub1__boot",1.1);
 		update_timer_ = owner_w().world_w().scheduler_w().new_event(*this,now+fabs(max_startup_time_) * uniform_random(lb2,ub1),NULL);
 		max_iterations_ = owner().world().simulation_controller().environment().required_int_param("max_iterations");
+      logging_ = owner().world().simulation_controller().environment().optional_bool_param("autocast_logging", logging_);
    }
    // ----------------------------------------------------------------------
    bool
@@ -98,13 +100,17 @@ namespace autocast
 		   /// Prevent processor from receiving his sent messages
 		   return false;
 	   }
-	   if(received_messages_ids_total_.find(acm->uid()) != received_messages_ids_total_.end()){
-		   /// For debug purposes only
-		   std::cerr << "Message with id " << acm->uid() << " already received!" << std::endl;
-		   return false;
-	   }
-	   /// Now receive the packet!
-	   received_messages_ids_total_.insert(acm->uid());
+
+      if (logging_)
+      {
+	      if(received_messages_ids_total_.find(acm->uid()) != received_messages_ids_total_.end()){
+		      /// For debug purposes only
+		      std::cerr << "Message with id " << acm->uid() << " already received!" << std::endl;
+		      return false;
+	      }
+	      /// Now receive the packet!
+	      received_messages_ids_total_.insert(acm->uid());
+      }
 	   double now = owner().world().scheduler().current_time();
 	   /// Update the local DataUnits
 	   local_update();
@@ -141,7 +147,7 @@ namespace autocast
 		    du_it != acm->complete_DataUnits().end(); du_it++){
 			// Add also the ID's of the complete DataUnits
 		    received_ids.insert((*du_it)->id());
-			received_DataUnit_ids_total_.insert((*du_it)->id());
+			if (logging_) received_DataUnit_ids_total_.insert((*du_it)->id());
 			received_DataUnits_total_++;
 
 			/// Give to applications
@@ -248,7 +254,7 @@ namespace autocast
 	   velocity_count_+=owner().movement().velocity().euclidean_norm();
 	   update_time_count_+=update_time_;*/
 
-	   if (simulation_round() == max_iterations_ - 1){
+	   if (logging_ && (simulation_round() == max_iterations_ - 1)){
 		    KeeperManagedHandle kmh = owner_w().world_w().simulation_controller_w().simulation_task_keeper_w().find_managed_w("AutoCastTask");
 			assert(kmh.is_not_null());
 			autocast::AutoCastTask* act = dynamic_cast<autocast::AutoCastTask*>( kmh.get() );
