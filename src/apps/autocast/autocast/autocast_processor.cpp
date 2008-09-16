@@ -163,8 +163,8 @@ namespace autocast
 				if (stale_DataUnits_.find((*du_it)->id()) == stale_DataUnits_.end()){
 					/// Set the flag if the DataUnit is new
 					bool is_new_DataUnit = false;
-					/// Interested in if is a new DataUnit and enable logging
-					autocast::AutoCastProcessor::LocalDataUnit * ldu = handle_DataUnit(*du_it,&is_new_DataUnit,true);
+               /// Interested in if is a new DataUnit and enable logging (if logging_ is true)
+					autocast::AutoCastProcessor::LocalDataUnit * ldu = handle_DataUnit(*du_it,&is_new_DataUnit,logging_);
 					if (ldu){
 						/// New DataUnit
 						unknown_DataUnit_ids_.erase(ldu->dataUnit()->id());
