@@ -231,19 +231,69 @@ namespace shawn
          throw( std::runtime_error )
      {
     	 FlegsensWorldFactory* cwf = new FlegsensWorldFactory;
+    	 // Get those arrays from the environment:    	 
+    	 int in_gps_row1[5] = {	 sc.environment().optional_int_param( "gps_row1", -1),
+						    	 		sc.environment().optional_int_param( "gps_row1_interval", 5),
+						    	 		sc.environment().optional_int_param( "gps_row1_offset", 0),
+						    	 		sc.environment().optional_int_param( "gps_row1_force_first", 0),
+						    	 		sc.environment().optional_int_param( "gps_row1_force_last", 0)};
+    	 int in_gps_row2[5] = {	 sc.environment().optional_int_param( "gps_row2", -1),
+    							    	 sc.environment().optional_int_param( "gps_row2_interval", 5),
+    							    	 sc.environment().optional_int_param( "gps_row2_offset", 0),
+    							    	 sc.environment().optional_int_param( "gps_row2_force_first", 0),
+    							    	 sc.environment().optional_int_param( "gps_row2_force_last", 0)}; 
+    	 int in_gps_row3[5] = {	 sc.environment().optional_int_param( "gps_row3", -1),
+    							    	 sc.environment().optional_int_param( "gps_row3_interval", 5),
+    							    	 sc.environment().optional_int_param( "gps_row3_offset", 0),
+    							    	 sc.environment().optional_int_param( "gps_row3_force_first", 0),
+    							    	 sc.environment().optional_int_param( "gps_row3_force_last", 0)};
+    	 int in_gps_row4[5] = {	 sc.environment().optional_int_param( "gps_row4", -1),
+    							    	 sc.environment().optional_int_param( "gps_row4_interval", 5),
+    							    	 sc.environment().optional_int_param( "gps_row4_offset", 0),
+    							    	 sc.environment().optional_int_param( "gps_row4_force_first", 0),
+    							    	 sc.environment().optional_int_param( "gps_row4_force_last", 0)};
+    	 
+    	 int in_gateway_row1[5] = {	 sc.environment().optional_int_param( "gateway_row1", -1),
+ 						    	 		sc.environment().optional_int_param( "gateway_row1_interval", 5),
+ 						    	 		sc.environment().optional_int_param( "gateway_row1_offset", 0),
+ 						    	 		sc.environment().optional_int_param( "gateway_row1_force_first", 0),
+ 						    	 		sc.environment().optional_int_param( "gateway_row1_force_last", 0)};
+     	 int in_gateway_row2[5] = {	 sc.environment().optional_int_param( "gateway_row2", -1),
+     							    	 sc.environment().optional_int_param( "gateway_row2_interval", 5),
+     							    	 sc.environment().optional_int_param( "gateway_row2_offset", 0),
+     							    	 sc.environment().optional_int_param( "gateway_row2_force_first", 0),
+     							    	 sc.environment().optional_int_param( "gateway_row2_force_last", 0)}; 
+     	 int in_gateway_row3[5] = {	 sc.environment().optional_int_param( "gateway_row3", -1),
+     							    	 sc.environment().optional_int_param( "gateway_row3_interval", 5),
+     							    	 sc.environment().optional_int_param( "gateway_row3_offset", 0),
+     							    	 sc.environment().optional_int_param( "gateway_row3_force_first", 0),
+     							    	 sc.environment().optional_int_param( "gateway_row3_force_last", 0)};
+     	 int in_gateway_row4[5] = {	 sc.environment().optional_int_param( "gateway_row4", -1),
+     							    	 sc.environment().optional_int_param( "gateway_row4_interval", 5),
+     							    	 sc.environment().optional_int_param( "gateway_row4_offset", 0),
+     							    	 sc.environment().optional_int_param( "gateway_row4_force_first", 0),
+     							    	 sc.environment().optional_int_param( "gateway_row4_force_last", 0)};
+    	 /*
+     	cout << "GPS1: " << in_gps_row1[0] << " " << in_gps_row1[1] << " " << in_gps_row1[2] << " " << in_gps_row1[3] << " " << in_gps_row1[4] << " " << endl;
+ 		cout << "GPS2: " << in_gps_row2[0] << " " << in_gps_row2[1] << " " << in_gps_row2[2] << " " << in_gps_row2[3] << " " << in_gps_row2[4] << " " << endl;
+ 		cout << "GPS3: " << in_gps_row3[0] << " " << in_gps_row3[1] << " " << in_gps_row3[2] << " " << in_gps_row3[3] << " " << in_gps_row3[4] << " " << endl;
+ 		cout << "GPS4: " << in_gps_row4[0] << " " << in_gps_row4[1] << " " << in_gps_row4[2] << " " << in_gps_row4[3] << " " << in_gps_row4[4] << " " << endl;
+ 		
+ 		cout << "Gateway1: " << in_gateway_row1[0] << " " << in_gateway_row1[1] << " " << in_gateway_row1[2] << " " << in_gateway_row1[3] << " " << in_gateway_row1[4] << " " << endl;
+ 		cout << "Gateway2: " << in_gateway_row2[0] << " " << in_gateway_row2[1] << " " << in_gateway_row2[2] << " " << in_gateway_row2[3] << " " << in_gateway_row2[4] << " " << endl;
+ 		cout << "Gateway3: " << in_gateway_row3[0] << " " << in_gateway_row3[1] << " " << in_gateway_row3[2] << " " << in_gateway_row3[3] << " " << in_gateway_row3[4] << " " << endl;
+ 		cout << "Gateway4: " << in_gateway_row4[0] << " " << in_gateway_row4[1] << " " << in_gateway_row4[2] << " " << in_gateway_row4[3] << " " << in_gateway_row4[4] << " " << endl;
+    	  */
 
-    	 cwf->set_parameters(
-    			 	sc.environment().required_int_param("x_count"),
-    			 	sc.environment().required_int_param("y_count"),
-    	            sc.environment().required_double_param("x_dist"),
-    	            sc.environment().required_double_param("y_dist"),
-    	            sc.environment().required_double_param("x_off"),
-    	            sc.environment().required_int_param("gps_row1"),
-    	            sc.environment().required_int_param("gps_row1_interval"),
-    	            sc.environment().required_int_param("gps_row1_offset"),
-    	            sc.environment().required_int_param("gps_row2"),
-    	            sc.environment().required_int_param("gps_row2_interval"),
-    	            sc.environment().required_int_param("gps_row2_offset"));
+     	 
+     	 
+    	 cwf->set_parameters(	sc.environment().required_int_param("x_count"),
+			    			 	sc.environment().required_int_param("y_count"),
+			    	            sc.environment().required_double_param("x_dist"),
+			    	            sc.environment().required_double_param("y_dist"),
+			    	            sc.environment().required_double_param("x_off"),
+			    	            in_gps_row1, in_gps_row2, in_gps_row3, in_gps_row4,
+			    	            in_gateway_row1, in_gateway_row2, in_gateway_row3, in_gateway_row4);
     	 
          return cwf;
      }

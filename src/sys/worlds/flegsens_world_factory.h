@@ -64,8 +64,8 @@ namespace shawn
 		///@}
 
 		void set_parameters(int in_x_count, int in_y_count, double in_x_dist, double in_y_dist, double in_x_off,
-													int in_gps_row1, int in_gps_row1_interval, int in_gps_row1_offset,
-													int in_gps_row2, int in_gps_row2_interval, int in_gps_row2_offset);
+				int in_gps_row1[], int in_gps_row2[], int in_gps_row3[], int in_gps_row4[],
+				int in_gateway_row1[], int in_gateway_row2[], int in_gateway_row3[], int in_gateway_row4[]);
 		///@name Configuration and action triggering
 		///@{
 
@@ -128,12 +128,16 @@ namespace shawn
 		double x_dist_;  // Abstand zwischen zwei Knoten auf der x-Achse in [m]
 		double y_dist_;  // Abstand zwischen zwei Knoten auf der y-Achse in [m] 
 		double x_off_;   // Offset zwischen zwei Reihen auf der x-Achse in [m]
-		int gps_row1_;
-		int gps_row1_interval_;
-		int gps_row1_offset_;
-		int gps_row2_;
-		int gps_row2_interval_;
-		int gps_row2_offset_;		
+		int gps_row1_[5];
+		int gps_row2_[5];
+		int gps_row3_[5];
+		int gps_row4_[5];
+		int gateway_row1_[5];
+		int gateway_row2_[5];
+		int gateway_row3_[5];
+		int gateway_row4_[5];
+		
+		
 	};
 
 }
