@@ -25,24 +25,44 @@ using namespace std;
 
 namespace shawn
 {
-    NS2NodeMovementCreator::NS2NodeMovementCreator(SimulationController& sc)
+	NS2NodeMovementCreator::NS2NodeMovementCreator(SimulationController& sc) : 
+    sc_(&sc),
+	//node_movement_(NULL),
+	node_(NULL),
+	movement_info_(NULL),
+	inputfile_(NULL),
+    sstream_(NULL),
+	istream_(NULL),
+	sbuf_(NULL),
+	line_nr_(0),
+	urgency_(MovementInfo::Delayed)
     {
-        sc_ = &sc;
+        //sc_ = &sc;
         string path = sc_->environment_w().required_string_param("path");
         inputfile_ = new ifstream(path.c_str());
-        sstream_ = new stringstream(stringstream::in | stringstream::out);
+        //sstream_ = new stringstream(stringstream::in | stringstream::out);
     }
     // ----------------------------------------------------------------------
     NS2NodeMovementCreator:: ~NS2NodeMovementCreator()
     {
 
-        if (inputfile_!= NULL)
+        if (inputfile_ != NULL)
         {
-            inputfile_->close();
+			if (inputfile_->is_open()) 
+				inputfile_->close();
             delete inputfile_;
             inputfile_ = NULL;
         }
-
+		if (sstream_ != NULL)
+		{
+			sstream_->clear();
+			delete sstream_;
+			sstream_ = NULL;
+		}
+		if (sbuf_ != NULL){
+			delete sbuf_;
+			sbuf_ = NULL;
+		}
     }
     // ----------------------------------------------------------------------
     MovementInfo* NS2NodeMovementCreator::next_movement()
@@ -53,6 +73,11 @@ namespace shawn
         if (! inputfile_->is_open())
         {
             WARN(sc_->logger(), "The File containing the movement orders could not be opened");
+			// NEW
+			assert(movement_info_);
+			delete movement_info_;
+			movement_info_ = NULL;
+			// NEW
 			abort();
             return NULL;
         }
@@ -74,6 +99,11 @@ namespace shawn
                        delete sstream_;
                        sstream_ = NULL;
                     }
+					// NEW
+					assert(movement_info_);
+					delete movement_info_;
+					movement_info_ = NULL;
+					// NEW
                     return next_movement();
                 }
                 else
@@ -95,6 +125,11 @@ namespace shawn
             {
                 DEBUG(sc_->logger(), "Finished reading file");
                 cout<<inputfile_->tellg()<<endl;
+				// NEW 
+				assert(movement_info_);
+				delete movement_info_;
+				movement_info_ = NULL;
+				// NEW
                 return NULL;
             }
 
@@ -283,12 +318,22 @@ namespace shawn
                 } catch ( std::runtime_error& )
                 {
                     WARN(sc_->logger(),"Line " << line_nr_ << " contains a corrupt double value");
+					// NEW
+					assert(linear_movement);
+					delete linear_movement;
+					linear_movement = NULL;
+					// NEW
                     return false;
                 }
 
                 if (velocity<0)
                 {
                     WARN(sc_->logger(),"Line " << line_nr_ << " has a negative velocity");
+					// NEW
+					assert(linear_movement);
+					delete linear_movement;
+					linear_movement = NULL;
+					// NEW
                     return false;
                 }
 

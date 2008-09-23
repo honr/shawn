@@ -84,7 +84,7 @@ namespace shawn
 			nodes_ = NULL;
 		}
 		//This gives us an Array of Messages for all nodes which can be received in O(1)
-		nodes_ = new DynamicNodeArray<CsmaState>(world_w());
+		//nodes_ = new DynamicNodeArray<CsmaState>(world_w());
 		
 		/*
 		received_ = 0;

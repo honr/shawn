@@ -64,8 +64,8 @@ namespace shawn
 		int max_backoff_exponent;
 		
 		string type = sc.environment().optional_string_param("csma_type", "");
-		if( type == "802.15.4" )
-		{
+		if( type == "802.15.4" ){
+		
 			cout << "CSMA transmission model factory: Setting parameters to fit IEEE 802.15.4" << endl;
 			bandwidth =16000; // 
 

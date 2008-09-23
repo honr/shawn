@@ -33,7 +33,7 @@ namespace shawn
       ///
       RandomDirectionNodeMovementCreator(SimulationController& sc);
 
-		~RandomDirectionNodeMovementCreator();
+	  virtual ~RandomDirectionNodeMovementCreator();
 		      ///@}
 
 

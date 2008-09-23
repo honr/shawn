@@ -26,7 +26,7 @@ namespace traci{
 	remotehost_("localhost"),
 	remoteport_(8888),
 	time_interval_(1.0),
-   feed_time_(0.0),
+    feed_time_(0.0),
 	target_time_(0.0),
 	mi_(NULL)
 	{
@@ -66,16 +66,17 @@ namespace traci{
 	   // Fetch parameters
 	   remoteport_ = sc_.environment().optional_int_param("remote_port",remoteport_);
 	   remotehost_ = sc_.environment().optional_string_param("remote_host",remotehost_);
-      feed_time_ =  sc_.environment().optional_double_param("feed_time",feed_time_);
+       feed_time_ =  sc_.environment().optional_double_param("feed_time",feed_time_);
 	   //target_time_ = sc_.environment().optional_double_param("target_time",target_time_);
 	   //time_interval_ = sc_.environment().optional_double_param("time_interval",time_interval_);
 
 	   fetch_processor_factories();
 	   // Connect it!
-	   if (! connect() ){
+	   if (!connect()) abort();
+	   /*if (! connect() ){
 		   std::cerr << "Connection failed!" << std::endl;
 		   abort();
-	   }
+	   }*/
 
       if (feed_time_ - time_interval_ > 0.0)
       {
@@ -104,6 +105,7 @@ namespace traci{
 		   }catch(tcpip::SocketException e){
 			   std::cerr << "Error in method TraCINodeMovementCreator::next_movement while receiving: "
 						 << e.what() << std::endl;
+			   abort();
 		   }
 		   
 		   // First result command serves as status information
@@ -120,7 +122,7 @@ namespace traci{
        throw( std::runtime_error )
    {
 	   if (!socket_){
-		   std::cerr << "Error in method TraCINodeMovementCreator::next_movement, socket_ == NULL!" << std::endl;
+		  std::cerr << "Error in method TraCINodeMovementCreator::next_movement, socket_ == NULL!" << std::endl;
 	      abort();
 	   }
 
@@ -166,8 +168,9 @@ namespace traci{
 		   try{
 			   socket_->receiveExact(in_);
 		   }catch(tcpip::SocketException e){
-			   std::cerr << "Error in method TraCINodeMovementCreator::next_movement while receiving: "
+			   std::cerr << "Error in method TraCINodeMovementCreator::next_movement() while receiving: "
 						 << e.what() << std::endl;
+			   abort();
 		   }
 		   
 		   // First result command serves as status information
@@ -323,23 +326,51 @@ namespace traci{
 
 		socket_ = new tcpip::Socket(remotehost_, remoteport_);
 		socket_->set_blocking(true);
-		socket_->connect();
-		// If not successful, delete socket
-		if (! socket_->has_client_connection() ){
+		try{
+			socket_->connect();
+		}
+		catch(tcpip::SocketException e){
+			std::cerr << "Error in method TraCINodeMovementCreator::connect(): "
+						 << e.what() << std::endl;
 			delete socket_;
 			socket_ = NULL;
+			return false;
 		}
-		return (socket_ != NULL);
+		/*if (! socket_->has_client_connection() ){
+			std::cerr << "Error in method TraCINodeMovementCreator::connect(): ! socket_->has_client_connection()" 
+					  << std::endl;
+			delete socket_;
+			socket_ = NULL;
+			return false;
+		}*/
+		//return (socket_ != NULL);
+		return true;
    }
 
    void
 	   TraCINodeMovementCreator::
 	   close()
    {
-	   if (!socket_){
+	   if(!socket_){
+		   std::cerr << "Error in method TraCINodeMovementCreator::close(): socket_ == NULL" << std::endl;
+		   abort();
+	   }
+	   tcpip::Storage out;
+	   out.writeByte(2);
+	   out.writeChar(CMD_CLOSE);
+	   try{
+		socket_->sendExact(out);
+	   }
+	   catch(tcpip::SocketException e){
+			std::cerr << "Error in method TraCINodeMovementCreator::close(): "
+						 << e.what() << std::endl;
 			delete socket_;
 			socket_ = NULL;
+			abort();
 	   }
+	   
+		delete socket_;
+		socket_ = NULL;
    }
 
    void
@@ -411,6 +442,7 @@ namespace traci{
 	   if (!socket_){
 		   std::cerr << "Error in method TraCINodeMovementCreator::command_set_maximum_speed, \
 						socket_ == NULL" << std::endl;
+		   abort();
 	   }
 
 	   // Build command
@@ -455,6 +487,7 @@ namespace traci{
 	   if (!socket_){
 		   std::cerr << "Error in method TraCINodeMovementCreator::command_stop, \
 						socket_ == NULL" << std::endl;
+		   abort();
 	   }
 
 	   // Build command

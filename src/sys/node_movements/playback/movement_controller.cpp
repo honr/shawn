@@ -32,8 +32,14 @@ namespace shawn
 
    MovementController::~MovementController()
    {
-      if (nmc_!= NULL)
+	   if (nmc_ != NULL && !dynamic_cast<shawn::RefcntPointable*>(nmc_)){
          delete nmc_;
+	   }
+	   nmc_ = NULL;
+	   if (movement_info_ != NULL){
+			delete movement_info_;
+			movement_info_ = NULL;
+	   }
    }
 
    // ----------------------------------------------------------------------
@@ -53,9 +59,17 @@ namespace shawn
       {
          DEBUG(sc_->logger(), "MovementController::timeout_action() setting a delayed node movement");
 			NodeMovement* n =movement_info_->node_movement();
-         if (movement_info_->node()) movement_info_->node()->set_movement(movement_info_->node_movement());
+			if (movement_info_->node()){
+				movement_info_->node()->set_movement(movement_info_->node_movement());
+			}
          command_nr_++;
+		 // NEW
+		 assert(movement_info_);
+		 delete movement_info_;
+		 movement_info_ = NULL;
+		 // NEW
       }
+	    assert(movement_info_ == NULL);
 		movement_info_ = nmc_->next_movement();
 	      
 		if (movement_info_ != NULL)
@@ -71,7 +85,9 @@ namespace shawn
             {
             case MovementInfo::Immediately:
                DEBUG(sc_->logger(), "MovementController::timeout_action() - Immediately");
-               if (movement_info_->node()) (movement_info_->node())->set_movement(movement_info_->node_movement());
+			   if (movement_info_->node()){
+				   (movement_info_->node())->set_movement(movement_info_->node_movement());
+			   }
                command_nr_++;
 
 // if ( movement_info_->node()->id() == 0 )
@@ -80,7 +96,12 @@ namespace shawn
 //    WARN( sc_->logger(), "----" );
 // }
                
-               movement_info_ = NULL;
+               // OLD //movement_info_ = NULL;
+			   //NEW
+			   assert(movement_info_);
+			   delete movement_info_;
+			   movement_info_ = NULL;
+			   //NEW
                timeout_action();
             break;
             case MovementInfo::Delayed:
@@ -101,7 +122,11 @@ namespace shawn
                if EQDOUBLE(sc_->world_w().current_time(),movement_info_->dispatch_time())
                {
                   DEBUG(sc_->logger(), "MovementController::timeout_action() - Immediately (ftime=stime)");
-                  (movement_info_->node())->set_movement(movement_info_->node_movement());
+				  // NEW
+                  if (movement_info_->node()){
+				  // NEW
+					  (movement_info_->node())->set_movement(movement_info_->node_movement());
+				  }
                   command_nr_++;
 
 // if ( movement_info_->node()->id() == 0 )
@@ -110,14 +135,24 @@ namespace shawn
 //    WARN( sc_->logger(), "----" );
 // }
                   
-                  movement_info_ = NULL;
+                  // OLD //movement_info_ = NULL;
+				  // NEW
+				  assert(movement_info_);
+				  delete movement_info_;
+				  movement_info_ = NULL;
+				  // NEW
                   timeout_action();
                }
                else
                {
                   WARN(sc_->logger(), "Illegal NodeMovement scheduling time found in delayed command nr. "<<command_nr_);
                   command_nr_++;
-                  movement_info_ = NULL;
+                  // OLD //movement_info_ = NULL;
+				  // NEW
+				  assert(movement_info_);
+				  delete movement_info_;
+				  movement_info_ = NULL;
+				  //NEW
                   timeout_action();
                }
             break;

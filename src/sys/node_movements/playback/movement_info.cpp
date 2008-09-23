@@ -18,11 +18,18 @@ using namespace std;
 namespace shawn
 {
 
-	MovementInfo::MovementInfo()
+	MovementInfo::MovementInfo() :
+    urgency_(Immediately),
+	node_(NULL),
+	//node_movement_(NULL),
+	node_movement_(),
+	dispatch_time_(0.0),
+	vector_(Vec()),
+	velocity_(0.0)
 	{
-		vector_ = Vec();
-		velocity_ = 0;
-		urgency_ = Urgency(Immediately);
+		//vector_ = Vec();
+		//velocity_ = 0;
+		//urgency_ = Urgency(Immediately);
 	}
 
 	// ----------------------------------------------------------------------
@@ -50,7 +57,10 @@ namespace shawn
 	// ----------------------------------------------------------------------
 
 
-	void MovementInfo::set_node_movement(NodeMovement * node_movement) {
+	/*void MovementInfo::set_node_movement(NodeMovement * node_movement) {
+		node_movement_ = node_movement;
+	}*/
+	void MovementInfo::set_node_movement(const NodeMovementHandle& node_movement) {
 		node_movement_ = node_movement;
 	}
 
@@ -75,7 +85,7 @@ namespace shawn
 	// ----------------------------------------------------------------------
 
 	NodeMovement* MovementInfo::node_movement() {
-		return node_movement_;
+		return node_movement_.get();
 	}
 }
 

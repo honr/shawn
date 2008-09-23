@@ -9,7 +9,7 @@
 #include <cfloat>
 #include <cmath>
 
-#define RANDOMDIRECTION_STARTNOW -1.0
+#define RANDOMDIRECTION_STARTNOW 0.0
 #define PI 3.14159265
 
 using namespace std;
@@ -49,10 +49,18 @@ namespace shawn{
          for (World::node_iterator it=sc_.world_w().begin_nodes_w(); it!=sc_.world_w().end_nodes_w(); ++it)
          {
             NodeMovement &nm = it->movement_w();
-            if (nm.name() == "NoMovement") return generateNewMovement(*it, RANDOMDIRECTION_STARTNOW);
+			if (nm.name() == "NoMovement"){
+				std::cerr << "---[RANDOM DIRECTION NODEMOVEMENTCREATOR (new movement 0) Current Node: " << it->id() << " BEGIN]---" << std::endl;
+				std::cerr << "Current Time: " << sc_.world().current_time() << std::endl;
+				std::cerr << "---[RANDOM DIRECTION NODEMOVEMENTCREATOR (new movement 0) Current Node: " << it->id() << " END]---" << std::endl;
+				return generateNewMovement(*it, RANDOMDIRECTION_STARTNOW);
+			}
             LinearMovement *lm = dynamic_cast<LinearMovement*>(&nm);
             if ( ( lm != NULL ) & ( lm->position() == lm->destination() ) )
             {
+			   std::cerr << "---[RANDOM DIRECTION NODEMOVEMENTCREATOR (new movement 1) Current Node: " << it->id() << " BEGIN]---" << std::endl;
+			   std::cerr << "Current Time: " << sc_.world().current_time() << std::endl;
+			   std::cerr << "---[RANDOM DIRECTION NODEMOVEMENTCREATOR (new movement 1) Current Node: " << it->id() << " END]---" << std::endl;
                return generateNewMovement(*it, RANDOMDIRECTION_STARTNOW);
             }
          }
@@ -64,6 +72,10 @@ namespace shawn{
          Node *n = next_movement_times_.begin()->second;
          assert (n != NULL);
          next_movement_times_.erase(next_movement_times_.begin());
+		 std::cerr << "---[RANDOM DIRECTION NODEMOVEMENTCREATOR (new movement 2) Current Node: " << n->id() << " BEGIN]---" << std::endl;
+		 std::cerr << "Current Time: " << sc_.world().current_time() << std::endl;
+		 std::cerr << "Start Time: " << startTime << std::endl;
+		 std::cerr << "---[RANDOM DIRECTION NODEMOVEMENTCREATOR (new movement 2) Current Node: " << n->id() << " END]---" << std::endl;
          return generateNewMovement(*n, startTime);
       }
 
@@ -75,8 +87,13 @@ namespace shawn{
    {
       // Generate a new movement
       MovementInfo* mi = new MovementInfo();
+	  shawn::Vec destination = node.real_position();
+	  if (node.movement().name() == "LinearMovement"){
+		  const shawn::LinearMovement& lm = dynamic_cast<const shawn::LinearMovement&>(node.movement());
+		  destination = lm.destination();
+	  }
       mi->set_node(&node);
-      if (startTime < 0.0) 
+      if (startTime <= 0.0) 
       {
          mi->set_urgency(MovementInfo::Immediately);
       } else {
@@ -89,32 +106,44 @@ namespace shawn{
       double direction = urvDirection_;
       double speed = urvSpeed_;
       Vec vector(cos(direction) * speed, sin(direction) * speed, 0.0);
-	  double intersectTime = DBL_MAX;
+	  double intersection = DBL_MAX;
 
       // Get x intersection
       if (vector.x() < 0)
       {
-         double t = (0 - node.real_position().x()) / vector.x();
-         if (t < intersectTime) intersectTime = t;
+		 double t = (0 - destination.x()/*node.real_position().x()*/) / vector.x();
+         if (t < intersection) intersection = t;
       } else if (vector.x() > 0){
-         double t = (width_ - node.real_position().x()) / vector.x();
-         if (t < intersectTime) intersectTime = t;
+         double t = (width_ - destination.x()/*node.real_position().x()*/) / vector.x();
+         if (t < intersection) intersection = t;
       }
       // Get y intersection
       if (vector.y() < 0)
       {
-         double t = (0 - node.real_position().y()) / vector.y();
-         if (t < intersectTime) intersectTime = t;
+         double t = (0 - destination.y()/*node.real_position().y()*/) / vector.y();
+         if (t < intersection) intersection = t;
       } else if (vector.y() > 0){
-         double t = (height_ - node.real_position().y()) / vector.y();
-         if (t < intersectTime) intersectTime = t;
+         double t = (height_ - destination.y()/*node.real_position().y()*/) / vector.y();
+         if (t < intersection) intersection = t;
       }
 
-	  shawn::Vec w = node.real_position() + (vector * intersectTime);
-	  lm->set_parameters(w.euclidean_norm(), w, sc_.world_w());
+	  shawn::Vec w = destination/*node.real_position()*/ + (vector * intersection);
+	  lm->set_parameters(speed, w, sc_.world_w());
       mi->set_node_movement(lm);
       // Schedule, when the node will need a new movement
-      next_movement_times_.insert(std::make_pair(startTime+intersectTime,&node));
+	  /*double intersectTime = (vector * intersection).euclidean_norm()/speed*/;
+	  std::cerr << "---[RANDOM NODE MOVEMENT CREATOR Current Node: " << node.id() << " BEGIN]---" << std::endl;
+	  std::cerr << "Start Time: " << startTime << std::endl;
+	  std::cerr << "Real Position: " << node.real_position().x() << "\t" << node.real_position().y() << std::endl;
+	  std::cerr << "vector: " << vector.x() << "\t" << vector.y() << std::endl;
+	  std::cerr << "intersection: " << intersection << std::endl;
+	  std::cerr << "(vector * intersection): " << (vector * intersection).x() << "\t" << (vector * intersection).y() << std::endl;
+	  std::cerr << "w (Destination): " << w.x() << "\t" << w.y() << std::endl;
+	  std::cerr << "Speed: " << speed << std::endl;
+	  /*std::cerr << "(vector * intersection).euclidean_norm(): " << (vector * intersection).euclidean_norm() << std::endl;*/
+	  /*std::cerr << "Intersect Time: " << intersectTime << std::endl;*/
+	  std::cerr << "---[RANDOM NODE MOVEMENT CREATOR Current Node: " << node.id() << " END]---" << std::endl;
+      next_movement_times_.insert(std::make_pair(startTime+intersection/*intersectTime*/,&node));
 
       return mi;
    }

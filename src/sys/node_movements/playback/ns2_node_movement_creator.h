@@ -69,7 +69,7 @@ namespace shawn
       virtual bool parse_rest(int, std::string, double);
 
       SimulationController * sc_;
-      NodeMovement * node_movement_;
+      //NodeMovement * node_movement_;
       Node * node_;
       MovementInfo * movement_info_;
       std::ifstream * inputfile_;

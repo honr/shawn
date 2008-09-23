@@ -52,7 +52,8 @@ namespace shawn
 
       virtual void set_node(Node*);
 
-      virtual void set_node_movement(NodeMovement*);
+      //virtual void set_node_movement(NodeMovement*);
+	  virtual void set_node_movement(const NodeMovementHandle&);
 
       virtual MovementInfo::Urgency urgency();
 
@@ -66,7 +67,8 @@ namespace shawn
 
       Urgency urgency_;
       Node * node_;
-      NodeMovement * node_movement_;
+      //NodeMovement * node_movement_;
+	  NodeMovementHandle node_movement_;
       double dispatch_time_;
       Vec vector_;
       double velocity_;
