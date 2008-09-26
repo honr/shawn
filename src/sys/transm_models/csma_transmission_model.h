@@ -40,7 +40,7 @@ namespace shawn
 	public:
 		///@name construction, destruction and support for life cycle
 		///@{
-		CsmaTransmissionModel(double short_inter_frame_spacing, double long_inter_frame_spacing, int max_short_inter_frame_spacing_size, int bandwidth, double backoff, double sending_jitter, double sending_jitter_lb, int max_sending_attempts, int backoff_factor_base,int min_backoff_exponent, int max_backoff_exponent);
+		CsmaTransmissionModel(double short_inter_frame_spacing, double long_inter_frame_spacing, int max_short_inter_frame_spacing_size, int bandwidth, bool slotted_backoff, double backoff, int max_sending_attempts, int backoff_factor_base,int min_backoff_exponent, int max_backoff_exponent);
 
 		~CsmaTransmissionModel();
 		/**
@@ -174,16 +174,14 @@ namespace shawn
         
         /// maximum packet size of packets followed by a short inter frame spacing
         int max_short_inter_frame_spacing_size_;
-		///Backoff that will be waited after a message has been delayed
+		/// determines whether slotted or continouos backoff times are used.
+        bool slotted_backoff_;
+        ///Backoff that will be waited after a message has been delayed
 		double backOff_;
 		///Bandwidth, defines the throughput
 		int bandwidth_;
 		/// EventHandle
 		EventScheduler::EventHandle event_handle_;
-		/// Jitter for starting the transmission
-		double sending_jitter_;
-
-		double sending_jitter_lb_;
 		
 		// Maximum number of attempts to send a message
 		int max_sending_attempts_;

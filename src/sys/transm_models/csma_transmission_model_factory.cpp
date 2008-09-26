@@ -53,11 +53,8 @@ namespace shawn
 		double short_inter_frame_spacing;
 		double long_inter_frame_spacing;
 		int max_short_inter_frame_spacing_size;
-		   
+		bool slotted_backoff;   
 		double backoff;
-		double sending_jitter;
-		sending_jitter;
-		double sending_jitter_lb;
 		int max_sending_attempts;
 		int backoff_factor_base;
 		int min_backoff_exponent;
@@ -75,8 +72,6 @@ namespace shawn
 
 			   
 			backoff = 20.0/double(bandwidth); //20 symbols
-			sending_jitter = backoff;
-			sending_jitter_lb = 0;
 			max_sending_attempts = 5;
 			backoff_factor_base = 2;
 			min_backoff_exponent = 3;
@@ -93,8 +88,6 @@ namespace shawn
             long_inter_frame_spacing = short_inter_frame_spacing + 2 * backoff; // DIFS
 			max_short_inter_frame_spacing_size = 0;
 
-			sending_jitter = 2*backoff;
-			sending_jitter_lb = backoff;
 			max_sending_attempts = 4; // DS PHY
 			backoff_factor_base = 2; // DS PHY
 			min_backoff_exponent = 5; // DS PHY
@@ -107,15 +100,13 @@ namespace shawn
 			max_short_inter_frame_spacing_size = sc.environment().optional_int_param( "max_short_inter_frame_spacing_size",18 );
 
 			backoff = sc.environment().required_double_param( "backoff");
-			sending_jitter = sc.environment().optional_double_param( "jitter",0.0 );
-			sending_jitter = sc.environment().optional_double_param( "jitter_upper_bound",sending_jitter );
-			sending_jitter_lb = sc.environment().optional_double_param( "jitter_lower_bound",0.001 );
 			max_sending_attempts =  sc.environment().optional_int_param("max_sending_attempts",3);
 			backoff_factor_base =  sc.environment().optional_int_param("backoff_factor_base",2);
 			min_backoff_exponent = sc.environment().optional_int_param("min_backoff_exponent",0);
 			max_backoff_exponent = sc.environment().optional_int_param("max_backoff_exponent",100);
 		}
-		return new CsmaTransmissionModel( short_inter_frame_spacing, long_inter_frame_spacing, max_short_inter_frame_spacing_size, bandwidth,backoff,sending_jitter,sending_jitter_lb,max_sending_attempts,backoff_factor_base, min_backoff_exponent, max_backoff_exponent);
+		slotted_backoff = sc.environment().optional_bool_param("slotted_backoff",false);
+		return new CsmaTransmissionModel( short_inter_frame_spacing, long_inter_frame_spacing, max_short_inter_frame_spacing_size, bandwidth,slotted_backoff,backoff,max_sending_attempts,backoff_factor_base, min_backoff_exponent, max_backoff_exponent);
    }
 	
 

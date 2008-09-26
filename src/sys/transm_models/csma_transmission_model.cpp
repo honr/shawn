@@ -24,9 +24,8 @@ namespace shawn
 				double long_inter_frame_spacing,
 				int max_short_inter_frame_spacing_size,
 				int bandwidth, 
+				bool slotted_backoff,
 				double backoff, 
-				double sending_jitter, 
-				double sending_jitter_lb,
 				int max_sending_attempts,
 				int backoff_factor_base,
 				int min_backoff_exponent,
@@ -40,11 +39,10 @@ namespace shawn
 		short_inter_frame_spacing_(short_inter_frame_spacing),
 		long_inter_frame_spacing_(long_inter_frame_spacing),
 		max_short_inter_frame_spacing_size_(max_short_inter_frame_spacing_size),
+		slotted_backoff_(slotted_backoff),
 		backOff_(backoff),
 		bandwidth_(bandwidth),
 		nodes_(NULL),
-		sending_jitter_(sending_jitter),
-		sending_jitter_lb_(sending_jitter_lb),
 		max_sending_attempts_(max_sending_attempts),
 		backoff_factor_base_(backoff_factor_base),
 		min_backoff_exponent_(min_backoff_exponent),
@@ -114,42 +112,50 @@ namespace shawn
 	throw()
 	{
 		csma_msg* new_msg = new csma_msg(&mi, (double) mi.msg_->size() / bandwidth_);
-#ifdef CSMA_DEBUG
-		std::cout <<"new msg="<<new_msg<<" at node "<<mi.src_->id()<< ((mi.msg_->is_ack())?(" ack"):(" msg")) << std::endl;
-#endif
+		#ifdef CSMA_DEBUG
+			std::cout <<"new msg="<<new_msg<<" at node "<<mi.src_->id()<< ((mi.msg_->is_ack())?(" ack"):(" msg")) << std::endl;
+		#endif
 		
 		if (mi.msg_->is_ack())
 		{
+			//acks are treated differently from other message:
+			// - they are scheduled for immediate delivery (ignoring IFS
+			// - They are not queued, i.e. they can "overtake" regular messages in beeing sent
+			
 			(*nodes_)[*(mi.src_)].outgoing_messages_.push_front(new_msg);
-#ifdef CSMA_DEBUG
-			EventScheduler::EventHandle eh = world_w().scheduler_w().new_event(*this, world().current_time(),new NodeInfo(mi.src_));
+			#ifdef CSMA_DEBUG
+				EventScheduler::EventHandle eh = world_w().scheduler_w().new_event(*this, world().current_time(),new NodeInfo(mi.src_));
 
-			std::cout <<eh<<" sched in send message at "<< eh->time()<<" for ack"<<std::endl;
-			std::cout.flush();
-#else
-			world_w().scheduler_w().new_event(*this, world().current_time(),new NodeInfo(mi.src_));
-#endif
+				std::cout <<eh<<" sched in send message at "<< eh->time()<<" for ack"<<std::endl;
+				std::cout.flush();
+			#else
+				world_w().scheduler_w().new_event(*this, world().current_time(),new NodeInfo(mi.src_));
+			#endif
 			
 		} else {
 			(*nodes_)[*(mi.src_)].outgoing_messages_.push_back(new_msg);
-		}
-		if (!(*nodes_)[*(mi.src_)].busy_)
-		{
-			(*nodes_)[*(mi.src_)].busy_= true;
+			if (!(*nodes_)[*(mi.src_)].busy_)
+			{
+				(*nodes_)[*(mi.src_)].busy_= true;
 
-#ifdef CSMA_DEBUG
-			EventScheduler::EventHandle eh = world_w().scheduler_w().new_event(*this, world().current_time()+0.00001,new NodeInfo(mi.src_));
-			std::cout <<eh<<" sched in send message at "<< eh->time()<<" for next msg"<<std::endl;
+			#ifdef CSMA_DEBUG
+				EventScheduler::EventHandle eh = world_w().scheduler_w().new_event(*this, world().current_time()+0.00001,new NodeInfo(mi.src_));
+				std::cout <<eh<<" sched in send message at "<< eh->time()<<" for next msg"<<std::endl;
+				std::cout.flush();
+			} else std::cout <<"no schedule, node busy"<<std::endl;
 			std::cout.flush();
-		} else std::cout <<"no schedule, node busy"<<std::endl;
-		std::cout.flush();
-#else
-			world_w().scheduler_w().new_event(*this, world().current_time()+0.00001,new NodeInfo(mi.src_));
+			#else
+				world_w().scheduler_w().new_event(*this, world().current_time()+0.00001,new NodeInfo(mi.src_));
+			}
+			#endif
 		}
-#endif
 	}
 
-	void CsmaTransmissionModel::timeout(EventScheduler & event_scheduler, EventScheduler::EventHandle event_handle, double time, EventScheduler::EventTagHandle & event_tag_handle) throw()
+
+	// ----------------------------------------------------------------------
+	void 
+		CsmaTransmissionModel::
+		timeout(EventScheduler & event_scheduler, EventScheduler::EventHandle event_handle, double time, EventScheduler::EventTagHandle & event_tag_handle) throw()
 	{
 		
 		NodeInfo* ni = dynamic_cast<NodeInfo* >(event_tag_handle.get());
@@ -178,8 +184,12 @@ namespace shawn
 #endif
 					while( (!msg->pmi_->msg_->is_ack())&& ((*nodes_)[*(msg->pmi_->src_)].busy_until_ > msg->deliver_time_) && (msg->sending_attempts_< max_sending_attempts_))
 					{
-						msg->deliver_time_= world().current_time() + shawn::uniform_random_0i_1i()*backOff_ * (int)(pow((float)backoff_factor_base_,std::min(min_backoff_exponent_+msg->sending_attempts_, max_backoff_exponent_))) ;
-					    //New Event to now + backoff
+						
+						double wait_periods = shawn::uniform_random_0i_1i()* (int)(pow(backoff_factor_base_,std::min(min_backoff_exponent_+msg->sending_attempts_, max_backoff_exponent_))-1);
+						if (slotted_backoff_) wait_periods = round(wait_periods);
+						msg->deliver_time_= world().current_time() + (backOff_ *  wait_periods);
+
+						//New Event to now + backoff
 			            ++msg->sending_attempts_;
 					}
 					if (msg->deliver_time_ <= world().current_time())
@@ -218,15 +228,15 @@ namespace shawn
 				else    //Otherwise the transmission has terminated
 				{
 				    
-					const Message* m = msg->pmi_->msg_.get();
+//					const Message* m = msg->pmi_->msg_.get();
 	                
 	                //deliver_num_++;
 #ifdef CSMA_DEBUG
 					std::cout <<event_handle<<" fired (end_send) at "<< event_handle->time()<<" msg="<<msg<<std::endl;
 #endif
 	                end_send(msg);
-	                if (m->has_sender_proc())
-	                	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi_->msg_), shawn::Processor::SHAWN_TX_STATE_SUCCESS, msg->sending_attempts_ );
+//	                if (m->has_sender_proc())
+//	                	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi_->msg_), shawn::Processor::SHAWN_TX_STATE_SUCCESS, msg->sending_attempts_ );
 	                
 				
 				}
@@ -241,16 +251,16 @@ namespace shawn
 	// ----------------------------------------------------------------------
 	void CsmaTransmissionModel::
 		deliver_messages() throw(){}
+	
+	
 
+	// ----------------------------------------------------------------------
 	void CsmaTransmissionModel::
 		start_send(csma_msg* msg) throw()
 		{
 #ifdef CSMA_DEBUG
 		std::cout <<"csma: "<< msg->pmi_->src_->id() << " start sending at " << world().current_time() << " deliver_time_="<< msg->deliver_time_ << std::endl;
 #endif				
-			
-		
-		
 		(*nodes_)[*(msg->pmi_->src_)].busy_until_ = msg->deliver_time_ + msg->duration_;
 		//(*nodes_)[*(msg->pmi_->src_)].clean_rx_busy_until_ = msg->deliver_time_ + msg->duration_;
 			(*nodes_)[*(msg->pmi_->src_)].current_message_ = msg;
@@ -295,6 +305,12 @@ namespace shawn
 #endif
 		}
 	
+
+	
+	
+	
+
+	// ----------------------------------------------------------------------
 	void CsmaTransmissionModel::
 		end_send(csma_msg* msg) throw()
 		{
@@ -318,7 +334,11 @@ namespace shawn
 				
 				(*nodes_)[*(msg->pmi_->src_)].destinations_.clear();
 			}
-			if (!msg->pmi_->msg_->is_ack())
+			const Message* m = msg->pmi_->msg_.get();
+           if (m->has_sender_proc())
+            	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi_->msg_), shawn::Processor::SHAWN_TX_STATE_SUCCESS, msg->sending_attempts_ );
+			
+			if (!msg->pmi_->msg_->is_ack()) // acks are scheduled separately, so do not schedule next message if this one was an ack
 			{
 #ifdef CSMA_DEBUG
 				EventScheduler::EventHandle eh = world_w().scheduler_w().new_event(*this, world().current_time()+0.00001,new NodeInfo(msg->pmi_->src_));
@@ -370,6 +390,8 @@ namespace shawn
 			
 		}
 
+
+	// ----------------------------------------------------------------------
 	void CsmaTransmissionModel::
 		end_receive(Node* target, csma_msg* msg) throw()
 		{
@@ -391,6 +413,8 @@ namespace shawn
 			}
 		}
 	
+
+	// ----------------------------------------------------------------------
 	void CsmaTransmissionModel::
 	handle_next_message(csma_msg *new_msg) throw()
 	{
@@ -432,10 +456,13 @@ namespace shawn
 			#endif
 				assert((*nodes_)[*(new_msg->pmi_->src_)].ifs_end_>=(*nodes_)[*(new_msg->pmi_->src_)].clean_rx_busy_until_);*/
 				new_msg->pmi_->time_ = std::max((*nodes_)[*(new_msg->pmi_->src_)].ifs_end_, world().current_time());
-			// If sending jitter is set, deliver time will be changed. ( Needed to avoid same deliver times due to 
-			// processors sending at the beginning of a round.)
-			if ( sending_jitter_ > 0.0 )
-				new_msg->pmi_->time_+= ( new_msg->random( sending_jitter_lb_, sending_jitter_ ));
+
+			    //New Event to now + backoff
+			double wait_periods = shawn::uniform_random_0i_1i()* (int)(pow(backoff_factor_base_,min_backoff_exponent_)-1);
+			if (slotted_backoff_) wait_periods = round(wait_periods);
+			new_msg->pmi_->time_+= backOff_ *  wait_periods;
+            ++new_msg->sending_attempts_;
+			
 			new_msg->deliver_time_ = new_msg->pmi_->time_;
 			// Create a new Event. Important is the MessageTag (new_msg). It defines which message will be send
 			assert(!new_msg->sending_);
