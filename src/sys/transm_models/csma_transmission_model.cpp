@@ -12,7 +12,7 @@
 #include "sys/simulation/simulation_environment.h"
 #include <cmath>
 
-#define CSMA_DEBUG
+//#define CSMA_DEBUG
 
 #ifdef CSMA_DEBUG
 	#define CSMA_DEBUG_OUT( x ) std::cout << x << std::endl << std::flush;
