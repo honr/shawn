@@ -182,7 +182,7 @@ namespace shawn
 					while( (!msg->pmi_->msg_->is_ack()) && (csma_state.busy_until_ > msg->deliver_time_) && (msg->sending_attempts_< max_sending_attempts_))
 					{
 						
-						double wait_periods = shawn::uniform_random_0i_1i()* (int)(pow(backoff_factor_base_,std::min(min_backoff_exponent_+msg->sending_attempts_, max_backoff_exponent_))-1);
+						double wait_periods = shawn::uniform_random_0i_1i()* (int)(pow((float)(backoff_factor_base_),std::min(min_backoff_exponent_+msg->sending_attempts_, max_backoff_exponent_))-1);
 						if (slotted_backoff_) 
 							wait_periods = round(wait_periods);
 						
@@ -426,8 +426,8 @@ namespace shawn
 		{
 			new_msg->pmi_->time_ = std::max(csma_state.ifs_end_, world().current_time());
 
-		    //New Event to now + backoff
-			double wait_periods = shawn::uniform_random_0i_1i() * (int)( pow( backoff_factor_base_, min_backoff_exponent_ ) - 1 );
+			    //New Event to now + backoff
+			double wait_periods = shawn::uniform_random_0i_1i()* (int)(pow((float)(backoff_factor_base_),min_backoff_exponent_)-1);
 			
 			if (slotted_backoff_) 
 				wait_periods = round(wait_periods);
