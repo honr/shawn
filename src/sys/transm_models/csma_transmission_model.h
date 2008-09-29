@@ -17,11 +17,7 @@
 namespace shawn
 {
 
-
-
-
-/**
-	 *@brief A CsmaTransmissionmodel senses the channel before it delivers a message.
+	/** @brief A CsmaTransmissionmodel senses the channel before it delivers a message.
 	 * This class implements the CSMA/CA transmission model.
 	 * A processor waits for the medium to be free before sending. 
 	 * If a neighbor is already sending, the new message will be delayed until the end of
@@ -29,144 +25,117 @@ namespace shawn
 	 * The parameters for this model are:
 	 * bandwith: the medium's bandwith in bits/sec
 	 * backoff: fixed (not variable) backoff in sec.
-	 * sending_jitter: defines the upperbound of the jitter that is use to simulate the
-	 *                  "asynchronous behaviour" of the nodes. 
+	 * sending_jitter: defines the upperbound of the jitter that is use to simulate the "asynchronous behaviour" of the nodes. 
 	 * sending_jitter_lb: defines the lower_bound of the sending jitter.  
 	 * This module can be called by:
-	 * transm_model=csma bandwidth=9600 backoff=0.05 sending_jitter=0.02 sending_jitter_lb= 0.001
+	 * transm_model=csma bandwidth=9600 backoff=0.05 sending_jitter=0.02 sending_jitter_lb=0.001
 	 */
-	class CsmaTransmissionModel : public TransmissionModel,EventScheduler::EventHandler
+	class CsmaTransmissionModel 
+		: public TransmissionModel,
+		  public EventScheduler::EventHandler
 	{
 	public:
+		//---------------------------------------------------------------------------
 		///@name construction, destruction and support for life cycle
 		///@{
-		CsmaTransmissionModel(double short_inter_frame_spacing, double long_inter_frame_spacing, int max_short_inter_frame_spacing_size, int bandwidth, bool slotted_backoff, double backoff, int max_sending_attempts, int backoff_factor_base,int min_backoff_exponent, int max_backoff_exponent);
+			CsmaTransmissionModel(double short_inter_frame_spacing, double long_inter_frame_spacing, int max_short_inter_frame_spacing_size, int bandwidth, bool slotted_backoff, double backoff, int max_sending_attempts, int backoff_factor_base,int min_backoff_exponent, int max_backoff_exponent);
 
-		~CsmaTransmissionModel();
-		/**
-		 *@brief Initialize the csma transmission model
-		 *
-		 * Gets the list of neighbors
-		 */
-		virtual void init() throw();
-		/**
-		 *@brief Reset the csma transmission model
-		 *
-		 *Clear the statistic variables and set the parameters to its default value.
-		 */
-		virtual void reset() throw();
+			~CsmaTransmissionModel();
+		
+			/**
+			 *@brief Initialize the csma transmission model
+			 *
+			 * Gets the list of neighbors
+			 */
+			virtual void init() throw();
+		
+			/**
+			 *@brief Reset the csma transmission model
+			 *
+			 *Clear the statistic variables and set the parameters to its default value.
+			 */
+			virtual void reset() throw();
 		///@}
 
+		//---------------------------------------------------------------------------
 		///@name Transmission Model Implementation
 		///@{
-		/**
-		 *@brief Mobility is depending on mobility support from the edge model
-		 *
-		 *The edge model is used to determine the 1-hop neighbours 
-         *which will receive the message
-		 */
-
-		virtual bool supports_mobility( void ) const throw(std::logic_error);
 		
-		/**
-		 *@brief Stores each message in a vector for delivery at the next simulation round start
-		 *
-		 *A new structure of csma_msg will be build and inserted into aired_messages_ 
-		 *@see aired_messages_
-		 */
-        virtual void send_message( MessageInfo& mi ) throw();
+			/**
+			 *@brief Mobility is depending on mobility support from the edge model
+			 *
+			 *The edge model is used to determine the 1-hop neighbours 
+			 *which will receive the message
+			 */
+			virtual bool supports_mobility( void ) const throw(std::logic_error);
+			
+			/**
+			 *@brief Stores each message in a vector for delivery at the next simulation round start
+			 *
+			 *A new structure of csma_msg will be build and inserted into aired_messages_ 
+			 *@see aired_messages_
+			 */
+			virtual void send_message( MessageInfo& mi ) throw();
 
-		  ///@name basic method inherited from EventHandler 
-		  ///@{
+			 /**
+			 *@brief Delivers all messages which are in the vector
+			 * Method inherited from shawn::TransmissionModel. Is not implemented in this module since the messages are 
+			 * added to the shawn::EventScheduler and do not have to be delivered at the beginning of a round.
+			 */ 
+			virtual void deliver_messages() throw();
+		
+		///@}
+
+		//---------------------------------------------------------------------------
+		///@name basic method inherited from EventHandler 
+		///@{
+	  
 		  /**
 			* Timeout Event. Receives a csma_msg as a EventScheduler::EventTagHandle.
 			* If message has not been sent yet, deliver() will be called.
 			* Otherwise message has been transfered and will be deleted from sending processor's MessageList
 		  */
 		  virtual void timeout(EventScheduler & event_scheduler, EventScheduler::EventHandle event_handle, double time, EventScheduler::EventTagHandle & event_tag_handle) throw();
-		  ///@}
-
-		 /**
-		 *@brief Delivers all messages which are in the vector
-		 * Method inherited from shawn::TransmissionModel. Is not implemented in this module since the messages are 
-		 * added to the shawn::EventScheduler and do not have to be delivered at the beginning of a round.
-		 */ 
-        virtual void deliver_messages() throw();
+		  
 		///@}
 
-	
-		///}
 		private:
 		///@name Method which tests if medium is free
 		///@{
-		/**
-		* This method tests if any neighbor is sending a message.
-		* If medium is free, message is set to sending otherwise not.
-		*@param msg Pointer to the message to be send
-		*/
-	//	void listening(csma_msg* msg) throw();
 			
-			
-		///@name Delivers a message.
-		/**
-		* This method implements the CSMA/CA algorithm.
-		* The processor listens if a neighbor is sending. 
-		* If no neighbor is sending, it will deliver its message, otherwise
-		* it will delay the message to the end of the transmission plus a random backoff.
-		*@param msg Pointer to the message to be send
-		*/
-		inline void start_send(csma_msg* msg) throw();
-		inline void end_send(csma_msg* msg) throw();
-			
-		///}
-		///@name Method in which a given node will receive a message
-		///@{
-		/**
-		* This method delivers a message to a given node.
-		* It has to check that the target is not receiving a message from a node which is not adjacent to the sender.
-		* In this case the message will be dropped.
-		*@param target Pointer to the target node
-		*@param msg Pointer to the message to be send
-		*/
-		inline void start_receive(Node* target, csma_msg* msg) throw();
-		inline void end_receive(Node* target, csma_msg* msg) throw();
-		///@}
-
-		 /**
-		 */ 
-       inline void handle_next_message(csma_msg *new_msg) throw();
-		///@}
-		/**
-		 *@brief Find the neighbors of the node who send a message
-		 *
-		 *Find all the destinations of a new-coming message, which are the neighbours of its source node
-		 *@param pmsg the message whose source node's neighbors to be determined
-		 */
-	//	void find_destinations( csma_msg* pmsg );
+			///@name Delivers a message.
+			/**
+			* This method implements the CSMA/CA algorithm.
+			* The processor listens if a neighbor is sending. 
+			* If no neighbor is sending, it will deliver its message, otherwise
+			* it will delay the message to the end of the transmission plus a random backoff.
+			*@param msg Pointer to the message to be send
+			*/
+			inline void start_send(csma_msg* msg) throw();
 		
-/*
-		///Number of received messages
-		int received_;
+			inline void end_send(csma_msg* msg) throw();
+			
+		///@}
+		
+		///@name Methods in which a given node will receive a message
+		///@{
+		
+			/**
+			* This method delivers a message to a given node.
+			* It has to check that the target is not receiving a message from a node which is not adjacent to the sender.
+			* In this case the message will be dropped.
+			*@param target Pointer to the target node
+			*@param msg Pointer to the message to be send
+			*/
+			inline void start_receive(Node* target, csma_msg* msg) throw();
+			inline void end_receive(Node* target, csma_msg* msg) throw();
 
-		///Number of messages dropped
-		int dropped_;
+			 /**
+			 */ 
+			inline void handle_next_message(csma_msg *new_msg) throw();
+		///@}
 
-		// The number of transmission failure
-		int packet_failure_;
-
-		///Number of packets failed to reach the destination
-		double average_delay_;
-
-		///The average variation of delay
-		double jitter_;
-
-		///Number of messages delivered so far
-		int deliver_num_;
-
-		///The delay of last message
-		double last_delay_;
-*/
-        ///Duration a short inter frame spacing (SIFS)
+		///Duration a short inter frame spacing (SIFS)
         double short_inter_frame_spacing_;
 
         ///Duration a long inter frame spacing (LIFS)
@@ -174,12 +143,16 @@ namespace shawn
         
         /// maximum packet size of packets followed by a short inter frame spacing
         int max_short_inter_frame_spacing_size_;
+		
 		/// determines whether slotted or continouos backoff times are used.
         bool slotted_backoff_;
+		
         ///Backoff that will be waited after a message has been delayed
 		double backOff_;
+		
 		///Bandwidth, defines the throughput
 		int bandwidth_;
+		
 		/// EventHandle
 		EventScheduler::EventHandle event_handle_;
 		
@@ -200,46 +173,37 @@ namespace shawn
 		
 		DECLARE_HANDLES(NodeInfo);		
 		
+		/**
+		  *
+		  */
 		class NodeInfo : public EventScheduler::EventTag
 		{
 		public:
-			NodeInfo (Node* n): n_(n) {}
+			NodeInfo (Node* n) : n_(n) {}
 			Node* n_;
-			
-			
 		};
 		
 		class CsmaState
 		{
-		public: 
-			/*CsmaState(CsmaSate& e) :
-				EventScheduler::EventTag(e),
-				outgoing_messages_(e.outgoing_messages_), 
-				destinations_(e.destinations_), 
-				current_message_(e.current_message_), 
-				busy_until_(e.busy_until_),
-				clean_rx_busy_until_(e.clean_rx_busy_until_),
-				ifs_end_(e.ifs_end_)
-			{
-			}*/
+		public: 			
 			CsmaState(): 
 				outgoing_messages_(MessageList()), 
 				destinations_(std::set<Node*>()), 
 				current_message_(NULL), 
 				busy_until_(0),
-				//clean_rx_busy_until_(0),
 				ifs_end_(0),
 				busy_(false)
 			{}
+				
 			MessageList outgoing_messages_;
 			std::set<Node*> destinations_;
 			csma_msg *current_message_;
 			double busy_until_;
-			//double clean_rx_busy_until_;
 			double ifs_end_;
 			bool busy_;
 
-		} ;
+		};
+		
 		/// List of nodes in transmission range.
 		DynamicNodeArray<CsmaState>*  nodes_;
 	};
