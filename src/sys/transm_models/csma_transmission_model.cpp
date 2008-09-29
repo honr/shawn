@@ -14,7 +14,7 @@
 #include <cmath>
 
 
-//#define CSMA_DEBUG
+#define CSMA_DEBUG
 
 namespace shawn
 	{
@@ -68,7 +68,7 @@ namespace shawn
 		}
 		//This gives us an Array of Messages for all nodes which can be received in O(1)
 		nodes_ = new DynamicNodeArray<CsmaState>(world_w());
-		std::cout << "csma: Initialised." << std::endl;
+		std::cout << "csma: Initialised!" << std::endl;
 	}
 
 	// ----------------------------------------------------------------------
@@ -113,7 +113,7 @@ namespace shawn
 	{
 		csma_msg* new_msg = new csma_msg(&mi, (double) mi.msg_->size() / bandwidth_);
 		#ifdef CSMA_DEBUG
-			std::cout <<"new msg="<<new_msg<<" at node "<<mi.src_->id()<< ((mi.msg_->is_ack())?(" ack"):(" msg")) << std::endl;
+			std::cout <<"csma: new msg="<<new_msg<<" at node "<<mi.src_->id()<< ((mi.msg_->is_ack())?(" ack"):(" msg")) << std::endl;
 		#endif
 		
 		if (mi.msg_->is_ack())
@@ -126,7 +126,7 @@ namespace shawn
 			#ifdef CSMA_DEBUG
 				EventScheduler::EventHandle eh = world_w().scheduler_w().new_event(*this, world().current_time(),new NodeInfo(mi.src_));
 
-				std::cout <<eh<<" sched in send message at "<< eh->time()<<" for ack"<<std::endl;
+				std::cout <<eh<<"csma: sched in send message at "<< eh->time()<<" for ack"<<std::endl;
 				std::cout.flush();
 			#else
 				world_w().scheduler_w().new_event(*this, world().current_time(),new NodeInfo(mi.src_));
@@ -140,9 +140,9 @@ namespace shawn
 
 			#ifdef CSMA_DEBUG
 				EventScheduler::EventHandle eh = world_w().scheduler_w().new_event(*this, world().current_time()+0.00001,new NodeInfo(mi.src_));
-				std::cout <<eh<<" sched in send message at "<< eh->time()<<" for next msg"<<std::endl;
+				std::cout << "csma: " <<eh<<" sched in send message at "<< eh->time()<<" for next msg"<<std::endl;
 				std::cout.flush();
-			} else std::cout <<"no schedule, node busy"<<std::endl;
+			} else std::cout <<"csma: no schedule, node busy"<<std::endl;
 			std::cout.flush();
 			#else
 				world_w().scheduler_w().new_event(*this, world().current_time()+0.00001,new NodeInfo(mi.src_));
@@ -162,7 +162,7 @@ namespace shawn
 		if (ni!=NULL) // this means that a new message must be scheduled
 		{
 #ifdef CSMA_DEBUG
-			std::cout <<event_handle<<" fired (handle next message) at "<< event_handle->time()<< " at node "<<ni->n_->id()<< std::endl;
+			std::cout << "csma: " <<event_handle<<" fired (handle next message) at "<< event_handle->time()<< " at node "<<ni->n_->id()<< std::endl;
 #endif
 			if (!((*nodes_)[*(ni->n_)]).outgoing_messages_.empty()) // get next outgoing message
 			{
@@ -180,27 +180,31 @@ namespace shawn
 				if(!msg->sending_) //message not on air yet. We should now check wether the medium is free, and eventually send
 				{
 #ifdef CSMA_DEBUG
-					std::cout <<event_handle<<" fired (mac access) at "<< event_handle->time()<<" msg="<<msg<<std::endl;
+					std::cout << "csma: " <<event_handle<<" fired (mac access) at "<< event_handle->time()<<" msg="<<msg<<std::endl;
 #endif
 					while( (!msg->pmi_->msg_->is_ack())&& ((*nodes_)[*(msg->pmi_->src_)].busy_until_ > msg->deliver_time_) && (msg->sending_attempts_< max_sending_attempts_))
 					{
 						
 						double wait_periods = shawn::uniform_random_0i_1i()* (int)(pow(backoff_factor_base_,std::min(min_backoff_exponent_+msg->sending_attempts_, max_backoff_exponent_))-1);
 						if (slotted_backoff_) wait_periods = round(wait_periods);
-						msg->deliver_time_= world().current_time() + (backOff_ *  wait_periods);
+						//TODO: Axel und Dennis glauben, dass das falsch ist, weil das backoff auf die vorherigern backoffs draufaddiert werden müsste: msg->deliver_time_= world().current_time() + (backOff_ *  wait_periods);
+						msg->deliver_time_ += (backOff_ *  wait_periods); //Geändert von Dennis und Axel
 
 						//New Event to now + backoff
 			            ++msg->sending_attempts_;
+						#ifdef CSMA_DEBUG
+							std::cout <<"csma:  Waiting in timeout (src: " << msg->pmi_->src_->id() << ") " << wait_periods  << ", send attempts: "<< msg->sending_attempts_ << std::endl;
+						#endif
 					}
 					if (msg->deliver_time_ <= world().current_time())
-						start_send(msg); // If the message has not been send yet.
+						start_send(msg); // If the message has not been sent yet.
 					else 
 					{
 						if (msg->sending_attempts_< max_sending_attempts_) // reschedule for next media acess
 						{
 #ifdef CSMA_DEBUG
 							EventScheduler::EventHandle eh = world_w().scheduler_w().new_event(*this, msg->deliver_time_ ,msg);
-							std::cout <<eh<<" sched for new mac access at "<< eh->time()<<" msg="<<msg<<std::endl;
+							std::cout << "csma: "<<eh<<" sched for new mac access at "<< eh->time()<<" msg="<<msg<<std::endl;
 #else
 							world_w().scheduler_w().new_event(*this, msg->deliver_time_ ,msg);
 #endif
@@ -214,7 +218,7 @@ namespace shawn
 
 #ifdef CSMA_DEBUG
 							EventScheduler::EventHandle eh = world_w().scheduler_w().new_event(*this, world().current_time()+0.00001,new NodeInfo(msg->pmi_->src_));
-							std::cout <<eh<<" sched in media access at "<< eh->time()<<" for next msg"<<std::endl;
+							std::cout << "csma: "<<eh<<" sched in media access at "<< eh->time()<<" for next msg"<<std::endl;
 							std::cout.flush();
 #else
 							world_w().scheduler_w().new_event(*this, world().current_time()+0.00001,new NodeInfo(msg->pmi_->src_));
@@ -232,7 +236,7 @@ namespace shawn
 	                
 	                //deliver_num_++;
 #ifdef CSMA_DEBUG
-					std::cout <<event_handle<<" fired (end_send) at "<< event_handle->time()<<" msg="<<msg<<std::endl;
+					std::cout << "csma: " <<event_handle<<" fired (end_send) at "<< event_handle->time()<<" msg="<<msg<<std::endl;
 #endif
 	                end_send(msg);
 //	                if (m->has_sender_proc())
@@ -292,13 +296,13 @@ namespace shawn
 				}
 			}
 #ifdef CSMA_DEBUG
-			std::cout <<"deliver time: "<< msg->deliver_time_ << " , duration " << msg->duration_ << "sched at "<< msg->deliver_time_ + msg->duration_<< " msg="<<msg<<std::endl;
+			std::cout <<"csma: deliver time: "<< msg->deliver_time_ << " , duration " << msg->duration_ << "sched at "<< msg->deliver_time_ + msg->duration_<< " msg="<<msg<<std::endl;
 #endif
 
 
 #ifdef CSMA_DEBUG
 			EventScheduler::EventHandle eh = world_w().scheduler_w().new_event(*this, msg->deliver_time_ + msg->duration_,msg);
-			std::cout <<eh<<" sched in start send at "<< eh->time()<<" msg="<<msg<<std::endl;
+			std::cout << "csma: "<<eh<<" sched in start send at "<< eh->time()<<" msg="<<msg<<std::endl;
 			std::cout.flush();
 #else
 			world_w().scheduler_w().new_event(*this, msg->deliver_time_ + msg->duration_,msg);
@@ -459,19 +463,24 @@ namespace shawn
 
 			    //New Event to now + backoff
 			double wait_periods = shawn::uniform_random_0i_1i()* (int)(pow(backoff_factor_base_,min_backoff_exponent_)-1);
+			
 			if (slotted_backoff_) wait_periods = round(wait_periods);
 			new_msg->pmi_->time_+= backOff_ *  wait_periods;
             ++new_msg->sending_attempts_;
 			
+			#ifdef CSMA_DEBUG
+				std::cout <<"csma:  Waiting in handle_next_message (src: " << new_msg->pmi_->src_->id() << ") " << wait_periods << ", send attempts: "<< new_msg->sending_attempts_ << std::endl;
+			#endif
+			
 			new_msg->deliver_time_ = new_msg->pmi_->time_;
 			// Create a new Event. Important is the MessageTag (new_msg). It defines which message will be send
 			assert(!new_msg->sending_);
-#ifdef CSMA_DEBUG
-			EventScheduler::EventHandle eh = world_w().scheduler_w().new_event(*this, new_msg->pmi_->time_,new_msg);
-			std::cout <<eh<<" sched in handle next (2) at "<< eh->time()<<" msg="<<new_msg<<std::endl;
-#else
-			world_w().scheduler_w().new_event(*this, new_msg->pmi_->time_,new_msg);
-#endif
+			#ifdef CSMA_DEBUG
+				EventScheduler::EventHandle eh = world_w().scheduler_w().new_event(*this, new_msg->pmi_->time_,new_msg);
+				std::cout <<eh<<" sched in handle next (2) at "<< eh->time()<<" msg="<<new_msg<<std::endl;
+			#else
+				world_w().scheduler_w().new_event(*this, new_msg->pmi_->time_,new_msg);
+			#endif
 			
 		}
 #ifdef CSMA_DEBUG
