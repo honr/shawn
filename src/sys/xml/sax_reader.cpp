@@ -158,7 +158,7 @@ namespace shawn
             //Done -> Close the file and free all associated memory
 			parsing_done();
             reset();
-
+			XML_ParserFree(parser);
         }
         
         
@@ -184,6 +184,7 @@ namespace shawn
             //Done -> Close the file and free all associated memory
 			parsing_done();
             reset();
+			XML_ParserFree(parser);
         }
 
 		// ----------------------------------------------------------------------
