@@ -256,7 +256,11 @@ namespace shawn
 		CsmaState& csma_state = (*nodes_)[*(msg->pmi_->src_)];
 		
 		csma_state.busy_until_ = msg->deliver_time_ + msg->duration_;
-		csma_state.current_message_ = msg;
+		
+		//csma_state.current_message_ = msg;
+		if (csma_state.current_message_!=NULL)
+			std::cout << "csma_transmission_model: start_send: current msg was not NULL --> start send though currently receiving.. This must never happen" << std::endl;
+		assert(csma_state.current_message_==NULL);
 
 		if(!msg->pmi_->msg_->is_ack())  //ack is not followed by its own IFS, but "defers" the IFS of messages it belongs to
 		{
@@ -271,18 +275,19 @@ namespace shawn
 		}	
 		
 		msg->sending_ = true;
-		
+		//int count = 0;
 		for(EdgeModel::adjacency_iterator it = world_w().begin_adjacent_nodes_w( *msg->pmi_->src_ , EdgeModel::CD_OUT), endit = world_w().end_adjacent_nodes_w( *msg->pmi_->src_ ); it != endit; ++it)
 		{
 			if (*it != *(msg->pmi_->src_))
 			{
 				csma_state.destinations_.insert(&(*it));
 				start_receive(&(*it), msg);
+		//		count++;
 			}
 		}
-		
+		//if (count==0)
+		//	std::cout << "start send empty receiver set" << std::endl;
 		CSMA_DEBUG_OUT("deliver time: "<< msg->deliver_time_ << " , duration " << msg->duration_ << "sched at "<< msg->deliver_time_ + msg->duration_ << " msg=" << msg);
-		
 		#ifdef CSMA_DEBUG
 			EventScheduler::EventHandle eh = 
 		#endif
@@ -302,17 +307,21 @@ namespace shawn
 		assert( world().current_time() + 0.00001 >= msg->deliver_time_ + msg->duration_);
 			
 		CsmaState& csma_state = (*nodes_)[*(msg->pmi_->src_)];
-		
-		if (csma_state.current_message_ == msg)
+		//int c = 0;
+		//if (csma_state.current_message_ == msg)
 		{
 			csma_state.current_message_ = NULL;
 			
 			for(std::set<Node*>::iterator it = csma_state.destinations_.begin(), endit = csma_state.destinations_.end(); it != endit; ++it )
+			{
 				end_receive(*it, msg);
-			
+		//		c++;
+			}
 			csma_state.destinations_.clear();
 		}
 		
+		//if (c==0)
+		//	std::cout << "end send empty receiver set" << std::endl;
 		const Message* m = msg->pmi_->msg_.get();
 		
 		if (m->has_sender_proc())
@@ -340,6 +349,7 @@ namespace shawn
 		start_receive(Node* target, csma_msg* msg) 
 		throw()
 	{
+
 		CSMA_DEBUG_OUT("start receive " << target->id() << " at " << world().current_time() << " delivertime_=" << msg->deliver_time_);
 		CsmaState& csma_state = (*nodes_)[*target];
 	
@@ -382,17 +392,18 @@ namespace shawn
 	{
 		CsmaState& csma_state = (*nodes_)[*target];
 		
-		if (csma_state.current_message_ == msg)
+		if (csma_state.current_message_ == msg) // original message is still set --> no collision
 		{
 			csma_state.current_message_ = NULL;
 			CSMA_DEBUG_OUT(target->id() << " receives msg from " <<  msg->pmi_->src_->id() << " at " << world().current_time() << " IFS_end " << csma_state.ifs_end_ );
 			target->receive(ConstMessageHandle(msg->pmi_->msg_));
 		}
-		else
+		else // collision
 		{
 			CSMA_DEBUG_OUT("---- COLLISION at "<< target->id()<< " of msg from " <<  msg->pmi_->src_->id() << " at " << world().current_time() );
 			target->receive_dropped(ConstMessageHandle(msg->pmi_->msg_));
 		}
+		
 	}
 	
 
