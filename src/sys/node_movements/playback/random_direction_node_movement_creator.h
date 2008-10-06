@@ -15,11 +15,11 @@
 #include "sys/simulation/simulation_controller.h"
 #include "sys/node_movement.h"
 //#include "sys/taggings/group_tag.h"
-#include "sys/node.h"
-#include <string>
-#include <map>
 #include "sys/simulation/simulation_environment.h"
 #include "sys/misc/random/uniform_random_variable.h"
+#include "sys/node.h"
+//#include <string>
+#include <map>
 
 
 namespace shawn
@@ -43,31 +43,65 @@ namespace shawn
 		 *  to distinct nodes.
 		 *
        */
-
 		virtual shawn::MovementInfo *next_movement(void) throw( std::runtime_error );
 	
 		/** This method causes the NodeMovementCreator to start movements
        *  from the beginning.
-       *
+	   *
        */
 		virtual void reset();
 
 	private:
-      MovementInfo* generateNewMovement(Node &node, double startTime);
+	
+      MovementInfo* generate_new_movement(const Node &node, double startTime);
+
+	  double get_intersection(const shawn::Node&, const shawn::Vec&) const;
+
+	  bool is_inside(const shawn::Vec&) const;
+
+	  double new_direction(double, const shawn::Vec&) const;
+
+	  const shawn::Vec get_destination(const shawn::Node&) const;
+
+	  enum Borders{noborder, left, bottom, right, top};
+
+	  Borders get_border(const shawn::Vec&) const;
 
       SimulationController &sc_;
       
       // Map to save times, when nodes will fall from the border of the world
-      std::multimap<double, Node*> next_movement_times_;
+      std::multimap<double, const Node*> next_movement_times_;
+
+	  struct RDNMCInfo{
+		RDNMCInfo(double d,double v,double m,double s);
+		virtual ~RDNMCInfo();
+		double direction() const;
+		double velocity() const;
+	    double t_move() const;
+		double t_stop() const;
+	  private:
+		double direction_;
+		double velocity_;
+        double t_move_;
+		double t_stop_;
+	  };
+	  //
+	  std::map<const Node*, RDNMCInfo*> rdnmc_infos_;
 
       // Random Variable for getting speeds
-      shawn::UniformRandomVariable urvSpeed_;
+      shawn::UniformRandomVariable urv_speed_;
       // Random Variable for getting directions
-      shawn::UniformRandomVariable urvDirection_;
+      shawn::UniformRandomVariable urv_direction_;
+	  //
+	  shawn::UniformRandomVariable urv_t_move_;
+	  //
+	  shawn::UniformRandomVariable urv_t_stop_;
       
       // The world does not know its maximum dimension, so get it from the SimulationController
       double width_;
       double height_;
+	  //
+	  bool reset_;
    };
 }
 #endif

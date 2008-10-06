@@ -5,7 +5,6 @@
 #include "sys/node_movement.h"
 #include "sys/node.h"
 #include "sys/world.h"
-#include <string>
 #include <cfloat>
 #include <cmath>
 
@@ -16,27 +15,44 @@ using namespace std;
 
 namespace shawn{
 
-   RandomDirectionNodeMovementCreator::RandomDirectionNodeMovementCreator(SimulationController& sc)
-      : sc_(sc)
+   RandomDirectionNodeMovementCreator::RandomDirectionNodeMovementCreator(SimulationController& sc) : 
+	sc_(sc),
+	reset_(false)
    {
-      urvSpeed_.set_lower_bound(sc.environment_w().optional_double_param("random_direction_v_min", 0.001));
-      urvSpeed_.set_upper_bound(sc.environment_w().optional_double_param("random_direction_v_max", 1.0));
-      urvSpeed_.set_lower_bound_inclusive(true);
-      urvSpeed_.set_upper_bound_inclusive(true);
-      urvSpeed_.init();
 
-      urvDirection_.set_lower_bound(0.0);
-      urvDirection_.set_upper_bound(2*PI);
-      urvDirection_.set_lower_bound_inclusive(true);
-      urvDirection_.set_upper_bound_inclusive(false);
-      urvDirection_.init();
-
-      width_ = sc.environment_w().required_double_param("width");
+	  width_ = sc.environment_w().required_double_param("width");
       height_ = sc.environment_w().required_double_param("height");
+
+      urv_speed_.set_lower_bound(sc.environment_w().optional_double_param("random_direction_v_min", 0.001));
+      urv_speed_.set_upper_bound(sc.environment_w().optional_double_param("random_direction_v_max", 1.0));
+      urv_speed_.set_lower_bound_inclusive(true);
+      urv_speed_.set_upper_bound_inclusive(true);
+      urv_speed_.init();
+
+      urv_direction_.set_lower_bound(0.0);
+      urv_direction_.set_upper_bound(2*PI);
+      urv_direction_.set_lower_bound_inclusive(true);
+      urv_direction_.set_upper_bound_inclusive(false);
+      urv_direction_.init();
+
+	  urv_t_move_.set_lower_bound(sc.environment_w().optional_double_param("random_direction_t_move_min", 
+		  width_ > height_ ? width_ : height_));
+	  urv_t_move_.set_upper_bound(sc.environment_w().optional_double_param("random_direction_t_move_max", 
+		  width_ > height_ ? width_ : height_));
+	  urv_t_move_.set_lower_bound_inclusive(true);
+	  urv_t_move_.set_upper_bound_inclusive(true);
+	  urv_t_move_.init();
+
+	  urv_t_stop_.set_lower_bound(sc.environment_w().optional_double_param("random_direction_t_stop_min", 0));
+	  urv_t_stop_.set_upper_bound(sc.environment_w().optional_double_param("random_direction_t_stop_max", 0));
+	  urv_t_stop_.set_lower_bound_inclusive(true);
+	  urv_t_stop_.set_upper_bound_inclusive(true);
+	  urv_t_stop_.init();
    }
 
    RandomDirectionNodeMovementCreator::~RandomDirectionNodeMovementCreator(void)
    {
+	   if(!reset_) reset();
    }
 
 
@@ -50,100 +66,93 @@ namespace shawn{
          {
             NodeMovement &nm = it->movement_w();
 			if (nm.name() == "NoMovement"){
-				std::cerr << "---[RANDOM DIRECTION NODEMOVEMENTCREATOR (new movement 0) Current Node: " << it->id() << " BEGIN]---" << std::endl;
-				std::cerr << "Current Time: " << sc_.world().current_time() << std::endl;
-				std::cerr << "---[RANDOM DIRECTION NODEMOVEMENTCREATOR (new movement 0) Current Node: " << it->id() << " END]---" << std::endl;
-				return generateNewMovement(*it, RANDOMDIRECTION_STARTNOW);
+				return generate_new_movement(*it, RANDOMDIRECTION_STARTNOW);
 			}
             LinearMovement *lm = dynamic_cast<LinearMovement*>(&nm);
-            if ( ( lm != NULL ) & ( lm->position() == lm->destination() ) )
+            if ( ( lm != NULL ) && ( lm->position() == lm->destination() ) )
             {
-			   std::cerr << "---[RANDOM DIRECTION NODEMOVEMENTCREATOR (new movement 1) Current Node: " << it->id() << " BEGIN]---" << std::endl;
-			   std::cerr << "Current Time: " << sc_.world().current_time() << std::endl;
-			   std::cerr << "---[RANDOM DIRECTION NODEMOVEMENTCREATOR (new movement 1) Current Node: " << it->id() << " END]---" << std::endl;
-               return generateNewMovement(*it, RANDOMDIRECTION_STARTNOW);
+               return generate_new_movement(*it, RANDOMDIRECTION_STARTNOW);
             }
          }
       }
       // Otherwise get the next scheduled movement
       if (next_movement_times_.size() > 0)
       {
-         double startTime = next_movement_times_.begin()->first;
-         Node *n = next_movement_times_.begin()->second;
+         double start_time = next_movement_times_.begin()->first;
+         const Node *n = next_movement_times_.begin()->second;
          assert (n != NULL);
          next_movement_times_.erase(next_movement_times_.begin());
-		 std::cerr << "---[RANDOM DIRECTION NODEMOVEMENTCREATOR (new movement 2) Current Node: " << n->id() << " BEGIN]---" << std::endl;
-		 std::cerr << "Current Time: " << sc_.world().current_time() << std::endl;
-		 std::cerr << "Start Time: " << startTime << std::endl;
-		 std::cerr << "---[RANDOM DIRECTION NODEMOVEMENTCREATOR (new movement 2) Current Node: " << n->id() << " END]---" << std::endl;
-         return generateNewMovement(*n, startTime);
+         return generate_new_movement(*n, start_time);
       }
 
       return NULL;
 
    }
 
-   MovementInfo* RandomDirectionNodeMovementCreator::generateNewMovement(Node &node, double startTime)
+   MovementInfo* RandomDirectionNodeMovementCreator::generate_new_movement(const Node &node, double start_time)
    {
       // Generate a new movement
-      MovementInfo* mi = new MovementInfo();
-	  shawn::Vec destination = node.real_position();
-	  if (node.movement().name() == "LinearMovement"){
-		  const shawn::LinearMovement& lm = dynamic_cast<const shawn::LinearMovement&>(node.movement());
-		  destination = lm.destination();
-	  }
-      mi->set_node(&node);
-      if (startTime <= 0.0) 
+      MovementInfo *mi = new MovementInfo();
+	  mi->set_node(const_cast<shawn::Node*>(&node));
+      if (start_time <= 0.0) 
       {
          mi->set_urgency(MovementInfo::Immediately);
       } else {
          mi->set_urgency(MovementInfo::Delayed);
-         mi->set_dispatch_time(startTime);
-      }
-      LinearMovement* lm = new LinearMovement();
-
-      // Get movement vector
-      double direction = urvDirection_;
-      double speed = urvSpeed_;
-      Vec vector(cos(direction) * speed, sin(direction) * speed, 0.0);
-	  double intersection = DBL_MAX;
-
-      // Get x intersection
-      if (vector.x() < 0)
-      {
-		 double t = (0 - destination.x()/*node.real_position().x()*/) / vector.x();
-         if (t < intersection) intersection = t;
-      } else if (vector.x() > 0){
-         double t = (width_ - destination.x()/*node.real_position().x()*/) / vector.x();
-         if (t < intersection) intersection = t;
-      }
-      // Get y intersection
-      if (vector.y() < 0)
-      {
-         double t = (0 - destination.y()/*node.real_position().y()*/) / vector.y();
-         if (t < intersection) intersection = t;
-      } else if (vector.y() > 0){
-         double t = (height_ - destination.y()/*node.real_position().y()*/) / vector.y();
-         if (t < intersection) intersection = t;
+         mi->set_dispatch_time(start_time);
       }
 
-	  shawn::Vec w = destination/*node.real_position()*/ + (vector * intersection);
-	  lm->set_parameters(speed, w, sc_.world_w());
-      mi->set_node_movement(lm);
-      // Schedule, when the node will need a new movement
-	  /*double intersectTime = (vector * intersection).euclidean_norm()/speed*/;
-	  std::cerr << "---[RANDOM NODE MOVEMENT CREATOR Current Node: " << node.id() << " BEGIN]---" << std::endl;
-	  std::cerr << "Start Time: " << startTime << std::endl;
-	  std::cerr << "Real Position: " << node.real_position().x() << "\t" << node.real_position().y() << std::endl;
-	  std::cerr << "vector: " << vector.x() << "\t" << vector.y() << std::endl;
-	  std::cerr << "intersection: " << intersection << std::endl;
-	  std::cerr << "(vector * intersection): " << (vector * intersection).x() << "\t" << (vector * intersection).y() << std::endl;
-	  std::cerr << "w (Destination): " << w.x() << "\t" << w.y() << std::endl;
-	  std::cerr << "Speed: " << speed << std::endl;
-	  /*std::cerr << "(vector * intersection).euclidean_norm(): " << (vector * intersection).euclidean_norm() << std::endl;*/
-	  /*std::cerr << "Intersect Time: " << intersectTime << std::endl;*/
-	  std::cerr << "---[RANDOM NODE MOVEMENT CREATOR Current Node: " << node.id() << " END]---" << std::endl;
-      next_movement_times_.insert(std::make_pair(startTime+intersection/*intersectTime*/,&node));
+	  shawn::Vec destination = get_destination(node);
+
+	  LinearMovement *lm = new LinearMovement();
+
+	  // Get movement vector
+	  double direction = 0.0;
+	  double velocity = 0.0;
+	  double t_move = 0.0;
+	  double t_stop = 0.0;
+	  double vector_length = 0.0;
+	  std::map<const shawn::Node*,RDNMCInfo*>::iterator it = rdnmc_infos_.find(&node);
+	  if (it == rdnmc_infos_.end() ||
+		  EQDOUBLE(it->second->t_move(),0.0)){
+		  direction = urv_direction_;
+		  velocity = urv_speed_;
+		  t_move = urv_t_move_;
+		  t_stop = urv_t_stop_;
+		  vector_length = (velocity * t_move);
+		  if(it != rdnmc_infos_.end()){
+			  delete it->second;
+			  rdnmc_infos_.erase(it);
+		  }
+	  }else{
+		  direction = it->second->direction();
+		  velocity = it->second->velocity();
+		  t_move = it->second->t_move();
+		  t_stop = it->second->t_stop();
+		  vector_length = (velocity * t_move);
+		  delete it->second;
+		  rdnmc_infos_.erase(it);
+	  }
+      Vec vector(cos(direction) * vector_length, sin(direction) * vector_length, 0.0);
+
+	  if (is_inside(destination + vector)){
+		  next_movement_times_.insert(std::make_pair(start_time + t_move + t_stop,&node));
+		  lm->set_parameters(velocity,(destination + vector),sc_.world_w());
+		  mi->set_node_movement(lm);
+	  }else{
+		  double intersection = get_intersection(node,vector);
+		  // time_until_hit the border
+		  double time_until_hit = ((vector * intersection).euclidean_norm()/velocity);
+		  next_movement_times_.insert(std::make_pair(start_time + time_until_hit,&node));
+		  shawn::Vec w = (destination + vector * intersection);
+		  RDNMCInfo *rdnmci = new RDNMCInfo(new_direction(direction,w),
+					                        velocity,
+						                    (t_move - time_until_hit),
+					                        t_stop);
+		  rdnmc_infos_.insert(std::make_pair(&node,rdnmci));
+		  lm->set_parameters(velocity,w,sc_.world_w());
+		  mi->set_node_movement(lm);
+	  }
 
       return mi;
    }
@@ -151,7 +160,171 @@ namespace shawn{
    void RandomDirectionNodeMovementCreator::reset()
    {
       next_movement_times_.clear();
+	  for(std::map<const Node*, RDNMCInfo*>::iterator it = rdnmc_infos_.begin(); it != rdnmc_infos_.end(); ++it){
+		  delete it->second;
+	  }
+	  rdnmc_infos_.clear();
+	  reset_ = true;
    }
 
+   double 
+	   RandomDirectionNodeMovementCreator::
+	   get_intersection(const shawn::Node& node, const shawn::Vec& vector) 
+	   const
+   {
+		shawn::Vec destination = get_destination(node);
+		
+		double intersection = DBL_MAX;
+		// Get x intersection
+		if (vector.x() < 0){
+			double t = (0 - destination.x()) / vector.x();
+			if (t < intersection) intersection = t;
+		} else if (vector.x() > 0){
+			double t = (width_ - destination.x()) / vector.x();
+			if (t < intersection) intersection = t;
+		}
+		// Get y intersection
+		if (vector.y() < 0){
+			double t = (0 - destination.y()) / vector.y();
+			if (t < intersection) intersection = t;
+		} else if (vector.y() > 0){
+			double t = (height_ - destination.y()) / vector.y();
+			if (t < intersection) intersection = t;
+		}
+		return intersection;
+   }
 
+   double 
+	   RandomDirectionNodeMovementCreator::
+	   new_direction(double alpha, const shawn::Vec& vec) 
+	   const
+   {
+	   Borders border = get_border(vec);
+       
+	   if (border == right && alpha >= 0 && alpha < PI/2){
+			return (PI - alpha);
+	   }
+	   if (border == top && alpha >= 0 && alpha < PI/2){
+			return (2*PI - alpha);
+	   }
+	   if (border == top && alpha >= PI/2 && alpha < PI){
+			return (2*PI - alpha);
+	   }
+	   if (border == left && alpha >= PI/2 && alpha < PI){
+			return (PI - alpha);
+	   }
+	   if (border == left && alpha >= PI && alpha < 3*PI/2){
+			return (3*PI - alpha);
+	   }
+	   if (border == bottom && alpha >= PI && alpha < 3*PI/2){
+			return (2*PI - alpha);
+	   }
+	   if (border == bottom && alpha >= 3*PI/2 && alpha < 2*PI){
+		   return (2*PI - alpha);
+	   }
+	   if (border == right && alpha >= 3*PI/2 && alpha < 2*PI){
+			return (3*PI - alpha);
+	   }
+	   assert(border != noborder);
+	   return 2*PI;
+   }
+
+   bool 
+	   RandomDirectionNodeMovementCreator::
+	   is_inside(const shawn::Vec &vector) 
+	   const
+   {
+		if(vector.x() > width_) return false;
+		if(vector.x() < 0) return false;
+		if(vector.y() > height_) return false;
+		if(vector.y() < 0) return false;
+		return true;
+   }
+
+   const shawn::Vec 
+	   RandomDirectionNodeMovementCreator::
+	   get_destination(const shawn::Node& node)
+	   const
+   {
+		shawn::Vec destination = node.real_position();
+		if(node.movement().name() == "LinearMovement"){
+			try{
+				const shawn::LinearMovement& lm = dynamic_cast<const shawn::LinearMovement&>(node.movement());
+				destination = lm.destination();
+			}catch(bad_cast e){
+				std::cerr << "Error in RandomNodeMovementCreator::get_intersection(): " << e.what() << std::endl;
+			}
+		}
+		return destination;
+   }
+
+   shawn::RandomDirectionNodeMovementCreator::Borders 
+	   RandomDirectionNodeMovementCreator::
+	   get_border(const shawn::Vec& vec)
+	   const
+   {
+		if(EQDOUBLE(vec.x(),0.0)) return left;
+		if(EQDOUBLE(vec.x(),width_)) return right;
+		if(EQDOUBLE(vec.y(),0.0)) return bottom;
+		if(EQDOUBLE(vec.y(),height_)) return top;
+		return noborder;
+   }
+
+   //---RDNMCInfo---
+
+   RandomDirectionNodeMovementCreator::
+	   RDNMCInfo::
+	   RDNMCInfo(double d,double v,double m,double s) : 
+		direction_(d),
+		velocity_(v),
+	    t_move_(m),
+		t_stop_(s)
+		{
+			assert(direction_ >=0 && direction_ < 2*PI);
+			assert(velocity_ >= 0);
+			assert(t_move_ >= 0);
+			assert(t_stop_ >= 0);
+		}
+
+	RandomDirectionNodeMovementCreator::
+		RDNMCInfo::
+		~RDNMCInfo()
+	{}
+
+	double 
+		RandomDirectionNodeMovementCreator::
+		RDNMCInfo::
+		direction()
+		const
+	{
+			return direction_;
+	}
+
+	double 
+		RandomDirectionNodeMovementCreator::
+		RDNMCInfo::
+		velocity()
+		const
+	{
+		return velocity_;
+	}
+
+	double 
+		RandomDirectionNodeMovementCreator::
+		RDNMCInfo::
+		t_move()
+		const 
+	{
+		return t_move_;
+	}
+
+	double 
+		RandomDirectionNodeMovementCreator::
+		RDNMCInfo::
+		t_stop() 
+		const
+	{
+		return t_stop_;
+	}
+   	
 }

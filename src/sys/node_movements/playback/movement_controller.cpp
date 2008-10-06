@@ -32,9 +32,7 @@ namespace shawn
 
    MovementController::~MovementController()
    {
-	   if (nmc_ != NULL && !dynamic_cast<shawn::RefcntPointable*>(nmc_)){
-         delete nmc_;
-	   }
+	   if (nmc_ != NULL && !dynamic_cast<shawn::RefcntPointable*>(nmc_)) delete nmc_;
 	   nmc_ = NULL;
 	   if (movement_info_ != NULL){
 			delete movement_info_;
@@ -54,7 +52,7 @@ namespace shawn
    void MovementController::timeout_action()
    {
 		
-
+      begin:
       if (movement_info_ != NULL)
       {
          DEBUG(sc_->logger(), "MovementController::timeout_action() setting a delayed node movement");
@@ -102,7 +100,8 @@ namespace shawn
 			   delete movement_info_;
 			   movement_info_ = NULL;
 			   //NEW
-               timeout_action();
+               //timeout_action();
+			   goto begin;
             break;
             case MovementInfo::Delayed:
                if (sc_->world_w().current_time() < movement_info_->dispatch_time())
@@ -141,7 +140,8 @@ namespace shawn
 				  delete movement_info_;
 				  movement_info_ = NULL;
 				  // NEW
-                  timeout_action();
+                  //timeout_action();
+				  goto begin;
                }
                else
                {
@@ -153,7 +153,8 @@ namespace shawn
 				  delete movement_info_;
 				  movement_info_ = NULL;
 				  //NEW
-                  timeout_action();
+                  //timeout_action();
+				  goto begin;
                }
             break;
             }
