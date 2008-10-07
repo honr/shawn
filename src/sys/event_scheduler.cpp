@@ -8,6 +8,7 @@
 
 #include "sys/constants.h"
 #include "sys/event_scheduler.h"
+#include "sys/util/defutils.h"
 #include <iostream>
 
 namespace shawn
@@ -33,12 +34,10 @@ namespace shawn
 	EventScheduler::EventInfo::
 	operator < ( const EventScheduler::EventInfo& ei )
 	{
-		if( time_ < ei.time_-EPSILON )
-			return true;
-		else if( time_ < ei.time_+EPSILON )
+		if (EQDOUBLE(time_, ei.time_))
 			return (void*)this < (void*)(&ei);
 		else
-			return false;
+			return time_ < ei.time_;
 	}
 
 	// ----------------------------------------------------------------------
@@ -89,6 +88,12 @@ namespace shawn
 		EventHandle eh = new EventInfo( h, t, eth );
 
 		std::pair<EventSet::iterator,bool> worked = events_.insert(eh);
+		if( !worked.second )
+		{
+			std::cout << "ASSERT OCCURED: " << std::endl;
+			std::cout << "this ->time_ " << eh->time_ << ", ptr=" << (void*)eh << std::endl;
+			std::cout << "(*it)->time_ " << (*(worked.first))->time_ << ", ptr=" << (void*)(*(worked.first)) << std::endl;
+		}
 		assert( worked.second );
 		eh->pos_ = worked.first;
 		return eh;
