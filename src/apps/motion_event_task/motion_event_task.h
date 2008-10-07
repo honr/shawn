@@ -88,7 +88,7 @@ namespace motion_event
 
 	private:
 		// Private functions for the computation of the times of detection
-		void single_line(shawn::SimulationController& sc, const shawn::Vec start_pos, const shawn::Vec dest_pos, string sensor_model);
+		void single_line(shawn::SimulationController& sc, const shawn::Vec start_pos, const shawn::Vec dest_pos, std::string sensor_model);
 	
 		void single_line_disc_range(shawn::SimulationController& sc, const shawn::Vec start_pos, const shawn::Vec dest_pos);
 	
