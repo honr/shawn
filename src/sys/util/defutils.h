@@ -9,6 +9,7 @@
 #ifndef __SHAWN_SYS_DEFUTILS_H
 #define __SHAWN_SYS_DEFUTILS_H
 
+#include <math.h>
 
 
 #define DECLARE_HANDLES(CLASS)                            \
