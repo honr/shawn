@@ -18,18 +18,30 @@
 #include "sys/misc/random/normal_random_variable.h"
 #include "sys/node.h"
 #include <list>
-using std::list;
-using std::pair;
 
-namespace shawn {
+namespace shawn 
+{
 	class Vec;
+	class SimulationController;
 }
 
 namespace motion_event
 {
-   class SimulationController;
+	
+	struct point 
+	{
+		float x;
+		float y;
+	};
 
-   /** \brief Simulates moving objects in the world
+	struct line
+	{
+		point p;
+		point a;
+	};
+	
+
+	/** \brief Simulates moving objects in the world
 	*
 	* Objects begin to move at the specified time and move with a certain velocity 
 	* according to the given positions without stop. The positions are specified 
@@ -56,15 +68,16 @@ namespace motion_event
 	* value, a uniform distributed random variable decides how much error detections are at least
 	* during the simulation.
 	*/
-   class MotionEventTask
-      : public shawn::SimulationTask
-   {
-   public:
-      MotionEventTask();
-      virtual ~MotionEventTask();
-      /** The name is motion_event_task
-       */
-      virtual std::string name( void ) const throw();
+	class MotionEventTask
+		: public shawn::SimulationTask
+	{
+	public:
+		MotionEventTask();
+		virtual ~MotionEventTask();
+   
+		/** The name is motion_event_task */
+		virtual std::string name( void ) const throw();
+   
       /** A generator for motion events in the world
        */
       virtual std::string description( void ) const throw();
@@ -73,60 +86,81 @@ namespace motion_event
       virtual void run( shawn::SimulationController& sc )
          throw( std::runtime_error );
 
-   private:
-	   // Private functions for the computation of the times of detection
-	   void single_line(shawn::SimulationController& sc, const shawn::Vec start_pos, const shawn::Vec dest_pos);
-	   void single_line_disc_range(shawn::SimulationController& sc, const shawn::Vec start_pos, const shawn::Vec dest_pos);
-	   bool between(const shawn::Vec, const shawn::Vec, const shawn::Vec);
-	   bool in_range_of_node(shawn::Node*);
-	   void set_in_range_of_node(shawn::Node*, bool);
+	private:
+		// Private functions for the computation of the times of detection
+		void single_line(shawn::SimulationController& sc, const shawn::Vec start_pos, const shawn::Vec dest_pos, string sensor_model);
+	
+		void single_line_disc_range(shawn::SimulationController& sc, const shawn::Vec start_pos, const shawn::Vec dest_pos);
+	
+		bool between(const shawn::Vec, const shawn::Vec, const shawn::Vec);
+	
+		bool in_range_of_node(shawn::Node*);
+	
+		void set_in_range_of_node(shawn::Node*, bool);
 
-	   /** \brief Object id
-	    */
-	   int object_id_;
-	   
-	   /** \brief Velocity of the object
-	    *
-	    * The velcoity of one person does not change in one simulation. 1 correspond to 1 meter/simulation round.
-	    */
-	   double velocity_;
-	   
-	   /** \brief Detection range of each nodes in the world.
-	    *
-	    * The range of the nodes is approximated by a square lieing on edge in the world. 
-	    * The parameter is shortest distance to the four edges.  
-	    */
-	   double detection_range_;
-	   
-	   /** \brief Start time of the object.
-	    */
-	   double start_time_;
-	   
-	   /** \brief Standard deviation for the error added to (or subtracted from) the time of detection
-	    *
-	    * The default value is 0. So a nodes detects an object when this is at the nearest point of 
-	    * the node. If the standard deviation is greater than 0, the absolute value of a 
-	    * normal distributed random error is added 
-	    * to this time of detection.
-	    */
-	   double standard_deviation_;
-	   
-	   /** \brief Maximum of the error added to the time of detection. If the absolute random value is bigger
-	    * than this variable, a new value is generated until it is smaller.
-	    */
-	   double max_time_error_;
-	   
-	   /** \brief Rate of not detected events. (Computed by a uniform distributed random variable.)  
-	    */
-	   double missing_detection_rate_;
-	   
-	   /** \brief Temporary saving the direction change of an object. 
-	    */
-	   std::list<std::pair<shawn::Node*,bool> > in_range_of_nodes_; 
-	   
-	   shawn::NormalRandomVariable* nrv_;
-	   shawn::UniformRandomVariable* urv_;
+		point v_minus (point a, point b);
+		
+		point v_plus (point a, point b);
 
+		float determinante (point a, point b);
+
+		point sv_mult (float s, point v);
+
+		point schnitt (line g1, line g2);
+
+		bool kollinear (point a, point b);
+
+		bool parallel (line g1, line g2);
+
+		bool checkSensor(line weg,line sensorr,line rp,line pq,line qsensor,point sensor,point r,point p,point q);
+
+
+		/** \brief Object id
+		*/
+		int object_id_;
+
+		/** \brief Velocity of the object
+		*
+		* The velcoity of one person does not change in one simulation. 1 correspond to 1 meter/simulation round.
+		*/
+		double velocity_;
+
+		/** \brief Detection range of each nodes in the world.
+		*
+		* The range of the nodes is approximated by a square lieing on edge in the world. 
+		* The parameter is shortest distance to the four edges.  
+		*/
+		double detection_range_;
+
+		/** \brief Start time of the object.
+		*/
+		double start_time_;
+
+		/** \brief Standard deviation for the error added to (or subtracted from) the time of detection
+		*
+		* The default value is 0. So a nodes detects an object when this is at the nearest point of 
+		* the node. If the standard deviation is greater than 0, the absolute value of a 
+		* normal distributed random error is added 
+		* to this time of detection.
+		*/
+		double standard_deviation_;
+
+		/** \brief Maximum of the error added to the time of detection. If the absolute random value is bigger
+		* than this variable, a new value is generated until it is smaller.
+		*/
+		double max_time_error_;
+
+		/** \brief Rate of not detected events. (Computed by a uniform distributed random variable.)  
+		*/
+		double missing_detection_rate_;
+	   
+		/** \brief Temporary saving the direction change of an object. 
+		*/
+		std::list<std::pair<shawn::Node*,bool> > in_range_of_nodes_; 
+
+		shawn::NormalRandomVariable* nrv_;
+		
+		shawn::UniformRandomVariable* urv_;
    };
 
 }
