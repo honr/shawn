@@ -30,6 +30,8 @@ public class EnvironmentConfig {
 
 	private boolean createDefaultShawn = true;
 
+	private boolean dryRun = false;
+
 	public String getShawnExecutable() {
 		return shawnExecutable;
 	}
@@ -88,6 +90,7 @@ public class EnvironmentConfig {
 		v.add("Working dir: " + getWorkDir());
 		v.add("Err stream: " + getErrStream());
 		v.add("Out stream: " + getOutStream());
+		v.add("Dry run: " + isDryRun());
 
 		return v;
 	}
@@ -109,5 +112,13 @@ public class EnvironmentConfig {
 		for (Iterator it = v.iterator(); it.hasNext();)
 			s += (String) it.next();
 		return s;
+	}
+
+	public void setDryRun(boolean dryRun) {
+		this.dryRun = dryRun;
+	}
+
+	public boolean isDryRun() {
+		return dryRun;
 	}
 }

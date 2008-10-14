@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 
 import org.apache.log4j.Category;
 
-import sf.net.shawn.shawn.ShawnProcess;
+import sf.net.shawn.shawn.IShawnProcess;
 import sf.net.shawn.shawn.ShawnProcessFactory;
 import sf.net.shawn.tools.Logging;
 
@@ -73,13 +73,17 @@ public class Main {
 		ShawnProcessFactory.setDefaultValues(ec);
 
 		if (ec.isCreateDefaultShawn()) {
-			ShawnProcess s = ShawnProcessFactory.create();
+			IShawnProcess s = ShawnProcessFactory.create();
 			i.set("shawn", s);
 		}
 
 		i.eval("import de.farberg.jshawn.shawn.*;");
 		i.eval("import de.farberg.tools.*;");
 		i.eval("import de.farberg.jshawn.*;");
+		
+		i.eval("import sf.net.shawn.shawn.*;");
+		i.eval("import sf.net.shawn.tools.*;");
+		i.eval("import sf.net.shawn.*;");
 
 		i.source(ec.getBeanShellScript());
 	}
@@ -94,6 +98,7 @@ public class Main {
 		ec.setErrStream(System.err);
 		ec.setOutStream(System.out);
 		ec.setCreateDefaultShawn(true);
+		ec.setDryRun(false);
 		return ec;
 	}
 
@@ -106,6 +111,7 @@ public class Main {
 		out.println("\t [-d,--workdir]    The default work dir for shawn instances (default: .)");
 		out.println("\t [-e,--errstream]  The file where the error stream should be written to");
 		out.println("\t [-o,--outstream]  The file where the stdout stream should be written to");
+		out.println("\t [--dryrun]     	  The commands are not actually passed to shawn, but a trace history is written to a conf file");
 		out.println("\t [--nodefault]     No default shawn instance is created");
 		out.println("\t [--verbose]       Enable debugging output");
 		out.flush();
@@ -130,6 +136,7 @@ public class Main {
 		CmdLineParser.Option opt_stdOut = parser.addStringOption('o', "outstream");
 		CmdLineParser.Option opt_nodefault = parser.addBooleanOption("nodefault");
 		CmdLineParser.Option opt_verbose = parser.addBooleanOption("verbose");
+		CmdLineParser.Option opt_dryrun = parser.addBooleanOption("dryrun");
 
 		try {
 			parser.parse(args);
@@ -168,6 +175,9 @@ public class Main {
 		if (verbose.booleanValue())
 			Logging.setVerbose(true);
 
+		Boolean dry_run = (Boolean) parser.getOptionValue(opt_dryrun, new Boolean(false));
+		ec.setDryRun(dry_run.booleanValue());
+		
 		return ec;
 	}
 

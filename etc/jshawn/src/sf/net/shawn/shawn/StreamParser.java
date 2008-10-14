@@ -32,14 +32,14 @@ public class StreamParser extends Thread {
 
 	private boolean running = true;
 
-	private ShawnProcess shawn = null;
+	private IShawnProcess shawn = null;
 
 	private Stack<JShawnModule> moduleStack = new Stack<JShawnModule>();
 
 	/**
 	 * @param br
 	 */
-	public StreamParser(ShawnProcess p, InputStream is, OutputStream os) {
+	public StreamParser(IShawnProcess p, InputStream is, OutputStream os) {
 		this.bw = new PrintWriter(new OutputStreamWriter(os));
 		this.br = new BufferedReader(new InputStreamReader(is), 65536);
 		shawn = p;

@@ -1,21 +1,15 @@
 /************************************************************************
- ** This file is part of the network simulator Shawn.                  **
- ** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
- ** Shawn is free software; you can redistribute it and/or modify it   **
- ** under the terms of the BSD License. Refer to the shawn-licence.txt **
- ** file in the root of the Shawn source tree for further details.     **
+ * This file is part of the network simulator Shawn. Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project
+ * Shawn is free software; you can redistribute it and/or modify it under the terms of the BSD License. Refer to the
+ * shawn-licence.txt ** file in the root of the Shawn source tree for further details. **
  ************************************************************************/
 package sf.net.shawn.shawn;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 
 import org.apache.log4j.Category;
@@ -24,7 +18,7 @@ import sf.net.shawn.tools.Logging;
 import sf.net.shawn.tools.TimeDiff;
 import sf.net.shawn.tools.Tools;
 
-public class ShawnProcess {
+public class ShawnProcess extends IShawnProcess {
 
 	private Category log = Logging.get(this);
 
@@ -36,17 +30,9 @@ public class ShawnProcess {
 
 	private BufferedInputStream stderrStream = null;
 
-	private String name = "<noname>";
-
 	private boolean taskRunning = false;
 
-	private int historySize = 0;
-
 	private LinkedList<ShawnResult> currentResults = new LinkedList<ShawnResult>();
-
-	private LinkedList<String> commandHistory = new LinkedList<String>();
-
-	private BufferedWriter historyTraceStream = null;
 
 	// --------------------------------------------------------------------------------
 	/**
@@ -111,12 +97,11 @@ public class ShawnProcess {
 	}
 
 	// --------------------------------------------------------------------------------
-	/**
-	 * @param name
-	 * @param value
+	/* (non-Javadoc)
+	 * @see sf.net.shawn.shawn.IShawnProcess#setGlobalVariable(java.lang.String, java.lang.String)
 	 */
 	public void setGlobalVariable(String name, String value) {
-		String cmdLine = name + "=" + value;
+		String cmdLine = toGlobalVariableLine(name, value);
 		log.debug("Setting global variable: " + cmdLine);
 		// Save the command in the history
 		storeCommandInHistory(cmdLine);
@@ -127,23 +112,21 @@ public class ShawnProcess {
 	}
 
 	// --------------------------------------------------------------------------------
-	/**
-	 * @param cmd
-	 * @param params
+	/* (non-Javadoc)
+	 * @see sf.net.shawn.shawn.IShawnProcess#runCommand(java.lang.String)
 	 */
 	public synchronized LinkedList<ShawnResult> runCommand(String cmd) {
 		return runCommand(cmd, "");
 	}
 
 	// --------------------------------------------------------------------------------
-	/**
-	 * @param cmd
-	 * @param params
+	/* (non-Javadoc)
+	 * @see sf.net.shawn.shawn.IShawnProcess#runCommand(java.lang.String, java.lang.String)
 	 */
 	public synchronized LinkedList<ShawnResult> runCommand(String cmd, String params) {
 		taskRunning = true;
 		currentResults = new LinkedList<ShawnResult>();
-		String cmdLine = cmd + " " + params;
+		String cmdLine = toCommandLine(cmd, params);
 
 		// Save the command in the history
 		storeCommandInHistory(cmdLine);
@@ -188,8 +171,8 @@ public class ShawnProcess {
 	}
 
 	// --------------------------------------------------------------------------------
-	/**
-	 * @return
+	/* (non-Javadoc)
+	 * @see sf.net.shawn.shawn.IShawnProcess#isRunning()
 	 */
 	public boolean isRunning() {
 		try {
@@ -201,8 +184,8 @@ public class ShawnProcess {
 	}
 
 	// --------------------------------------------------------------------------------
-	/**
-	 *
+	/* (non-Javadoc)
+	 * @see sf.net.shawn.shawn.IShawnProcess#killProcess()
 	 */
 	public void killProcess() {
 		log.info("Destroying shawn process.");
@@ -226,6 +209,8 @@ public class ShawnProcess {
 				}
 			}
 
+			super.killProcess();
+
 			// Close the out streams
 			try {
 				if (stderrStream != null)
@@ -244,116 +229,12 @@ public class ShawnProcess {
 			// Now forcibly terminate shawn if still running
 			shawn.destroy();
 
-			//Close history trace stream
-			if (historyTraceStream != null) {
-				try {
-					historyTraceStream.flush();
-					historyTraceStream.close();
-				} catch (Throwable t) {
-					log.error("Error while closing historyTraceStream: " + t, t);
-				}
-			}
-
 			log.debug("Terminated shawn process, isRunning[" + isRunning() + "]");
 		} catch (Throwable t) {
 			log.error("Error while destroying shawn process: " + t, t);
 		}
 	}
 
-	// --------------------------------------------------------------------------------
-	/**
-	 * Save the command in the history
-	 * 
-	 * @param cmdLine
-	 *            The complete command string
-	 */
-	private void storeCommandInHistory(String cmdLine) {
-		commandHistory.addLast(cmdLine);
-		while (commandHistory.size() > historySize)
-			commandHistory.removeFirst();
 
-		if (historyTraceStream != null) {
-			try {
-				historyTraceStream.write(cmdLine + "\n");
-				historyTraceStream.flush();
-			} catch (IOException e) {
-				log.error("Unable to write history stream: " + e, e);
-			}
-		}
-	}
-
-	// --------------------------------------------------------------------------------
-	/**
-	 * @throws IOException
-	 */
-	public synchronized void saveHistory(String filename) throws IOException {
-		File f = new File(filename);
-		BufferedWriter w = new BufferedWriter(new FileWriter(f));
-
-		w.write("# This file was written by JShawn (http://swarmnet.de/shawn) on "
-				+ new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss").format(new Date()) + "\n");
-		w.write("# The current max. command history size is " + getHistorySize() + " and " + commandHistory.size() + " commands were stored.\n");
-		w.write("# If you miss commands in this file, use public void setHistorySize(int historySize) to increase the history size. \n");
-		w.write("# The default history size is " + historySize + "\n\n");
-
-		for (String cmd : commandHistory)
-			w.write(cmd + "\n");
-
-		w.flush();
-		w.close();
-	}
-
-	// --------------------------------------------------------------------------------
-	/**
-	 * @throws IOException
-	 */
-	public synchronized void traceHistory(String outfile) throws IOException {
-		if (historyTraceStream != null) {
-			historyTraceStream.flush();
-			historyTraceStream.close();
-		}
-		log.info("Tracing history to " + outfile);
-		historyTraceStream = new BufferedWriter(new FileWriter(new File(outfile)));
-	}
-
-	// --------------------------------------------------------------------------------
-	/**
-	 * @throws IOException
-	 */
-	public synchronized void clearHistory() {
-		commandHistory.clear();
-	}
-
-	// --------------------------------------------------------------------------------
-	/**
-	 * 
-	 */
-	public String getInstanceName() {
-		return name;
-	}
-
-	// --------------------------------------------------------------------------------
-	/**
-	 * 
-	 */
-	public void setInstanceName(String name) {
-		this.name = name;
-	}
-
-	// --------------------------------------------------------------------------------
-	/**
-	 * 
-	 */
-	public int getHistorySize() {
-		return historySize;
-	}
-
-	// --------------------------------------------------------------------------------
-	/**
-	 * 
-	 */
-	public void setHistorySize(int historySize) {
-		this.historySize = historySize;
-	}
 
 }

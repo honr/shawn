@@ -7,13 +7,13 @@
  ************************************************************************/
 package sf.net.shawn.module;
 
-import sf.net.shawn.shawn.ShawnProcess;
+import sf.net.shawn.shawn.IShawnProcess;
 import sf.net.shawn.shawn.ShawnResult;
 
 public abstract class JShawnModule {
-	private ShawnProcess p = null;
+	private IShawnProcess p = null;
 
-	public final void internalStart(ShawnProcess p) throws Exception {
+	public final void internalStart(IShawnProcess p) throws Exception {
 		this.p = p;
 		start();
 	}
