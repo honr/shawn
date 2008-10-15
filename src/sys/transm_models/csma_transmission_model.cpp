@@ -185,7 +185,11 @@ namespace shawn
 					CSMA_DEBUG_OUT("[id: "<< msg->pmi_->src_->id() << "]:" << event_handle << " fired (mac access) at " << event_handle->time() << " msg=" << msg );
 					CsmaState& csma_state = (*nodes_)[*(msg->pmi_->src_)];
 
-					while( (!msg->pmi_->msg_->is_ack()) && (csma_state.busy_until_ > msg->deliver_time_) && (msg->sending_attempts_< max_sending_attempts_))
+					
+					if (csma_state.busy_until_ > csma_state.ifs_end_)
+						cout << "csma_transmission_model::timeout (MAC access): busy_until_>ifs_end_! This must never happen" << endl;	
+					assert(csma_state.busy_until_ <= csma_state.ifs_end_);
+					while( (!msg->pmi_->msg_->is_ack()) && (csma_state.ifs_end_ > msg->deliver_time_) && (msg->sending_attempts_< max_sending_attempts_))
 					{
 
 						double wait_periods = shawn::uniform_random_0i_1i()* (int)(pow((float)(backoff_factor_base_),min(min_backoff_exponent_+msg->sending_attempts_, max_backoff_exponent_))-1);
