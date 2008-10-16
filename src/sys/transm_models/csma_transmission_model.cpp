@@ -185,10 +185,10 @@ namespace shawn
 					CSMA_DEBUG_OUT("[id: "<< msg->pmi_->src_->id() << "]:" << event_handle << " fired (mac access) at " << event_handle->time() << " msg=" << msg );
 					CsmaState& csma_state = (*nodes_)[*(msg->pmi_->src_)];
 
-					
-					if (csma_state.busy_until_ > csma_state.ifs_end_)
-						cout << "csma_transmission_model::timeout (MAC access): busy_until_>ifs_end_! This must never happen" << endl;	
-					assert(csma_state.busy_until_ <= csma_state.ifs_end_);
+					// Soften assert
+					if (csma_state.busy_until_ > ((csma_state.ifs_end_)+(0.001)))
+						cout << "csma_transmission_model::timeout (MAC access): busy_until_>ifs_end_! (" << csma_state.busy_until_ << " > " << csma_state.ifs_end_ << ") This must never happen" << endl;	
+					assert((csma_state.busy_until_ <= ((csma_state.ifs_end_)+(0.001))));
 					while( (!msg->pmi_->msg_->is_ack()) && (csma_state.ifs_end_ > msg->deliver_time_) && (msg->sending_attempts_< max_sending_attempts_))
 					{
 
@@ -225,6 +225,7 @@ namespace shawn
 							if (m->has_sender_proc())
 							{
 			                	(m->sender_proc_w()).process_sent_indication( ConstMessageHandle(msg->pmi_->msg_), shawn::Processor::SHAWN_TX_STATE_CHANNEL_ACCESS_FAILURE, msg->sending_attempts_ );
+
 							}
 
 							#ifdef CSMA_DEBUG
@@ -400,9 +401,11 @@ namespace shawn
 		}
 		else
 		{
-			//--> collision
+			// this is collision --> always long interframe spacing
+			csma_state.ifs_end_ = max( msg->deliver_time_ + msg->duration_ + long_inter_frame_spacing_, csma_state.ifs_end_ );
+			CSMA_DEBUG_OUT("[id: "<< target->id() << "] COLLISION:  msg clean_busy=" << msg->deliver_time_ + msg->duration_ << " IFS_time " << long_inter_frame_spacing_ << " IFS_end " << csma_state.ifs_end_ );
+
 			csma_state.current_message_ = NULL;
-			CSMA_DEBUG_OUT("[id: "<< target->id() << "]: collision, setting current_message to NULL" );
 		}
 
 		// busy until latest packet is delivered
