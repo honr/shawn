@@ -25,6 +25,7 @@
 #include <sstream>
 #include <string>
 #include <cstdio>
+#include <cstring>
 #include <stdio.h>
 #include <stdlib.h> 
 

@@ -6,9 +6,9 @@
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 
-#ifdef ENABLE_VIS
 #include <iostream>
 #include "apps/vis/writer/vis_writer_keeper.h"
+#ifdef ENABLE_VIS
 
 using namespace std;
 
