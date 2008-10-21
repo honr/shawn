@@ -194,7 +194,7 @@ namespace shawn
 
 						double wait_periods = shawn::uniform_random_0i_1i()* (int)(pow((float)(backoff_factor_base_),min(min_backoff_exponent_+msg->sending_attempts_, max_backoff_exponent_))-1);
 						if (slotted_backoff_)
-							wait_periods = round(wait_periods);
+							wait_periods = int(wait_periods + 0.5);
 
 						msg->deliver_time_ += (backOff_ *  wait_periods);
 
@@ -471,7 +471,7 @@ namespace shawn
 			double wait_periods = shawn::uniform_random_0i_1i()* (int)(pow((float)(backoff_factor_base_),min_backoff_exponent_)-1);
 
 			if (slotted_backoff_)
-				wait_periods = round(wait_periods);
+				wait_periods = int(wait_periods + 0.5);
 
 			new_msg->pmi_->time_ += backOff_ *  wait_periods;
             ++new_msg->sending_attempts_;
