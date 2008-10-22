@@ -20,6 +20,7 @@ cmake_minimum_required(VERSION 2.4)
 	project( SHAWN )
 
 	OPTION(OPT_ENABLE_CGAL "Enable CGAL library support" OFF)
+	OPTION(OPT_CONFIGURE_LOGGING "Configure logging system" OFF)
 
 #=============
 # Set the default paths for binary and lib build
@@ -120,6 +121,31 @@ cmake_minimum_required(VERSION 2.4)
 							)
 	endif ( OPT_ENABLE_CGAL )
 
+#=============
+# Configure logging libraries
+#=============
+
+	if ( OPT_CONFIGURE_LOGGING )
+		set ( LOGGER_TYPE "STDOUT" CACHE STRING "Logger type to use. Choose STDOUT(Default), LOG4CXX or NONE." )
+
+		if ( LOGGER_TYPE STREQUAL "STDOUT" )
+
+		elseif ( LOGGER_TYPE STREQUAL "LOG4CXX" )
+			set ( INCLUDE_PATH_LOG4CXX CACHE PATH "Path to LOG4CXX includes" )
+			set ( LIB_PATH_LOG4CXX CACHE PATH "Path to LOG4CXX libs" )
+			add_definitions( -DLOG4CXX_STATIC -DHAVE_LOG4CXX )
+			link_directories ( ${LIB_PATH_LOG4CXX} )
+			include_directories ( ${INCLUDE_PATH_LOG4CXX} )
+			
+		elseif ( LOGGER_TYPE STREQUAL "NONE")
+		   add_definitions( -DDISABLE_LOGGING )
+		   
+		else ( LOGGER_TYPE STREQUAL "STDOUT" )
+		   message( FATAL_ERROR "Unsupportet logging library" )
+		endif ( LOGGER_TYPE STREQUAL "STDOUT" )
+		
+	endif ( OPT_CONFIGURE_LOGGING )
+
 
 #=============
 # Build target
@@ -147,6 +173,10 @@ cmake_minimum_required(VERSION 2.4)
 			endif ( LIB_PATH_CGAL )
 		endif ( OPT_ENABLE_CGAL )
 
+		if ( LIB_PATH_LOG4CXX )
+			set ( LIB_LOGGING log4Cxx.lib apr.lib aprutil.lib xml.lib odbc32.lib mswsock.lib)
+		endif ( LIB_PATH_LOG4CXX )
+
 	else (  WIN32 AND NOT CYGWIN  )
 
         set ( SYSTEM_LIBS dl )
@@ -157,11 +187,18 @@ cmake_minimum_required(VERSION 2.4)
 			endif ( LIB_PATH_CGAL )
 		endif ( OPT_ENABLE_CGAL )
 
+		if ( LIB_PATH_LOG4CXX )
+			set ( LIB_LOGGING log4Cxx apr aprutil xml)
+		endif ( LIB_PATH_LOG4CXX )
+
 	endif (  WIN32 AND NOT CYGWIN  )
 
     IF(NOT BUILD_LIB_WITH_MAIN)
-        target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} )
+        target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} )
     ENDIF(NOT BUILD_LIB_WITH_MAIN)
+
+
+
 
 #=============
 # Compiler definitions
