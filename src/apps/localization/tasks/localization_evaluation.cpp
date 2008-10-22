@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <fstream>
 #include <limits>
+#include <sstream>
 
 #include "apps/localization/tasks/localization_evaluation.h"
 #include "sys/world.h"
@@ -78,7 +79,9 @@ namespace localization
    print( const HeaderInfo& header, const Results& results )
       const throw()
    {
-      USER( "Distance algorithm: \t" << header.dist_algo << std::endl
+	  std::stringstream oss;
+	  
+	  oss << "Distance algorithm: \t" << header.dist_algo << std::endl
             << "Position algorithm: \t" << header.pos_algo << std::endl
             << "Refinement algorithm: \t" << header.ref_algo << std::endl
             << std::endl
@@ -109,7 +112,9 @@ namespace localization
             << std::endl
             << "Average number of neighbors per node is " << results.stat_neighbor_cnt.mean()
             << " ( from " << results.stat_neighbor_cnt.min()
-            << " to " << results.stat_neighbor_cnt.max() << " )" );
+            << " to " << results.stat_neighbor_cnt.max() << " )";
+
+	  USER( oss.str() );
    }
    // ----------------------------------------------------------------------
    void

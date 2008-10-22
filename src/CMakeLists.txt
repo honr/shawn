@@ -188,7 +188,7 @@ cmake_minimum_required(VERSION 2.4)
 		endif ( OPT_ENABLE_CGAL )
 
 		if ( LIB_PATH_LOG4CXX )
-			set ( LIB_LOGGING log4Cxx apr aprutil xml)
+			set ( LIB_LOGGING log4cxx )
 		endif ( LIB_PATH_LOG4CXX )
 
 	endif (  WIN32 AND NOT CYGWIN  )
