@@ -92,7 +92,7 @@ namespace vis
 #ifdef VIS_HAVE_ETA
             INFO( logger(), "writing frame #" << wr->next_frame_number() << " (" << perc <<"%" << eta_str << ")");
 #else
-            INFO( logger(), "writing frame #" << wr->next_frame_number() << " (" << perc <<"%")");
+            INFO( logger(), "writing frame #" << wr->next_frame_number() << " (" << perc <<"%");
 #endif
             wr->write_frame( now );
          }
@@ -103,6 +103,7 @@ namespace vis
 
 }
 #endif
+
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/tubsapps/vis/tasks/vis_external_animation.cpp,v $
  * Version $Revision: 1.8 $
