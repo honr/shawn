@@ -5,10 +5,10 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
+#include "../buildfiles/_apps_enable_cmake.h"
+#ifdef ENABLE_VIS
 #include <iostream>
 #include "apps/vis/writer/vis_writer_keeper.h"
-#ifdef ENABLE_VIS
 
 using namespace std;
 
