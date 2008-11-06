@@ -123,7 +123,9 @@ namespace traci
 	public:
 
 		const shawn::Node* find_node_by_traci_id(const TraCIID& traci_id);
+
 		shawn::Node* find_node_by_traci_id_w(const TraCIID& traci_id);
+
 		const TraCIID& find_traci_id_by_node(const shawn::Node& node) throw(std::logic_error);
 
 		shawn::Node* new_node(const TraCIID& traci_id, bool attach_processors_by_domain = true);
@@ -143,21 +145,19 @@ namespace traci
 		// The connect method is called by startSimStepHandler         
 		// The close method is called by the destructor
 		bool connect();
+
 		void close();
 
 		void fetch_processor_factories();
 
 		bool check_domain(int domain, const TraCIID& traci_id, bool abrt = false, std::string err_msg = "");
 
-		//void switch_processors_state(int id = -1, int state = 0);
-
-		//bool all_processors_state(int node_id, int state);
+		std::string number_to_string(double n);
 
 		void check_for_unused_vehicle_nodes();
 
-		//void increase_nodes(int to);
-
 		void add_node(shawn::Node* node, const TraCIID& traci_id);
+
 		void remove_node_from_map(shawn::Node* node);
 
 		// Internal variables

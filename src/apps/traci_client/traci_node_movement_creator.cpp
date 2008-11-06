@@ -12,6 +12,7 @@
 #include "sys/world.h"
 #include "sys/misc/tokenize.h"
 #include <string>
+#include <sstream>
 #include <limits>
 #include <cmath>
 #ifdef ENABLE_TRACICLIENT
@@ -155,7 +156,7 @@ namespace traci{
 		   string description;
 		   extract_command_status(s, CMD_SIMSTEP, description);
 
-		   bool aatl = sc_.environment_w().optional_bool_param("auto_add_traffic_lights",false);
+		   bool aatl = sc_.environment_w().optional_bool_param("traffic_light_nodes",false);
 		   if (aatl) add_traffic_lights();
 
          // No node position informations requested
@@ -443,7 +444,7 @@ namespace traci{
 	   for(int i = 0; i < sizeof(DOMAIN_IDS)/sizeof(int); ++i){
 		   ProcessorFactoryHandle pfh;
 		   set<ProcessorFactoryHandle>* processor_factories = new set<ProcessorFactoryHandle>();
-		   StrTok tok(sc_.environment().optional_string_param(DOMAIN_NAMES[i] + "-processors",""), ", ");
+		   StrTok tok(sc_.environment().optional_string_param(DOMAIN_NAMES[i] + "_processors",""), ", ");
 		   for(StrTok::iterator it = tok.begin(); it!=tok.end(); ++it){
 				pfh = sc_.processor_keeper_w().find_w( *it );
 				assert( pfh != NULL );
@@ -526,12 +527,16 @@ namespace traci{
 	   // CommandID
 	   out.writeChar(CMD_SETMAXSPEED);
 	   // Node ID
+	   TraCIID ti;
 	   try{
-			out.writeInt(find_traci_id_by_node(node).id());
+			ti = find_traci_id_by_node(node);
 	   }catch(logic_error e){
 		   cerr << "Error in method TraCINodeMovementCreator::command_set_maximum_speed: " << e.what() << endl;
 		   abort();
 	   }
+	   check_domain(0x01,ti,true,"Error in method TraCINodeMovementCreator::command_set_maximum_speed: \
+					Command not applicable for elements in domain " + number_to_string(ti.domain()) + "!");
+	   out.writeInt(ti.id());
 	   // Max speed
 	   out.writeFloat(static_cast<float>(max_speed));
 
@@ -576,12 +581,17 @@ namespace traci{
 	   // Command ID
 	   out.writeChar(CMD_STOP);
 	   // Node ID
+	   TraCIID ti;
 	   try{
-			out.writeInt(find_traci_id_by_node(node).id());
+			//out.writeInt(find_traci_id_by_node(node).id());
+		   ti = find_traci_id_by_node(node);
 	   }catch(logic_error e){
 		   cerr << "Error in method TraCINodeMovementCreator::command_stop: " << e.what() << endl;
 		   abort();
 	   }
+	   check_domain(0x01,ti,true,"Error in method TraCINodeMovementCreator::command_stop: \
+					Command not applicable for elements in domain " + number_to_string(ti.domain()) + "!");
+	   out.writeInt(ti.id());
 	   // Position type
 	   out.writeUnsignedByte(POSITION_2D);
 	   // Position
@@ -632,12 +642,16 @@ namespace traci{
 	   // Command ID
 	   out.writeChar(CMD_CHANGEROUTE);
 	   // Node ID
+	   TraCIID ti;
 	   try{
-			out.writeInt(find_traci_id_by_node(node).id());
+			ti = find_traci_id_by_node(node);
 	   }catch(logic_error e){
 		   cerr << "Error in method TraCINodeMovementCreator::command_change_route: " << e.what() << endl;
 		   abort();
 	   }
+	   check_domain(0x01,ti,true,"Error in method TraCINodeMovementCreator::command_change_route: \
+					Command not applicable for elements in domain " + number_to_string(ti.domain()) + "!");
+	   out.writeInt(ti.id());
 	   // Road ID
 	   out.writeString(road_id);
 	   // Travel time
@@ -674,6 +688,7 @@ namespace traci{
 		   abort();
 	   }
 
+		
 	  // Build command
 	  Storage out;
 	  // Length of command
@@ -681,12 +696,16 @@ namespace traci{
 	  // Command ID
 	  out.writeChar(CMD_CHANGELANE);
 	  // Node ID
+	  TraCIID ti;
 	  try{
-			out.writeInt(find_traci_id_by_node(node).id());
+		  ti = find_traci_id_by_node(node);
 	  }catch(logic_error e){
 		   cerr << "Error in method TraCINodeMovementCreator::command_change_lane: " << e.what() << endl;
 		   abort();
 	  }
+	  check_domain(0x01,ti,true,"Error in method TraCINodeMovementCreator::command_change_lane: \
+				   Command not applicable for elements in domain " + number_to_string(ti.domain()) + "!");
+	  out.writeInt(ti.id());
 	  // Lane 
 	  out.writeByte(lane);
 	  // Time
@@ -721,7 +740,7 @@ namespace traci{
 		// Preconditions
 		if (socket_ == NULL)
 		{
-			cerr << "Error in method MobilityInterfaceClient::commandRoadMapPosition, socket_ == NULL" << endl;
+			cerr << "Error in method MobilityInterfaceClient::command_roadmap_position, socket_ == NULL" << endl;
 			abort();
 		}
      
@@ -744,7 +763,7 @@ namespace traci{
 			socket_->sendExact(out);
 		}
 		catch (SocketException e){
-			cerr << "Error in method MobilityInterfaceClient::GetRoadMapPosition while sending: " << e.what() << endl;
+			cerr << "Error in method MobilityInterfaceClient::command_roadmap_position while sending: " << e.what() << endl;
 			abort();
 		}
 	
@@ -753,7 +772,7 @@ namespace traci{
 			socket_->receiveExact(in);
 		}
 		catch (SocketException e){
-			cerr << "Error in method MobilityInterfaceClient::GetRoadMapPosition while receiving: " << e.what() << endl;
+			cerr << "Error in method MobilityInterfaceClient::command_roadmap_position while receiving: " << e.what() << endl;
 			abort();
 		}
 
@@ -778,7 +797,7 @@ namespace traci{
          
 			if ( unsigned char commandId = in.readChar() != CMD_MOVENODE){
 				// move node command expected
-				cerr << "Error in method TraCINodeMovementCreator::SimulationStep, move node command expected. \
+				cerr << "Error in method TraCINodeMovementCreator::command_roadmap_position, move node command expected. \
 						Got commandId " << commandId << endl;
 				abort();
 			}
@@ -794,7 +813,16 @@ namespace traci{
 				//laneID = in.readByte();
             
 				// Update the node's road map position
-				if(node.id() == id){
+				TraCIID ti;
+				try{
+					ti = find_traci_id_by_node(node);
+				}catch(logic_error e){
+					cerr << "Error in method TraCINodeMovementCreator::command_roadmap_position: " << e.what() << endl;
+					abort();
+				}
+				//check_domain(0x01,ti,true,"Error in method TraCINodeMovementCreator::command_roadmap_position: \
+				//			 Command not applicable for elements in domain " + number_to_string(ti.domain()) + "!");
+				if(ti.id() == id){
 					//string laneIdString = "";
 					roadId_ = roadId;
 					relPosition_ = relPosition;
@@ -1612,6 +1640,15 @@ namespace traci{
 			abort();
 		}
 		return false;
+	}
+	//---------------------------------------------------------------------
+	std::string 
+		TraCINodeMovementCreator::
+		number_to_string(double n)
+	{
+		stringstream oss;
+		oss << n;
+		return oss.str();
 	}
 	//---TraCIID---
 	//---------------------------------------------------------------------
