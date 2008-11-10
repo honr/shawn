@@ -129,15 +129,10 @@ namespace traci
 	public:
 
 		const shawn::Node* find_node_by_traci_id(const TraCIID& traci_id);
-
 		shawn::Node* find_node_by_traci_id_w(const TraCIID& traci_id);
-
 		const TraCIID& find_traci_id_by_node(const shawn::Node& node) throw(std::logic_error);
-
 		shawn::Node* new_node(const TraCIID& traci_id, bool attach_processors_by_domain = true);
-
 		void add_traffic_lights();
-
 		void add_node_change_listener( traci::TraCINodeMovementCreator::TraCINodeChangeListener& listener ) throw();
 
 	private:
