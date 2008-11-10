@@ -86,6 +86,12 @@ namespace traci
 			int id_;
 		};
 
+		typedef std::map<shawn::Node*,const traci::TraCINodeMovementCreator::TraCIID> NodeToTraCIIDMap;
+		typedef std::map<const traci::TraCINodeMovementCreator::TraCIID,shawn::Node*> TraCIIDToNodeMap;
+
+		traci::TraCINodeMovementCreator::NodeToTraCIIDMap::const_iterator begin_traci_nodes() const throw();
+		traci::TraCINodeMovementCreator::NodeToTraCIIDMap::const_iterator end_traci_nodes() const throw();
+
 		// Interface for listeners
 		class TraCINodeChangeListener{
 		public:
@@ -175,8 +181,8 @@ namespace traci
 		// Current nodes of the step
 		std::set<TraCIID> current_vehicle_nodes_;
 		// Two-way "node id" mapping from TraCI to shawn
-		std::map<shawn::Node*,TraCIID> node_to_traci_ids_;
-		std::map<TraCIID,shawn::Node*> traci_ids_to_node_;
+		NodeToTraCIIDMap node_to_traci_ids_;
+		TraCIIDToNodeMap traci_ids_to_node_;
 
 		typedef std::list<traci::TraCINodeMovementCreator::TraCINodeChangeListener*> TraCINodeChangeListenerList;
 		TraCINodeChangeListenerList node_change_listeners_;

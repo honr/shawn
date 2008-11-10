@@ -1562,7 +1562,7 @@ namespace traci{
 		TraCINodeMovementCreator::
 		find_node_by_traci_id_w(const TraCIID& traci_id)
 	{
-		map<TraCIID,Node*>::iterator it = traci_ids_to_node_.find(traci_id);
+		TraCIIDToNodeMap::iterator it = traci_ids_to_node_.find(traci_id);
 		return it != traci_ids_to_node_.end() ? it->second : NULL;
 	}
 	//---------------------------------------------------------------------
@@ -1571,7 +1571,7 @@ namespace traci{
 		find_traci_id_by_node(const Node& node)
 		throw(logic_error)
 	{
-		map<Node*,TraCIID>::const_iterator it = node_to_traci_ids_.find(const_cast<Node*>(&node));
+		NodeToTraCIIDMap::const_iterator it = node_to_traci_ids_.find(const_cast<Node*>(&node));
 		if (it == node_to_traci_ids_.end()) throw logic_error("node not found");
 		return it->second;
 	}
@@ -1617,8 +1617,8 @@ namespace traci{
 				 (*it)->node_removed(*node,ti);
 		}
 
-		map<TraCIID,Node*>::iterator ttn = traci_ids_to_node_.find(ti);
-		map<Node*,TraCIID>::iterator ntt = node_to_traci_ids_.find(node);
+		TraCIIDToNodeMap::iterator ttn = traci_ids_to_node_.find(ti);
+		NodeToTraCIIDMap::iterator ntt = node_to_traci_ids_.find(node);
 		if ( ttn != traci_ids_to_node_.end() ){
 			//assert(ttn != traci_ids_to_node_.end());
 			traci_ids_to_node_.erase(ttn);
@@ -1650,6 +1650,25 @@ namespace traci{
 		oss << n;
 		return oss.str();
 	}
+	//---------------------------------------------------------------------
+	traci::TraCINodeMovementCreator::NodeToTraCIIDMap::const_iterator 
+		TraCINodeMovementCreator::
+		begin_traci_nodes()
+		const 
+		throw()
+	{
+		return node_to_traci_ids_.begin();
+	}
+	//---------------------------------------------------------------------
+	traci::TraCINodeMovementCreator::NodeToTraCIIDMap::const_iterator 
+		TraCINodeMovementCreator::
+		end_traci_nodes()
+		const 
+		throw()
+	{
+		return node_to_traci_ids_.end();
+	}	
+	//---------------------------------------------------------------------
 	//---TraCIID---
 	//---------------------------------------------------------------------
 	TraCINodeMovementCreator::
