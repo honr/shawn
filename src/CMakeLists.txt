@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.4)
-
 #==================================
 #
 # SHAWN build system
@@ -7,6 +5,16 @@ cmake_minimum_required(VERSION 2.4)
 # Main input file for CMake
 # 
 #==================================
+
+#=============
+# Configure CMake
+#=============
+
+cmake_minimum_required(VERSION 2.4)
+
+if(COMMAND cmake_policy)
+  cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
 
 #=============
 # Set the project's name
