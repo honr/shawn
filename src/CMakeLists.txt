@@ -156,59 +156,6 @@ endif(COMMAND cmake_policy)
 
 
 #=============
-# Build target
-#=============
-
-	IF(BUILD_LIB_WITH_MAIN)
-		add_library( shawnlib ${shawnSources} ${shawnSourcesLib} )
-	ELSE(BUILD_LIB_WITH_MAIN)
-		add_library( shawnlib ${shawnSourcesLib} )
-		add_executable( shawn ${shawnSources} )
-	ENDIF(BUILD_LIB_WITH_MAIN)
-
-
-#=============
-# Link libraries to the shawn target
-#=============
-
-	if (  WIN32 AND NOT CYGWIN  )
-
-        set ( SYSTEM_LIBS ws2_32.lib )
-
-		if ( OPT_ENABLE_CGAL )
-			if ( LIB_PATH_CGAL )
-				set ( LIB_CGAL CGAL.lib )
-			endif ( LIB_PATH_CGAL )
-		endif ( OPT_ENABLE_CGAL )
-
-		if ( LIB_PATH_LOG4CXX )
-			set ( LIB_LOGGING log4Cxx.lib apr.lib aprutil.lib xml.lib odbc32.lib mswsock.lib)
-		endif ( LIB_PATH_LOG4CXX )
-
-	else (  WIN32 AND NOT CYGWIN  )
-
-        set ( SYSTEM_LIBS dl )
-
-		if ( OPT_ENABLE_CGAL )
-			if ( LIB_PATH_CGAL )
-				set ( LIB_CGAL CGAL boost_regex )
-			endif ( LIB_PATH_CGAL )
-		endif ( OPT_ENABLE_CGAL )
-
-		if ( LIB_PATH_LOG4CXX )
-			set ( LIB_LOGGING log4cxx )
-		endif ( LIB_PATH_LOG4CXX )
-
-	endif (  WIN32 AND NOT CYGWIN  )
-
-    IF(NOT BUILD_LIB_WITH_MAIN)
-        target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} )
-    ENDIF(NOT BUILD_LIB_WITH_MAIN)
-
-
-
-
-#=============
 # Compiler definitions
 #=============
 
@@ -291,3 +238,52 @@ endif(COMMAND cmake_policy)
 #=============
 
 	include( NewModule.cmake )
+
+
+#=============
+# Build target
+#=============
+
+	IF(BUILD_LIB_WITH_MAIN)
+		add_library( shawnlib ${shawnSources} ${shawnSourcesLib} )
+	ELSE(BUILD_LIB_WITH_MAIN)
+		add_library( shawnlib ${shawnSourcesLib} )
+		add_executable( shawn ${shawnSources} )
+	ENDIF(BUILD_LIB_WITH_MAIN)
+
+
+#=============
+# Link libraries to the shawn target
+#=============
+
+	if (  WIN32 AND NOT CYGWIN  )
+     set ( SYSTEM_LIBS ws2_32.lib )
+
+	  if ( OPT_ENABLE_CGAL )
+		 if ( LIB_PATH_CGAL )
+			set ( LIB_CGAL CGAL.lib )
+		 endif ( LIB_PATH_CGAL )
+	  endif ( OPT_ENABLE_CGAL )
+
+	  if ( LIB_PATH_LOG4CXX )
+		 set ( LIB_LOGGING log4Cxx.lib apr.lib aprutil.lib xml.lib odbc32.lib mswsock.lib)
+	  endif ( LIB_PATH_LOG4CXX )
+
+	else (  WIN32 AND NOT CYGWIN  )
+     set ( SYSTEM_LIBS dl )
+
+	  if ( OPT_ENABLE_CGAL )
+		 if ( LIB_PATH_CGAL )
+			set ( LIB_CGAL CGAL boost_regex )
+		 endif ( LIB_PATH_CGAL )
+	  endif ( OPT_ENABLE_CGAL )
+
+	  if ( LIB_PATH_LOG4CXX )
+		 set ( LIB_LOGGING log4cxx )
+	  endif ( LIB_PATH_LOG4CXX )
+
+	endif (  WIN32 AND NOT CYGWIN  )
+
+   IF(NOT BUILD_LIB_WITH_MAIN)
+     target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} ${SHAWN_LINK_LIBS} )
+   ENDIF(NOT BUILD_LIB_WITH_MAIN)
