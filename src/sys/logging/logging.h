@@ -27,6 +27,11 @@
    #define ENABLE_LOGGING
 #endif
 
+#ifndef NDEBUG
+   #ifndef LOG_DEBUG_ON_RELEASE
+      #define DISABLE_LOGLEVEL_DEBUG
+   #endif
+#endif
 
 #if defined ( HAVE_LOG4CXX )
 
