@@ -29,7 +29,7 @@
 #endif
 //-----------
 //#define DISABLE_LOGGING
-#define DISABLE_LOGLEVEL_DEBUG
+//#define DISABLE_LOGLEVEL_DEBUG
 
 
 //#define SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION

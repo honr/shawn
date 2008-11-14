@@ -107,13 +107,13 @@
 #endif
 
 
-#ifdef DISABLE_LOGLEVEL_DEBUG
+#if defined ( DISABLE_LOGLEVEL_DEBUG )
    #undef DEBUG
    #define DEBUG( logger, message )
 #endif
 
 
-#ifdef DISABLE_LOGLEVEL_INFO
+#if defined (DISABLE_LOGLEVEL_INFO)
    #undef INFO
    #define INFO( logger, message )
 #endif
