@@ -31,6 +31,9 @@
    #ifndef LOG_DEBUG_ON_RELEASE
       #define DISABLE_LOGLEVEL_DEBUG
    #endif
+   #ifdef NLOG_INFO_ON_RELEASE
+      #define DISABLE_LOGLEVEL_INFO
+   #endif
 #endif
 
 #if defined ( HAVE_LOG4CXX )

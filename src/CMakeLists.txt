@@ -152,15 +152,20 @@ endif(COMMAND cmake_policy)
 		   message( FATAL_ERROR "Unsupportet logging library" )
 		endif ( LOGGER_TYPE STREQUAL "STDOUT" )
 
-		OPTION(LOG_DEBUG_ON_RELEASE "Output debug messages in release configuration" OFF)
+		# --- DEBUG and INFO configuration ---
+		if( CMAKE_BUILD_TYPE STREQUAL "Release")
+
+		OPTION(LOG_DEBUG_ON_RELEASE "Output debug messages at release configuration" OFF)
 		if( LOG_DEBUG_ON_RELEASE )
-			add_definitions( -DDEBUG_ON_RELEASE )
+			add_definitions( -DLOG_DEBUG_ON_RELEASE )
 		endif ( LOG_DEBUG_ON_RELEASE )
 
-		OPTION(LOG_INFO_ENABLED "Output info messages" ON)
-		if( NOT LOG_INFO_ENABLED )
-			add_definitions( -DDISABLE_LOGLEVEL_INFO )
-		endif ( LOG_DEBUG_ON_RELEASE )
+		OPTION(LOG_INFO_ON_RELEASE "Output info messages at release configuration" ON)
+		if( NOT LOG_INFO_ON_RELEASE )
+			add_definitions( -DNLOG_INFO_ON_RELEASE )
+		endif ( NOT LOG_INFO_ON_RELEASE )
+
+		endif( CMAKE_BUILD_TYPE STREQUAL "Release" )
 		
 	endif ( OPT_CONFIGURE_LOGGING )
 
