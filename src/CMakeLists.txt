@@ -156,6 +156,11 @@ endif(COMMAND cmake_policy)
 		if( LOG_DEBUG_ON_RELEASE )
 			add_definitions( -DDEBUG_ON_RELEASE )
 		endif ( LOG_DEBUG_ON_RELEASE )
+
+		OPTION(LOG_INFO_ENABLED "Output info messages" ON)
+		if( NOT LOG_INFO_ENABLED )
+			add_definitions( -DDISABLE_LOGLEVEL_INFO )
+		endif ( LOG_DEBUG_ON_RELEASE )
 		
 	endif ( OPT_CONFIGURE_LOGGING )
 
