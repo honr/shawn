@@ -17,6 +17,7 @@
 #include "apps/vis/tasks/vis_group_add_task.h"
 #include "apps/vis/tasks/vis_create_edges.h"
 #include "apps/vis/tasks/vis_create_edges_tag.h"
+#include "apps/vis/tasks/vis_create_edges_tree.h"
 #include "apps/vis/tasks/vis_create_estimated_edges.h"
 #include "apps/vis/tasks/vis_create_graphics.h"
 #include "apps/vis/tasks/vis_tag_sampletask.h"
@@ -37,6 +38,7 @@ namespace vis
      sc.simulation_task_keeper_w().add( new GroupAddTask );
      sc.simulation_task_keeper_w().add( new CreateEdgesTask );
      sc.simulation_task_keeper_w().add( new CreateEdgesTagTask );
+     sc.simulation_task_keeper_w().add( new CreateEdgesTreeTask );
      sc.simulation_task_keeper_w().add( new CreateEstimatedEdgesTask );
      sc.simulation_task_keeper_w().add( new CreateGraphicsTask );
      sc.simulation_task_keeper_w().add( new TagSampleTask );
