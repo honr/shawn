@@ -45,7 +45,7 @@ namespace vis
    {
       VisualizationTask::run(sc);
 
-      const std::string taglabel = "predecessor_id";
+      const std::string taglabel = "predecessor";
 
       std::string pref = sc.environment().
          optional_string_param( "prefix", DrawableEdgeDefault::PREFIX );
@@ -59,11 +59,11 @@ namespace vis
               endit = visualization().world().end_nodes();
            it != endit; ++it )
       {
-         int pred = read_predecessor( *it, taglabel );
-         if ( pred < 0 )
+         std::string pred = read_predecessor( *it, taglabel );
+         if ( pred.empty() )
             continue;
          
-         const shawn::Node *predecessor = sc.world().find_node_by_id( pred );
+         const shawn::Node *predecessor = sc.world().find_node_by_label( pred );
          if ( !predecessor )
             continue;
          
@@ -113,7 +113,7 @@ namespace vis
       return dn;
    }
    // ----------------------------------------------------------------------
-   int 
+   std::string 
    CreateEdgesTreeTask::
    read_predecessor( const shawn::Node& node, const std::string& taglabel ) 
       const throw()
@@ -121,13 +121,13 @@ namespace vis
       shawn::ConstTagHandle htag = node.find_tag( taglabel );
       if( htag != NULL )
       {
-         const shawn::IntegerTag *intt = NULL;
-         intt = dynamic_cast<const shawn::IntegerTag*>(htag.get());
-         if ( intt )
-            return intt->value(); 
+         const shawn::StringTag *strt = NULL;
+         strt = dynamic_cast<const shawn::StringTag*>(htag.get());
+         if ( strt )
+            return strt->value(); 
       }
 
-      return -1;
+      return std::string("");
    }
 
 }

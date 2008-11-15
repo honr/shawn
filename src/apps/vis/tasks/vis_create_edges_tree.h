@@ -70,7 +70,7 @@ namespace vis
       /**
        * Helper method to read out the given id of the predecessor.
        */
-      int read_predecessor( const shawn::Node& node, const std::string& taglabel ) const throw();
+      std::string read_predecessor( const shawn::Node& node, const std::string& taglabel ) const throw();
 
    };
 
