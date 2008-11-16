@@ -21,6 +21,42 @@ namespace shawn
 {
    class Tag;
 
+   class IntegerTag;
+   class DoubleTag;
+   class StringTag;
+   class BoolTag;
+   // ----------------------------------------------------------------------
+   // ----------------------------------------------------------------------
+   // ----------------------------------------------------------------------
+   template <typename T> struct tag_traits;
+   // ----------------------------------------------------------------------
+   template<>
+   struct tag_traits<int>
+   {
+      typedef IntegerTag BaseClass;
+   };
+   // ----------------------------------------------------------------------
+   template<>
+   struct tag_traits<double>
+   {
+      typedef DoubleTag BaseClass;
+   };
+   // ----------------------------------------------------------------------
+   template<>
+   struct tag_traits<std::string>
+   {
+      typedef StringTag BaseClass;
+   };
+   // ----------------------------------------------------------------------
+   template<>
+   struct tag_traits<bool>
+   {
+      typedef BoolTag BaseClass;
+   };
+   // ----------------------------------------------------------------------
+   // ----------------------------------------------------------------------
+   // ----------------------------------------------------------------------
+   
    DECLARE_HANDLES(TagContainer);
 
    class TagContainer
@@ -89,6 +125,56 @@ namespace shawn
       virtual tag_iterator end_tags( void ) const throw();
       ///
       virtual unsigned int count_tags( void ) const throw();
+      ///@}
+      
+      ///@name Simple Tag Access
+      ///@{
+      // ----------------------------------------------------------------------
+      template <typename ST>
+      void write_simple_tag( const std::string& tag_name, ST value )
+         throw( std::runtime_error )
+      {
+         typedef typename tag_traits<ST>::BaseClass BaseClass;
+         
+         RefcntPointer<Tag> tag = find_tag_w( tag_name );
+         if ( tag.is_not_null() )
+         {
+            BaseClass* tagtype = dynamic_cast<BaseClass*>( tag.get() );
+            if ( tagtype != NULL )
+            {
+               tagtype->set_value( value );
+            }
+            else
+            {
+               throw( std::runtime_error("Tag already exists with other type.") );
+            }
+         }
+         else
+         {
+            BaseClass *tagtype = new BaseClass( tag_name, value );
+            tagtype->set_persistency( true );
+            add_tag( tagtype );
+         }
+      };
+      // ----------------------------------------------------------------------
+      template <typename ST>
+      ST read_simple_tag( const std::string& tag_name )
+         const throw( std::runtime_error )
+      {
+         typedef typename tag_traits<ST>::BaseClass BaseClass;
+         
+         RefcntPointer<const Tag> tag = find_tag( tag_name );
+         if ( tag.is_not_null() )
+         {
+            const BaseClass* tagtype = dynamic_cast<const BaseClass*>( tag.get() );
+            if ( tagtype )
+               return tagtype->value();
+            else
+               throw( std::runtime_error("Tag of wrong type.") );
+         }
+      
+         throw( std::runtime_error("Tag not found.") );
+      };
       ///@}
 
    private:
