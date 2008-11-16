@@ -186,8 +186,8 @@ namespace shawn
 
         cwf->set_size(
             sc.environment().required_double_param("width"),
-            sc.environment().required_double_param("width"),
-            sc.environment().required_double_param("height") );
+            sc.environment().required_double_param("height"),
+            sc.environment().required_double_param("depth") );
 
         return cwf;
     }

@@ -34,37 +34,6 @@ namespace reading
       assert( world_ != NULL );
    }
    // ----------------------------------------------------------------------
-   void Reading::add_changed_handler(ReadingChangedHandler* rch, shawn::Box& b )
-   {
-	bool pair_exists = false;
-	for(ReadingChangedHandlerList::iterator it = rbv.begin(); it != rbv.end(); ++it)
-	{	
-		if(rch == it->first && b == it->second )
-		{ 
-			READING_TRACE("READING: <ReadingChangedHandler, Box>-pair already registered");
-			pair_exists = true;
-		}
-	}
-	if( !pair_exists )
-	{
-		//variable which contains the passed parameters in a struct <pair> RB
-		RB rb = std::make_pair(rch, b);
-		rbv.push_back(rb);
-	}
-   }
-   // ----------------------------------------------------------------------
-   void Reading::remove_changed_handler(ReadingChangedHandler* rch, shawn::Box& b ) 
-   {
-	for(ReadingChangedHandlerList::iterator it = rbv.begin(); it != rbv.end(); ++it)
-	{
-		if( rch == it->first && b == it->second ) 
-		{
-		        rbv.erase(it);
-			break;
-		}
-	}
-   }
-   // ----------------------------------------------------------------------
    bool
    Reading::
    has_world( void )

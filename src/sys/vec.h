@@ -76,6 +76,8 @@ namespace shawn
       double euclidean_norm( void )
          const throw();
 
+      double xy_direction( void ) const throw();
+
       friend std::ostream& operator << ( std::ostream&, const Vec& )
          throw();
 

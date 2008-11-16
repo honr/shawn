@@ -52,7 +52,7 @@ public:
 	*
 	*  \return Box : returns the bounding box of the segment
 	*/	
-	const Box& get_Bbox(void) const throw();
+	Box get_Bbox(void) const throw();
 	
 	/** This method returns true if the point lies on the segment else returns false.
 	*

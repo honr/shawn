@@ -54,7 +54,6 @@ namespace shawn
       add_keeper( tag_factory_keeper_ = new TagFactoryKeeper );
 #ifdef ENABLE_READING      
       add_keeper( reading_keeper_ = new reading::ReadingKeeper );
-      add_keeper( sensor_keeper_ = new reading::SensorKeeper );
 #endif
 	  add_keeper( communication_model_keeper_ = new CommunicationModelKeeper );
    }
@@ -305,24 +304,6 @@ namespace shawn
    {
       assert( reading_keeper_ != NULL );
       return *reading_keeper_;
-   }	
-   // ----------------------------------------------------------------------
-   const reading::SensorKeeper&
-   SimulationController::
-   sensor_keeper( void )
-      const throw()
-   {
-      assert( sensor_keeper_ != NULL );
-      return *sensor_keeper_;
-   }
-   // ----------------------------------------------------------------------
-   reading::SensorKeeper&
-   SimulationController::
-   sensor_keeper_w( void )
-      throw()
-   {
-      assert( sensor_keeper_ != NULL );
-      return *sensor_keeper_;
    }	
 #endif
 }

@@ -55,7 +55,7 @@ namespace polygon
 	// ----------------------------------------------------------------------	
 	
 
-	const Box& 
+	Box 
 		Segment2D::
 		get_Bbox(void) const 
 		throw()

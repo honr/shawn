@@ -34,7 +34,6 @@
 
 
 #include "apps/reading/reading_keeper.h"
-#include "apps/reading/sensor_keeper.h"
 #endif
 
 namespace shawn
@@ -113,9 +112,6 @@ namespace shawn
       ///
       reading::ReadingKeeper& reading_keeper_w( void ) throw();
       ///
-      const reading::SensorKeeper& sensor_keeper( void ) const throw();
-      ///
-      reading::SensorKeeper& sensor_keeper_w( void ) throw(); 
 #endif
       ///@}
 
@@ -191,7 +187,6 @@ namespace shawn
       TagFactoryKeeper* tag_factory_keeper_;
 #ifdef ENABLE_READING      
       reading::ReadingKeeper* reading_keeper_;
-      reading::SensorKeeper* sensor_keeper_;
 #endif
       NamedKeeperMap keeper_by_name_;
       inline SimulationController( const SimulationController& ) { abort(); }

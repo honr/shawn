@@ -9,14 +9,12 @@
 #ifdef ENABLE_READING
 
 #include "apps/reading/reading_init.h"
-#include "apps/reading/test/test_init.h"
 
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task_keeper.h"
 
 extern "C" void init_reading( shawn::SimulationController& sc )
 {   
-    reading::init_test_init(sc);   
 }
 
 #endif

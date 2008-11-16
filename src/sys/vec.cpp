@@ -31,6 +31,24 @@ namespace shawn
    {
       return os << "(" << v.x() << " " << v.y() << " " << v.z() << ")";
    }
+   // ----------------------------------------------------------------------
+   double Vec::xy_direction( void ) const throw()
+   {
+      if( euclidean_norm() < EPSILON )
+         return 0.0;
+      if( x_ >= fabs(y_) ) {
+         if( y_ < 0.0 )
+            return atan(y_/x_) + 2.0*M_PI;
+         else
+            return atan(y_/x_);
+      }
+      if( x_ <= -fabs(y_) )
+         return atan(y_/x_)+M_PI;
+      if( y_ >= fabs(x_) )
+         return atan(-x_/y_)+.5*M_PI;
+      // y_ <= -fabs(x_)
+      return atan(-x_/y_)+1.5*M_PI;
+   }
 
 }
 /*-----------------------------------------------------------------------

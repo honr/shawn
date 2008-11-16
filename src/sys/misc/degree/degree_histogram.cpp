@@ -102,6 +102,8 @@ namespace shawn
       ++data_[v];
       if( (peak_==-1) || (data_[peak_]<data_[v]) )
          peak_=v;
+
+      total_weight_ += v;
    }
    // ----------------------------------------------------------------------
    std::ostream&
