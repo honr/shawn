@@ -16,46 +16,11 @@
 #include "sys/util/refcnt_pointer.h"
 #include "sys/util/refcnt_pointable.h"
 #include "sys/util/defutils.h"
+#include "sys/taggings/basic_tag_traits.h"
 
 namespace shawn
 {
    class Tag;
-
-   class IntegerTag;
-   class DoubleTag;
-   class StringTag;
-   class BoolTag;
-   // ----------------------------------------------------------------------
-   // ----------------------------------------------------------------------
-   // ----------------------------------------------------------------------
-   template <typename T> struct tag_traits;
-   // ----------------------------------------------------------------------
-   template<>
-   struct tag_traits<int>
-   {
-      typedef IntegerTag BaseClass;
-   };
-   // ----------------------------------------------------------------------
-   template<>
-   struct tag_traits<double>
-   {
-      typedef DoubleTag BaseClass;
-   };
-   // ----------------------------------------------------------------------
-   template<>
-   struct tag_traits<std::string>
-   {
-      typedef StringTag BaseClass;
-   };
-   // ----------------------------------------------------------------------
-   template<>
-   struct tag_traits<bool>
-   {
-      typedef BoolTag BaseClass;
-   };
-   // ----------------------------------------------------------------------
-   // ----------------------------------------------------------------------
-   // ----------------------------------------------------------------------
    
    DECLARE_HANDLES(TagContainer);
 
@@ -134,7 +99,7 @@ namespace shawn
       void write_simple_tag( const std::string& tag_name, ST value )
          throw( std::runtime_error )
       {
-         typedef typename tag_traits<ST>::BaseClass BaseClass;
+         typedef typename basic_tag_traits<ST>::BaseClass BaseClass;
          
          RefcntPointer<Tag> tag = find_tag_w( tag_name );
          if ( tag.is_not_null() )
@@ -161,7 +126,7 @@ namespace shawn
       ST read_simple_tag( const std::string& tag_name )
          const throw( std::runtime_error )
       {
-         typedef typename tag_traits<ST>::BaseClass BaseClass;
+         typedef typename basic_tag_traits<ST>::BaseClass BaseClass;
          
          RefcntPointer<const Tag> tag = find_tag( tag_name );
          if ( tag.is_not_null() )
