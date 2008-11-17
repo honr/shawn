@@ -1,6 +1,6 @@
 %{
-	#include "../src/sys/tag.h"
-	#include "../src/sys/util/refcnt_pointer.h"
+	#include "../../src/sys/tag.h"
+	#include "../../src/sys/util/refcnt_pointer.h"
 %}
 
 %ignore						shawn::RefcntPointer::operator shawn::RefcntPointer::ConstSelfType;
@@ -13,7 +13,7 @@
 %rename( greaterThan ) 		shawn::RefcntPointer::operator>;
 %rename( greaterEqual )		shawn::RefcntPointer::operator>=;
 
-%include "../src/sys/util/refcnt_pointer.h";
+%include "../../src/sys/util/refcnt_pointer.h";
 
 // Needed by tag_container.h
 %template( RefcntPointer_Tag ) shawn::RefcntPointer< shawn::Tag >;

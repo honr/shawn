@@ -51,10 +51,10 @@ private:
 
 
 %{
-	#include "../src/sys/tag.h"
+	#include "../../src/sys/tag.h"
 %}
 
-%include "../src/sys/tag.h";
+%include "../../src/sys/tag.h";
 
 %{
 	// SWIG thinks that Inner is a global class, so we need to trick

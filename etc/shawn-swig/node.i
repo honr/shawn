@@ -1,5 +1,5 @@
 %{
-	#include "../src/sys/node.h"
+	#include "../../src/sys/node.h"
 %}
 
 //%ignore Neighborhood;
@@ -10,4 +10,4 @@
 %rename( equals )		shawn::Node::operator==;
 %rename( isDifferent )	shawn::Node::operator!=;
 
-%include "../src/sys/node.h";
+%include "../../src/sys/node.h";

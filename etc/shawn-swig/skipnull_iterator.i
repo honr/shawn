@@ -1,5 +1,5 @@
 %{
-	#include "../src/sys/misc/skipnull_iterator.h"
+	#include "../../src/sys/misc/skipnull_iterator.h"
 
 	//typedef std::vector< shawn::Node* > vector_node_t;
 %}
@@ -24,7 +24,7 @@
 %ignore		shawn::SkipNullIterator::operator[];
 */
 
-%include "../src/sys/misc/skipnull_iterator.h";
+%include "../../src/sys/misc/skipnull_iterator.h";
 
 /*
 %include "std_vector.i";

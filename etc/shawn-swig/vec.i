@@ -1,5 +1,5 @@
 %{
-	#include "../src/sys/vec.h"
+	#include "../../src/sys/vec.h"
 %}
 
 %rename( assign ) 			shawn::Vec::operator=;
@@ -17,4 +17,4 @@
 
 %ignore operator <<;
 
-%include "../src/sys/vec.h";
+%include "../../src/sys/vec.h";
