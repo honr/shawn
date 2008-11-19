@@ -31,7 +31,8 @@
 				    # "target_link_libraries". It can't be used here,
 				    # because "add_executable" must be called first.
 					 set ( SHAWN_LINK_LIBS ${SHAWN_LINK_LIBS} cairo pixman-1 png freetype fontconfig z 
-						 boost boost_regex )
+						 	boost_regex )
+#boost_regex-gcc-mt )
             endif ( LIB_PATH_CAIRO )
         endif ( OPT_ENABLE_CAIRO )
     endif (  WIN32 AND NOT CYGWIN  )
