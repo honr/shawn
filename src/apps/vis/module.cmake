@@ -8,7 +8,10 @@
       set ( DEFAULT_CAIRO_ROOT )
       set ( LIB_PATH_CAIRO   CACHE PATH "Path to CAIRO library" )
       set ( INCLUDE_PATH_CAIRO   CACHE PATH "Path to CAIRO includes" )
-		link_directories( ${LIB_PATH_CAIRO} )
+	set ( INCLUDE_PATH_BOOST   CACHE PATH "Path to Boost include path" )
+	set ( LIB_PATH_BOOST   CACHE PATH "Path to BOOST library" )
+	link_directories( ${LIB_PATH_CAIRO} )
+	link_directories( ${LIB_PATH_BOOST} )
       include_directories ( ${INCLUDE_PATH_CAIRO} )
 		add_definitions( -DHAVE_CAIRO -DHAVE_BOOST -DHAVE_BOOST_REGEX )
     endif ( OPT_ENABLE_CAIRO )
@@ -26,7 +29,8 @@
 				    # the end of the file when calling
 				    # "target_link_libraries". It can't be used here,
 				    # because "add_executable" must be called first.
-					 set ( SHAWN_LINK_LIBS ${SHAWN_LINK_LIBS} cairo pixman-1 png freetype fontconfig z boost_regex  )
+					 set ( SHAWN_LINK_LIBS ${SHAWN_LINK_LIBS} cairo pixman-1 png freetype fontconfig z 
+						 boost boost_regex )
             endif ( LIB_PATH_CAIRO )
         endif ( OPT_ENABLE_CAIRO )
     endif (  WIN32 AND NOT CYGWIN  )
