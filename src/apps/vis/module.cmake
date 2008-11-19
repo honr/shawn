@@ -13,6 +13,7 @@
 	link_directories( ${LIB_PATH_CAIRO} )
 	link_directories( ${LIB_PATH_BOOST} )
       include_directories ( ${INCLUDE_PATH_CAIRO} )
+	include_directories ( ${INCLUDE_PATH_BOOST} )
 		add_definitions( -DHAVE_CAIRO -DHAVE_BOOST -DHAVE_BOOST_REGEX )
     endif ( OPT_ENABLE_CAIRO )
 
