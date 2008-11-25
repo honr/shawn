@@ -10,7 +10,7 @@
 #ifdef ENABLE_ROUTING
 
 #include "apps/routing/flooding/flood_routing.h"
-#include "apps/routing/flooding/flood_routing_processor.h"
+//#include "apps/routing/flooding/flood_routing_processor.h"
 #include "sys/node.h"
 
 namespace routing 
