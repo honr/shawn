@@ -12,6 +12,8 @@
 #include "sys/simulation/simulation_environment.h"
 
 #include <limits>
+#include <iostream>
+#include <cassert>
 
 using namespace std;
 
@@ -47,15 +49,28 @@ namespace shawn
 		create( const SimulationController& sc) 
 		const throw()
 	{
+		double max_probability = sc.environment().optional_double_param("max_probability", 1.0 );
 		double range = sc.environment().optional_double_param("range", std::numeric_limits<int>::max() );
 		double sf = sc.environment().optional_double_param("smooth_factor", 0.25 );
-		StochasticCommunicationModel* scm = new StochasticCommunicationModel( 0, sf );;
+
+		assert(sf > 0);
+		assert (sf <= 1.0);
+		assert(max_probability > 0);
+		assert (max_probability <= 1.0);
+		
+		StochasticCommunicationModel* scm = new StochasticCommunicationModel( max_probability, sf );;
 
 		if( range != std::numeric_limits<int>::max() )
 			scm->set_transmission_range(range);
-
+		/*
+		for (int i = 0; i < 2 * range; i++)
+		{
+			std::cout << "d=" << i << " p=" << scm->communication_probability(i) << std::endl;
+		}
+		*/
 		return scm;
 	}
+
 
 
 }

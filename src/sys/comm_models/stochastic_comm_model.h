@@ -27,7 +27,7 @@ namespace shawn
       ///@name construction / destruction
       ///@{
       ///
-      StochasticCommunicationModel(int mode, double smooth_factor );
+      StochasticCommunicationModel( double max_probability, double smooth_factor );
       ///
       virtual ~StochasticCommunicationModel();
       ///
@@ -67,7 +67,7 @@ namespace shawn
 
    private:
       double range_;
-	  int mode_;
+	  double max_probability_;
 	  double smooth_factor_;
 	  bool support_mobility_;
 	  UniformRandomVariable urv;
@@ -78,6 +78,8 @@ namespace shawn
 
 	  ///
 	  bool has_connection( const Node& u, const Node& v ) const throw() ;
+   public:
+	  double communication_probability(double distance) const;
 	  
    };
    

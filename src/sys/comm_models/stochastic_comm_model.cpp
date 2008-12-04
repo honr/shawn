@@ -21,15 +21,15 @@ namespace shawn
 {
 
    StochasticCommunicationModel::
-   StochasticCommunicationModel( int mode, double smooth_factor )
+   StochasticCommunicationModel( double max_probabilty, double smooth_factor )
       : 
         range_       ( 1.0 ),
-		mode_			( mode ),
+		max_probability_( max_probabilty ),
 		smooth_factor_	( smooth_factor ),
 		connectivity_	(NULL),
 		support_mobility_(false)
    {
-		urv.set_lower_bound( -1.0);
+		urv.set_lower_bound( 0.0);
 		urv.set_upper_bound( 1.0 );
 		urv.set_lower_bound_inclusive( true );
 		urv.set_upper_bound_inclusive( true );
@@ -62,14 +62,25 @@ namespace shawn
     	  
    }
    
-   // ----------------------------------------------------------------------
+	  double 
+	   	StochasticCommunicationModel::
+	   	communication_probability(double distance) const
+	  {
+		  double a = max_probability_+(1-smooth_factor_)*max_probability_/(2*smooth_factor_);
+		  double b = -max_probability_/(2*smooth_factor_*range_);
+		  double value = a + distance*b;
+		  return min(max(0.0, value), max_probability_);
+	  }
+
+	  // ----------------------------------------------------------------------
    bool
 	   	StochasticCommunicationModel::
 	   	has_connection( const Node& u, const Node& v ) const
 		throw() 
    {
 	   double dist = ( u.real_position() - v.real_position() ).euclidean_norm();
-	   return dist  <=  range_ * ( 1.0 + smooth_factor_ * urv );
+	   //return dist  <=  range_ * ( 1.0 + smooth_factor_ * urv );
+	   return urv <= communication_probability(dist);
    }	   
    
    // ----------------------------------------------------------------------
