@@ -168,8 +168,14 @@ namespace shawn
 	    * the beginning of the simulation. This can be used e.g. to start a certain protocol. 
 		*/
 	  bool is_special_node( void ) const throw();
-	  /// Returns the ProcessorList
-	  const Node::ProcessorList& processors( void ) const throw();
+	  /// Returns an iterator to the beginning of the ProcessorList
+	  ProcessorList::iterator begin_processors_w( void ) throw();
+	  /// Returns a const iterator to the beginning of the ProcessorList
+	  ProcessorList::const_iterator begin_processors( void ) throw();
+	  /// Returns an iterator to the beginning of the ProcessorList
+	  ProcessorList::iterator end_processors_w( void ) throw();
+      /// Returns a const iterator to the beginning of the ProcessorList
+	  ProcessorList::const_iterator end_processors( void ) throw();
 	  ///Returns a Processor of a desired type. Returns NULL if no processor of this type is registered
       template<typename T>
       T* get_processor_of_type_w( void ) throw()
@@ -272,6 +278,11 @@ namespace shawn
 
    private:
       Node( const Node& );
+
+	  /// Returns the ProcessorList
+	  const Node::ProcessorList& processors( void ) const throw();
+	  /// Returns the ProcessorList
+	  Node::ProcessorList& processors_w( void ) throw();
       	
 	  ///Used to store the initial node position before init() has completed - Always use real_position()
       Vec    real_pos_;

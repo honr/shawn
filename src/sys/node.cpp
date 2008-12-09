@@ -816,11 +816,47 @@ namespace shawn
 	}
 	// ----------------------------------------------------------------------
 	const Node::ProcessorList&
-	Node::processors() const
-	throw()
+		Node::processors() const
+		throw()
 	{
 		return processors_;
 	}
+	// ----------------------------------------------------------------------
+	Node::ProcessorList& 
+		Node::processors_w() 
+		throw()
+	{
+		return processors_;
+	}
+	// ----------------------------------------------------------------------
+	Node::ProcessorList::iterator 
+		Node::begin_processors_w() 
+		throw()
+	{
+		return processors_w().begin();
+	}
+	// ----------------------------------------------------------------------
+	Node::ProcessorList::const_iterator 
+		Node::begin_processors()
+		throw()
+	{
+		return processors().begin();
+	}
+	// ----------------------------------------------------------------------
+	Node::ProcessorList::iterator 
+		Node::end_processors_w() 
+		throw()
+	{
+		return processors_w().end();
+	}
+	// ----------------------------------------------------------------------
+	Node::ProcessorList::const_iterator 
+		Node::end_processors() 
+		throw()
+	{
+		return processors().end();
+	}
+
 }
 
 /*-----------------------------------------------------------------------
