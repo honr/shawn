@@ -44,7 +44,7 @@ namespace vis
       stack_color_->add_t( auto_init_property( new PropertyConstantVecTask::PropertyConstantVec(shawn::Vec(0,0,0))));
       stack_line_width_->add_t( auto_init_property( new PropertyConstantDoubleTask::PropertyConstantDouble(.02 )));
       stack_blend_->add_t( auto_init_property( new PropertyConstantDoubleTask::PropertyConstantDouble(0)));
-      stack_priority_->add_t( auto_init_property( new PropertyConstantDoubleTask::PropertyConstantDouble(0)));
+      stack_priority_->add_t( auto_init_property( new PropertyConstantDoubleTask::PropertyConstantDouble(0.2)));
 
    }
 

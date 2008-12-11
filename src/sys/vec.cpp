@@ -5,10 +5,12 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
+#define _USE_MATH_DEFINES
 
 #include <cmath>
 #include <iostream>
 #include "sys/vec.h"
+
 
 namespace shawn
 {

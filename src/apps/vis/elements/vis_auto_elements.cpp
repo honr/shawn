@@ -42,16 +42,20 @@ namespace vis
          }
 
       parm=sc.environment().optional_string_param("elem_regex","");
-      if( !parm.empty())
+      std::string tagregex = sc.environment().optional_string_param("tag_regex","");
+      if( !parm.empty() || (!tagregex.empty() && !tag_.empty()))
          {
 #ifdef HAVE_BOOST_REGEX
-            if(tag_.empty())
+            if(tag_.empty() || tagregex.empty())
                mode_=Regex;
             else
                mode_=TagRegex;
 
             try {
-               regex_= new boost::regex(parm);
+               if(mode_==Regex)
+                  regex_= new boost::regex(parm);
+               else
+                  regex_= new boost::regex(tagregex);
             } 
             catch(...) {
                throw std::runtime_error(std::string("regular expression is bad"));
@@ -66,6 +70,7 @@ namespace vis
             throw std::runtime_error(std::string("no regexp support compiled in"));
 #endif
          }
+       
 
       throw std::runtime_error(std::string("specify elements (either $elem or $elem_regex)"));
    }

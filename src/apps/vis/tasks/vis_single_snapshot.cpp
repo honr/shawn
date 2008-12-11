@@ -59,7 +59,7 @@ namespace vis
       wr->write_frame( t );
       wr->post_write();
       long benchtime2 = clock();
-      std::cout << "Time to draw: " << benchtime2 - benchtime1 << "ms" << std::endl;
+      //std::cout << "Time to draw: " << benchtime2 - benchtime1 << "ms" << std::endl;
 
       delete wr;
    }
