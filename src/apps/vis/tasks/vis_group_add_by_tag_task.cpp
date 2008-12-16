@@ -73,8 +73,9 @@ namespace vis
       }
 
       std::cout << i << " elements added to group " << n << std::endl;
-   }
+
 #endif
+   }
 
 }
 #endif

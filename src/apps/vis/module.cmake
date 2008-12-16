@@ -13,8 +13,11 @@
 	link_directories( ${LIB_PATH_CAIRO} )
 	link_directories( ${LIB_PATH_BOOST} )
       include_directories ( ${INCLUDE_PATH_CAIRO} )
-	include_directories ( ${INCLUDE_PATH_BOOST} )
-		add_definitions( -DHAVE_CAIRO -DHAVE_BOOST -DHAVE_BOOST_REGEX )
+      include_directories ( ${INCLUDE_PATH_BOOST} )
+      add_definitions( -DHAVE_CAIRO ) 
+      if ( INCLUDE_PATH_BOOST )
+         add_definitions(-DHAVE_BOOST -DHAVE_BOOST_REGEX )
+      endif ( INCLUDE_PATH_BOOST )
     endif ( OPT_ENABLE_CAIRO )
 
     if (  WIN32 AND NOT CYGWIN  )
