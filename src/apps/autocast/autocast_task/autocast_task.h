@@ -49,8 +49,8 @@ namespace autocast
 
    private:
 	   struct latencies_line{
-			int from_addr;
-			int node_addr;
+		    const shawn::Node* from_addr;
+			const shawn::Node* node_addr;
 			double time;
 			double latency_s;
 			double dist;
@@ -60,7 +60,7 @@ namespace autocast
 	   std::vector<latencies_line*> latencies_;
 
 	   struct sent_statistics_line{
-			int node_addr;
+		    const shawn::Node* node_addr;
 			int packet_sent;
 			int byte_sent;
 			int dataUnit_sent;

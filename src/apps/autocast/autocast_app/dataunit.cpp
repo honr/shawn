@@ -15,13 +15,13 @@
 namespace autocast{
 
 	DataUnit::DataUnit() : id_(0),
-						   from_addr_(0),	
+						   from_addr_(NULL),	
 						   x_(0),
 						   y_(0),
 						   time_(0),
 						   max_life_time_(0),
 						   priority_(0),
-						   responsible_app_(-1),
+						   responsible_app_(""),
 						   area_(NULL)
 	{
 		hop_count_ = 0;
@@ -29,18 +29,18 @@ namespace autocast{
 	}
 
 	DataUnit::DataUnit(int id,
-					   int from_addr,
-					   double x,
+					   const shawn::Node* from_addr,
+					  /* double x,
 					   double y,
-					   double time,
+					   double time,*/
 					   double max_life_time,
 					   int priority,
-					   int responsible_app,
+					   std::string responsible_app,
 					   const autocast::DistributionArea* area) : id_(id),
 																 from_addr_(from_addr),	
-															     x_(x),
-																 y_(y),
-																 time_(time),
+																 x_(from_addr->real_position().x()),
+																 y_(from_addr->real_position().y()),
+																 time_(from_addr->world().current_time()),
 																 max_life_time_(max_life_time),
 																 priority_(priority),
 																 responsible_app_(responsible_app),
@@ -118,6 +118,7 @@ namespace autocast{
 	{
 		return size_;
 	}
+	// ----------------------------------------------------------------------
 	void 
 		DataUnit::
 		size(const int s) 
@@ -126,7 +127,7 @@ namespace autocast{
 		size_ = s;
 	}
 	// ----------------------------------------------------------------------
-	int 
+	std::string 
 		DataUnit::
 		responsible_app() 
 		const
@@ -179,7 +180,7 @@ namespace autocast{
 		return priority_;
 	}
 	// ----------------------------------------------------------------------
-	int 
+	const shawn::Node* 
 		DataUnit::
 		from_addr()
 		const

@@ -14,13 +14,13 @@ namespace autocast{
 		TestDataUnit();
 
 		TestDataUnit(int id,
-				     int from_addr,
-				     double x,
+					 const shawn::Node* from_addr,
+				     /*double x,
 				     double y,
-				     double time,
+				     double time,*/
 				     double max_life_time,
 				     int priority,
-				     int responsible_app,
+					 std::string responsible_app,
 				     const autocast::DistributionArea* area,
 				     int size);
 

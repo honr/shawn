@@ -151,7 +151,7 @@ namespace autocast
 		line->latency_s = sc.world().scheduler().current_time() - duh->time();
 		line->latency_s = (line->latency_s == 0 ? line->dist/299792458 : line->latency_s);
 		line->from_addr = duh->from_addr();
-		line->node_addr = node->id();
+		line->node_addr = node;
 		line->time = duh->time();
 		line->latency_s_per_km = (line->latency_s == 0 ? 1/299792458 : (line->latency_s/line->dist)*1000);
 		line->propagation_speed = (line->latency_s == 0 ? 299792458 : (line->dist/line->latency_s) * 3.6);
@@ -164,7 +164,7 @@ namespace autocast
 	   throw()
    {
 	   sent_statistics_line * line = new sent_statistics_line();
-	   line->node_addr = node->id();
+	   line->node_addr = node;
 	   line->packet_sent = packet_sent;
 	   line->byte_sent = byte_sent;
 	   line->dataUnit_sent = dataUnit_sent;

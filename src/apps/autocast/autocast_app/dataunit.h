@@ -1,13 +1,15 @@
 /************************************************************************
- ** This file is part of the network simulator ns-2.                   **
- ** Copyright (C) 2006 by AutoNomos (www.auto-nomos.de)                **
- ** This part of ns-2 is free software; you can redistribute it and/or **
- ** modify it under the terms of the GNU General Public License,       **
- ** version 2.                                                         **
- **                                                                    **
- ** \author Axel Wegener <wegener@itm.uni-luebeck.de>                  **
- **                                                                    **
- ************************************************************************/
+** This file is part of the network simulator Shawn.                   **
+** Copyright (C) 2007 by AutoNomos (www.auto-nomos.de)                 **
+** This part of Shawn is free software; you can redistribute it and/or **
+** modify it under the terms of the BSD License. Refer to the		   **
+** shawn-licence.txt file in the root of the Shawn source tree for	   **
+** further details.													   **
+**                                                                     **
+** \author Axel Wegener <wegener@itm.uni-luebeck.de>				   **
+** \author Torsten Teubler <teubler@itm.uni-luebeck.de>			       **
+**                                                                     **
+************************************************************************/
 #ifndef ns_autocastdataunit_h
 #define ns_autocastdataunit_h
 
@@ -51,13 +53,13 @@ namespace autocast {
 		
 		/// Constructor
 		DataUnit(int id,
-				 int from_addr,
-				 double x,
+				 const shawn::Node* from_addr,
+				 /*double x,
 				 double y,
-				 double time,
+				 double time,*/
 				 double max_life_time,
 				 int priority,
-				 int responsible_app,
+				 std::string responsible_app,
 				 const autocast::DistributionArea* area);
 
 		/// Destructor
@@ -79,7 +81,7 @@ namespace autocast {
 		virtual int size() const throw();
 
 		/// Every application processor has an id to which a DataUnit is associated
-		int responsible_app() const throw();
+		std::string responsible_app() const throw();
 
 		/// Returns the distribution area of the DataUnit
 		const autocast::DistributionArea* distribution_area() const throw();
@@ -98,7 +100,7 @@ namespace autocast {
 		int priority() const throw();
 
 		/// The address of the node the DataUnit was created
-		int from_addr() const throw();
+		const shawn::Node* from_addr() const throw();
 
 	protected:
 	
@@ -124,7 +126,7 @@ namespace autocast {
 		int priority_;
 	    
 		/// the sender's address
-		int from_addr_;
+		const shawn::Node* from_addr_;
 
 		/// Time and place of creation
 		double time_;
@@ -132,9 +134,9 @@ namespace autocast {
 		double y_;
 
 		/// The responsible application id
-		int responsible_app_;
+		std::string responsible_app_;
 		
-		/// The unique id of hte DataUnit
+		/// The unique id of the DataUnit
 		int id_;
 
 		friend int operator<(const DataUnit& lv, const DataUnit& rv);
@@ -144,35 +146,3 @@ namespace autocast {
 }
 #endif
 #endif
-/*-----------------------------------------------------------------------
- * Source  $Source$
- * Version $Revision: 270 $
- * Date    $Date: 2007-01-22 17:34:49 +0100 (Mo, 22 Jan 2007) $
- *-----------------------------------------------------------------------
- * $Log$
- * Revision 1.11  2006/08/24 13:38:57  wegener
- * - spyglass support
- * - HDCtransport erweitert
- *
- * Revision 1.10  2006/08/03 12:43:56  wegener
- * *** empty log message ***
- *
- * Revision 1.9  2006/07/11 12:01:08  wegener
- * annotation added
- *
- * Revision 1.8  2006/07/10 12:49:42  wegener
- * First version of HDCtransport
- *
- * Revision 1.7  2006/06/16 14:39:04  wegener
- * compile errors cleard
- *
- * Revision 1.6  2006/06/16 11:44:55  wegener
- * *** empty log message ***
- *
- * Revision 1.5  2006/06/15 14:18:14  wegener
- * doxygen
- *
- * Revision 1.4  2006/06/15 13:18:58  wegener
- * added copyright and CVS-log
- *
- *-----------------------------------------------------------------------*/

@@ -110,8 +110,8 @@ namespace autocast
    // ----------------------------------------------------------------------
    bool 
 	   AutoCastAppProcessor::
-	   receive_DataUnit(const autocast::ConstDataUnitHandle& duh) const
-   throw()
+	   receive_DataUnit(const autocast::ConstDataUnitHandle& duh)
+	   throw()
    {
 	   bool dispatch_DataUnit = owner().world().simulation_controller().environment().optional_bool_param("AutoCastApp_dispatch_DataUnit",false);
 	   return dispatch_DataUnit;
@@ -120,7 +120,6 @@ namespace autocast
    const autocast::ConstDataUnitHandle& 
 	   AutoCastAppProcessor::
 	   refresh(const autocast::ConstDataUnitHandle& duh)
-	   const
 	   throw()
    {
 		return duh;
@@ -138,13 +137,13 @@ namespace autocast
 	   dataUnit_id_counter_++;
 	   DistributionArea * area = new DistributionAreaCircle(sending_point_x_,sending_point_y_,dist_area_radius);
 	   const ConstDataUnitHandle tdu = new TestDataUnit(dataUnit_id_counter_,
-														owner().id(),
-														owner().real_position().x(),
+														&owner(),
+														/*owner().real_position().x(),
 														owner().real_position().y(),
-														owner().world().scheduler().current_time(),
+														owner().world().scheduler().current_time(),*/
 														max_life_time,
 														priority,
-														/*application id: */1,
+														/*application id: */"1",
 														area,
 														dataUnit_size);
 	   AutoCastProcessor * acp = owner_w().get_processor_of_type_w<AutoCastProcessor>();

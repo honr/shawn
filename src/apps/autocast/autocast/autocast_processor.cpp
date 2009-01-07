@@ -45,7 +45,7 @@ namespace autocast
 							 dataUnits_sent_total_(0),
 							 dataUnits_bytes_sent_total_(0),
 							 received_DataUnits_total_(0),
-                      logging_(true),
+							 logging_(true),
 							 max_update_packet_size_(AUTOCAST_MAX_PACKET_LENGTH),
 							 max_update_data_units_(AUTOCAST_DEFAULT_MAX_DATAUNITS_PER_PACKET),
 							 max_startup_time_(AUTOCAST_DEFAULT_STARTUP_TIME),
@@ -63,28 +63,28 @@ namespace autocast
 							 update_time_count_(0)*/
 
    {}
-   // ----------------------------------------------------------------------
-   AutoCastProcessor::
-   ~AutoCastProcessor()
-   {
-     clean_up();
-   }
-   // ----------------------------------------------------------------------
-   void
-   AutoCastProcessor::
-   boot( void )
-      throw()
-   {
-      neighborhood_.set_owner(owner());
+	// ----------------------------------------------------------------------
+	AutoCastProcessor::
+		~AutoCastProcessor()
+	{
+		clean_up();
+	}
+	// ----------------------------------------------------------------------
+	void
+		AutoCastProcessor::
+	boot( void )
+		throw()
+	{
+		neighborhood_.set_owner(owner());
 		fetch_parameters();
-	   double now = owner().world().scheduler().current_time();
+		double now = owner().world().scheduler().current_time();
 		
 		double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__boot",0.9);
 		double ub1 = owner().world().simulation_controller().environment().optional_double_param("_ub1__boot",1.1);
 		update_timer_ = owner_w().world_w().scheduler_w().new_event(*this,now+fabs(max_startup_time_) * uniform_random(lb2,ub1),NULL);
 		max_iterations_ = owner().world().simulation_controller().environment().required_int_param("max_iterations");
-      logging_ = owner().world().simulation_controller().environment().optional_bool_param("autocast_logging", logging_);
-   }
+		logging_ = owner().world().simulation_controller().environment().optional_bool_param("autocast_logging", logging_);
+	}
    // ----------------------------------------------------------------------
    bool
    AutoCastProcessor::
@@ -152,8 +152,8 @@ namespace autocast
 
 			/// Give to applications
 			bool application_responsible = false;
-			for (Node::ProcessorList::const_iterator app_it = owner().processors().begin(); app_it != owner().processors().end(); app_it++){
-					const autocast::AutoCastApplication * ac_app = dynamic_cast<const autocast::AutoCastApplication*>((*app_it).get());
+			for (Node::ProcessorList::iterator app_it = owner_w().begin_processors_w(); app_it != owner_w().end_processors_w(); app_it++){
+					autocast::AutoCastApplication* ac_app = dynamic_cast<autocast::AutoCastApplication*>((*app_it).get());
 					if (ac_app){
 						application_responsible = ac_app->receive_DataUnit(*du_it);
 					}
@@ -269,10 +269,10 @@ namespace autocast
    // ----------------------------------------------------------------------
    bool 
 	   AutoCastProcessor::
-	   send_to(const ConstDataUnitHandle& duh, shawn::Processor * creator)
+	   send_to(const ConstDataUnitHandle& duh, shawn::Processor* creator)
 	   throw()
    { 
-	   LocalDataUnit * ldu = NULL;
+	   LocalDataUnit* ldu = NULL;
 	   /// Not interested in if is a new DataUnit and disable logging
 	   ldu = handle_DataUnit(duh,NULL,false);
 	   if (ldu != NULL){
@@ -288,9 +288,9 @@ namespace autocast
    }
    // ----------------------------------------------------------------------
    void
-   AutoCastProcessor::
-   timeout( shawn::EventScheduler& es, shawn::EventScheduler::EventHandle eh, 
-   double time, shawn::EventScheduler::EventTagHandle& eth) 
+		AutoCastProcessor::
+		timeout( shawn::EventScheduler& es, shawn::EventScheduler::EventHandle eh, 
+					double time, shawn::EventScheduler::EventTagHandle& eth) 
 		throw()
    {	
 	   if(eh == update_timer_){
@@ -418,7 +418,7 @@ namespace autocast
 		throw()
 	{
 		double now = owner().world().scheduler().current_time();
-		autocast::AutoCastProcessor::LocalDataUnit * ldu = NULL;
+		autocast::AutoCastProcessor::LocalDataUnit* ldu = NULL;
 		// First we assume an old DataUnit
 		if(is_new) *is_new = false;
 		// DataUnit out of region returning NULL

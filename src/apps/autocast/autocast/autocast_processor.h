@@ -1,14 +1,14 @@
 /************************************************************************
-** This file is part of the network simulator Shawn.                  **
-** Copyright (C) 2007 by AutoNomos (www.auto-nomos.de)                **
-** This part of Shawn is free software; you can redistribute it and/or**
+** This file is part of the network simulator Shawn.                   **
+** Copyright (C) 2007 by AutoNomos (www.auto-nomos.de)                 **
+** This part of Shawn is free software; you can redistribute it and/or **
 ** modify it under the terms of the BSD License. Refer to the		   **
 ** shawn-licence.txt file in the root of the Shawn source tree for	   **
-** further details.												   **
-**                                                                    **
+** further details.												       **
+**                                                                     **
 ** \author Axel Wegener <wegener@itm.uni-luebeck.de>				   **
-** \author Torsten Teubler <teubler@itm.uni-luebeck.de>			   **
-**                                                                    **
+** \author Torsten Teubler <teubler@itm.uni-luebeck.de>			       **
+**                                                                     **
 ************************************************************************/
 
 #ifndef __SHAWN_LEGACYAPPS_AUTOCAST_PROCESSOR_H
@@ -89,18 +89,18 @@ namespace autocast
          int unknown_count() const { return unknown_count_; }
          double last_send_time() const { return last_send_time_; }
          double last_received_time() const { return last_received_time_; }
-         const shawn::Processor * creator() const { return creator_; }
+         shawn::Processor* creator() const { return creator_; }
          bool refresh_before_send() const { return refresh_before_send_; }
          void dataUnit(const ConstDataUnitHandle& duh) { duh_ = duh; }
-         void unknown_count(const int u) { unknown_count_ = u; }
-         void last_send_time(const double l) { last_send_time_ = l; }
-         void last_received_time(const double l) { last_received_time_ = l; }
-         void creator(const shawn::Processor * c) { creator_ = c; };
-         void refresh_before_send(const bool r) { refresh_before_send_ = r; }
+         void unknown_count(int u) { unknown_count_ = u; }
+         void last_send_time(double l) { last_send_time_ = l; }
+         void last_received_time(double l) { last_received_time_ = l; }
+         void creator(shawn::Processor* c) { creator_ = c; };
+         void refresh_before_send(bool r) { refresh_before_send_ = r; }
          void refresh() {
             if (refresh_before_send_){
-               const autocast::AutoCastApplication * ac_app = NULL;
-               if (creator_) ac_app = dynamic_cast<const AutoCastApplication*>(creator_);
+               autocast::AutoCastApplication* ac_app = NULL;
+               if (creator_) ac_app = dynamic_cast<AutoCastApplication*>(creator_);
                if(ac_app) duh_ = ac_app->refresh(duh_);
             }
          }
@@ -110,7 +110,7 @@ namespace autocast
          int unknown_count_;
          double last_send_time_;
          double last_received_time_;
-         const shawn::Processor * creator_;
+         shawn::Processor* creator_;
          bool refresh_before_send_;
       };
 
@@ -127,7 +127,7 @@ namespace autocast
       void update() throw();
       void send_update_packet(const double) throw();
       double get_update_time() throw();
-      LocalDataUnit * most_urgent_DataUnit() throw();
+      LocalDataUnit* most_urgent_DataUnit() throw();
 
 
       /// This is the time it might take to start up a node

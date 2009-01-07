@@ -31,9 +31,9 @@ namespace autocast {
 	public:
 		virtual ~AutoCastApplication(){}
 		// MUST return true, if the Application would really responsible for the DataUnit !!!
-		virtual bool receive_DataUnit( const ConstDataUnitHandle& ) const throw() = 0;
+		virtual bool receive_DataUnit( const ConstDataUnitHandle& ) throw() = 0;
 		// Refresh the DataUnit
-		virtual const autocast::ConstDataUnitHandle& refresh( const ConstDataUnitHandle& ) const throw() = 0;
+		virtual const autocast::ConstDataUnitHandle& refresh( const ConstDataUnitHandle& ) throw() = 0;
 
 	protected:
 		AutoCastApplication()

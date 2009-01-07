@@ -35,8 +35,8 @@ namespace autocast
 	  virtual void special_boot() throw();
       virtual bool process_message( const shawn::ConstMessageHandle& ) throw();
       virtual void work( void ) throw();
-	  virtual bool receive_DataUnit( const ConstDataUnitHandle& ) const throw();
-	  virtual const autocast::ConstDataUnitHandle& refresh( const ConstDataUnitHandle& ) const throw();
+	  virtual bool receive_DataUnit( const ConstDataUnitHandle& ) throw();
+	  virtual const autocast::ConstDataUnitHandle& refresh( const ConstDataUnitHandle& ) throw();
 
    private:
 	   void disseminate_DataUnit() throw();
