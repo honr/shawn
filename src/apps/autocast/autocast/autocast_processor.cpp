@@ -87,10 +87,21 @@ namespace autocast
 	}
    // ----------------------------------------------------------------------
    bool
+   	   AutoCastProcessor::
+	   getActive()
+   {
+	  // Quickhack to disable nodes outside the scenario
+   	   double x=owner().movement().position().x();
+   	   return (x >= 10000 && x <= 20000); 
+   }   
+   // ----------------------------------------------------------------------
+   bool
    AutoCastProcessor::
    process_message( const ConstMessageHandle& mh ) 
       throw()
    {
+   	  if (! getActive()) return false;
+   	  
 	   const autocast::AutoCastMessage * acm = dynamic_cast<const autocast::AutoCastMessage*>(mh.get());
 	   if (!acm){
 		   std::cerr << "Cast to AutoCastMessage failed!" << std::endl;
@@ -272,6 +283,8 @@ namespace autocast
 	   send_to(const ConstDataUnitHandle& duh, shawn::Processor* creator)
 	   throw()
    { 
+   	  if (! getActive()) return false;
+
 	   LocalDataUnit* ldu = NULL;
 	   /// Not interested in if is a new DataUnit and disable logging
 	   ldu = handle_DataUnit(duh,NULL,false);
@@ -317,14 +330,18 @@ namespace autocast
 	   update() 
 	   throw()
    {
+   
 	   double now = owner().world().simulation_controller().world().scheduler().current_time();
 	   double lb = owner().world().simulation_controller().environment().optional_double_param("_lb__update",0.95);
 	   double ub = owner().world().simulation_controller().environment().optional_double_param("_ub__update",1.05);
 	   double time_interval = get_update_time() * uniform_random(lb,ub);
 
+   	  if (getActive())
+   	  {
 	   local_update();
 	   unknown_DataUnit_ids_.clear();
 	   send_update_packet(time_interval);
+      }
 
 	   for (DataUnitsMap::iterator it = complete_DataUnits_.begin(); it != complete_DataUnits_.end(); it++){
 		   it->second->unknown_count(0);
@@ -546,7 +563,9 @@ namespace autocast
 		double delta_r = owner().world().simulation_controller().environment().optional_double_param("_delta_r__get_update_time",0.1);
 		double add_to_velocity = owner().world().simulation_controller().environment().optional_double_param("_add_to_velocity__get_update_time",0.01);
 
-		update_time_ = (1 - alpha) * update_time_ + alpha * (neighborhood_size + 1)*(neighborhood_size + 1)/((double)standard_neighbors + 1) * (range * delta_r)/(owner().movement().velocity().euclidean_norm() + add_to_velocity); 
+		//update_time_ = (1 - alpha) * update_time_ + alpha * (neighborhood_size + 1)*(neighborhood_size + 1)/((double)standard_neighbors + 1) * (range * delta_r)/(owner().movement().velocity().euclidean_norm() + add_to_velocity);
+		update_time_ = (1-alpha) * update_time_ + alpha * (range*delta_r)/(owner().movement().velocity().euclidean_norm() + add_to_velocity);
+ 
 		if (update_time_ < min_update_time_) update_time_ = min_update_time_;
 		if (update_time_ > max_update_time_) update_time_ = max_update_time_;
 		return update_time_;

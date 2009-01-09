@@ -114,6 +114,8 @@ namespace autocast
          bool refresh_before_send_;
       };
 
+	     bool getActive();
+
       typedef std::map<int,LocalDataUnit*> DataUnitsMap;
       DataUnitsMap complete_DataUnits_;
       DataUnitsMap stale_DataUnits_;
