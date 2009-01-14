@@ -80,8 +80,8 @@ namespace autocast
 				  << "propagation_speed[km/h]" << "\t"
 				  << "active" << std::endl;
 		  for(std::vector<latencies_line*>::iterator it = latencies_.begin(); it != latencies_.end(); it++){
-				file_op << (*it)->from_addr << "\t"
-						<< (*it)->node_addr << "\t"
+				file_op << (*it)->from_addr->id() << "\t"
+						<< (*it)->node_addr->id() << "\t"
 						<< (*it)->time << "\t"
 						<< (*it)->latency_s << "\t"
 						<< (*it)->dist << "\t"
@@ -116,7 +116,7 @@ namespace autocast
 				  << "update_time_"*/
 				  << std::endl;
 		  for(std::vector<sent_statistics_line*>::iterator it = sent_statistics_.begin(); it != sent_statistics_.end(); it++){
-				file_op << (*it)->node_addr << "\t"
+				file_op << (*it)->node_addr->id() << "\t"
 						<< (*it)->packet_sent << "\t"
 						<< (*it)->byte_sent << "\t"
 						<< (*it)->dataUnit_sent << "\t"

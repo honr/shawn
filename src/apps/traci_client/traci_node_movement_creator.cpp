@@ -238,7 +238,18 @@ namespace traci{
 	   unsigned int command_start = 0;
 	   unsigned int command_length = 0;
 
-	   //while (in_.valid_pos()){
+	   if (! in_.valid_pos())
+	   {
+		   // No equipped vehicle is reported
+		   mi_ = new MovementInfo();
+           mi_->set_urgency(MovementInfo::Delayed);
+           mi_->set_dispatch_time(target_time_);
+           mi_->set_node(NULL);
+           mi_->set_node_movement(NULL);
+           return mi_;
+	   }
+
+	   // Extract next movement information
 	   command_start = in_.position();
 	   command_length = in_.readByte();
 
