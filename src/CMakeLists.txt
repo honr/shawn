@@ -104,7 +104,7 @@ endif(COMMAND cmake_policy)
 
     include_directories (
         ./
-        ../buildfiles
+        ${CMAKE_BINARY_DIR}/../buildfiles
     )
 
 	if ( OPT_ENABLE_CGAL )
