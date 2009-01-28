@@ -24,6 +24,7 @@
 #include "apps/vis/tasks/vis_create_graphics.h"
 #include "apps/vis/tasks/vis_show_comradius.h"
 #include "apps/vis/tasks/vis_tag_sampletask.h"
+#include "apps/vis/tasks/vis_create_liveview.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task_keeper.h"
 
@@ -48,6 +49,7 @@ namespace vis
      sc.simulation_task_keeper_w().add( new ShowComradiusTask );
      sc.simulation_task_keeper_w().add( new CreateLabelTask );
      sc.simulation_task_keeper_w().add( new TagSampleTask );
+	 sc.simulation_task_keeper_w().add( new CreateLiveviewTask );
   }
 
 }
