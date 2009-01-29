@@ -12,6 +12,7 @@
 #include "apps/vis/base/vis_liveview.h"
 #include <cairo.h>
 #include <time.h>
+#include <sstream>
 
 using namespace shawn;
 

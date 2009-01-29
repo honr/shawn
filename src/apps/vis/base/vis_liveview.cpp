@@ -8,8 +8,9 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 
 #ifdef ENABLE_VIS
+
 #include "apps/vis/base/vis_liveview.h"
-#include <stdio.h>
+#include <iostream>
 /** ------------------\ OPENGL /------------------ **/
 #if defined(__APPLE_CC__)
 #include <GLUT/glut.h>
