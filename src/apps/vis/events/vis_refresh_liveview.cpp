@@ -18,10 +18,17 @@ using namespace shawn;
 namespace vis
 {
    RefreshLiveviewEvent::
-   RefreshLiveviewEvent(double refresh_interval, Visualization &vis)
+   RefreshLiveviewEvent(double refresh_interval, int min_delay, Visualization &vis)
    :vis_(&vis),
     refresh_interval_(refresh_interval)
-   {}
+   {
+#ifdef HAVE_BOOST
+      boost::xtime_get(&last_refresh_, boost::TIME_UTC);
+      last_refresh_.sec -= 1;
+#endif
+      min_delay_time_ = min_delay;
+      min_delay_time_ *= 1000000;
+   }
    // ----------------------------------------------------------------------
    RefreshLiveviewEvent::
    ~RefreshLiveviewEvent()
@@ -31,12 +38,17 @@ namespace vis
          shawn::EventScheduler::EventHandle eh, double t, 
          shawn::EventScheduler::EventTagHandle &)
    {
+#ifdef HAVE_BOOST
+      last_refresh_.nsec += min_delay_time_;
+      boost::thread::sleep(last_refresh_); 
+      boost::xtime_get(&last_refresh_, boost::TIME_UTC);
+      boost::mutex::scoped_lock lock(*getUpdateMutex());
+#endif
       write_frame();
 
       updateTexture(getTexture());
-      std::cout << "Updated Liveview (" << es.current_time() << ")" << std::endl;
+      //std::cout << "Updated Liveview (" << es.current_time() << ")" << std::endl;
       
-
       es.move_event(eh, t + refresh_interval_);
    }
    // ----------------------------------------------------------------------
@@ -44,8 +56,6 @@ namespace vis
    RefreshLiveviewEvent::
    write_frame()
    {
-#ifdef HAVE_BOOST
-      boost::mutex::scoped_lock lock(*getUpdateMutex());
       double t = 0.0;
       unsigned char* texture_ = getTexture();
       const Camera& cam = visualization().camera();
@@ -109,7 +119,6 @@ namespace vis
       
             cairo_destroy (cr);
       }
-#endif
    }
 }
 #endif

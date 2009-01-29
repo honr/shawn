@@ -54,12 +54,13 @@ namespace vis
       int width = sc.environment().optional_int_param("winwidth", texwidth + 10);
       int height = sc.environment().optional_int_param("winheight", texwidth + 10);
       double refresh_interval = sc.environment().optional_double_param("refresh_interval", 1.0);
+      int refresh_delay = sc.environment().optional_int_param("refresh_delay", 500);
 
 #ifdef HAVE_BOOST
       createWindow(width, height, texwidth, texheight);
 
       double event_time = sc.world().scheduler().current_time();
-      sc.world_w().scheduler_w().new_event(*new RefreshLiveviewEvent(refresh_interval, 
+      sc.world_w().scheduler_w().new_event(*new RefreshLiveviewEvent(refresh_interval, refresh_delay, 
          visualization_w()), event_time, NULL);
 #endif
    }

@@ -17,20 +17,26 @@
 #include "apps/vis/elements/vis_drawable_node_default_factory.h"
 #include "apps/vis/elements/vis_drawable_node_keeper.h"
 #include "sys/simulation/simulation_controller.h"
+#include "apps/vis/examples/processors/vis_energy_processor.h"
+#include "apps/vis/examples/processors/vis_energy_processor_factory.h"
 
 namespace vis
 {
 
-  void init_vis_base( shawn::SimulationController& sc )
-  {
-     sc.add_keeper( new VisualizationKeeper );
-	  sc.add_keeper( new WriterKeeper );
-     sc.add_keeper( new DrawableNodeKeeper );
-	  PdfWriterFactory::register_factory(sc);
-	  PngWriterFactory::register_factory(sc);
-     PsWriterFactory::register_factory(sc);
-     DrawableNodeDefaultFactory::register_factory( sc );
-  }
+   void init_vis_base( shawn::SimulationController& sc )
+   {
+      sc.add_keeper( new VisualizationKeeper );
+      sc.add_keeper( new WriterKeeper );
+      sc.add_keeper( new DrawableNodeKeeper );
+      PdfWriterFactory::register_factory(sc);
+      PngWriterFactory::register_factory(sc);
+      PsWriterFactory::register_factory(sc);
+      DrawableNodeDefaultFactory::register_factory( sc );
+
+#ifdef ENABLE_EXAMPLES
+      VisEnergyProcessorFactory::register_factory(sc);
+#endif
+   }
 
 }
 

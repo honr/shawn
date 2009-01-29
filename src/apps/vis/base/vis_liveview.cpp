@@ -85,10 +85,9 @@ void createWindow(int sizex, int sizey, int resx, int resy)
 
 void updateTexture(unsigned char* textureData)
 {
-#ifdef HAVE_BOOST
-   boost::mutex::scoped_lock lock(updateMutex_);
+   if(updated_)
+	   std::cout << "Idled Update" << std::endl;
    updated_ = true;
-#endif
 }
 
 void initGL()
@@ -130,6 +129,18 @@ void initGL()
  */
 void display()
 {
+   if(updated_)
+   {
+#ifdef HAVE_BOOST
+      boost::mutex::scoped_lock lock(updateMutex_);
+#endif
+	  std::cout << "Test 1" << std::endl;
+      uploadTexture();
+      updated_ = false;
+	  std::cout << "Test 2" << std::endl;
+
+   }
+
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glLoadIdentity();
    float midX = sizex_ * 0.5f;
@@ -156,20 +167,17 @@ void display()
  */
 void idle()
 {
-   if(updated_)
-   {
-      uploadTexture();
-      updated_ = false;
-   }
+   
+
    glutPostRedisplay(); // render new frame
 }
 
 void uploadTexture()
 {
 #ifdef HAVE_BOOST
-   boost::mutex::scoped_lock lock(updateMutex_);
-#endif
+   //boost::mutex::scoped_lock lock(updateMutex_);
    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, resx_, resy_, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, texture_);
+#endif
 }
 
 /**
