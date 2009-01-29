@@ -49,7 +49,9 @@ namespace vis
      sc.simulation_task_keeper_w().add( new ShowComradiusTask );
      sc.simulation_task_keeper_w().add( new CreateLabelTask );
      sc.simulation_task_keeper_w().add( new TagSampleTask );
-	 sc.simulation_task_keeper_w().add( new CreateLiveviewTask );
+#ifdef HAVE_BOOST
+	  sc.simulation_task_keeper_w().add( new CreateLiveviewTask );
+#endif
   }
 
 }
