@@ -63,8 +63,8 @@ namespace vis
             neighbours_.insert( &hmsg->source() );
             cout << "ID '" << owner().label() << "' GOT HELLO FROM '"
                  << hmsg->source().label() << "'" << endl;
-			this->owner_w().remove_tag_by_name("VisBattery");
-			this->owner_w().add_tag(new shawn::DoubleTag("VisBattery", 0.0));
+			   this->owner_w().remove_tag_by_name("VisBattery");
+			   this->owner_w().add_tag(new shawn::DoubleTag("VisBattery", 0.0));
             return true;
          }
       return Processor::process_message( mh );

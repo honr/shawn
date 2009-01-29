@@ -86,8 +86,6 @@ void createWindow(int sizex, int sizey, int resx, int resy)
 
 void updateTexture(unsigned char* textureData)
 {
-   if(updated_)
-	   std::cout << "Idled Update" << std::endl;
    updated_ = true;
 }
 
@@ -135,10 +133,8 @@ void display()
 #ifdef HAVE_BOOST
       boost::mutex::scoped_lock lock(updateMutex_);
 #endif
-	  std::cout << "Test 1" << std::endl;
       uploadTexture();
       updated_ = false;
-	  std::cout << "Test 2" << std::endl;
 
    }
 
@@ -175,10 +171,7 @@ void idle()
 
 void uploadTexture()
 {
-#ifdef HAVE_BOOST
-   //boost::mutex::scoped_lock lock(updateMutex_);
    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, resx_, resy_, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, texture_);
-#endif
 }
 
 /**
