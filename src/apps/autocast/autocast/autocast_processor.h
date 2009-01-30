@@ -55,6 +55,8 @@ namespace autocast
       virtual bool send_to(const ConstDataUnitHandle&, shawn::Processor* creator = NULL) throw();
       bool booted() const throw();
 
+      virtual bool get_active_state_at( double time ) const throw();
+
    protected:
       void set_state(const Processor::ProcessorState&) throw();
 
@@ -114,18 +116,17 @@ namespace autocast
          bool refresh_before_send_;
       };
 
-	     bool getActive();
-
       typedef std::map<int,LocalDataUnit*> DataUnitsMap;
       DataUnitsMap complete_DataUnits_;
       DataUnitsMap stale_DataUnits_;
+	  bool use_stale_hashes_;
 
       /// Fetching startup parameters
       void fetch_parameters();
       void clean_up() throw();
       double uniform_random(double lb = 0.0, double ub = 1.0, bool lbi = true, bool ubi = true);
       void local_update() throw();
-      autocast::AutoCastProcessor::LocalDataUnit* handle_DataUnit(const ConstDataUnitHandle&, bool* is_new, bool logging) throw();
+      autocast::AutoCastProcessor::LocalDataUnit* handle_DataUnit(const ConstDataUnitHandle&, bool& is_new, bool logging) throw();
       void update() throw();
       void send_update_packet(const double) throw();
       double get_update_time() throw();
@@ -158,6 +159,18 @@ namespace autocast
       unsigned int dataUnits_bytes_sent_total_;
       std::set<unsigned int> received_DataUnit_ids_total_;
       unsigned int received_DataUnits_total_;
+      int msgCountBeacon_;
+      int msgCountAnswer_;
+      int msgCountFlood_;
+      int msgCountRequest_;
+      int msgCountAnswer_only_;
+      int msgCountFlood_only_;
+      int msgCountRequest_only_;
+      
+      double activeTime_;
+
+	  std::vector<int> active_times_;
+	  std::vector<int>::const_iterator active_times_it_;
 
       /// Neighborhood stuff
       autocast::Neighborhood neighborhood_;

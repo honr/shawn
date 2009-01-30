@@ -45,10 +45,11 @@ namespace autocast
 
 	  void process_latencies(const autocast::ConstDataUnitHandle&, const shawn::Node*, const shawn::SimulationController&) throw();
 
-	  void process_sent_statistic(const shawn::Node* node, int packet_sent, int byte_sent , int dataUnit_sent, int dataUnit_byte_sent, int packet_received, int dataUnits_received ,int received_DataUnit_ids/*, double neighbors_count, double real_neighbors_count, double velocity, double update_time*/) throw();
+	  void process_sent_statistic(const shawn::Node* node, int packet_sent, int byte_sent , int dataUnit_sent, int dataUnit_byte_sent, int packet_received, int dataUnits_received ,int received_DataUnit_ids, double active_time, int msgCountBeacon, int msgCountAnswer, int msgCountAnswer_only, int msgCountFlood, int msgCountFlood_only, int msgCountRequest, int msgCountRequest_only) throw();
 
    private:
 	   struct latencies_line{
+         double simulation_time;
 		    const shawn::Node* from_addr;
 			const shawn::Node* node_addr;
 			double time;
@@ -68,7 +69,15 @@ namespace autocast
 			int packets_received;
 			int dataUnits_received;
 			int received_DataUnit_ids;
-			/*double neighbors_count_;
+			double active_time;
+         int msgCountBeacon;
+         int msgCountAnswer;
+         int msgCountAnswer_only;
+         int msgCountFlood;
+         int msgCountFlood_only;
+         int msgCountRequest;
+         int msgCountRequest_only;
+         /*double neighbors_count_;
 			double real_neighbors_count_;
 			double velocity_;
 			double update_time_;*/

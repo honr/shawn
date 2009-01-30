@@ -23,6 +23,7 @@
 #include <string>
 #include "sys/node.h"
 #include "sys/vec.h"
+#include "sys/util/string_conv.h"
 #include "sys/simulation/simulation_task_keeper.h"
 #include "sys/transmission_model.h"
 #include "apps/autocast/autocast/autocast_processor.h"
@@ -45,7 +46,15 @@ namespace autocast
 							 dataUnits_sent_total_(0),
 							 dataUnits_bytes_sent_total_(0),
 							 received_DataUnits_total_(0),
+                        msgCountBeacon_(0),
+                        msgCountAnswer_(0),
+                        msgCountFlood_(0),
+                        msgCountRequest_(0),
+                        msgCountAnswer_only_(0),
+                        msgCountFlood_only_(0),
+                        msgCountRequest_only_(0),
 							 logging_(true),
+							 use_stale_hashes_(false),
 							 max_update_packet_size_(AUTOCAST_MAX_PACKET_LENGTH),
 							 max_update_data_units_(AUTOCAST_DEFAULT_MAX_DATAUNITS_PER_PACKET),
 							 max_startup_time_(AUTOCAST_DEFAULT_STARTUP_TIME),
@@ -55,7 +64,8 @@ namespace autocast
 							 update_timer_(NULL),
 							 answer_timer_(NULL),
 							 request_timer_(NULL),
-							 /*NEW*/flood_timer_(NULL)/*,
+							 /*NEW*/flood_timer_(NULL),
+							 activeTime_(0.0)/*,
 							 /*FOR DEBUG PURPOSES*/
 							 /*neighbors_count_(0),
 							 real_neighbors_count_(0),
@@ -72,7 +82,7 @@ namespace autocast
 	// ----------------------------------------------------------------------
 	void
 		AutoCastProcessor::
-	boot( void )
+	   boot( void )
 		throw()
 	{
 		neighborhood_.set_owner(owner());
@@ -84,23 +94,67 @@ namespace autocast
 		update_timer_ = owner_w().world_w().scheduler_w().new_event(*this,now+fabs(max_startup_time_) * uniform_random(lb2,ub1),NULL);
 		max_iterations_ = owner().world().simulation_controller().environment().required_int_param("max_iterations");
 		logging_ = owner().world().simulation_controller().environment().optional_bool_param("autocast_logging", logging_);
+		use_stale_hashes_ = owner().world().simulation_controller().environment().optional_bool_param("autocast_stale_hashes", use_stale_hashes_);
+
+		std::string activity_file = owner().world().simulation_controller().environment().optional_string_param("activity_file", "");
+		if (activity_file != "")
+		{
+			std::ifstream * inputfile = new ifstream(activity_file.c_str());
+			if (inputfile->is_open())
+			{
+				std::ostringstream oss;
+				oss << "$g(" << owner().id() << ")";
+				string id(oss.str());
+				std::cerr << "\nSearching for " << id << " in " << activity_file << " ";
+				char buffer[250];
+				std::string line;
+				while (! inputfile->eof())
+				{
+					inputfile->getline(buffer,250);
+					line = string(buffer);
+					if (line.find(id) != std::string::npos)
+					{
+						//std::cerr << line << " " << "\n";
+						line.assign(line,line.find("$ns_ at ")+8,std::string::npos);
+						//std::cerr << line << "\n";
+						line.assign(line,0,line.find("."));
+						//std::cerr << line << "\n";
+						int time = shawn::conv_string_to_int(line);
+						active_times_.push_back(time);
+
+						std::cerr << " " << time << " ";
+					}
+				}
+				inputfile->close();
+
+				// If an activity file is given, we let the processors sleep until the first given time
+				this->set_state(Processor::Sleeping);
+				active_times_it_ = active_times_.begin();
+			}
+		}
 	}
    // ----------------------------------------------------------------------
    bool
-   	   AutoCastProcessor::
-	   getActive()
-   {
-	  // Quickhack to disable nodes outside the scenario
-   	   double x=owner().movement().position().x();
-   	   return (x >= 10000 && x <= 20000); 
-   }   
-   // ----------------------------------------------------------------------
-   bool
-   AutoCastProcessor::
-   process_message( const ConstMessageHandle& mh ) 
+      AutoCastProcessor::
+      get_active_state_at( double time )
+      const
       throw()
    {
-   	  if (! getActive()) return false;
+      if (active_times_.size() == 0) return true;
+      bool toggle = false;
+      for (std::vector<int>::const_iterator it=active_times_.begin(); it != active_times_.end(); ++it)
+      {
+         if ((*it) < time) toggle = !toggle; else break;
+      }
+      return toggle;
+   }
+	// ----------------------------------------------------------------------
+   bool
+      AutoCastProcessor::
+      process_message( const ConstMessageHandle& mh ) 
+      throw()
+   {
+	   if (state() != Processor::Active) return false;
    	  
 	   const autocast::AutoCastMessage * acm = dynamic_cast<const autocast::AutoCastMessage*>(mh.get());
 	   if (!acm){
@@ -134,16 +188,10 @@ namespace autocast
 		   abort();
 	   }
 
-	   bool answer_decision = false;
-	   int neighborhood_size = neighborhood_.neighborhood_size();
-
-	   int barker = owner().world().simulation_controller().environment().optional_int_param("_barker__process_message",5);
-
 	   /// Two of the neighborhood should flood the information or answer with unknown data
-	   double lb1 = owner().world().simulation_controller().environment().optional_double_param("_lb1__process_message",0.0);
-	   double ub1 = owner().world().simulation_controller().environment().optional_double_param("_ub1__process_message",1.0);
-	   double factor = owner().world().simulation_controller().environment().optional_double_param("_factor__process_message",1.0);
-	   answer_decision = (neighborhood_size <= barker || uniform_random(lb1,ub1) <= (factor * barker / neighborhood_size));
+	   int neighborhood_size = neighborhood_.neighborhood_size();
+	   int barker = owner().world().simulation_controller().environment().optional_int_param("_barker__process_message",5);
+	   bool answer_decision = (neighborhood_size <= barker || uniform_random(0.0,1.0) <= (1.0 * barker / neighborhood_size));
 
 	   /// Get the known ID's from the sender
 	   /// received_ids saves the ID's received in this "receiving round"
@@ -155,9 +203,9 @@ namespace autocast
 	   /// hold them in the transport layer
 	   bool need_to_flood = false;
 	   for (std::set<ConstDataUnitHandle>::const_iterator du_it = acm->complete_DataUnits().begin();
-		    du_it != acm->complete_DataUnits().end(); du_it++){
+		   du_it != acm->complete_DataUnits().end(); du_it++){
 			// Add also the ID's of the complete DataUnits
-		    received_ids.insert((*du_it)->id());
+		   received_ids.insert((*du_it)->id());
 			if (logging_) received_DataUnit_ids_total_.insert((*du_it)->id());
 			received_DataUnits_total_++;
 
@@ -175,83 +223,77 @@ namespace autocast
 					/// Set the flag if the DataUnit is new
 					bool is_new_DataUnit = false;
                /// Interested in if is a new DataUnit and enable logging (if logging_ is true)
-					autocast::AutoCastProcessor::LocalDataUnit * ldu = handle_DataUnit(*du_it,&is_new_DataUnit,logging_);
+					autocast::AutoCastProcessor::LocalDataUnit * ldu = handle_DataUnit(*du_it,is_new_DataUnit,logging_);
 					if (ldu){
-						/// New DataUnit
+						/// DataUnit is now known locally
 						unknown_DataUnit_ids_.erase(ldu->dataUnit()->id());
-					}
-					if (ldu && answer_decision && is_new_DataUnit){
-						ldu->unknown_count(ldu->unknown_count() + 1);
-						need_to_flood = true;
-					}else if(ldu && !is_new_DataUnit){
-						/// else old object or no answer_decision
-						if(ldu->unknown_count() > 0) ldu->unknown_count(ldu->unknown_count() - 1);
+                  if ( unknown_DataUnit_ids_.size() == 0 && request_timer_ ) 
+                  {
+                     owner_w().world_w().scheduler_w().delete_event(request_timer_);
+                     request_timer_ = NULL;
+                  }
+                  // New data unit?
+					   if (answer_decision && is_new_DataUnit){
+						   ldu->unknown_count(ldu->unknown_count() + 1);
+						   need_to_flood = true;
+                  }
+//					}else if(ldu && !is_new_DataUnit){
+//						/// else old object or no answer_decision
+//						if(ldu->unknown_count() > 0) ldu->unknown_count(ldu->unknown_count() - 1);
 					}/// else out of region
 				}/// else no one feels responsible
 			}
 	   }
 
 	   bool need_to_answer = false;
-	   if(answer_decision){
+	   if(answer_decision)
+      {
 		   for (std::map<int,autocast::AutoCastProcessor::LocalDataUnit*>::iterator it = complete_DataUnits_.begin();
 			   it != complete_DataUnits_.end(); it++){
 			   if ( received_ids.find( it->second->dataUnit()->id() ) == received_ids.end() &&
-				    stale_ids.find(it->second->dataUnit()->id()) == stale_ids.end()){
+				    stale_ids.find(it->second->dataUnit()->id()) == stale_ids.end())
+            {
 				    it->second->unknown_count(it->second->unknown_count() + 1);
 				    need_to_answer = true;
 			   }
 		   }
 	   }
-	   /// For request
-	   for(std::set<unsigned int>::iterator it = received_ids.begin(); it != received_ids.end(); ++it){
-		   if( complete_DataUnits_.find(*it) == complete_DataUnits_.end() &&
-			   stale_DataUnits_.find(*it) == stale_DataUnits_.end()){
-			   unknown_DataUnit_ids_.insert(*it);
-		   }
+      
+      bool need_to_request = false;
+      if (answer_decision)
+      {
+	      /// Mark data units for request
+	      for(std::set<unsigned int>::iterator it = received_ids.begin(); it != received_ids.end(); ++it){
+		      if( complete_DataUnits_.find(*it) == complete_DataUnits_.end() &&
+			      stale_DataUnits_.find(*it) == stale_DataUnits_.end())
+            {
+			      unknown_DataUnit_ids_.insert(*it);
+               need_to_request = true;
+		      }
+	      }
+      }
+
+      // Schedule events 
+      double delta = owner().world().simulation_controller().environment().optional_double_param("delay_delta",0.03);
+      double delta_variance = owner().world().simulation_controller().environment().optional_double_param("delay_delta_variance",0.0025);
+      shawn::EventScheduler& es = owner_w().world_w().scheduler_w();
+
+	   if ( (answer_decision && need_to_answer) || answer_timer_ ){
+			if ( answer_timer_ )	es.delete_event(answer_timer_);
+			answer_timer_ = es.new_event(*this, now + delta + uniform_random(-delta_variance,delta_variance), NULL);
 	   }
 
-	   if ( need_to_answer || /*Timer pending*/answer_timer_ ){
-			/// Answer fast
-			//double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__process_message",0.001);
-			//double ub2 = owner().world().simulation_controller().environment().optional_double_param("_ub2__process_message",0.02);
-		    double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__process_message",0.0275);
-			double ub2 = owner().world().simulation_controller().environment().optional_double_param("_ub2__process_message",0.0325);
-			double at = now + /*min_update_time_ * */uniform_random(lb2,ub2);
-
-			if ( answer_timer_ ){
-				owner_w().world_w().scheduler_w().delete_event(answer_timer_);
-				answer_timer_ = NULL;
-			}
-			answer_timer_ = owner_w().world_w().scheduler_w().new_event(*this,at,NULL);
-
-	   }/*else*/
-	   if( need_to_flood || /*Timer pending*/flood_timer_ ){
-			//double lb3 = owner().world().simulation_controller().environment().optional_double_param("_lb3__process_message",0.04);
-			//double ub3 = owner().world().simulation_controller().environment().optional_double_param("_ub3__process_message",0.06);
-		    double lb3 = owner().world().simulation_controller().environment().optional_double_param("_lb3__process_message",0.0575);
-			double ub3 = owner().world().simulation_controller().environment().optional_double_param("_ub3__process_message",0.0625);
-			double at = now + /*min_update_time_ * */uniform_random(lb3,ub3);
-
-			if ( flood_timer_ ){
-				owner_w().world_w().scheduler_w().delete_event(flood_timer_);
-				flood_timer_ = NULL;
-			}
-			flood_timer_ = owner_w().world_w().scheduler_w().new_event(*this,at,NULL);
+	   if( (answer_decision && need_to_flood) || flood_timer_ ){
+			if ( flood_timer_ ) es.delete_event(flood_timer_);
+			flood_timer_ = es.new_event(*this, now + 2 * delta + uniform_random(-delta_variance,delta_variance), NULL);
 	   }
 
 
-	   if ( request_timer_ ){
-		   owner_w().world_w().scheduler_w().delete_event(request_timer_);
-		   request_timer_ = NULL;
-	   }
-       if( unknown_DataUnit_ids_.size() ){
-		   //double lb4 = owner().world().simulation_controller().environment().optional_double_param("_lb4__process_message",0.1);
-		   //double ub4 = owner().world().simulation_controller().environment().optional_double_param("_ub4__process_message",0.2);
-		   double lb4 = owner().world().simulation_controller().environment().optional_double_param("_lb4__process_message",0.0875);
-		   double ub4 = owner().world().simulation_controller().environment().optional_double_param("_ub4__process_message",0.0925);
-		   double at = now + /*min_update_time_ * */uniform_random(lb4,ub4);
-		   request_timer_ = owner_w().world_w().scheduler_w().new_event(*this,at,NULL);
-       }
+	   if ( (answer_decision && need_to_request) || request_timer_ )
+      {
+		   if ( request_timer_ ) es.delete_event(request_timer_);
+	      request_timer_ = es.new_event(*this, now + 3 * delta + uniform_random(-delta_variance,delta_variance), NULL);
+      }
 	   return true;
    }
    // ----------------------------------------------------------------------
@@ -265,12 +307,52 @@ namespace autocast
 	   velocity_count_+=owner().movement().velocity().euclidean_norm();
 	   update_time_count_+=update_time_;*/
 
-	   if (logging_ && (simulation_round() == max_iterations_ - 1)){
+	   if (active_times_.size() > 0)
+	   {
+		   // If activeTimes were read from file
+		   int now = static_cast<int>(owner().world().scheduler().current_time());
+		   if (active_times_it_ != active_times_.end() && *active_times_it_ == now)
+		   {
+			   // it's time o switch the State
+			   if (this->state() == Processor::Active)
+			   {
+				   this->set_state(Processor::Sleeping);
+			   } else {
+				   this->set_state(Processor::Active);
+	            if ( update_timer_ ) 
+	            {
+		            owner_w().world_w().scheduler_w().delete_event(update_timer_);
+		            update_timer_ = NULL;
+	            }
+	            update_timer_ = owner_w().world_w().scheduler_w().new_event(*this,now + max_update_time_ * uniform_random(0.0,1.0),NULL);
+
+			   }
+			   ++active_times_it_;
+		   }
+	   }
+
+	   if (logging_ && state() == Processor::Active) activeTime_++;
+
+	   if (logging_ && (activeTime_ > 0) && (simulation_round() == max_iterations_ - 1)){
 		    KeeperManagedHandle kmh = owner_w().world_w().simulation_controller_w().simulation_task_keeper_w().find_managed_w("AutoCastTask");
 			assert(kmh.is_not_null());
 			autocast::AutoCastTask* act = dynamic_cast<autocast::AutoCastTask*>( kmh.get() );
 			if (act){
-				act->process_sent_statistic(&owner(),packets_sent_total_,bytes_sent_total_,dataUnits_sent_total_,dataUnits_bytes_sent_total_,received_messages_ids_total_.size(),received_DataUnits_total_,received_DataUnit_ids_total_.size()/*,1.0*neighbors_count_/(simulation_round()+1),1.0*real_neighbors_count_/(simulation_round()+1),velocity_count_/(simulation_round()+1),update_time_count_/(simulation_round()+1)*/);
+				act->process_sent_statistic(
+               &owner(),
+               packets_sent_total_,
+               bytes_sent_total_,
+               dataUnits_sent_total_,
+               dataUnits_bytes_sent_total_,
+               received_messages_ids_total_.size(),
+               received_DataUnits_total_,
+               received_DataUnit_ids_total_.size(),
+               activeTime_,
+               msgCountBeacon_, 
+               msgCountAnswer_, msgCountAnswer_only_, 
+               msgCountFlood_, msgCountFlood_only_, 
+               msgCountRequest_, msgCountRequest_only_
+               );
 			}
 
 			// And at least
@@ -283,11 +365,12 @@ namespace autocast
 	   send_to(const ConstDataUnitHandle& duh, shawn::Processor* creator)
 	   throw()
    { 
-   	  if (! getActive()) return false;
+   	  if (state() != Processor::Active) return false;
 
 	   LocalDataUnit* ldu = NULL;
+      bool is_new = false;
 	   /// Not interested in if is a new DataUnit and disable logging
-	   ldu = handle_DataUnit(duh,NULL,false);
+	   ldu = handle_DataUnit(duh, is_new, false);
 	   if (ldu != NULL){
 		   ldu->creator(creator);
 		   if (creator) ldu->refresh_before_send(true);
@@ -307,21 +390,33 @@ namespace autocast
 		throw()
    {	
 	   if(eh == update_timer_){
+         msgCountBeacon_++;
 		   // Set the pointer NULL
 		   update_timer_ = NULL;
 	   }
 	   if(eh == answer_timer_){
+         msgCountAnswer_only_++;
+         msgCountAnswer_++;
 		   // Set the pointer NULL
 		   answer_timer_ = NULL;
 	   }
 	   if(eh == flood_timer_){
+         msgCountFlood_only_++;
+         msgCountFlood_++;
 		    // Set the pointer NULL
 			flood_timer_ = NULL;
 	   }
 	   if(eh == request_timer_){
+         msgCountRequest_only_++;
+         msgCountRequest_++;
 		   // Set the pointer NULL
 		   request_timer_ = NULL;
 	   }
+
+      if (answer_timer_) msgCountAnswer_++;
+      if (flood_timer_) msgCountFlood_++;
+      if (request_timer_) msgCountRequest_++;
+
 	   update();
    }
    // ----------------------------------------------------------------------
@@ -330,22 +425,6 @@ namespace autocast
 	   update() 
 	   throw()
    {
-   
-	   double now = owner().world().simulation_controller().world().scheduler().current_time();
-	   double lb = owner().world().simulation_controller().environment().optional_double_param("_lb__update",0.95);
-	   double ub = owner().world().simulation_controller().environment().optional_double_param("_ub__update",1.05);
-	   double time_interval = get_update_time() * uniform_random(lb,ub);
-
-   	  if (getActive())
-   	  {
-	   local_update();
-	   unknown_DataUnit_ids_.clear();
-	   send_update_packet(time_interval);
-      }
-
-	   for (DataUnitsMap::iterator it = complete_DataUnits_.begin(); it != complete_DataUnits_.end(); it++){
-		   it->second->unknown_count(0);
-	   }
 
 	   if( answer_timer_ ){
 		   owner_w().world_w().scheduler_w().delete_event(answer_timer_);
@@ -367,7 +446,25 @@ namespace autocast
 			owner_w().world_w().scheduler_w().delete_event(request_timer_);
 			request_timer_ = NULL;
 	   }
-	   update_timer_ = owner_w().world_w().scheduler_w().new_event(*this,now + time_interval,NULL);
+
+
+	   double now = owner().world().simulation_controller().world().scheduler().current_time();
+	   double lb = owner().world().simulation_controller().environment().optional_double_param("_lb__update",0.95);
+	   double ub = owner().world().simulation_controller().environment().optional_double_param("_ub__update",1.05);
+	   double time_interval = get_update_time() * uniform_random(lb,ub);
+
+      if (state() == Processor::Active)
+      {
+         local_update();
+         unknown_DataUnit_ids_.clear();
+         send_update_packet(time_interval);
+      }
+
+	   for (DataUnitsMap::iterator it = complete_DataUnits_.begin(); it != complete_DataUnits_.end(); it++){
+		   it->second->unknown_count(0);
+	   }
+	   
+      if (state() == Processor::Active) update_timer_ = owner_w().world_w().scheduler_w().new_event(*this,now + time_interval,NULL);
    }
    // ----------------------------------------------------------------------
    double
@@ -405,7 +502,7 @@ namespace autocast
 				(now >= it->second->dataUnit()->time() + it->second->dataUnit()->max_life_time())) ||
 				(it->second->dataUnit()->distribution_area() &&
 				!it->second->dataUnit()->distribution_area()->is_inside(owner().real_position().x(),owner().real_position().y()) )){
-					stale_DataUnits_.insert(std::make_pair(it->first,it->second));
+					if (use_stale_hashes_) stale_DataUnits_.insert(std::make_pair(it->first,it->second));
 					complete_DataUnits_.erase(it++);
 			}else{
 				++it;
@@ -431,13 +528,13 @@ namespace autocast
 	/// Retruns NULL if DataUnit is out of region
 	autocast::AutoCastProcessor::LocalDataUnit* 
 		AutoCastProcessor::
-		handle_DataUnit(const ConstDataUnitHandle& du, bool* is_new, bool logging) 
+		handle_DataUnit(const ConstDataUnitHandle& du, bool& is_new, bool logging) 
 		throw()
 	{
 		double now = owner().world().scheduler().current_time();
 		autocast::AutoCastProcessor::LocalDataUnit* ldu = NULL;
 		// First we assume an old DataUnit
-		if(is_new) *is_new = false;
+		is_new = false;
 		// DataUnit out of region returning NULL
 		if ( !(du->distribution_area() && du->distribution_area()->is_inside(owner().real_position().x(), owner().real_position().y())) ){
 			return NULL;
@@ -447,7 +544,7 @@ namespace autocast
 			// Completely new DataUnit
 			ldu = new LocalDataUnit(du);
 			// The DataUnit is flaged as new
-			if(is_new) *is_new = true;
+			is_new = true;
 			ldu->last_received_time(now);
 			complete_DataUnits_.insert(std::pair<int,LocalDataUnit*>(ldu->dataUnit()->id(),ldu));
 			if (logging){
@@ -475,7 +572,7 @@ namespace autocast
 				old_du->second->dataUnit(du);
 				ldu = old_du->second;
 				/// The DataUnit is flaged as new
-				if(is_new) *is_new = true;
+				is_new = true;
 			}
 			/// DataUnit is really old
 			/// Set the last_received_time of the LocalDataUnit
@@ -490,6 +587,8 @@ namespace autocast
 		send_update_packet(const double update_time) 
 		throw()
 	{
+		assert(stale_DataUnits_.size() == 0 || use_stale_hashes_ == false);
+
 		double now = owner().world().scheduler().current_time();
 		uid_counter_++;
 		AutoCastMessage * acm = new AutoCastMessage(uid_counter_,AUTOCAST_TYPE_UPDATE,update_time,owner().id(),owner().real_position().x(),owner().real_position().y());
@@ -555,16 +654,18 @@ namespace autocast
 	{
 		if(min_update_time_ == max_update_time_) return max_update_time_;
 
-		int neighborhood_size = neighborhood_.neighborhood_size();
+		//int neighborhood_size = neighborhood_.neighborhood_size();
 
 		double range = owner().world().simulation_controller().environment().required_double_param("range");
-		double standard_neighbors = owner().world().simulation_controller().environment().optional_double_param("_standard_neighbors__get_update_time",4.0);
+		//double standard_neighbors = owner().world().simulation_controller().environment().optional_double_param("_standard_neighbors__get_update_time",4.0);
 		double alpha = owner().world().simulation_controller().environment().optional_double_param("_alpha__get_update_time",1.0);
 		double delta_r = owner().world().simulation_controller().environment().optional_double_param("_delta_r__get_update_time",0.1);
 		double add_to_velocity = owner().world().simulation_controller().environment().optional_double_param("_add_to_velocity__get_update_time",0.01);
 
+      double v = owner().movement().velocity().euclidean_norm();
+
 		//update_time_ = (1 - alpha) * update_time_ + alpha * (neighborhood_size + 1)*(neighborhood_size + 1)/((double)standard_neighbors + 1) * (range * delta_r)/(owner().movement().velocity().euclidean_norm() + add_to_velocity);
-		update_time_ = (1-alpha) * update_time_ + alpha * (range*delta_r)/(owner().movement().velocity().euclidean_norm() + add_to_velocity);
+		update_time_ = (1-alpha) * update_time_ + alpha * (range*delta_r)/(v + add_to_velocity);
  
 		if (update_time_ < min_update_time_) update_time_ = min_update_time_;
 		if (update_time_ > max_update_time_) update_time_ = max_update_time_;

@@ -15,6 +15,7 @@
 #ifdef ENABLE_AUTOCAST
 
 #include "apps/autocast/autocast_task/autocast_task.h"
+#include "apps/autocast/autocast/autocast_processor.h"
 #include "sys/vec.h"
 #include "sys/world.h"
 #include "sys/event_scheduler.h"
@@ -65,6 +66,8 @@ namespace autocast
    {
       require_world( sc );
 
+      double log_start = sc.environment().optional_double_param("log_start",0);
+
 	  // Write the latencies
 	  // Create ns2-like output
 	  // latencies: fromAddr	node	timeCreated[s]	latency[s]	distance[m]	latency[s/km]	propagation_speed[km/h]	active
@@ -79,17 +82,23 @@ namespace autocast
 				  << "latency[s/km]" << "\t"
 				  << "propagation_speed[km/h]" << "\t"
 				  << "active" << std::endl;
-		  for(std::vector<latencies_line*>::iterator it = latencies_.begin(); it != latencies_.end(); it++){
-				file_op << (*it)->from_addr->id() << "\t"
-						<< (*it)->node_addr->id() << "\t"
-						<< (*it)->time << "\t"
-						<< (*it)->latency_s << "\t"
-						<< (*it)->dist << "\t"
-						<< (*it)->latency_s_per_km << "\t"
-						<< (*it)->propagation_speed << "\t"
-						<< 1 << std::endl;
-				// Delete the previous printed line
-				delete (*it);
+		  for(std::vector<latencies_line*>::iterator it = latencies_.begin(); it != latencies_.end(); it++)
+        {
+            if ((*it)->simulation_time >= log_start)
+            {
+               const autocast::AutoCastProcessor* p = (*it)->node_addr->get_processor_of_type<AutoCastProcessor>();
+               if (p) 
+				   file_op << (*it)->from_addr->id() << "\t"
+						   << (*it)->node_addr->id() << "\t"
+						   << (*it)->time << "\t"
+						   << (*it)->latency_s << "\t"
+						   << (*it)->dist << "\t"
+						   << (*it)->latency_s_per_km << "\t"
+						   << (*it)->propagation_speed << "\t"
+                     << (p && p->get_active_state_at((*it)->time) ? 1 : 0) << std::endl;
+            }
+			   // Delete the previous printed line
+			   delete (*it);
 		  }
 		  file_op.close();
 	  }
@@ -109,7 +118,10 @@ namespace autocast
 				  << "hdcsRcvd" << "\t"
 				  << "rcvdHDCids" << "\t"
 				  << "activeTime" << "\t"
-				  << "startStopTimes" /*<< "\t"
+				  << "startStopTimes" << "\t"
+              << "sendBeaconMsgs\tsendAnswerMsgs\tsendFloodMsgs\tsendRequestMsgs" << "\t"
+              << "sendAnswerMsgsOnly\tsendFloodMsgsOnly\tsendRequestMsgsOnly"
+              /*<< "\t"
 				  << "neighbors_" << "\t"
 				  << "real_neighbors_" << "\t"
 				  << "velocity_" << "\t"
@@ -124,8 +136,18 @@ namespace autocast
 						<< (*it)->packets_received << "\t"
 						<< (*it)->dataUnits_received << "\t"
 						<< (*it)->received_DataUnit_ids << "\t"
-						<< 3600.000000 << "\t"
-						<< "\"0 3600 \"" /*<< "\t"
+						<< (*it)->active_time << "\t"
+						<< "\"\"" << "\t"
+                  << (*it)->msgCountBeacon << "\t"
+                  << (*it)->msgCountAnswer << "\t"
+                  << (*it)->msgCountFlood << "\t"
+                  << (*it)->msgCountRequest << "\t"
+                  << (*it)->msgCountAnswer_only << "\t"
+                  << (*it)->msgCountFlood_only << "\t"
+                  << (*it)->msgCountRequest_only
+
+                  
+                  /*<< "\t"
 						<< (*it)->neighbors_count_ << "\t"
 						<< (*it)->real_neighbors_count_ << "\t"
 						<< (*it)->velocity_ << "\t"
@@ -147,6 +169,7 @@ namespace autocast
 	   throw()
    {
 		latencies_line * line = new latencies_line();
+      line->simulation_time = sc.world().scheduler().current_time();
 		line->dist = sqrt( pow((node->real_position().x() - duh->x()),2) + pow((node->real_position().y() - duh->y()),2) );
 		line->latency_s = sc.world().scheduler().current_time() - duh->time();
 		line->latency_s = (line->latency_s == 0 ? line->dist/299792458 : line->latency_s);
@@ -160,7 +183,7 @@ namespace autocast
    // ----------------------------------------------------------------------
    void
 	   AutoCastTask::
-	   process_sent_statistic(const shawn::Node* node, int packet_sent, int byte_sent , int dataUnit_sent, int dataUnit_byte_sent, int packets_received, int dataUnits_received, int received_DataUnit_ids/*, double neighbors_count, double real_neighbors_count, double velocity, double update_time*/)
+	   process_sent_statistic(const shawn::Node* node, int packet_sent, int byte_sent , int dataUnit_sent, int dataUnit_byte_sent, int packets_received, int dataUnits_received, int received_DataUnit_ids, double active_time, int msgCountBeacon, int msgCountAnswer, int msgCountAnswer_only, int msgCountFlood, int msgCountFlood_only, int msgCountRequest, int msgCountRequest_only)
 	   throw()
    {
 	   sent_statistics_line * line = new sent_statistics_line();
@@ -172,6 +195,16 @@ namespace autocast
 	   line->packets_received = packets_received;
 	   line->dataUnits_received = dataUnits_received;
 	   line->received_DataUnit_ids = received_DataUnit_ids;
+	   line->active_time = active_time;
+      
+      line->msgCountBeacon = msgCountBeacon;
+      line->msgCountAnswer = msgCountAnswer;
+      line->msgCountAnswer_only = msgCountAnswer_only;
+      line->msgCountFlood = msgCountFlood;
+      line->msgCountFlood_only = msgCountFlood_only;
+      line->msgCountRequest = msgCountRequest;
+      line->msgCountRequest_only = msgCountRequest_only;
+
 	   /*line->neighbors_count_ = neighbors_count;
 	   line->real_neighbors_count_ = real_neighbors_count;
 	   line->velocity_ = velocity;

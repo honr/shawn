@@ -106,7 +106,7 @@ namespace autocast {
 		double now = owner_->world().scheduler().current_time();
 		for (map<int, NeighborInfo >::iterator it=neighborhood_.begin(); it!=neighborhood_.end(); )
 		{
-			if ( now > it->second.last_heard_time + (it->second.next_update_time * 1.05) )
+			if ( now > it->second.last_heard_time + (it->second.next_update_time) ) //* 1.05
 			{
 				neighborhood_.erase(it++);
 			} else {
