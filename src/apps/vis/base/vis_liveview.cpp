@@ -11,6 +11,7 @@
 
 #include "apps/vis/base/vis_liveview.h"
 #include <iostream>
+
 /** ------------------\ OPENGL /------------------ **/
 #if defined(__APPLE_CC__)
 #include <GLUT/glut.h>
@@ -35,37 +36,64 @@ void mouseMotion(int x, int y);
 /** ------------------/ OPENGL \------------------ **/
 
 #ifdef HAVE_BOOST
+/// Texture update mutex
 boost::mutex updateMutex_;
+/// Thread for external windows handling
 boost::thread *glThread;
 #endif
 
+/// True if texture has to be updated by the window thread
 bool updated_ = false;
+/// True if window has been created, assures the window to be created only once
 bool created_ = false;
-int resx_=0, resy_=0;
-int sizex_=0, sizey_=0;
+/// Texture width
+int resx_=0;
+/// Texture height
+int resy_=0;
+/// Window width
+int sizex_=0;
+/// Window height
+int sizey_=0;
+/// Texture data
 unsigned char *texture_ = NULL;
 
+/**
+ * Structure used by boost to create the external window thread.
+ */
 struct creator { 
    creator() { }
 void operator()() 
 { 
+   /**
+    * Method to be called in an external thread.
+	*/
    initGL();
 } 
 };
 
+/**
+ * Returns a pointer to the currently used texture data.
+ */
 unsigned char* getTexture()
 {
    return texture_;
 }
 
 #ifdef HAVE_BOOST
+/**
+ * Returns the mutex that needs to be locked before changing or reading
+ * texture data.
+ */
 boost::mutex* getUpdateMutex()
 {
    return &updateMutex_;
 }
 #endif
 
-
+/**
+ * Creates an external Window of the provided size an using the provided
+ * texture resolution.
+ */
 void createWindow(int sizex, int sizey, int resx, int resy)
 {
    if(!created_)
@@ -84,11 +112,18 @@ void createWindow(int sizex, int sizey, int resx, int resy)
    }
 }
 
+/**
+ * Notifies the external window that the texture has changed and needs to
+ * be updated.
+ */
 void updateTexture(unsigned char* textureData)
 {
    updated_ = true;
 }
 
+/**
+ * Initializes OpenGL and creates an external Window.
+ */
 void initGL()
 {
    int argc = 1;
@@ -124,10 +159,11 @@ void initGL()
 }
 
 /**
- * Display() gets called whenever a new frame is to be rendered
+ * Display() gets called whenever a new frame is to be rendered.
  */
 void display()
 {
+   /// Re-Upload texture data to graphics hardware if needed.
    if(updated_)
    {
 #ifdef HAVE_BOOST
@@ -135,7 +171,6 @@ void display()
 #endif
       uploadTexture();
       updated_ = false;
-
    }
 
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -164,11 +199,12 @@ void display()
  */
 void idle()
 {
-   
-
    glutPostRedisplay(); // render new frame
 }
 
+/**
+ * Uploads a texture to graphics card.
+ */
 void uploadTexture()
 {
    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, resx_, resy_, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, texture_);

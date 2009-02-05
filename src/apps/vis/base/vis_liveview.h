@@ -10,20 +10,36 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 
 #ifdef ENABLE_VIS
+
 #ifdef HAVE_BOOST
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #endif
+
 namespace vis
 {
-// create window and start window thread:
+/**
+ * Creates an external Window of the provided size an using the provided
+ * texture resolution.
+ */
 void createWindow(int sizex, int sizey, int resx, int resy);
-// update texture data of window thread with new data created by cairo:
+
+/**
+ * Notifies the external window that the texture has changed and needs to
+ * be updated.
+ */
 void updateTexture(unsigned char* textureData);
-// get pointer to texture array:
+
+/**
+ * Returns a pointer to the currently used texture data.
+ */
 unsigned char* getTexture();
 
 #ifdef HAVE_BOOST
+/**
+ * Returns the mutex that needs to be locked before changing or reading
+ * texture data.
+ */
 boost::mutex* getUpdateMutex();
 #endif
 
