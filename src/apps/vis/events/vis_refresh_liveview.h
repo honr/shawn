@@ -33,7 +33,7 @@ namespace vis
 
       void timeout(shawn::EventScheduler &es, 
          shawn::EventScheduler::EventHandle eh, double t, 
-         shawn::EventScheduler::EventTagHandle &);
+         shawn::EventScheduler::EventTagHandle &) throw();
 
    protected:
       ///@name Getter

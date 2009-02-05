@@ -38,6 +38,7 @@ namespace vis
    void RefreshLiveviewEvent::timeout(shawn::EventScheduler &es, 
          shawn::EventScheduler::EventHandle eh, double t, 
          shawn::EventScheduler::EventTagHandle &)
+      throw()
    {
 #ifdef HAVE_BOOST
       last_refresh_.nsec += min_delay_time_;
@@ -56,6 +57,7 @@ namespace vis
    void
    RefreshLiveviewEvent::
    write_frame()
+      throw( std::runtime_error )
    {
       double t = 0.0;
       unsigned char* texture_ = getTexture();
