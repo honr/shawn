@@ -19,7 +19,13 @@
 
 namespace vis
 {
-   /** \brief Refreshes the image output window
+   /** \brief Refreshes the external Liveview window.
+    * This event re-paints the visualization data to the texture, which has 
+	* been created for Liveview output by calling CreateLiveviewTask. After
+	* that, it informs the external window to use the refreshed texture.
+	*
+    * This event is added to shauns event scheduler automatically by calling 
+	* CreateLiveviewTask.
     */
    class RefreshLiveviewEvent
       : public shawn::EventScheduler::EventHandler
@@ -27,6 +33,16 @@ namespace vis
    public:
       ///@name Constructor/Destructor
 	   ///@{
+      /**
+	   * Creates the event.
+	   * @param refresh_interval Time interval (in shaun simulation time) in
+	   * which the Liveview texture is to be updated, for example 0.5 for
+	   * updating twice a simulation round or 2.0 for updating every second
+	   * round.
+	   * @param min_delay Minimum interval (in real time (ms)) between two 
+	   * updates. Pauses the simulation as long as needed.
+	   * @param vis The visualization object.
+	   */
       RefreshLiveviewEvent(double refresh_interval, int min_delay, Visualization &vis);
       virtual ~RefreshLiveviewEvent();
       ///@}

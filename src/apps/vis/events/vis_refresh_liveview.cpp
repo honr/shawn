@@ -28,6 +28,7 @@ namespace vis
       last_refresh_.sec -= 1;
 #endif
       min_delay_time_ = min_delay;
+	  // Convert to Nanoseconds as needed by boost::thread:
       min_delay_time_ *= 1000000;
    }
    // ----------------------------------------------------------------------
@@ -41,16 +42,22 @@ namespace vis
       throw()
    {
 #ifdef HAVE_BOOST
+      // Compute timestamp of next refresh.
       last_refresh_.nsec += min_delay_time_;
+	  // Sleeps until next refresh (if needed, maybe already reached).
       boost::thread::sleep(last_refresh_); 
+	  // Start refresh and mark current time as time of last refresh.
       boost::xtime_get(&last_refresh_, boost::TIME_UTC);
+	  // Lock the texture update mutex!
       boost::mutex::scoped_lock lock(*getUpdateMutex());
 #endif
+	  // Writes current network state to texture.
       write_frame();
 
+	  // Informs the external window that texture data has changed.
       updateTexture(getTexture());
-      //std::cout << "Updated Liveview (" << es.current_time() << ")" << std::endl;
       
+	  // Re-schedules the event for next execution.
       es.move_event(eh, t + refresh_interval_);
    }
    // ----------------------------------------------------------------------

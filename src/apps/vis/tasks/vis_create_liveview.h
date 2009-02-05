@@ -14,7 +14,11 @@
 
 namespace vis
 {
-   /** \brief Creates an image output window
+   /** \brief Creates external Liveview window.
+    * Creates the external Liveview output window. This window is used to
+	* visualize the network state directly, while the simulation is
+	* executed. It runs in an external thread in parallel to the shaun
+	* simulation thread.
     */
    class CreateLiveviewTask
       : public VisualizationTask

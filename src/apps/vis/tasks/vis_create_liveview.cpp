@@ -46,22 +46,36 @@ namespace vis
    run( shawn::SimulationController& sc )
       throw( std::runtime_error )
    {
-
       VisualizationTask::run(sc);
 
+	  // Uses the resolution of the vis camera as texture resolution:
       int texwidth = (int)visualization().camera().width(0.0);
       int texheight = (int)visualization().camera().height(0.0);
-      int width = sc.environment().optional_int_param("winwidth", texwidth + 10);
-      int height = sc.environment().optional_int_param("winheight", texwidth + 10);
-      double refresh_interval = sc.environment().optional_double_param("refresh_interval", 1.0);
-      int refresh_delay = sc.environment().optional_int_param("refresh_delay", 500);
+
+	  // Fit the window size to the configured camera resolution:
+      int width = sc.environment().optional_int_param("winwidth", 
+		  texwidth + 10);
+      int height = sc.environment().optional_int_param("winheight", 
+		  texwidth + 10);
+
+	  // Refresh interval in Shaun time (once every simulation round by 
+	  // default):
+      double refresh_interval = sc.environment().optional_double_param(
+		  "refresh_interval", 1.0);
+	  // Minimum interval delay in milliseconds (to make a fast simulations 
+	  // visible; 0 by default):
+      int refresh_delay = sc.environment().optional_int_param("refresh_delay",
+		  0);
 
 #ifdef HAVE_BOOST
+	  // Creates the external window:
       createWindow(width, height, texwidth, texheight);
 
+	  // Adds the Liveview refresh event to Shauns event scheduler:
       double event_time = sc.world().scheduler().current_time();
-      sc.world_w().scheduler_w().new_event(*new RefreshLiveviewEvent(refresh_interval, refresh_delay, 
-         visualization_w()), event_time, NULL);
+      sc.world_w().scheduler_w().new_event(*new RefreshLiveviewEvent(
+		  refresh_interval, refresh_delay, visualization_w()), 
+		  event_time, NULL);
 #endif
    }
 }
