@@ -16,7 +16,7 @@
 #include "sys/simulation/simulation_environment.h"
 #include "sys/logging/logger.h"
 #include <string>
-#include <stdlib.h>
+#include <cstdlib>
 
 //#include "config/reading.h"
 #ifdef ENABLE_READING

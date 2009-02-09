@@ -192,6 +192,22 @@ namespace shawn
 
       ///@}
 
+		///@name State management
+		///@{
+
+		/** Sets the state of the processor, where
+		 *  - Processor::Active   denotes the usual state
+		 *  - Processor::Sleeping stops message reception, but work() continues
+		 *  - Processor::Inactive is final
+		 */
+		virtual void set_state( const ProcessorState& ) throw();
+
+		/** Sets the state of the processor, where
+		 */
+		void set_auto_terminate( bool enable ) throw();
+
+		///@}
+		
    protected:
 
       ///@name Message sending
@@ -206,22 +222,6 @@ namespace shawn
 		*  unicast is decided by Message::is_unicast(). 
 		*/
 		virtual void send( const MessageHandle& ) throw();
-	///@}
-
-	///@name State management
-	///@{
-
-		/** Sets the state of the processor, where
-		*  - Processor::Active   denotes the usual state
-		*  - Processor::Sleeping stops message reception, but work() continues
-		*  - Processor::Inactive is final
-		*/
-		virtual void set_state( const ProcessorState& ) throw();
-
-		/** Sets the state of the processor, where
-		*/
-		void set_auto_terminate( bool enable ) throw();
-
       ///@}
 
    private:
