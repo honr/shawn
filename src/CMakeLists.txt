@@ -27,8 +27,15 @@ endif(COMMAND cmake_policy)
 
 	project( SHAWN )
 
+#=============
+# Options
+#=============
+
 	OPTION(OPT_ENABLE_CGAL "Enable CGAL library support" OFF)
+	OPTION(OPT_ENABLE_CAIRO "Enable Cairo library support" OFF)
+	OPTION(OPT_ENABLE_BOOST "Enable boost library support" OFF)
 	OPTION(OPT_CONFIGURE_LOGGING "Configure logging system" OFF)
+	OPTION(OPT_ENABLE_GLUT "Enable GLUT library used by vis Liveview")
 
 #=============
 # Set the default paths for binary and lib build
@@ -108,26 +115,31 @@ endif(COMMAND cmake_policy)
     )
 
 	if ( OPT_ENABLE_CGAL )
-		if ( WIN32 AND NOT CYGWIN )
-			set ( DEFAULT_CGAL_ROOT   )
-			set( LIB_PATH_CGAL   CACHE PATH "Path to CGAL library" )
-	        set( INCLUDE_PATH_CGAL   CACHE PATH "Path to CGAL includes" )
-	        set( INCLUDE_PATH_CGAL_COMPILER_CONFIG   CACHE PATH "Path to CGAL compiler config" )
-	        set( INCLUDE_PATH_BOOST   CACHE PATH "Path to Boost include path" )
-		else ( WIN32 AND NOT CYGWIN )
-			set ( DEFAULT_CGAL_ROOT   )
-			set( LIB_PATH_CGAL   CACHE PATH "Path to CGAL library" )
-	        set( INCLUDE_PATH_CGAL   CACHE PATH "Path to CGAL includes" )
-	        set( INCLUDE_PATH_CGAL_COMPILER_CONFIG   CACHE PATH "Path to CGAL compiler config" )
-	        set( INCLUDE_PATH_BOOST   CACHE PATH "Path to Boost include path" )
-		endif ( WIN32 AND NOT CYGWIN )
+		set( DEFAULT_CGAL_ROOT )
+		set( LIB_PATH_CGAL CACHE PATH "Path to CGAL library" )
+		set( INCLUDE_PATH_CGAL CACHE PATH "Path to CGAL includes" )
+	        set( INCLUDE_PATH_CGAL_COMPILER_CONFIG CACHE PATH "Path to CGAL compiler config" )
 		link_directories( ${LIB_PATH_CGAL} )
-		include_directories	( 
-								${INCLUDE_PATH_CGAL}
-								${INCLUDE_PATH_CGAL_COMPILER_CONFIG}
-								${INCLUDE_PATH_BOOST} 
-							)
+		include_directories ( 
+			${INCLUDE_PATH_CGAL}
+			${INCLUDE_PATH_CGAL_COMPILER_CONFIG}
+		)
 	endif ( OPT_ENABLE_CGAL )
+
+	if( OPT_ENABLE_BOOST )
+		set ( LIB_PATH_BOOST   CACHE PATH "Boost lib path" )
+		set ( INCLUDE_PATH_BOOST   CACHE PATH "Boost include path" )
+		link_directories( ${LIB_PATH_BOOST} )
+		include_directories ( ${INCLUDE_PATH_BOOST} )
+	endif( OPT_ENABLE_BOOST )
+
+	if ( OPT_ENABLE_CAIRO )
+		set ( DEFAULT_CAIRO_ROOT )
+		set ( LIB_PATH_CAIRO   CACHE PATH "Path to CAIRO library" )
+		set ( INCLUDE_PATH_CAIRO   CACHE PATH "Path to CAIRO includes" )
+		link_directories( ${LIB_PATH_CAIRO} )
+		include_directories ( ${INCLUDE_PATH_CAIRO} )
+	endif ( OPT_ENABLE_CAIRO )	
 
 #=============
 # Configure logging libraries
@@ -175,12 +187,22 @@ endif(COMMAND cmake_policy)
 #=============
 
 	if( OPT_ENABLE_CGAL )
-	if ( LIB_PATH_CGAL )
-		add_definitions( -DHAVE_CGAL -DHAVE_BOOST -DHAVE_BOOST_REGEX )
-	endif ( LIB_PATH_CGAL )
+		add_definitions( -DHAVE_CGAL )
 	endif( OPT_ENABLE_CGAL )
 
-	if ( LEGACYAPPS_PATH )
+	if( OPT_ENABLE_BOOST )
+		add_definitions(-DHAVE_BOOST -DHAVE_BOOST_REGEX )
+	endif( OPT_ENABLE_BOOST )
+
+	if( OPT_ENABLE_CAIRO )
+		add_definitions( -DHAVE_CAIRO )
+	endif ( OPT_ENABLE_CAIRO )
+
+	if( OPT_ENABLE_GLUT )
+		add_definitions( -DHAVE_GLUT )
+	endif ( OPT_ENABLE_GLUT )
+
+	if( LEGACYAPPS_PATH )
 		add_definitions( -DHAVE_LEGACYAPPS )
 	endif ( LEGACYAPPS_PATH )
 
@@ -272,33 +294,56 @@ endif(COMMAND cmake_policy)
 #=============
 
 	if (  WIN32 AND NOT CYGWIN  )
-     set ( SYSTEM_LIBS ws2_32.lib )
+		set ( SYSTEM_LIBS ws2_32.lib )
 
-	  if ( OPT_ENABLE_CGAL )
-		 if ( LIB_PATH_CGAL )
+		if ( OPT_ENABLE_CGAL )
 			set ( LIB_CGAL CGAL.lib )
-		 endif ( LIB_PATH_CGAL )
-	  endif ( OPT_ENABLE_CGAL )
+	  	endif ( OPT_ENABLE_CGAL )
 
-	  if ( LIB_PATH_LOG4CXX )
-		 set ( LIB_LOGGING log4Cxx.lib apr.lib aprutil.lib xml.lib odbc32.lib mswsock.lib)
-	  endif ( LIB_PATH_LOG4CXX )
+		if ( LIB_PATH_LOG4CXX )
+			set ( LIB_LOGGING log4Cxx.lib apr.lib aprutil.lib xml.lib odbc32.lib mswsock.lib)
+		endif ( LIB_PATH_LOG4CXX )
+
+		if ( OPT_ENABLE_CAIRO )
+			set (LIB_CAIRO cairo.lib)
+		endif ( OPT_ENABLE_CAIRO )
+
+		if ( OPT_ENABLE_GLUT )
+			set ( LIB_GLUT OpenGL32.Lib glut32.lib )
+		endif ( OPT_ENABLE_GLUT )
+
+		if ( OPT_ENABLE_BOOST )
+			set ( LIB_BOOST )
+		endif ( OPT_ENABLE_BOOST )
 
 	else (  WIN32 AND NOT CYGWIN  )
-     set ( SYSTEM_LIBS dl )
+		set ( SYSTEM_LIBS dl )
 
-	  if ( OPT_ENABLE_CGAL )
-		 if ( LIB_PATH_CGAL )
-			set ( LIB_CGAL CGAL boost_regex )
-		 endif ( LIB_PATH_CGAL )
-	  endif ( OPT_ENABLE_CGAL )
+		if ( OPT_ENABLE_CGAL )
+			set ( LIB_CGAL CGAL)
+		endif ( OPT_ENABLE_CGAL )
 
-	  if ( LIB_PATH_LOG4CXX )
-		 set ( LIB_LOGGING log4cxx )
-	  endif ( LIB_PATH_LOG4CXX )
+		if ( LIB_PATH_LOG4CXX )
+			set ( LIB_LOGGING log4cxx )
+		endif ( LIB_PATH_LOG4CXX )
+
+		if ( OPT_ENABLE_CAIRO )
+			set (
+				LIB_CAIRO cairo pixman-1 png freetype fontconfig z
+			)
+		endif ( OPT_ENABLE_CAIRO )
+
+		if ( OPT_ENABLE_BOOST )
+			set ( LIB_BOOST boost_regex boost_date_time boost_thread )
+		endif ( OPT_ENABLE_BOOST )
+
+		if ( OPT_ENABLE_GLUT )
+			set ( LIB_GLUT GL glut )
+		endif ( OPT_ENABLE_GLUT )
 
 	endif (  WIN32 AND NOT CYGWIN  )
 
-   IF(NOT BUILD_LIB_WITH_MAIN)
-     target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} ${SHAWN_LINK_LIBS} )
-   ENDIF(NOT BUILD_LIB_WITH_MAIN)
+	IF(NOT BUILD_LIB_WITH_MAIN)
+		target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
+			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
+	ENDIF(NOT BUILD_LIB_WITH_MAIN)
