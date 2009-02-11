@@ -8,6 +8,7 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 
 #ifdef ENABLE_VIS
+#ifdef HAVE_GLUT
 #include "apps/vis/tasks/vis_create_liveview.h"
 #include "apps/vis/events/vis_refresh_liveview.h"
 #include "apps/vis/base/vis_liveview.h"
@@ -79,4 +80,5 @@ namespace vis
 #endif
    }
 }
+#endif
 #endif

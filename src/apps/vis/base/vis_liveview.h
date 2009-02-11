@@ -10,6 +10,7 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 
 #ifdef ENABLE_VIS
+#ifdef HAVE_GLUT
 
 #ifdef HAVE_BOOST
 #include <boost/thread.hpp>
@@ -45,5 +46,5 @@ boost::mutex* getUpdateMutex();
 
 }
 #endif
-
+#endif
 #endif

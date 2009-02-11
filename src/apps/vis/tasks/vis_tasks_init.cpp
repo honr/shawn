@@ -50,7 +50,9 @@ namespace vis
      sc.simulation_task_keeper_w().add( new CreateLabelTask );
      sc.simulation_task_keeper_w().add( new TagSampleTask );
 #ifdef HAVE_BOOST
+#ifdef HAVE_GLUT
 	  sc.simulation_task_keeper_w().add( new CreateLiveviewTask );
+#endif
 #endif
   }
 

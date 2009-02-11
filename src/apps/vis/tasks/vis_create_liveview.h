@@ -10,6 +10,7 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 
 #ifdef ENABLE_VIS
+#ifdef HAVE_GLUT
 #include "apps/vis/base/vis_task.h"
 
 namespace vis
@@ -50,6 +51,6 @@ namespace vis
    };
 
 }
-
+#endif
 #endif
 #endif

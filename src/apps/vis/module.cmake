@@ -23,6 +23,11 @@
       add_definitions(-DHAVE_BOOST -DHAVE_BOOST_REGEX )
     endif( OPT_ENABLE_BOOST )
 
+    OPTION(OPT_ENABLE_GLUT "Enable GLUT library used by Vis Liveview")
+    if ( OPT_ENABLE_GLUT )
+       add_definitions( -DHAVE_GLUT )
+    endif ( OPT_ENABLE_GLUT )
+
     if (  WIN32 AND NOT CYGWIN  )
         if ( OPT_ENABLE_CAIRO )
             if ( LIB_PATH_CAIRO )
