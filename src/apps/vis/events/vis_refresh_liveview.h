@@ -5,8 +5,8 @@
  ** Shawn is free software; you can redistribute it and/or modify it   **
  ** under the terms of the GNU General Public License, version 2.      **
  ************************************************************************/
-#ifndef __SHAWN_VIS_TASK_REFRESH_LIVEVIEW_EVENT_H
-#define __SHAWN_VIS_TASK_REFRESH_LIVEVIEW_EVENT_H
+#ifndef __SHAWN_VIS_REFRESH_LIVEVIEW_EVENT_H
+#define __SHAWN_VIS_REFRESH_LIVEVIEW_EVENT_H
 #include "../buildfiles/_apps_enable_cmake.h"
 
 #ifdef ENABLE_VIS

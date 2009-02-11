@@ -53,13 +53,10 @@ namespace vis
 		   ->find_w(sc.environment().optional_string_param("writer", "pdf"));
 	   Writer* wr = wfh->create();
 
-      long benchtime1 = clock();
       wr->set_draft(dr);
       wr->pre_write( visualization(), sc.environment().optional_string_param("filename", "snapshot"), false );
       wr->write_frame( t );
       wr->post_write();
-      long benchtime2 = clock();
-      //std::cout << "Time to draw: " << benchtime2 - benchtime1 << "ms" << std::endl;
 
       delete wr;
    }

@@ -10,6 +10,9 @@
 #include "apps/vis/tasks/vis_external_animation.h"
 #include "apps/vis/writer/vis_writer_factory.h"
 #include "apps/vis/writer/vis_writer_keeper.h"
+#include "apps/vis/events/vis_write_animation.h"
+#include "sys/event_scheduler.h"
+#include "sys/world.h"
 #include <iomanip>
 #include <sstream>
 #include <math.h>
@@ -51,53 +54,16 @@ namespace vis
    {
       VisualizationTask::run(sc);
 
-      double start = sc.environment().optional_double_param("start",0.0);
-      double end = sc.environment().optional_double_param("end",0.0);
-      double fps = sc.environment().optional_double_param("fps",0.0);
-      std::string fn = sc.environment().optional_string_param("file_base","anim");
-      int dr = sc.environment().optional_int_param("draft",0);
+      std::string file_name = sc.environment().optional_string_param(
+         "filename", "animation");
+      double refresh_interval = sc.environment().optional_double_param(
+		  "refresh_interval", 1.0);
+      std::string writer_type = sc.environment().optional_string_param("writer", "png");
+      double event_time = sc.world().scheduler().current_time();
 
-	  WriterFactoryHandle wfh = sc.keeper_by_name_w<WriterKeeper>("WriterKeeper")
-		  ->find_w(sc.environment().optional_string_param("writer", "pdf"));
-	  Writer* wr = wfh->create();
-
-      wr->set_draft(dr);
-      wr->pre_write( visualization(),
-                     fn,
-                     true );
-      int lastframe=int( floor( (end-start-EPSILON)*fps ) );
-
-#ifdef VIS_HAVE_ETA
-      time_t start_time = time(NULL);
-      std::string eta_str("");
-#endif
-      for( int frame = 0; frame<=lastframe; ++frame )
-         {
-            double now=start+(double(frame)/fps);
-
-            double perc = double(frame)/double(lastframe);
-			perc = int((perc*1000)+.5)/10.0;
-
-#ifdef VIS_HAVE_ETA
-            time_t elapsed = time(NULL)-start_time;
-            if( elapsed>3 && frame>0 )
-               { 
-                  time_t eta=int(double(elapsed)*double(lastframe-frame)/double(frame));
-                  std::ostringstream oss;
-                  oss << " / Est " << (eta/3600) << ":" << std::setw(2) << std::setfill('0') << ((eta/60)%60) << ":" << std::setfill('0') << std::setw(2) << eta%60;
-                  eta_str=oss.str();
-               }
-#endif
-
-#ifdef VIS_HAVE_ETA
-            INFO( logger(), "writing frame #" << wr->next_frame_number() << " (" << perc <<"%" << eta_str << ")");
-#else
-            INFO( logger(), "writing frame #" << wr->next_frame_number() << " (" << perc <<"%");
-#endif
-            wr->write_frame( now );
-         }
-      wr->post_write();
-      delete wr;
+      sc.world_w().scheduler_w().new_event(*new WriteAnimationFrameEvent(
+		  refresh_interval, visualization_w(), writer_type, file_name, sc ), 
+		  event_time, NULL);
    }
 
 
