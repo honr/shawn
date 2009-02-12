@@ -13,6 +13,7 @@
 #include "apps/vis/elements/vis_drawable_node_default.h"
 #include "apps/vis/elements/vis_drawable_node_factory.h"
 #include "apps/vis/elements/vis_drawable_node_keeper.h"
+#include "apps/vis/elements/vis_group_element.h"
 
 using namespace shawn;
 
@@ -48,7 +49,7 @@ namespace vis
 
       require_world(sc);
 
-      std::string name = sc.environment().required_string_param( "vis" );
+      std::string name = sc.environment().optional_string_param( "vis", "visualization" );
       visualization_keeper_w(sc).add(vis=new Visualization(name));
 
       DrawableNodeFactoryHandle dnfh = sc.keeper_by_name_w<DrawableNodeKeeper>("DrawableNodeKeeper")
@@ -60,6 +61,13 @@ namespace vis
       DEBUG( logger(),
              "created visualization '" << name << "'" );
 
+      std::string groupname = "Nodes.";
+      groupname += sc.environment().optional_string_param("drawable_nodes", "default");
+      GroupElement* ge =
+         new GroupElement( groupname );
+      ge->init();
+      vis->add_element(ge);
+
       for( shawn::World::const_node_iterator
               it = sc.world().begin_nodes();
            it != sc.world().end_nodes();
@@ -68,6 +76,7 @@ namespace vis
             DrawableNode *dn = dnfh->create(*it);
             dn->init();
             vis->add_element(dn);
+            ge->add_element(*dn);
          }
    }
 
