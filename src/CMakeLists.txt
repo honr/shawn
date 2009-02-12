@@ -35,7 +35,7 @@ endif(COMMAND cmake_policy)
 	OPTION(OPT_ENABLE_CAIRO "Enable Cairo library support" OFF)
 	OPTION(OPT_ENABLE_BOOST "Enable boost library support" OFF)
 	OPTION(OPT_CONFIGURE_LOGGING "Configure logging system" OFF)
-	OPTION(OPT_ENABLE_GLUT "Enable GLUT library used by vis Liveview")
+	OPTION(OPT_ENABLE_GLUT "Enable GLUT library used by vis Liveview" OFF)
 
 #=============
 # Set the default paths for binary and lib build
@@ -293,7 +293,7 @@ endif(COMMAND cmake_policy)
 # Link libraries to the shawn target
 #=============
 
-	if (  WIN32 AND NOT CYGWIN  )
+	if ( WIN32 AND NOT CYGWIN  )
 		set ( SYSTEM_LIBS ws2_32.lib )
 
 		if ( OPT_ENABLE_CGAL )
@@ -316,7 +316,7 @@ endif(COMMAND cmake_policy)
 			set ( LIB_BOOST )
 		endif ( OPT_ENABLE_BOOST )
 
-	else (  WIN32 AND NOT CYGWIN  )
+	else ( WIN32 AND NOT CYGWIN  )
 		set ( SYSTEM_LIBS dl )
 
 		if ( OPT_ENABLE_CGAL )
@@ -334,14 +334,18 @@ endif(COMMAND cmake_policy)
 		endif ( OPT_ENABLE_CAIRO )
 
 		if ( OPT_ENABLE_BOOST )
-			set ( LIB_BOOST boost_regex boost_date_time boost_thread )
+			if ( CYGWIN )
+				set ( LIB_BOOST boost_regex-gcc-mt boost_date_time-gcc-mt boost_thread-gcc-mt )
+			else ( CYGWIN )
+				set ( LIB_BOOST boost_regex boost_date_time boost_thread )
+			endif ( CYGWIN )
 		endif ( OPT_ENABLE_BOOST )
 
 		if ( OPT_ENABLE_GLUT )
 			set ( LIB_GLUT GL glut )
 		endif ( OPT_ENABLE_GLUT )
 
-	endif (  WIN32 AND NOT CYGWIN  )
+	endif ( WIN32 AND NOT CYGWIN  )
 
 	IF(NOT BUILD_LIB_WITH_MAIN)
 		target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
