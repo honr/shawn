@@ -64,14 +64,14 @@ namespace shawn
 		if( type == "802.15.4" ){
 		
 			cout << "CSMA transmission model factory: Setting parameters to fit IEEE 802.15.4" << endl;
-			bandwidth =16000; // 
-
-			short_inter_frame_spacing = 12.0/double(bandwidth); // 12 symbols
-			long_inter_frame_spacing = 40.0/double(bandwidth); // 40 symbols
+			bandwidth = 31250; // byte/sec
+			// 2 Symbols == 1 byte
+			short_inter_frame_spacing = 12.0/(2*double(bandwidth)); // 12 symbols, should be 0.192 ms
+			long_inter_frame_spacing = 40.0/(2*double(bandwidth)); // 40 symbols, should be 0.64 ms
 			max_short_inter_frame_spacing_size = 18;
-
-			   
-			backoff = 20.0/double(bandwidth); //20 symbols
+			
+			backoff = 20.0/(2*double(bandwidth)); //20 symbols, should be 0.32 ms
+			
 			max_sending_attempts = 5;
 			backoff_factor_base = 2;
 			min_backoff_exponent = 3;
@@ -80,7 +80,7 @@ namespace shawn
 		else if( type == "802.11b" )
 		{
 			cout << "CSMA transmission model factory: Setting parameters to fit IEEE 802.11b" << endl;
-			bandwidth =1000000; // 1MBit/s
+			bandwidth =1000000/8; // 1MBit/s
 
 			backoff = 0.00002; // slotTime 20 us (DS PHY)
 
