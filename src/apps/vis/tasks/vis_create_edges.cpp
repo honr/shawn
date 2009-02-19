@@ -48,8 +48,48 @@ namespace vis
       throw( std::runtime_error )
    {
       VisualizationTask::run(sc);
+
 #ifndef HAVE_BOOST_REGEX
-      throw std::runtime_error("no boost::regex support compiled in");
+      // If there is a group parameter, try to use that group:
+      GroupElement* grp = group(sc);
+      // If no group is set, create a default group:
+      if(grp == NULL)
+      {
+         grp = new GroupElement("edges.default");
+         grp->init();
+         visualization_w().add_element(grp);
+      }
+
+      std::string pref = sc.environment().
+            optional_string_param("prefix",DrawableEdgeDefault::PREFIX);
+      std::string node_prefix = sc.environment().
+            optional_string_param("node_prefix",DrawableNodeDefault::PREFIX);
+
+      for( shawn::World::const_node_iterator
+              it    = visualization().world().begin_nodes(),
+              endit = visualization().world().end_nodes();
+           it != endit; ++it )
+      {
+         for( shawn::Node::const_adjacency_iterator
+                       ait    = it->begin_adjacent_nodes(),
+                       endait = it->end_adjacent_nodes();
+                    ait != endait; ++ait )
+         {
+            if( *it != *ait && (ait->label() > it->label()) )
+            {
+               const DrawableNode* dsrc =
+                        drawable_node(*it,node_prefix);
+               const DrawableNode* dtgt =
+                        drawable_node(*ait,node_prefix);
+               DrawableEdgeDefault* ded =
+                        new DrawableEdgeDefault(*it,*ait,*dsrc,*dtgt,pref);
+               ded->init();
+               visualization_w().add_element(ded);
+               grp->add_element(*ded);
+            }
+         }
+
+      }
 #else
       boost::regex sources(sc.environment().required_string_param("source_regex"));
       boost::regex targets(sc.environment().required_string_param("target_regex"));
