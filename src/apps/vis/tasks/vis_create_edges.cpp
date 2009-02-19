@@ -84,8 +84,8 @@ namespace vis
 
       }
 #else
-      boost::regex sources(sc.environment().required_string_param("source_regex"));
-      boost::regex targets(sc.environment().required_string_param("target_regex"));
+      boost::regex sources(sc.environment().optional_string_param("source_regex", ".*"));
+      boost::regex targets(sc.environment().optional_string_param("target_regex", ".*"));
 
       std::string pref = sc.environment().
          optional_string_param("prefix",DrawableEdgeDefault::PREFIX);
