@@ -61,10 +61,8 @@ namespace vis
       DEBUG( logger(),
              "created visualization '" << name << "'" );
 
-      std::string groupname = "nodes.";
-      groupname += sc.environment().optional_string_param("drawable_nodes", "default");
       GroupElement* ge =
-         new GroupElement( groupname );
+         new GroupElement( "all.nodes" );
       ge->init();
       vis->add_element(ge);
 

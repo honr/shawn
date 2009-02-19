@@ -48,17 +48,10 @@ namespace vis
       throw( std::runtime_error )
    {
       VisualizationTask::run(sc);
+      GroupElement* all_edges = new GroupElement("all.edges");
+      visualization_w().add_element(all_edges);
 
 #ifndef HAVE_BOOST_REGEX
-      // If there is a group parameter, try to use that group:
-      GroupElement* grp = group(sc);
-      // If no group is set, create a default group:
-      if(grp == NULL)
-      {
-         grp = new GroupElement("edges.default");
-         grp->init();
-         visualization_w().add_element(grp);
-      }
 
       std::string pref = sc.environment().
             optional_string_param("prefix",DrawableEdgeDefault::PREFIX);
@@ -85,7 +78,7 @@ namespace vis
                         new DrawableEdgeDefault(*it,*ait,*dsrc,*dtgt,pref);
                ded->init();
                visualization_w().add_element(ded);
-               grp->add_element(*ded);
+               all_edges->add_element(*ded);
             }
          }
 
@@ -128,6 +121,7 @@ namespace vis
                               visualization_w().add_element(ded);
                               if( grp != NULL )
                                  grp->add_element(*ded);
+                              all_edges->add_element(*ded);
                            }
             }
       }

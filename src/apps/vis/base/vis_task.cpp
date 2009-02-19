@@ -30,7 +30,7 @@ namespace vis
       throw( std::runtime_error )
    {
       vis_ = visualization_keeper_w(sc).
-         find_w( sc.environment().required_string_param("vis") );
+         find_w( sc.environment().optional_string_param("vis", "visualization") );
    }
 
 }
