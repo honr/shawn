@@ -85,7 +85,10 @@ public:
 	virtual std::string readString() throw(std::invalid_argument);
 	virtual void writeString(std::string s) throw();
 
-	virtual int readShort() throw(std::invalid_argument);
+    virtual std::vector<std::string> readStringList() throw(std::invalid_argument);
+    virtual void writeStringList(const std::vector<std::string> &s) throw();
+
+    virtual int readShort() throw(std::invalid_argument);
 	virtual void writeShort(int) throw(std::invalid_argument);
 
 	virtual int readInt() throw(std::invalid_argument);

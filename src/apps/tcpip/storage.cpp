@@ -190,8 +190,9 @@ namespace tcpip
 	{
 		string tmp;
 		int len = readInt();
-		for (int i = 0; i < len; i++)
+        for (int i = 0; i < len; i++) {
 			tmp += (char) readChar();
+        }
 		return tmp;
 	}
 
@@ -203,8 +204,37 @@ namespace tcpip
 	void Storage::writeString(std::string s) throw()
 	{
 		writeInt(static_cast<int>(s.length()));
-		for (string::iterator it = s.begin(); it!=s.end() ; it++)
+        for (string::iterator it = s.begin(); it!=s.end() ; it++) {
 			writeChar(*it);
+        }
+	}
+
+	// -----------------------------------------------------------------------
+	/**
+	* Reads a string list form the array
+	* @return The read string
+	*/
+    std::vector<std::string> Storage::readStringList() throw(std::invalid_argument)
+	{
+		std::vector<std::string> tmp;
+		int len = readInt();
+        for (int i = 0; i < len; i++) {
+            tmp.push_back(readString());
+        }
+		return tmp;
+	}
+
+	// ----------------------------------------------------------------------
+	/**
+	* Writes a string into the array;
+	* @param s		The string to be written
+	*/
+	void Storage::writeStringList(const std::vector<std::string> &s) throw()
+	{
+		writeInt(static_cast<int>(s.size()));
+        for (std::vector<std::string>::const_iterator it = s.begin(); it!=s.end() ; it++) {
+			writeString(*it);
+        }
 	}
 
 	// ----------------------------------------------------------------------
