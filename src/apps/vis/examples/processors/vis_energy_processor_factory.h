@@ -12,10 +12,10 @@
 
 #include "sys/processors/processor_factory.h"
 
-namespace shawn 
-{ 
-    class SimulationController; 
-    class shawn::Processor;
+namespace shawn
+{
+    class SimulationController;
+    class Processor;
 }
 
 
@@ -39,7 +39,7 @@ namespace vis
 	   static void register_factory( shawn::SimulationController& ) throw();
 	private:
       shawn::SimulationController* sc_;
-      
+
 	};
 
 }
