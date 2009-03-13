@@ -7,7 +7,7 @@
  ************************************************************************/
 
 #include "apps/apps_init.h"
-#include "../../buildfiles/_apps_init_cmake.h"
+#include "_apps_init_cmake.h"
 #include <iostream>
 #include <stdio.h>
 
