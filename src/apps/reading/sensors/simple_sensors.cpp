@@ -25,5 +25,22 @@ namespace reading
    {
       return reading_.value(node_.real_position());
    }
+
+
+
+   IntegerSensor::IntegerSensor(const IntegerReading &rdg,
+                              const shawn::Node &node)
+   : Sensor<int>(rdg,node)
+   {
+   }
+
+   IntegerSensor::~IntegerSensor()
+   {
+   }
+
+   int IntegerSensor::value()
+   {
+      return reading_.value(node_.real_position());
+   }
 }
 #endif

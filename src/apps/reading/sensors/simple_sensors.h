@@ -25,6 +25,16 @@ namespace reading
 
       virtual double value();
    };
+
+   class IntegerSensor
+      :public Sensor<int>
+   {
+   public:
+      IntegerSensor(const IntegerReading &rdg, const shawn::Node &node);
+      virtual ~IntegerSensor();
+
+      virtual int value();
+   };
 }
 #endif
 #endif // __SHAWN_APPS_READING_SIMPLE_SENSORS_H

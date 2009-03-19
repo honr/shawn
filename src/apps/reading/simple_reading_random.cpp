@@ -38,6 +38,32 @@ namespace reading
    {
       return "A reading which returns random double values.";
    }
+
+
+
+   IntegerReadingRandom::IntegerReadingRandom()
+   {
+      srand(time(NULL));
+   }
+
+   IntegerReadingRandom::~IntegerReadingRandom()
+   {}
+
+   int IntegerReadingRandom::value( const shawn::Vec &pos )
+      const throw()
+   {
+      int ival = rand() % 1001;
+      return ival;
+   }
+
+   std::string IntegerReadingRandom::name( void ) const throw()
+   {
+      return "integer_reading_random";
+   }
+   std::string IntegerReadingRandom::description( void ) const throw()
+   {
+      return "A reading which returns random integer values.";
+   }
 }
 
 #endif

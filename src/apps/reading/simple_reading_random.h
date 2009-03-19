@@ -29,6 +29,20 @@ namespace reading
 
    };
    DECLARE_HANDLES(DoubleReadingRandom);
+
+   class IntegerReadingRandom
+      : public IntegerReading
+   {
+   public:
+      IntegerReadingRandom();
+      virtual ~IntegerReadingRandom();
+
+      virtual int value( const shawn::Vec& v ) const throw();
+      virtual std::string name( void ) const throw();
+      virtual std::string description( void ) const throw();
+
+   };
+   DECLARE_HANDLES(IntegerReadingRandom);
 }
 
 #endif
