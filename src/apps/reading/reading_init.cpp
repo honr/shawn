@@ -12,9 +12,16 @@
 
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task_keeper.h"
+#include "apps/reading/simple_reading_random.h"
+#include "apps/reading/test/random_double_test_processor_factory.h"
+#include "apps/reading/test/create_random_double_reading.h"
+#include <iostream>
 
 extern "C" void init_reading( shawn::SimulationController& sc )
-{   
+{
+   sc.reading_keeper_w().add( new reading::DoubleReadingRandom );
+   reading::RandomDoubleTestProcessorFactory::register_factory(sc);
+   sc.simulation_task_keeper_w().add( new reading::SimulationTaskReadingDoubleTestCreate );
 }
 
 #endif
@@ -24,4 +31,4 @@ extern "C" void init_reading( shawn::SimulationController& sc )
  * Version $Revision$
  * Date    $Date$
  *-----------------------------------------------------------------------*/
- 
+
