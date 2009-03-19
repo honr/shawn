@@ -35,7 +35,9 @@ namespace vis
       DrawableEdgeDynamic( const shawn::Node&,
                            const shawn::Node&,
                            const std::string& p = PREFIX,
-                           const std::string& np = DrawableNodeDefault::PREFIX);
+                           const std::string& np = DrawableNodeDefault::PREFIX,
+                           const std::string source_regex = ".*",
+                           const std::string target_regex = ".*");
       virtual ~DrawableEdgeDynamic();
       ///@}
 
@@ -82,6 +84,8 @@ namespace vis
       shawn::RefcntPointer<EdgePropertySet> props_;
 
       const std::string &node_prefix;
+      const std::string source_regex_;
+      const std::string target_regex_;
    };
 }
 

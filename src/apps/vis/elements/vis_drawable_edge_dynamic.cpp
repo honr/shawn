@@ -10,6 +10,10 @@
 
 #include "apps/vis/elements/vis_drawable_edge_dynamic.h"
 
+#ifdef HAVE_BOOST_REGEX
+#include <boost/regex.hpp>
+#endif
+
 namespace vis
 {
 
@@ -19,10 +23,14 @@ namespace vis
    DrawableEdgeDynamic( const shawn::Node& v1,
                         const shawn::Node& v2,
                         const std::string& p,
-                        const std::string& np)
+                        const std::string& np,
+                        const std::string source_regex,
+                        const std::string target_regex)
       : DrawableEdge( std::string("edge.") + p, v1, v2 ),
         props_ ( NULL ),
-        node_prefix (np)
+        node_prefix (np),
+        source_regex_(source_regex),
+        target_regex_(target_regex)
    {}
    // ----------------------------------------------------------------------
    DrawableEdgeDynamic::
@@ -56,6 +64,8 @@ namespace vis
 
             cairo_set_source_rgba(cr,col.x(),col.y(),col.z(),1.0-blend);
 
+            // Create all edges:
+            #ifndef HAVE_BOOST_REGEX
             for( shawn::World::const_node_iterator
             it    = visualization().world().begin_nodes(),
             endit = visualization().world().end_nodes();
@@ -79,8 +89,45 @@ namespace vis
                      cairo_stroke(cr);
                   }
                }
-
             }
+
+            #else
+            boost::regex sources(source_regex_);
+            boost::regex targets(target_regex_);
+            std::cout << source_regex_ << std::endl;
+
+            for( shawn::World::const_node_iterator
+              it    = visualization().world().begin_nodes(),
+              endit = visualization().world().end_nodes();
+              it != endit; ++it )
+            {
+               if( boost::regex_search(it->label(),sources))
+                  {
+                     for( shawn::Node::const_adjacency_iterator
+                             ait    = it->begin_adjacent_nodes(),
+                             endait = it->end_adjacent_nodes();
+                          ait != endait; ++ait )
+                        if( *it != *ait )
+                           if( boost::regex_search(ait->label(),targets) )
+                              if( (ait->label() > it->label()) ||
+                                  (!boost::regex_search(it->label(),targets)) ||
+                                  (!boost::regex_search(ait->label(),sources)) )
+                                 {
+                                    const DrawableNode* dsrc =
+                                            drawable_node(*it,DrawableNodeDefault::PREFIX);
+                                    const DrawableNode* dtgt =
+                                            drawable_node(*ait,DrawableNodeDefault::PREFIX);
+                                    shawn::Vec pos1 = dsrc->position(t);
+                                    shawn::Vec pos2 = dtgt->position(t);
+                                    cairo_move_to(cr,pos1.x(),pos1.y());
+                                    cairo_line_to(cr,pos2.x(),pos2.y());
+                                    cairo_stroke(cr);
+                                 }
+                  }
+            }
+
+            #endif
+
             cairo_restore(cr);
          }
    }

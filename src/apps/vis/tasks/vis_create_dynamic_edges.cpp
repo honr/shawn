@@ -56,10 +56,13 @@ namespace vis
       std::string node_prefix = sc.environment().
             optional_string_param("node_prefix",DrawableNodeDefault::PREFIX);
 
-      const shawn::Node &dummy = *(visualization().world().begin_nodes());
+      std::string _source_regex = sc.environment().optional_string_param("source_regex", ".*");
+      std::string _target_regex = sc.environment().optional_string_param("target_regex", ".*");
 
+      const shawn::Node &dummy = *(visualization().world().begin_nodes());
+      std::cout << "Regex: " << _source_regex << std::endl;
       DrawableEdgeDynamic* ded =
-                        new DrawableEdgeDynamic(dummy,dummy, pref, node_prefix);
+                        new DrawableEdgeDynamic(dummy,dummy, pref, node_prefix, _source_regex, _target_regex);
       ded->init();
       visualization_w().add_element(ded);
       all_edges->add_element(*ded);
