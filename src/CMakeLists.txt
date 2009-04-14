@@ -141,6 +141,13 @@ endif(COMMAND cmake_policy)
 		include_directories ( ${INCLUDE_PATH_CAIRO} )
 	endif ( OPT_ENABLE_CAIRO )	
 
+	if ( OPT_ENABLE_GLUT )
+		set ( LIB_PATH_GLUT   CACHE PATH "Path to GLUT library" )
+		set ( INCLUDE_PATH_GLUT   CACHE PATH "Path to GLUT includes" )
+		link_directories( ${LIB_PATH_GLUT} )
+		include_directories ( ${INCLUDE_PATH_GLUT} )
+	endif ( OPT_ENABLE_GLUT )	
+
 #=============
 # Configure logging libraries
 #=============
@@ -341,9 +348,14 @@ endif(COMMAND cmake_policy)
 			endif ( CYGWIN )
 		endif ( OPT_ENABLE_BOOST )
 
-		if ( OPT_ENABLE_GLUT )
+		if ( OPT_ENABLE_GLUT AND APPLE)
+			set ( LIB_GLUT GL glu glut )
+                        SET_TARGET_PROPERTIES( shawn PROPERTIES LINK_FLAGS "-dylib_file /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib" )
+		endif ( OPT_ENABLE_GLUT AND APPLE )
+
+		if ( OPT_ENABLE_GLUT AND NOT APPLE)
 			set ( LIB_GLUT GL glut )
-		endif ( OPT_ENABLE_GLUT )
+		endif ( OPT_ENABLE_GLUT AND NOT APPLE )
 
 	endif ( WIN32 AND NOT CYGWIN  )
 
