@@ -105,7 +105,7 @@ public:
 	virtual void writeStorage(tcpip::Storage& store);
 
 	// Some enabled functions of the underlying std::list
-	int size() const { return store.size(); }
+	size_t size() const { return store.size(); }
 
 	StorageType::const_iterator begin() const { return store.begin(); }
 	StorageType::const_iterator end() const { return store.end(); }
