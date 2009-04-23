@@ -5,29 +5,11 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
-#ifndef __SHAWN_APPS_BASE_SENSOR_H
-#define __SHAWN_APPS_BASE_SENSOR_H
-
 #include "_apps_enable_cmake.h"
 #ifdef	ENABLE_READING
-#include "apps/reading/readings/simple_reading.h"
-#include "sys/node.h"
 
+#include "apps/reading/sensors/reading_sensor.h"
 namespace reading
-{
-   class SensorKeeper;
+{}
 
-   class Sensor
-   {
-   public:
-      Sensor(){};
-      virtual ~Sensor(){};
-
-      //std::string name();
-   //protected:
-      //std::string name_;
-   };
-}
-#endif
 #endif

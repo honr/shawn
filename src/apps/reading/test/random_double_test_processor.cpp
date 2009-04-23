@@ -9,8 +9,8 @@
 #ifdef ENABLE_READING
 #ifdef ENABLE_EXAMPLES
 #include "apps/reading/sensors/simple_sensors.h"
-#include "apps/reading/simple_reading.h"
-#include "apps/reading/reading_keeper.h"
+#include "apps/reading/readings/simple_reading.h"
+#include "apps/reading/readings/reading_keeper.h"
 #include "sys/node.h"
 #include "sys/taggings/basic_tags.h"
 

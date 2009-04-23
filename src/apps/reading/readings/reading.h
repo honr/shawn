@@ -28,6 +28,7 @@ namespace reading
   class ReadingKeeper;
   class ReadingChangedHandler;
 
+
   DECLARE_HANDLES(Reading);
 
   ///  Superclass for every type of reading.
@@ -35,17 +36,16 @@ namespace reading
    *
    */
   class Reading
-    : public shawn::KeeperManaged
   {
   public:
-       	
+
     typedef std::pair<ReadingChangedHandler*, shawn::Box> RB;
     typedef std::vector<RB> ReadingChangedHandlerList;
-		
+
     ///@name construction / destruction
     ///@{
     ///
-    Reading();
+    Reading(std::string reading_name);
     ///
     virtual ~Reading();
     ///@}
@@ -60,8 +60,8 @@ namespace reading
     /// value() returns meaningful values. It is feasible to query
     /// values outside domain().
     virtual shawn::Box domain( void ) const throw()
-    { 
-      return shawn::Box::INFINITE_3D_SPACE; 
+    {
+      return shawn::Box::INFINITE_3D_SPACE;
     }
     ///@}
     ///
@@ -69,7 +69,9 @@ namespace reading
      *  used by World
      */
     virtual void init( void ) throw();
-		
+
+    virtual std::string name();
+
 
   protected:
     ///
@@ -82,11 +84,12 @@ namespace reading
     /** \return writable World that contains this Reading */
     virtual shawn::World& world_w( void ) throw();
     ///@}
+    std::string name_;
 
   private:
     shawn::World* world_;
   };
-    
+
 
 }
 
@@ -95,8 +98,8 @@ namespace reading
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/reading.h,v $
- * Version $Revision$
- * Date    $Date$
+ * Version $Revision: 287 $
+ * Date    $Date: 2008-11-16 11:35:44 +0100 (So, 16. Nov 2008) $
  *-----------------------------------------------------------------------
  * $Log: reading.h,v $
  *-----------------------------------------------------------------------*/

@@ -8,13 +8,14 @@
 #include "_apps_enable_cmake.h"
 #ifdef	ENABLE_READING
 
-#include "apps/reading/simple_reading_random.h"
+#include "apps/reading/readings/simple_reading_random.h"
 #include <time.h>
 #include <stdlib.h>
 
 namespace reading
 {
-   DoubleReadingRandom::DoubleReadingRandom()
+   DoubleReadingRandom::DoubleReadingRandom(std::string reading_name)
+   :DoubleReading(reading_name)
    {
       srand(time(NULL));
    }
@@ -30,18 +31,9 @@ namespace reading
       return ival;
    }
 
-   std::string DoubleReadingRandom::name( void ) const throw()
-   {
-      return "double_reading_random";
-   }
-   std::string DoubleReadingRandom::description( void ) const throw()
-   {
-      return "A reading which returns random double values.";
-   }
 
-
-
-   IntegerReadingRandom::IntegerReadingRandom()
+   IntegerReadingRandom::IntegerReadingRandom(std::string reading_name)
+   :IntegerReading(reading_name)
    {
       srand(time(NULL));
    }
@@ -54,15 +46,6 @@ namespace reading
    {
       int ival = rand() % 1001;
       return ival;
-   }
-
-   std::string IntegerReadingRandom::name( void ) const throw()
-   {
-      return "integer_reading_random";
-   }
-   std::string IntegerReadingRandom::description( void ) const throw()
-   {
-      return "A reading which returns random integer values.";
    }
 }
 

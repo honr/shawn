@@ -11,8 +11,8 @@
 #include <limits>
 #include "apps/reading/test/create_random_double_reading.h"
 #include "apps/reading/test/random_double_test_processor.h"
-#include "apps/reading/reading_keeper.h"
-#include "apps/reading/simple_reading_random.h"
+#include "apps/reading/readings/reading_keeper.h"
+#include "apps/reading/readings/simple_reading_random.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_environment.h"
 #include "sys/taggings/basic_tags.h"
@@ -41,26 +41,27 @@ namespace reading
       shawn::Node *node = NULL;
       shawn::Processor *proc = NULL;
 
-      for( shawn::World::node_iterator
-               it = sc.world_w().begin_nodes_w();
-               it != sc.world_w().end_nodes_w();
-               ++it )
-      {
-         node = &(*it);
-         for( shawn::Node::ProcessorList::iterator
-               pit = node->begin_processors_w();
-               pit != node->end_processors_w();
-               ++pit )
-         {
-            proc = (*pit).get();
-            reading::DoubleReadingTestProcessor *tp = dynamic_cast<DoubleReadingTestProcessor*>(proc);
-            const DoubleReading *dr = dynamic_cast<const DoubleReading*>(sc.reading_keeper().find("double_reading_random").get());
-            if(proc && dr)
-            {
-               tp->attach_reading(*dr);
-            }
-         }
-      }
+//      for( shawn::World::node_iterator
+//               it = sc.world_w().begin_nodes_w();
+//               it != sc.world_w().end_nodes_w();
+//               ++it )
+//      {
+//         node = &(*it);
+//         for( shawn::Node::ProcessorList::iterator
+//               pit = node->begin_processors_w();
+//               pit != node->end_processors_w();
+//               ++pit )
+//         {
+//            proc = (*pit).get();
+//            reading::DoubleReadingTestProcessor *tp = dynamic_cast<DoubleReadingTestProcessor*>(proc);
+//            const DoubleReadingRandomFactory *dr = dynamic_cast<const DoubleReadingRandomFactory*>(sc.reading_keeper().find("double_reading_random").get());
+//            dr->create("test");
+//            if(proc && dr)
+//            {
+//               tp->attach_reading(*dr);
+//            }
+//         }
+//      }
    }
    // ----------------------------------------------------------------------
    std::string

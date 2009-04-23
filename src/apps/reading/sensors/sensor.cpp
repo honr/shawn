@@ -10,6 +10,13 @@
 
 #include "apps/reading/sensors/sensor.h"
 namespace reading
-{}
+{
+//   std::string
+//   Sensor::
+//   name()
+//   {
+//      return name_;
+//   }
+}
 
 #endif

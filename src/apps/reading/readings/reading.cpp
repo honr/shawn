@@ -8,11 +8,12 @@
 #include "_apps_enable_cmake.h"
 #ifdef	ENABLE_READING
 
-#include "apps/reading/reading.h"
+#include "apps/reading/readings/reading.h"
 
 namespace reading
 {
-   Reading::Reading()
+   Reading::Reading(std::string reading_name)
+   :name_(reading_name)
    {}
    // ----------------------------------------------------------------------
    Reading::~Reading()
@@ -50,7 +51,11 @@ namespace reading
    shawn::World& Reading::world_w( void ) throw()
    {
         return *world_;
+   }
 
+   std::string Reading::name()
+   {
+      return name_;
    }
 }
 
@@ -58,8 +63,8 @@ namespace reading
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/reading.cpp,v $
- * Version $Revision$
- * Date    $Date$
+ * Version $Revision: 287 $
+ * Date    $Date: 2008-11-16 11:35:44 +0100 (So, 16. Nov 2008) $
  *-----------------------------------------------------------------------
  * $Log: reading.cpp,v $
  *-----------------------------------------------------------------------*/

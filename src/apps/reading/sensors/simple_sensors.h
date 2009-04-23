@@ -10,14 +10,15 @@
 #include "_apps_enable_cmake.h"
 
 #ifdef	ENABLE_READING
-#include "apps/reading/simple_reading.h"
+#include "apps/reading/readings/simple_reading.h"
 #include "apps/reading/sensors/sensor.h"
+#include "apps/reading/sensors/reading_sensor.h"
 #include "sys/node.h"
 
 namespace reading
 {
    class DoubleSensor
-      :public Sensor<double>
+      :public ReadingSensor
    {
    public:
       DoubleSensor(const DoubleReading &rdg, const shawn::Node &node);
@@ -27,7 +28,7 @@ namespace reading
    };
 
    class IntegerSensor
-      :public Sensor<int>
+      :public ReadingSensor
    {
    public:
       IntegerSensor(const IntegerReading &rdg, const shawn::Node &node);

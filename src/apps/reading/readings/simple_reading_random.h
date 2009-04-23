@@ -12,7 +12,7 @@
 
 #ifdef ENABLE_READING
 
-#include "apps/reading/simple_reading.h"
+#include "apps/reading/readings/simple_reading.h"
 
 namespace reading
 {
@@ -20,13 +20,10 @@ namespace reading
       : public DoubleReading
    {
    public:
-      DoubleReadingRandom();
+      DoubleReadingRandom(std::string reading_name);
       virtual ~DoubleReadingRandom();
 
       virtual double value( const shawn::Vec& v ) const throw();
-      virtual std::string name( void ) const throw();
-      virtual std::string description( void ) const throw();
-
    };
    DECLARE_HANDLES(DoubleReadingRandom);
 
@@ -34,13 +31,10 @@ namespace reading
       : public IntegerReading
    {
    public:
-      IntegerReadingRandom();
+      IntegerReadingRandom(std::string reading_name);
       virtual ~IntegerReadingRandom();
 
       virtual int value( const shawn::Vec& v ) const throw();
-      virtual std::string name( void ) const throw();
-      virtual std::string description( void ) const throw();
-
    };
    DECLARE_HANDLES(IntegerReadingRandom);
 }

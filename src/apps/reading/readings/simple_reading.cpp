@@ -5,34 +5,38 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
 #include "_apps_enable_cmake.h"
-#ifdef	ENABLE_READING 
- 
-#include "apps/reading/reading_keeper.h"
+#ifdef	ENABLE_READING
+
+#include "apps/reading/readings/simple_reading.h"
 
 namespace reading
 {
 
-    // ----------------------------------------------------------------------
-    ReadingKeeper::ReadingKeeper(): shawn::HandleKeeper<Reading>( "ReadingKeeper", "reading" )
-    {}
+IntegerReading::IntegerReading(std::string reading_name)
+:Reading(reading_name)
+{}
 
-    // ----------------------------------------------------------------------
-    ReadingKeeper::
-        ~ReadingKeeper()
-    {}
+DoubleReading::DoubleReading(std::string reading_name)
+:Reading(reading_name)
+{}
+
+StringReading::StringReading(std::string reading_name)
+:Reading(reading_name)
+{}
+
+BoolReading::BoolReading(std::string reading_name)
+:Reading(reading_name)
+{}
 
 }
 
 #endif
 
 /*-----------------------------------------------------------------------
- * Source  $Source: /cvs/shawn/shawn/apps/reading/reading_keeper.cpp,v $
- * Version $Revision$
- * Date    $Date$
+ * Source  $Source: /cvs/shawn/shawn/apps/reading/simple_reading.cpp,v $
+ * Version $Revision: 197 $
+ * Date    $Date: 2008-04-29 17:40:51 +0200 (Di, 29. Apr 2008) $
  *-----------------------------------------------------------------------
- * $Log: reading_keeper.cpp,v $
+ * $Log: simple_reading.cpp,v $
  *-----------------------------------------------------------------------*/
-
-  

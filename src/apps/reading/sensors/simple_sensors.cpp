@@ -13,7 +13,7 @@ namespace reading
 {
    DoubleSensor::DoubleSensor(const DoubleReading &rdg,
                               const shawn::Node &node)
-   : Sensor<double>(rdg,node)
+   : ReadingSensor(rdg,node)
    {
    }
 
@@ -23,14 +23,13 @@ namespace reading
 
    double DoubleSensor::value()
    {
-      return reading_.value(node_.real_position());
+      const DoubleReading &rdg = dynamic_cast<const DoubleReading&>(reading_);
+      return rdg.value(node_.real_position());
    }
-
-
 
    IntegerSensor::IntegerSensor(const IntegerReading &rdg,
                               const shawn::Node &node)
-   : Sensor<int>(rdg,node)
+   : ReadingSensor(rdg,node)
    {
    }
 
@@ -40,7 +39,8 @@ namespace reading
 
    int IntegerSensor::value()
    {
-      return reading_.value(node_.real_position());
+      const IntegerReading &rdg = dynamic_cast<const IntegerReading&>(reading_);
+      return rdg.value(node_.real_position());
    }
 }
 #endif

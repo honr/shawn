@@ -12,118 +12,84 @@
 #include "_apps_enable_cmake.h"
 #ifdef	ENABLE_READING
 
-#include "apps/reading/reading.h"
+#include "apps/reading/readings/reading.h"
 #include "sys/misc/box.h"
 
 namespace reading
 {
-
-    ///  Superclass for simple value readings
-    /**  This class implements the superclass Reading
-    * and is a template for different types of simple readings,
-    * as there are integer, double, string or bool readings.
-    */
-    template<typename T>
-    class SimpleReading
-        : public Reading
-    {
-    public:
-        typedef T ValueType;
-
-        ///@name construction / destruction
-        ///@{
-        SimpleReading(){}
-        ///
-        virtual ~SimpleReading(){}
-        ///@}
-
-
-        ///@name data access
-        ///@{
-        /// \return the reading at position v
-        virtual ValueType value( const shawn::Vec& v ) const throw() =0;
-       /// \return the domain of the reading, i.e., the region in which
-        /// value() returns meaningful values. It is feasible to query
-        /// values outside domain().
-        virtual shawn::Box domain( void ) const throw()
-       { return shawn::Box::INFINITE_3D_SPACE; }
-       ///@}
-    };
-
-
-    //---------------------------------------------------------------------
     ///  Integer Reading
-    /**  This class is derived form the superclass Simplereading which is,
-    * on his side, derived from the superclass Reading.
+    /**  This class is derived form the superclass Reading.
     * It contains Readings with integer values.
     */
     class IntegerReading
-        : public SimpleReading<int>
+        : public Reading
     {
     public:
        	///@name construction / destruction
 	///@{
-       IntegerReading(){}
+       IntegerReading(std::string reading_name);
        ///
        virtual ~IntegerReading(){}
        ///@}
+       virtual int value( const shawn::Vec& v ) const throw() = 0;
     };
    DECLARE_HANDLES(IntegerReading);
 
     //---------------------------------------------------------------------
     ///  Double Reading
-    /**  This class is derived form the superclass Simplereading which is,
-    * on his side, derived from the superclass Reading.
+    /**  This class is derived form the superclass Reading.
     * It contains Readings with double values.
     */
     class DoubleReading
-        : public SimpleReading<double>
+        : public Reading
     {
     public:
         ///@name construction / destruction
 	///@{
-	DoubleReading(){}
-	///
-        virtual ~DoubleReading(){}
+      DoubleReading(std::string reading_name);
+      ///
+      virtual ~DoubleReading(){}
+
+      virtual double value( const shawn::Vec& v ) const throw() = 0;
 	///@}
     };
    DECLARE_HANDLES(DoubleReading);
 
     //---------------------------------------------------------------------
     ///  String Reading
-    /**  This class is derived form the superclass Simplereading which is,
-    * on his side, derived from the superclass Reading.
+    /**  This class is derived form the superclass Reading.
     * It contains Readings with string values.
     */
     class StringReading
-        : public SimpleReading<std::string>
+        : public Reading
     {
     public:
        	///@name construction / destruction
 	///@{
-       StringReading(){}
+       StringReading(std::string reading_name);
 	///
        virtual ~StringReading(){}
        ///@}
+       virtual std::string value( const shawn::Vec& v ) const throw() = 0;
     };
    DECLARE_HANDLES(StringReading);
 
     //---------------------------------------------------------------------
     ///  Bool Reading
-    /**  This class is derived form the superclass Simplereading which is,
-    * on his side, derived from the superclass Reading.
+    /**  This class is derived form the superclass Reading.
     * It contains Readings with bool values.
     */
     class BoolReading
-        : public SimpleReading<bool>
+        : public Reading
     {
     public:
        	///@name construction / destruction
 	///@{
-       BoolReading(){}
+       BoolReading(std::string reading_name);
        ///
        virtual ~BoolReading(){}
        ///@}
+       virtual bool value( const shawn::Vec& v ) const throw() = 0;
     };
    DECLARE_HANDLES(BoolReading);
 
@@ -134,8 +100,8 @@ namespace reading
 
 /*-----------------------------------------------------------------------
  * Source  $Source: /cvs/shawn/shawn/apps/reading/simple_reading.h,v $
- * Version $Revision$
- * Date    $Date$
+ * Version $Revision: 197 $
+ * Date    $Date: 2008-04-29 17:40:51 +0200 (Di, 29. Apr 2008) $
  *-----------------------------------------------------------------------
  * $Log: simple_reading.h,v $
  *-----------------------------------------------------------------------*/
