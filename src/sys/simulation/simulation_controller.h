@@ -23,7 +23,7 @@
 
 #ifdef WIN32
 
-#ifdef max 
+#ifdef max
 #undef max
 #endif
 
@@ -33,8 +33,11 @@
 
 #endif
 
-
-#include "apps/reading/reading_keeper.h"
+#include "apps/reading/readings/reading.h"
+#include "apps/reading/readings/reading_keeper.h"
+#include "apps/reading/sensors/sensor.h"
+#include "apps/reading/sensors/sensor_keeper.h"
+//#include "apps/reading/sensors/sensor_factory.h"
 #endif
 
 namespace shawn
@@ -60,7 +63,7 @@ namespace shawn
      typedef
         std::map<std::string,HandleKeeperBase*> NamedKeeperMap;
 
-      
+
       ///@name construction / destruction
       ///@{
       ///
@@ -112,6 +115,10 @@ namespace shawn
       const reading::ReadingKeeper& reading_keeper( void ) const throw();
       ///
       reading::ReadingKeeper& reading_keeper_w( void ) throw();
+      ///
+      const reading::SensorKeeper& sensor_keeper( void ) const throw();
+      ///
+      reading::SensorKeeper& sensor_keeper_w( void ) throw();
       ///
 #endif
       ///@}
@@ -170,7 +177,7 @@ namespace shawn
       ///@}
 
    protected:
-      
+
    /// creates and initializes all default keepers
       void init_keepers( void ) throw();
 
@@ -186,8 +193,9 @@ namespace shawn
       CommunicationModelKeeper* communication_model_keeper_;
       DistanceEstimateKeeper* distance_estimate_keeper_;
       TagFactoryKeeper* tag_factory_keeper_;
-#ifdef ENABLE_READING      
+#ifdef ENABLE_READING
       reading::ReadingKeeper* reading_keeper_;
+      reading::SensorKeeper* sensor_keeper_;
 #endif
       NamedKeeperMap keeper_by_name_;
       inline SimulationController( const SimulationController& ) { abort(); }

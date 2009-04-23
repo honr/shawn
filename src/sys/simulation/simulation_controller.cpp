@@ -18,10 +18,6 @@
 #include "sys/comm_models/communication_model_keeper.h"
 #include "sys/distance_estimates/distance_estimate_keeper.h"
 #include "sys/taggings/tag_factory_keeper.h"
-//#include "apps/reading/reading_keeper.h"
-//#include "apps/reading/sensor_keeper.h"
-//#include "config/reading.h"
-
 
 using namespace std;
 
@@ -52,10 +48,11 @@ namespace shawn
       add_keeper( transmission_model_keeper_ = new TransmissionModelKeeper );
       add_keeper( distance_estimate_keeper_ = new DistanceEstimateKeeper );
       add_keeper( tag_factory_keeper_ = new TagFactoryKeeper );
-#ifdef ENABLE_READING      
+#ifdef ENABLE_READING
       add_keeper( reading_keeper_ = new reading::ReadingKeeper );
+      //add_keeper( sensor_keeper_ = new reading::SensorKeeper );
 #endif
-	  add_keeper( communication_model_keeper_ = new CommunicationModelKeeper );
+	   add_keeper( communication_model_keeper_ = new CommunicationModelKeeper );
    }
    // ----------------------------------------------------------------------
    void
@@ -82,7 +79,7 @@ namespace shawn
          delete it->second;
    }
    // ----------------------------------------------------------------------
-   const SimulationEnvironment& 
+   const SimulationEnvironment&
    SimulationController::
    environment( void )
       const throw()
@@ -138,12 +135,12 @@ namespace shawn
 
 	  //Set the world on the tag factories
 	  TagFactoryKeeper& tfk = tag_factory_keeper_w();
-	  for(TagFactoryKeeper::HandleMapType::iterator it =  tfk.begin_handles_w(), 
+	  for(TagFactoryKeeper::HandleMapType::iterator it =  tfk.begin_handles_w(),
 		  end = tfk.end_handles_w(); it!=end; ++it)
 		  it->second->set_world(*w);
    }
    // ----------------------------------------------------------------------
-   const SimulationTaskKeeper& 
+   const SimulationTaskKeeper&
    SimulationController::
    simulation_task_keeper( void )
       const throw()
@@ -170,7 +167,7 @@ namespace shawn
       return *processor_keeper_;
    }
    // ----------------------------------------------------------------------
-   ProcessorKeeper& 
+   ProcessorKeeper&
    SimulationController::
    processor_keeper_w( void )
       throw()
@@ -195,7 +192,7 @@ namespace shawn
    {
       assert( edge_model_keeper_ != NULL );
       return *edge_model_keeper_;
-   }   
+   }
    // ----------------------------------------------------------------------
    const TransmissionModelKeeper&
    SimulationController::
@@ -213,7 +210,7 @@ namespace shawn
    {
       assert( transmission_model_keeper_ != NULL );
       return *transmission_model_keeper_;
-   }   
+   }
    // ----------------------------------------------------------------------
    const CommunicationModelKeeper&
    SimulationController::
@@ -242,7 +239,7 @@ namespace shawn
       return *random_variable_keeper_;
    }
    // ----------------------------------------------------------------------
-   RandomVariableKeeper& 
+   RandomVariableKeeper&
    SimulationController::
    random_variable_keeper_w( void )
       throw()
@@ -260,7 +257,7 @@ namespace shawn
       return *distance_estimate_keeper_;
    }
    // ----------------------------------------------------------------------
-   DistanceEstimateKeeper& 
+   DistanceEstimateKeeper&
    SimulationController::
    distance_estimate_keeper_w( void )
       throw()
@@ -287,7 +284,7 @@ namespace shawn
       return *tag_factory_keeper_;
    }
    // ----------------------------------------------------------------------
-#ifdef ENABLE_READING   
+#ifdef ENABLE_READING
    const reading::ReadingKeeper&
    SimulationController::
    reading_keeper( void )
@@ -304,7 +301,27 @@ namespace shawn
    {
       assert( reading_keeper_ != NULL );
       return *reading_keeper_;
-   }	
+   }
+   // ----------------------------------------------------------------------
+   reading::SensorKeeper&
+   SimulationController::
+   sensor_keeper_w( void )
+      throw()
+   {
+      assert( sensor_keeper_ != NULL );
+      return *sensor_keeper_;
+   }
+   // ----------------------------------------------------------------------
+   const reading::SensorKeeper&
+   SimulationController::
+   sensor_keeper( void )
+      const throw()
+   {
+      assert( sensor_keeper_ != NULL );
+      return *sensor_keeper_;
+   }
+   // ----------------------------------------------------------------------
+
 #endif
 }
 
