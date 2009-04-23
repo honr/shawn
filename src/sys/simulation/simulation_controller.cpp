@@ -50,7 +50,7 @@ namespace shawn
       add_keeper( tag_factory_keeper_ = new TagFactoryKeeper );
 #ifdef ENABLE_READING
       add_keeper( reading_keeper_ = new reading::ReadingKeeper );
-      //add_keeper( sensor_keeper_ = new reading::SensorKeeper );
+      add_keeper( sensor_keeper_ = new reading::SensorKeeper );
 #endif
 	   add_keeper( communication_model_keeper_ = new CommunicationModelKeeper );
    }

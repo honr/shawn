@@ -22,7 +22,7 @@
 
 #include "sys/processors/processor_keeper.h"
 #include "sys/processors/processor_factory.h"
-#include "apps/reading/reading_keeper.h"
+#include "apps/reading/readings/reading_keeper.h"
 #include "sys/util/handle_keeper.h"
 #include "_apps_enable_cmake.h"
 
@@ -78,7 +78,7 @@ namespace shawn
          delete movement_controller_;
    }
    // ----------------------------------------------------------------------
-   void 
+   void
    World::
    init( void )
       throw()
@@ -92,16 +92,16 @@ namespace shawn
 
       transmission_model_w().set_world( *this );
       transmission_model_w().init();
-      
-#ifdef ENABLE_READING     
-      reading::ReadingKeeper& rk_ = simulation_controller_w().reading_keeper_w();
-      for( reading::ReadingKeeper::HandleMapType::iterator it = rk_.begin_handles_w(); it != rk_.end_handles_w(); ++it )
-      {
-    	reading::Reading& r_ = *it->second;
-	    r_.set_world( *this );
-    	r_.init();
-      }
-#endif      	
+
+#ifdef ENABLE_READING
+//      reading::ReadingKeeper& rk_ = simulation_controller_w().reading_keeper_w();
+//      for( reading::ReadingKeeper::HandleMapType::iterator it = rk_.begin_handles_w(); it != rk_.end_handles_w(); ++it )
+//      {
+//    	reading::Reading& r_ = *it->second;
+//	    r_.set_world( *this );
+//    	r_.init();
+//      }
+#endif
    }
    // ----------------------------------------------------------------------
    void
@@ -199,9 +199,9 @@ namespace shawn
       nodes_[ rm_id ] = NULL;
    }
    // ----------------------------------------------------------------------
-   void 
+   void
        World::
-       add_default_processor( const std::string& proc_name) 
+       add_default_processor( const std::string& proc_name)
        throw()
    {
        default_processors_.insert( proc_name );
@@ -236,7 +236,7 @@ namespace shawn
       scheduler_w().playback( (double)(round_+1) );
       post_step();
       cout << "------------------------------- DONE ITERATION " << round_ << endl
-           << "  [ " 
+           << "  [ "
            << cnt_act_ << " active, "
            << cnt_slp_ << " sleeping, "
            << cnt_ina_ << " inactive ]" << endl << endl;
@@ -252,9 +252,9 @@ namespace shawn
               endit = prestep_tasks_.end();
            it != endit; ++it )
          (**it).run(simulation_controller_w());
-   }   
+   }
    // ----------------------------------------------------------------------
-   void 
+   void
    World::
    run_nodes( void )
       throw()
@@ -317,7 +317,7 @@ namespace shawn
       throw()
    {
       TransmissionModel::MessageInfo * mi = new TransmissionModel::MessageInfo;
-      
+
       mi->src_     = const_cast<Node*>(&source); // TODO: ugh const_cast -- fix this!
       mi->src_pos_ = source.real_position();
       mi->time_    = current_time();
@@ -442,7 +442,7 @@ namespace shawn
       return const_node_iterator( nodes().begin(), nodes() );
    }
    // ----------------------------------------------------------------------
-   World::const_node_iterator 
+   World::const_node_iterator
    World::
    end_nodes( void )
       const throw()
@@ -531,18 +531,18 @@ namespace shawn
       add_node_change_listener( tm );
    }
    // ----------------------------------------------------------------------
-   const EdgeModel& 
+   const EdgeModel&
    World::
-   edge_model( void ) 
+   edge_model( void )
       const throw()
    {
       assert( edge_model_ != NULL );
       return *edge_model_;
    }
    // ----------------------------------------------------------------------
-   EdgeModel& 
+   EdgeModel&
    World::
-   edge_model_w( void ) 
+   edge_model_w( void )
       throw()
    {
       assert( edge_model_ != NULL );
@@ -560,18 +560,18 @@ namespace shawn
        transmission_model_= &tm;
    }
    // ----------------------------------------------------------------------
-   const TransmissionModel& 
+   const TransmissionModel&
    World::
-   transmission_model( void ) 
+   transmission_model( void )
       const throw()
    {
       assert( transmission_model_ != NULL );
       return *transmission_model_;
    }
    // ----------------------------------------------------------------------
-   TransmissionModel& 
+   TransmissionModel&
    World::
-   transmission_model_w( void ) 
+   transmission_model_w( void )
       throw()
    {
       assert( transmission_model_ != NULL );
@@ -595,18 +595,18 @@ namespace shawn
       comm_model_=&tm;
    }
    // ----------------------------------------------------------------------
-   const CommunicationModel& 
+   const CommunicationModel&
    World::
-   communication_model( void ) 
+   communication_model( void )
       const throw()
    {
       assert( comm_model_ != NULL );
       return *comm_model_;
    }
    // ----------------------------------------------------------------------
-   CommunicationModel& 
+   CommunicationModel&
    World::
-   communication_model_w( void ) 
+   communication_model_w( void )
       throw()
    {
       assert( comm_model_ != NULL );
@@ -621,7 +621,7 @@ namespace shawn
       round_ = -1;
       scheduler_w().clear();
       movement_controller_w().reset();
-      for( node_iterator 
+      for( node_iterator
               it    = begin_nodes_w(),
               endit = end_nodes_w();
            it != endit; ++it )
@@ -761,7 +761,7 @@ namespace shawn
       const throw()
    { return uuid_; }
    // ----------------------------------------------------------------------
-   void 
+   void
    World::
    add_node_change_listener( NodeChangeListener& ncl )
       throw()
@@ -774,7 +774,7 @@ namespace shawn
    remove_node_change_listener( NodeChangeListener& ncl )
       throw()
    {
-	  assert ( std::find( node_change_listeners_.begin(), node_change_listeners_.end(), &ncl) != 
+	  assert ( std::find( node_change_listeners_.begin(), node_change_listeners_.end(), &ncl) !=
 		       node_change_listeners_.end() );
       node_change_listeners_.remove(&ncl);
       if( ncl.invalidate() )
@@ -790,7 +790,7 @@ namespace shawn
          if( (**it).invalidate() )
             delete *it;
    }
-   
+
 }
 
 /*-----------------------------------------------------------------------

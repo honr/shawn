@@ -58,8 +58,11 @@ namespace reading
    create( void )
       throw()
    {
+      #ifdef ENABLE_EXAMPLES
       DoubleReadingTestProcessor* rp = new DoubleReadingTestProcessor;
       return rp;
+      #endif
+      return NULL;
    }
 
 }// namespace reading
