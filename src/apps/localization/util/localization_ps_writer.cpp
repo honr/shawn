@@ -23,7 +23,9 @@ using namespace shawn;
 
 namespace localization
 {
-
+   #define NORMAL_NODE_RADIUS (2.5)
+   #define ANCHOR_NODE_RADIUS (3)
+   #define LINE_WIDTH         (1.5)
    // ----------------------------------------------------------------------
    LocalizationPsWriter::
    LocalizationPsWriter( std::ostream& psfile, bool eps )
@@ -60,7 +62,7 @@ namespace localization
    {
     // 43 = 1.5 cm = RAND
     // 595 = 21 cm = DINA4 Breite
-    // 842 = 29 cm = DINA4 Höhe
+    // 842 = 29 cm = DINA4 Hï¿½he
     // pageSize = new Vec(842, 150);
     pageSize = new Vec(596, 842);
       psfile_ << "%!PS-Adobe-2.0" << std::endl
@@ -165,21 +167,22 @@ namespace localization
             if ( (*it).has_est_position() )
             {
                setcolor( grey );
-               //circle( pos.x(), pos.y(), 1.5, true );
-					circle( pos.x(),  pageSize->y() - pos.y(), 1.5, true );
+               //circle( pos.x(), pos.y(), NORMAL_NODE_RADIUS, true );
+               circle( pos.x(),  pageSize->y() - pos.y(), NORMAL_NODE_RADIUS, true );
+               setlinewidth(LINE_WIDTH);
                Vec est_pos = ( (*it).est_position() * fac ) + *addvec;
-					// line( pos.x(),pos.y(), est_pos.x(), est_pos.y() );
+               // line( pos.x(),pos.y(), est_pos.x(), est_pos.y() );
                line( pos.x(), pageSize->y() - pos.y(), est_pos.x(), pageSize->y() - est_pos.y() );
 
                stroke();
                //setcolor( green );
-               //circle( est_pos.x(), est_pos.y(), 1.5, true );
+               //circle( est_pos.x(), est_pos.y(), NORMAL_NODE_RADIUS, true );
             }
             else
             {
                setcolor( red );
-               //circle( pos.x(), pos.y(), 1.5, true );
-					circle( pos.x(),  pageSize->y() - pos.y(), 1.5, true );
+               //circle( pos.x(), pos.y(), NORMAL_NODE_RADIUS, true );
+               circle( pos.x(),  pageSize->y() - pos.y(), NORMAL_NODE_RADIUS, true );
             }
          }
 
@@ -219,8 +222,8 @@ namespace localization
             {
                setcolor( grey );
                Vec est_pos = ( (*it).est_position() * fac ) + *addvec;
-               //circle( est_pos.x(), est_pos.y(), 1.5, true );
-					circle( est_pos.x(), pageSize->y() - est_pos.y(), 1.5, true );
+               //circle( est_pos.x(), est_pos.y(), NORMAL_NODE_RADIUS, true );
+					circle( est_pos.x(), pageSize->y() - est_pos.y(), NORMAL_NODE_RADIUS, true );
                stroke();
             }
          }
@@ -252,8 +255,8 @@ namespace localization
          {
             setcolor( grey );
             Vec real_pos = ( (*it).real_position() * fac ) + *addvec;
-         //   circle( real_pos.x(), real_pos.y(), 1.5, true );
-				circle( real_pos.x(), pageSize->y() - real_pos.y(), 1.5, true );
+         //   circle( real_pos.x(), real_pos.y(), NORMAL_NODE_RADIUS, true );
+				circle( real_pos.x(), pageSize->y() - real_pos.y(), NORMAL_NODE_RADIUS, true );
             stroke();
          }
 
@@ -283,8 +286,8 @@ namespace localization
          if ( lproc->is_anchor() )
          {
             setcolor( black );
-            //circle( pos.x(), pos.y(), 2, true );
-				circle( pos.x(), pageSize->y() - pos.y(), 2, true );
+            //circle( pos.x(), pos.y(), ANCHOR_NODE_RADIUS, true );
+				circle( pos.x(), pageSize->y() - pos.y(), ANCHOR_NODE_RADIUS, true );
          }
       }
    }

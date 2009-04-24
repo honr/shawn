@@ -22,6 +22,7 @@
 #include "apps/vis/tasks/vis_create_edges_tree.h"
 #include "apps/vis/tasks/vis_create_estimated_edges.h"
 #include "apps/vis/tasks/vis_create_dynamic_edges.h"
+#include "apps/vis/tasks/vis_create_dynamic_tree_edges.h"
 #include "apps/vis/tasks/vis_create_graphics.h"
 #include "apps/vis/tasks/vis_show_comradius.h"
 #include "apps/vis/tasks/vis_tag_sampletask.h"
@@ -47,6 +48,7 @@ namespace vis
      sc.simulation_task_keeper_w().add( new CreateEdgesTreeTask );
      sc.simulation_task_keeper_w().add( new CreateEstimatedEdgesTask );
      sc.simulation_task_keeper_w().add( new CreateDynamicEdgesTask );
+     sc.simulation_task_keeper_w().add( new CreateDynamicTreeEdgesTask );
      sc.simulation_task_keeper_w().add( new CreateGraphicsTask );
      sc.simulation_task_keeper_w().add( new ShowComradiusTask );
      sc.simulation_task_keeper_w().add( new CreateLabelTask );

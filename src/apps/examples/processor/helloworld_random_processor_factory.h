@@ -14,7 +14,6 @@
 namespace shawn 
 { 
     class SimulationController; 
-    class shawn::Processor;
 }
 
 

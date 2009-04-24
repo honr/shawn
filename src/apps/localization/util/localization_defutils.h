@@ -25,9 +25,6 @@
 #endif
 
 
-class shawn::Node;
-class shawn::Vec;
-
 namespace localization
 {
    class LocalizationLocalCoordinateSystem;
