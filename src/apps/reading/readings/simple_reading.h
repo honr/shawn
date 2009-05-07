@@ -27,7 +27,7 @@ namespace reading
     public:
        	///@name construction / destruction
 	///@{
-       IntegerReading(std::string reading_name);
+       IntegerReading();
        ///
        virtual ~IntegerReading(){}
        ///@}
@@ -46,7 +46,7 @@ namespace reading
     public:
         ///@name construction / destruction
 	///@{
-      DoubleReading(std::string reading_name);
+      DoubleReading();
       ///
       virtual ~DoubleReading(){}
 
@@ -66,7 +66,7 @@ namespace reading
     public:
        	///@name construction / destruction
 	///@{
-       StringReading(std::string reading_name);
+       StringReading();
 	///
        virtual ~StringReading(){}
        ///@}
@@ -85,7 +85,7 @@ namespace reading
     public:
        	///@name construction / destruction
 	///@{
-       BoolReading(std::string reading_name);
+       BoolReading();
        ///
        virtual ~BoolReading(){}
        ///@}
@@ -99,7 +99,7 @@ namespace reading
 #endif
 
 /*-----------------------------------------------------------------------
- * Source  $Source: /cvs/shawn/shawn/apps/reading/simple_reading.h,v $
+ * Source  $Source: /cvs/shawn/shawn/apps/reading/readings/simple_reading.h,v $
  * Version $Revision: 197 $
  * Date    $Date: 2008-04-29 17:40:51 +0200 (Di, 29. Apr 2008) $
  *-----------------------------------------------------------------------

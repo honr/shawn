@@ -11,7 +11,7 @@
 #include "apps/topology/topology/xml_polygon_topology_task.h"
 #include "apps/topology/topology_keepers.h"
 #include "sys/simulation/simulation_environment.h"
-#include "apps/reading/reading_keeper.h"
+#include "apps/reading/readings/reading_keeper.h"
 
 #include "shawn_config.h"
 #include "apps/topology/topology/xml_polygon_topology.h"
@@ -38,8 +38,8 @@ namespace topology
 		XMLPolygonTopologyTask::
 		name( void )
 		const throw()
-	{ 
-		return "xml_polygon_topology"; 
+	{
+		return "xml_polygon_topology";
 	}
 
 	// ----------------------------------------------------------------------
@@ -47,7 +47,7 @@ namespace topology
 		XMLPolygonTopologyTask::
 		description( void )
 		const throw()
-	{ 
+	{
 		return "Creates a 2D polygonal topology named $name from file $file. "
 			"The optional parameter $create_outer_hull (or for compatibility $xml_create_outer_hull) "
 			"creates the outer polygon automatically. "
@@ -65,16 +65,16 @@ namespace topology
 
 			std::string f = sc.environment().required_string_param("file");
 			std::string n = sc.environment().required_string_param("name");
-			bool create_outer = 
+			bool create_outer =
 				sc.environment().optional_bool_param("xml_create_outer_hull", false) ||
 				sc.environment().optional_bool_param("create_outer_hull", false);
-			
+
 			bool fix_non_simple_polygons = sc.environment().optional_bool_param("fix_non_simple_polygons", false);
 
 			XMLPolygonTopology* p = new XMLPolygonTopology;
 			p->set_name(n);
 			p->read(sc, f, create_outer, fix_non_simple_polygons);
-			
+
 			topology_keeper_w(sc).add(p);
 
 	}

@@ -13,20 +13,16 @@
 namespace reading
 {
 
-IntegerReading::IntegerReading(std::string reading_name)
-:Reading(reading_name)
+IntegerReading::IntegerReading()
 {}
 
-DoubleReading::DoubleReading(std::string reading_name)
-:Reading(reading_name)
+DoubleReading::DoubleReading()
 {}
 
-StringReading::StringReading(std::string reading_name)
-:Reading(reading_name)
+StringReading::StringReading()
 {}
 
-BoolReading::BoolReading(std::string reading_name)
-:Reading(reading_name)
+BoolReading::BoolReading()
 {}
 
 }

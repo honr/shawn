@@ -11,7 +11,7 @@
 #include "_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
-#include "apps/reading/simple_reading.h"
+#include "apps/reading/readings/simple_reading.h"
 
 namespace topology
 {
@@ -45,14 +45,14 @@ namespace topology
       virtual double sensitivity( void ) const throw();
 
 
-      
+
       virtual bool value( const shawn::Vec& ) const throw();
       virtual shawn::Box domain( void ) const throw();
 
-      
+
       virtual std::string name( void ) const throw();
       virtual std::string description( void ) const throw();
-      
+
    protected:
       shawn::Box cut_box_2d( const shawn::Box&, const shawn::Box& ) throw();
 

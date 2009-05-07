@@ -15,8 +15,8 @@
 #include "apps/topology/node_gen/node_gen.h"
 #include "apps/topology/node_gen/node_gen_keeper.h"
 #include "sys/simulation/simulation_environment.h"
-#include "apps/reading/reading_keeper.h"
-#include "apps/reading/simple_reading.h"
+#include "apps/reading/readings/reading_keeper.h"
+#include "apps/reading/readings/simple_reading.h"
 #include <limits>
 
 using namespace shawn;

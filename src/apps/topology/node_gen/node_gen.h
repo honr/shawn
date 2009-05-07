@@ -11,7 +11,7 @@
 #include "_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
-#include "apps/reading/simple_reading.h"
+#include "apps/reading/readings/simple_reading.h"
 #include "sys/util/keeper_managed.h"
 
 namespace shawn {
@@ -38,7 +38,7 @@ namespace topology
 
 
    protected:
-      
+
       virtual const reading::BoolReading& topology( void ) const throw();
       virtual shawn::SimulationController& simulation_controller_w(void) throw();
       virtual const shawn::SimulationController& simulation_controller(void) const throw();

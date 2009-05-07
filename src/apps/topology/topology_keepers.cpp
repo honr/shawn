@@ -12,7 +12,7 @@
 #include "apps/topology/point_gen/point_gen_keeper.h"
 #include "apps/topology/node_gen/node_gen_keeper.h"
 #include "sys/simulation/simulation_controller.h"
-#include "apps/reading/reading_keeper.h"
+#include "apps/reading/readings/reading_keeper.h"
 
 using namespace reading;
 
@@ -29,17 +29,17 @@ namespace topology
       throw()
    { return sc.reading_keeper_w(); }
    // ----------------------------------------------------------------------
-   const reading::ReadingKeeper& 
+   const reading::ReadingKeeper&
    topology_keeper( const shawn::SimulationController& sc )
       throw()
    { return sc.reading_keeper(); }
    // ----------------------------------------------------------------------
-   reading::ReadingKeeper& 
-   topology_keeper_w( shawn::SimulationController& sc ) 
+   reading::ReadingKeeper&
+   topology_keeper_w( shawn::SimulationController& sc )
       throw()
    { return sc.reading_keeper_w(); }
    // ----------------------------------------------------------------------
-   const PointGeneratorKeeper& 
+   const PointGeneratorKeeper&
    point_gen_keeper( shawn::SimulationController& sc )
       throw()
    {
@@ -49,7 +49,7 @@ namespace topology
       return *pgk;
    }
    // ----------------------------------------------------------------------
-   PointGeneratorKeeper& 
+   PointGeneratorKeeper&
    point_gen_keeper_w( shawn::SimulationController& sc )
       throw()
    {
@@ -59,7 +59,7 @@ namespace topology
       return *pgk;
    }
    // ----------------------------------------------------------------------
-   const NodeGeneratorKeeper& 
+   const NodeGeneratorKeeper&
    node_gen_keeper( shawn::SimulationController& sc )
       throw()
    {
@@ -69,7 +69,7 @@ namespace topology
       return *pgk;
    }
    // ----------------------------------------------------------------------
-   NodeGeneratorKeeper& 
+   NodeGeneratorKeeper&
    node_gen_keeper_w( shawn::SimulationController& sc )
       throw()
    {

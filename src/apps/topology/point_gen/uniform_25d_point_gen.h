@@ -12,7 +12,7 @@
 
 #include "apps/topology/point_gen/random_process_point_gen.h"
 #include "sys/misc/box.h"
-#include "apps/reading/simple_reading.h"
+#include "apps/reading/readings/simple_reading.h"
 
 namespace topology
 {

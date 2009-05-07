@@ -16,7 +16,7 @@
 
 #include "shawn_config.h"
 #include "sys/util/refcnt_pointer.h"
-#include "apps/reading/readings/reading_factory.h"
+#include "apps/reading/readings/reading.h"
 #include "sys/util/handle_keeper.h"
 
 namespace reading
@@ -28,7 +28,7 @@ namespace reading
     * manages different types of Readings.
     */
     class ReadingKeeper
-        : public shawn::HandleKeeper<ReadingFactory>
+        : public shawn::HandleKeeper<Reading>
     {
     public:
         ///@name construction / destruction

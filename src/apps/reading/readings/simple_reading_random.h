@@ -20,8 +20,10 @@ namespace reading
       : public DoubleReading
    {
    public:
-      DoubleReadingRandom(std::string reading_name);
+      DoubleReadingRandom();
       virtual ~DoubleReadingRandom();
+      virtual std::string name( void ) const throw();
+      virtual std::string description( void ) const throw();
 
       virtual double value( const shawn::Vec& v ) const throw();
    };
@@ -31,8 +33,10 @@ namespace reading
       : public IntegerReading
    {
    public:
-      IntegerReadingRandom(std::string reading_name);
+      IntegerReadingRandom();
       virtual ~IntegerReadingRandom();
+      virtual std::string name( void ) const throw();
+      virtual std::string description( void ) const throw();
 
       virtual int value( const shawn::Vec& v ) const throw();
    };

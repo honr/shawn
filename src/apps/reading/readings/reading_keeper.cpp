@@ -15,7 +15,7 @@ namespace reading
 {
 
     // ----------------------------------------------------------------------
-    ReadingKeeper::ReadingKeeper(): shawn::HandleKeeper<ReadingFactory>( "ReadingKeeper", "reading" )
+    ReadingKeeper::ReadingKeeper(): shawn::HandleKeeper<Reading>( "ReadingKeeper", "reading" )
     {}
 
     // ----------------------------------------------------------------------

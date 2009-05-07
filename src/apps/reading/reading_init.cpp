@@ -24,8 +24,8 @@
 extern "C" void init_reading( shawn::SimulationController& sc )
 {
    // Readings
-   sc.reading_keeper_w().add( new reading::DoubleReadingRandomFactory );
-   sc.reading_keeper_w().add( new reading::IntegerReadingRandomFactory );
+//   sc.reading_keeper_w().add( new reading::DoubleReadingRandomFactory );
+//   sc.reading_keeper_w().add( new reading::IntegerReadingRandomFactory );
 
    // Sensors
    sc.sensor_keeper_w().add( new reading::SimpleSensorDoubleFactory );

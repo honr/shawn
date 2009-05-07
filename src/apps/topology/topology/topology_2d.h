@@ -11,7 +11,7 @@
 #include "_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
 
-#include "apps/reading/simple_reading.h"
+#include "apps/reading/readings/simple_reading.h"
 
 namespace topology
 {

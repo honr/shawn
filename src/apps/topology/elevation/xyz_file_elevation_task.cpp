@@ -12,7 +12,7 @@
 #include "apps/topology/elevation/xyz_file_elevation.h"
 #include "apps/topology/elevation/xyz_file.h"
 #include "sys/simulation/simulation_environment.h"
-#include "apps/reading/reading_keeper.h"
+#include "apps/reading/readings/reading_keeper.h"
 #include "apps/topology/topology_keepers.h"
 
 #include <sstream>
@@ -45,7 +45,7 @@ namespace topology
    description( void )
       const throw()
    {
-      return 
+      return
          string("Creates an elevation with name $name, based on .xyz file $file. If $xy_placement=") +
          KEY_SCALE +
          string(" (default), it will be scaled to a grid size of $x_scale x $y_scale (or $xy_scale x $xy_scale) with origin at ($x1,$y1). If $xy_placement=") +
@@ -76,7 +76,7 @@ namespace topology
       if( zplacen == KEY_BOX )      zplace_box = true;
       else if( zplacen==KEY_SCALE ) zplace_box = false;
       else throw runtime_error(string("$z_placement must be ")+KEY_SCALE+string(" or ")+KEY_BOX);
-         
+
       XYZFile* data = new XYZFile;
       Vec base_point;
       Vec scale_vec;
@@ -104,7 +104,7 @@ namespace topology
                                      scale_vec.x(),scale_vec.y(),scale_vec.z(),
                                      outn);
       }
-      catch( runtime_error& ) 
+      catch( runtime_error& )
 	  {
          delete data;
          throw;

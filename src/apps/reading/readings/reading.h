@@ -36,6 +36,7 @@ namespace reading
    *
    */
   class Reading
+  : public shawn::KeeperManaged
   {
   public:
 
@@ -45,7 +46,7 @@ namespace reading
     ///@name construction / destruction
     ///@{
     ///
-    Reading(std::string reading_name);
+    Reading();
     ///
     virtual ~Reading();
     ///@}
@@ -70,7 +71,8 @@ namespace reading
      */
     virtual void init( void ) throw();
 
-    virtual std::string name();
+    virtual std::string name( void ) const throw();
+    virtual std::string description( void ) const throw();
 
 
   protected:
@@ -84,7 +86,7 @@ namespace reading
     /** \return writable World that contains this Reading */
     virtual shawn::World& world_w( void ) throw();
     ///@}
-    std::string name_;
+    //std::string name_;
 
   private:
     shawn::World* world_;

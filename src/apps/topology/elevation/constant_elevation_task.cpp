@@ -12,7 +12,7 @@
 #include "apps/topology/elevation/constant_elevation.h"
 #include "apps/topology/topology_keepers.h"
 #include "sys/simulation/simulation_environment.h"
-#include "apps/reading/reading_keeper.h"
+#include "apps/reading/readings/reading_keeper.h"
 
 using namespace shawn;
 using namespace reading;

@@ -14,8 +14,7 @@
 
 namespace reading
 {
-   DoubleReadingRandom::DoubleReadingRandom(std::string reading_name)
-   :DoubleReading(reading_name)
+   DoubleReadingRandom::DoubleReadingRandom()
    {
       srand(time(NULL));
    }
@@ -31,15 +30,46 @@ namespace reading
       return ival;
    }
 
+   std::string
+   DoubleReadingRandom::
+   name( void )
+      const throw()
+   {
+      return "double_reading_random";
+   }
+   // ----------------------------------------------------------------------
+   std::string
+   DoubleReadingRandom::
+   description( void )
+      const throw()
+   {
+      return "XXX";
+   }
 
-   IntegerReadingRandom::IntegerReadingRandom(std::string reading_name)
-   :IntegerReading(reading_name)
+
+   IntegerReadingRandom::IntegerReadingRandom()
    {
       srand(time(NULL));
    }
 
    IntegerReadingRandom::~IntegerReadingRandom()
    {}
+
+   std::string
+   IntegerReadingRandom::
+   name( void )
+      const throw()
+   {
+      return "integer_reading_random";
+   }
+   // ----------------------------------------------------------------------
+   std::string
+   IntegerReadingRandom::
+   description( void )
+      const throw()
+   {
+      return "XXX";
+   }
 
    int IntegerReadingRandom::value( const shawn::Vec &pos )
       const throw()

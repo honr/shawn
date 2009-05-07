@@ -12,14 +12,29 @@
 
 namespace reading
 {
-   Reading::Reading(std::string reading_name)
-   :name_(reading_name)
+   Reading::Reading()
    {}
    // ----------------------------------------------------------------------
    Reading::~Reading()
    {
    	world_ = NULL;
 	delete world_;
+   }
+   // ----------------------------------------------------------------------
+   std::string
+   Reading::
+   name( void )
+      const throw()
+   {
+      return "reading";
+   }
+   // ----------------------------------------------------------------------
+   std::string
+   Reading::
+   description( void )
+      const throw()
+   {
+      return "XXX";
    }
    // ----------------------------------------------------------------------
    void Reading::set_world( shawn::World& w ) throw()
@@ -51,11 +66,6 @@ namespace reading
    shawn::World& Reading::world_w( void ) throw()
    {
         return *world_;
-   }
-
-   std::string Reading::name()
-   {
-      return name_;
    }
 }
 

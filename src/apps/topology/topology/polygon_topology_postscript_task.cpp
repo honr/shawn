@@ -13,7 +13,7 @@
 #include "apps/topology/topology_keepers.h"
 #include "sys/world.h"
 #include "sys/simulation/simulation_environment.h"
-#include "apps/reading/reading_keeper.h"
+#include "apps/reading/readings/reading_keeper.h"
 #include "apps/topology/polygon/polygon.h"
 
 using namespace shawn;
@@ -41,8 +41,8 @@ namespace topology
 		PolygonTopologyPostscriptTask::
 		name( void )
 		const throw()
-	{ 
-		return "polygon_topology_postscript"; 
+	{
+		return "polygon_topology_postscript";
 	}
 
 	// ----------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace topology
 		PolygonTopologyPostscriptTask::
 		description( void )
 		const throw()
-	{ 
+	{
 		return "";
 	}
 
@@ -83,7 +83,7 @@ namespace topology
 	// ----------------------------------------------------------------------
 	void
 		PolygonTopologyPostscriptTask::
-		paint(shawn::SimulationController& sc, PolygonTopology& p, ostream& out) 
+		paint(shawn::SimulationController& sc, PolygonTopology& p, ostream& out)
 	{
 		//Paint parameters
 		{
@@ -93,7 +93,7 @@ namespace topology
 
 			shawn::Vec ur = sc.world_w().upper_right();
 			shawn::Vec ll = sc.world_w().lower_left();
-		
+
 			//Compute lower_left of p_bbox and ll and upper_right of p_bbox an ur. Then save these computed values in ll and ur.
 			double min_x = std::min(lower.x(),ll.x());
 			double max_x = std::max(upper.x(),ur.x());
@@ -101,19 +101,19 @@ namespace topology
 			double max_y = std::max(upper.y(),ur.y());
 			ur = shawn::Vec(max_x, max_y, 0.0);
 			ll = shawn::Vec(min_x, min_y, 0.0);
-			
+
 			double wdt= ur.x() - ll.x();
 			double hgt= ur.y() - ll.y();
 			scale_= (picture_dimension_ - 2.0 * border_width_ ) / wdt;
 			double scy = (picture_dimension_ - 2.0 * border_width_) / hgt;
 
-			if( scy < scale_ ) 
+			if( scy < scale_ )
 				scale_=scy;
 
 			ps_x0_ = border_width_ - (scale_ * ll.x());
 			ps_y0_ = border_width_ - (scale_ * ll.y());
 		}
-		
+
 		write_header(sc, out);
 
 		//TODO: This is a hack
@@ -130,7 +130,7 @@ namespace topology
 		{
 			for(shawn::World::const_node_iterator it = sc.world().begin_nodes(), end = sc.world().end_nodes(); it!=end; ++it)
 				for(shawn::Node::const_adjacency_iterator nit = (*it).begin_adjacent_nodes(), nend = (*it).end_adjacent_nodes(); nit!=nend; ++nit)
-					if( (*nit).id() < (*it).id() ) 
+					if( (*nit).id() < (*it).id() )
 					{
 						Vec pos1  = pos2ps((*it).real_position());
 						Vec pos2  = pos2ps((*nit).real_position());
@@ -143,7 +143,7 @@ namespace topology
 			for(shawn::World::const_node_iterator it = sc.world().begin_nodes(), end = sc.world().end_nodes(); it!=end; ++it)
 			{
 				Vec pos1  = pos2ps((*it).real_position());
-				out << pos1.x() << " " << pos1.y() << " " << "normalnode" << endl;         
+				out << pos1.x() << " " << pos1.y() << " " << "normalnode" << endl;
 			}
 		}
 
@@ -166,7 +166,7 @@ namespace topology
 	// ----------------------------------------------------------------------
 	void
 		PolygonTopologyPostscriptTask::
-		write_header(shawn::SimulationController& sc, std::ostream& out) 
+		write_header(shawn::SimulationController& sc, std::ostream& out)
 	{
 		out
 			<< "%!PS-Adobe-2.0" << endl
@@ -200,7 +200,7 @@ namespace topology
 	// ----------------------------------------------------------------------
 	Vec
 		PolygonTopologyPostscriptTask::
-		pos2ps( const Vec& v ) 
+		pos2ps( const Vec& v )
 		const throw()
 	{
 		return Vec( (v.x() * scale_) + ps_x0_, (v.y() * scale_) + ps_y0_ );
@@ -209,7 +209,7 @@ namespace topology
 	// ----------------------------------------------------------------------
 	double
 		PolygonTopologyPostscriptTask::
-		scale(double d) 
+		scale(double d)
 		const throw()
 	{
 		return d * scale_;

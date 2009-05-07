@@ -44,7 +44,7 @@ namespace reading
 
       if(base_reading == NULL)
       {
-         out_reading = new IntegerReadingRandom(name);
+         out_reading = new IntegerReadingRandom();
          reading_map_[name] = out_reading;
          out_reading->set_world(*world_);
          out_reading->init();

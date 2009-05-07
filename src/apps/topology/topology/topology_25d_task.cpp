@@ -12,7 +12,7 @@
 #include "apps/topology/topology/topology_25d.h"
 #include "apps/topology/topology_keepers.h"
 #include "sys/simulation/simulation_environment.h"
-#include "apps/reading/reading_keeper.h"
+#include "apps/reading/readings/reading_keeper.h"
 
 using namespace shawn;
 using namespace reading;
@@ -49,7 +49,7 @@ namespace topology
       std::string base_n = sc.environment().required_string_param("base");
       std::string elev_n = sc.environment().required_string_param("elevation");
       std::string upper_n = sc.environment().optional_string_param("upper_elevation","");
-      
+
       double sens =
          sc.environment().optional_double_param("sensitivity",
                                                 upper_n.empty() ? EPSILON : 0.0 );
@@ -75,7 +75,7 @@ namespace topology
             if( upper == NULL )
                throw std::runtime_error(upper_n + std::string(" cannot be an (upper) elevation -- it is no DoubleReading") );
          }
-      
+
       Topology25D* topo = new Topology25D;
       topo->set_base_topology(base);
       topo->set_elevation(elev);
