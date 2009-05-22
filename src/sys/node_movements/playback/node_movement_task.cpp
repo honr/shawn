@@ -65,7 +65,7 @@ namespace shawn
 		  sc.world_w().movement_controller_w().set_node_movement_creator( tnmc );
         tnmc->run(sc);
 		  sc.world_w().movement_controller_w().start();
-#elif(!ENABLE_TRACICLIENT)
+#else
 		  std::cerr << "TraCI node movement not built!" << std::endl;
 		  abort();
 #endif
