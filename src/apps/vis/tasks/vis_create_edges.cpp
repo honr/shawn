@@ -48,7 +48,9 @@ namespace vis
       throw( std::runtime_error )
    {
       VisualizationTask::run(sc);
-      GroupElement* all_edges = new GroupElement("all.edges");
+      std::string group_elem = sc.environment().
+         optional_string_param("edges_group_element", "all.edges");
+      GroupElement* all_edges = new GroupElement( group_elem );
       visualization_w().add_element(all_edges);
 
 #ifndef HAVE_BOOST_REGEX
