@@ -54,7 +54,7 @@ namespace topology
          sc.environment().optional_double_param("sensitivity",
                                                 upper_n.empty() ? EPSILON : 0.0 );
 
-      ReadingKeeper& rk = sc.reading_keeper_w();
+      ReadingKeeper& rk = *sc.keeper_by_name_w<reading::ReadingKeeper>("ReadingKeeper");;
       ReadingHandle base_r = rk.find_w(base_n); assert( base_r.is_not_null() );
       BoolReadingHandle base = dynamic_cast<BoolReading*>(base_r.get());
       if( base == NULL )

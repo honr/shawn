@@ -22,22 +22,22 @@ namespace topology
 	const reading::ReadingKeeper&
    elevation_keeper( const shawn::SimulationController& sc )
       throw()
-   { return sc.reading_keeper(); }
+	{ return *sc.keeper_by_name<const reading::ReadingKeeper>("ReadingKeeper"); }
    // ----------------------------------------------------------------------
    reading::ReadingKeeper&
    elevation_keeper_w( shawn::SimulationController& sc )
       throw()
-   { return sc.reading_keeper_w(); }
+   { return *sc.keeper_by_name_w<reading::ReadingKeeper>("ReadingKeeper"); }
    // ----------------------------------------------------------------------
    const reading::ReadingKeeper&
    topology_keeper( const shawn::SimulationController& sc )
       throw()
-   { return sc.reading_keeper(); }
+   { return *sc.keeper_by_name<const reading::ReadingKeeper>("ReadingKeeper"); }
    // ----------------------------------------------------------------------
    reading::ReadingKeeper&
    topology_keeper_w( shawn::SimulationController& sc )
       throw()
-   { return sc.reading_keeper_w(); }
+   { return *sc.keeper_by_name_w<reading::ReadingKeeper>("ReadingKeeper"); }
    // ----------------------------------------------------------------------
    const PointGeneratorKeeper&
    point_gen_keeper( shawn::SimulationController& sc )

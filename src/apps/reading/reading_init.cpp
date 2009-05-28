@@ -13,6 +13,8 @@
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task_keeper.h"
 #include "apps/reading/readings/simple_reading_random.h"
+#include "apps/reading/readings/reading_keeper.h"
+#include "apps/reading/sensors/sensor_keeper.h"
 #include "apps/reading/readings/double_reading_random_factory.h"
 #include "apps/reading/readings/integer_reading_random_factory.h"
 #include "apps/reading/sensors/simple_sensor_double_factory.h"
@@ -23,13 +25,13 @@
 
 extern "C" void init_reading( shawn::SimulationController& sc )
 {
-   // Readings
-//   sc.reading_keeper_w().add( new reading::DoubleReadingRandomFactory );
-//   sc.reading_keeper_w().add( new reading::IntegerReadingRandomFactory );
+   // Keepers
+    sc.add_keeper(new reading::ReadingKeeper());
+    sc.add_keeper(new reading::SensorKeeper());
 
    // Sensors
-   sc.sensor_keeper_w().add( new reading::SimpleSensorDoubleFactory );
-   sc.sensor_keeper_w().add( new reading::SimpleSensorIntegerFactory );
+    sc.keeper_by_name_w<reading::SensorKeeper>("SensorKeeper")->add( new reading::SimpleSensorDoubleFactory );
+    sc.keeper_by_name_w<reading::SensorKeeper>("SensorKeeper")->add( new reading::SimpleSensorIntegerFactory );
 
    // Test
    reading::RandomDoubleTestProcessorFactory::register_factory(sc);

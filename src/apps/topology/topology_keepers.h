@@ -9,13 +9,14 @@
 #define __SHAWN_APPS_TOPOLOGY_KEEPERS_H
 #include "_apps_enable_cmake.h"
 #ifdef ENABLE_TOPOLOGY
+#include "apps/reading/readings/reading_keeper.h"
 
 namespace shawn {
    class SimulationController;
 }
 
 namespace reading {
-   class ReadingKeeper;
+   //class ReadingKeeper;
 }
 
 
