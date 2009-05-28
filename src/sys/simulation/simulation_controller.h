@@ -18,28 +18,6 @@
 #include <string>
 #include <cstdlib>
 
-//#include "config/reading.h"
-#ifdef ENABLE_READING
-
-#ifdef WIN32
-
-#ifdef max
-#undef max
-#endif
-
-#ifdef min
-#undef min
-#endif
-
-#endif
-
-#include "apps/reading/readings/reading.h"
-#include "apps/reading/readings/reading_keeper.h"
-#include "apps/reading/sensors/sensor.h"
-#include "apps/reading/sensors/sensor_keeper.h"
-//#include "apps/reading/sensors/sensor_factory.h"
-#endif
-
 namespace shawn
 {
    class World;
@@ -110,17 +88,6 @@ namespace shawn
       const TagFactoryKeeper& tag_factory_keeper( void ) const throw();
       ///
       TagFactoryKeeper& tag_factory_keeper_w( void ) throw();
-      ///
-#ifdef ENABLE_READING
-      const reading::ReadingKeeper& reading_keeper( void ) const throw();
-      ///
-      reading::ReadingKeeper& reading_keeper_w( void ) throw();
-      ///
-      const reading::SensorKeeper& sensor_keeper( void ) const throw();
-      ///
-      reading::SensorKeeper& sensor_keeper_w( void ) throw();
-      ///
-#endif
       ///@}
 
 
@@ -193,10 +160,6 @@ namespace shawn
       CommunicationModelKeeper* communication_model_keeper_;
       DistanceEstimateKeeper* distance_estimate_keeper_;
       TagFactoryKeeper* tag_factory_keeper_;
-#ifdef ENABLE_READING
-      reading::ReadingKeeper* reading_keeper_;
-      reading::SensorKeeper* sensor_keeper_;
-#endif
       NamedKeeperMap keeper_by_name_;
       inline SimulationController( const SimulationController& ) { abort(); }
    };

@@ -48,10 +48,6 @@ namespace shawn
       add_keeper( transmission_model_keeper_ = new TransmissionModelKeeper );
       add_keeper( distance_estimate_keeper_ = new DistanceEstimateKeeper );
       add_keeper( tag_factory_keeper_ = new TagFactoryKeeper );
-#ifdef ENABLE_READING
-      add_keeper( reading_keeper_ = new reading::ReadingKeeper );
-      add_keeper( sensor_keeper_ = new reading::SensorKeeper );
-#endif
 	   add_keeper( communication_model_keeper_ = new CommunicationModelKeeper );
    }
    // ----------------------------------------------------------------------
@@ -283,46 +279,6 @@ namespace shawn
       assert( tag_factory_keeper_ != NULL );
       return *tag_factory_keeper_;
    }
-   // ----------------------------------------------------------------------
-#ifdef ENABLE_READING
-   const reading::ReadingKeeper&
-   SimulationController::
-   reading_keeper( void )
-      const throw()
-   {
-      assert( reading_keeper_ != NULL );
-      return *reading_keeper_;
-   }
-   // ----------------------------------------------------------------------
-   reading::ReadingKeeper&
-   SimulationController::
-   reading_keeper_w( void )
-      throw()
-   {
-      assert( reading_keeper_ != NULL );
-      return *reading_keeper_;
-   }
-   // ----------------------------------------------------------------------
-   reading::SensorKeeper&
-   SimulationController::
-   sensor_keeper_w( void )
-      throw()
-   {
-      assert( sensor_keeper_ != NULL );
-      return *sensor_keeper_;
-   }
-   // ----------------------------------------------------------------------
-   const reading::SensorKeeper&
-   SimulationController::
-   sensor_keeper( void )
-      const throw()
-   {
-      assert( sensor_keeper_ != NULL );
-      return *sensor_keeper_;
-   }
-   // ----------------------------------------------------------------------
-
-#endif
 }
 
 /*-----------------------------------------------------------------------
