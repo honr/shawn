@@ -18,7 +18,8 @@
 extern "C" void init_traciclient( shawn::SimulationController& sc )
 {
    std::cout << "TraCIClient init" << std::endl;
-   sc.simulation_task_keeper_w().add( new traci::TraCINodeMovementCreator(sc) );
+
+   //sc.simulation_task_keeper_w().add( new traci::TraCINodeMovementCreator(sc) );
    //traci::TraCIProcessorFactory::register_factory(sc);
 }
 

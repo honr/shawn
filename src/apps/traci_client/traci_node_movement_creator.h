@@ -6,13 +6,14 @@
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 
-#ifndef __SHAWN_LEGACYAPPS_TRACINODEMOVEMENTCREATOR_H
-#define __SHAWN_LEGACYAPPS_TRACINODEMOVEMENTCREATOR_H
+#ifndef __SHAWN_LEGACYAPPS_TraCIClient_H
+#define __SHAWN_LEGACYAPPS_TraCIClient_H
 
 #include "_apps_enable_cmake.h"
 //#include "sys/event_scheduler.h"
 #include "sys/node_movements/playback/movement_info.h"
 #include "sys/node_movements/playback/node_movement_creator.h"
+#include "sys/node_movements/playback/node_movement_task.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task.h"
 #include "sys/node_movement.h"
@@ -32,23 +33,27 @@
 
 namespace traci
 {
-	class TraCINodeMovementCreator :
+	class TraCIClient :
 		public shawn::NodeMovementCreator,
-		public shawn::SimulationTask,
+		//public shawn::SimulationTask,
 		public shawn::NodeChangeListener
 	{
+		friend class shawn::SimulationTaskNodeMovement;
 	public:
-		TraCINodeMovementCreator(shawn::SimulationController& sc);
-		~TraCINodeMovementCreator();
+		//TraCIClient(shawn::SimulationController& sc);
+		~TraCIClient();
 
-		std::string name( void ) const throw();
+		// For fetching the instance
+		static TraCIClient* instance();
 
-		std::string description( void ) const throw();
+		//void run(shawn::SimulationController&) throw();
+
+		//std::string name( void ) const throw();
+
+		//std::string description( void ) const throw();
 
 		shawn::MovementInfo* next_movement(void) throw( std::runtime_error );
 
-		void run(shawn::SimulationController&) throw( std::runtime_error );
-	
 		void reset();
 
 		/// Is called whenever a node gets added to the world
@@ -75,29 +80,29 @@ namespace traci
 			virtual ~TraCIID();
 			int domain() const;
 			int id() const;
-			traci::TraCINodeMovementCreator::TraCIID& operator=(const traci::TraCINodeMovementCreator::TraCIID& rv);
+			traci::TraCIClient::TraCIID& operator=(const traci::TraCIClient::TraCIID& rv);
 		private:
-			//friend class traci::TraCINodeMovementCreator;
-			friend int operator<(const traci::TraCINodeMovementCreator::TraCIID&, const traci::TraCINodeMovementCreator::TraCIID&);
-			friend int operator>(const traci::TraCINodeMovementCreator::TraCIID&, const traci::TraCINodeMovementCreator::TraCIID&);
-			friend int operator==(const traci::TraCINodeMovementCreator::TraCIID&, const traci::TraCINodeMovementCreator::TraCIID&);
+			//friend class traci::TraCIClient;
+			friend int operator<(const traci::TraCIClient::TraCIID&, const traci::TraCIClient::TraCIID&);
+			friend int operator>(const traci::TraCIClient::TraCIID&, const traci::TraCIClient::TraCIID&);
+			friend int operator==(const traci::TraCIClient::TraCIID&, const traci::TraCIClient::TraCIID&);
 			
 			int domain_;
 			int id_;
 		};
 
-		typedef std::map<shawn::Node*,const traci::TraCINodeMovementCreator::TraCIID> NodeToTraCIIDMap;
-		typedef std::map<const traci::TraCINodeMovementCreator::TraCIID,shawn::Node*> TraCIIDToNodeMap;
+		typedef std::map<shawn::Node*,const traci::TraCIClient::TraCIID> NodeToTraCIIDMap;
+		typedef std::map<const traci::TraCIClient::TraCIID,shawn::Node*> TraCIIDToNodeMap;
 
-		traci::TraCINodeMovementCreator::NodeToTraCIIDMap::const_iterator begin_traci_nodes() const throw();
-		traci::TraCINodeMovementCreator::NodeToTraCIIDMap::const_iterator end_traci_nodes() const throw();
+		traci::TraCIClient::NodeToTraCIIDMap::const_iterator begin_traci_nodes() const throw();
+		traci::TraCIClient::NodeToTraCIIDMap::const_iterator end_traci_nodes() const throw();
 
 		// Interface for listeners
 		class TraCINodeChangeListener{
 		public:
 			virtual ~TraCINodeChangeListener(){}
-			virtual void node_added( shawn::Node& node, const traci::TraCINodeMovementCreator::TraCIID& traci_id ) throw() = 0;
-			virtual void node_removed( shawn::Node& node, const traci::TraCINodeMovementCreator::TraCIID& traci_id ) throw() = 0;
+			virtual void node_added( shawn::Node& node, const traci::TraCIClient::TraCIID& traci_id ) throw() = 0;
+			virtual void node_removed( shawn::Node& node, const traci::TraCIClient::TraCIID& traci_id ) throw() = 0;
 		protected:
 			TraCINodeChangeListener(){}
 		private:
@@ -133,14 +138,15 @@ namespace traci
 		const TraCIID& find_traci_id_by_node(const shawn::Node& node) throw(std::logic_error);
 		shawn::Node* new_node(const TraCIID& traci_id, bool attach_processors_by_domain = true);
 		void add_traffic_lights();
-		void add_node_change_listener( traci::TraCINodeMovementCreator::TraCINodeChangeListener& listener ) throw();
+		void add_node_change_listener( traci::TraCIClient::TraCINodeChangeListener& listener ) throw();
 
 	private:
-
 		// Reads a Status command that is expected to start at s' actual position.
         // If the status is unequal to RTYPE_OK or the given commandId differs from
         // that in the Storage, Shawn will stop.
 		void extract_command_status(tcpip::Storage& s, unsigned char commandId, std::string& description);
+
+		void run(shawn::SimulationController& sc) throw();
 
 		// Connect and disconnect to the mobility server         
 		// The connect method is called by startSimStepHandler         
@@ -161,8 +167,12 @@ namespace traci
 
 		void remove_node_from_map(shawn::Node* node);
 
+		// Constructors
+		TraCIClient();
+		TraCIClient(const TraCIClient&);
+
 		// Internal variables
-		shawn::SimulationController& sc_;
+		shawn::SimulationController* sc_;
 		tcpip::Socket* socket_;
 		tcpip::Storage in_;
 		std::string remotehost_;
@@ -179,11 +189,13 @@ namespace traci
 		NodeToTraCIIDMap node_to_traci_ids_;
 		TraCIIDToNodeMap traci_ids_to_node_;
 
-		typedef std::list<traci::TraCINodeMovementCreator::TraCINodeChangeListener*> TraCINodeChangeListenerList;
+		typedef std::list<traci::TraCIClient::TraCINodeChangeListener*> TraCINodeChangeListenerList;
 		TraCINodeChangeListenerList node_change_listeners_;
 
 		static const int DOMAIN_IDS[];
 		static const std::string DOMAIN_NAMES[];
+
+		static TraCIClient instance_;
 
    };
 }

@@ -22,18 +22,23 @@ using namespace std;
 using namespace tcpip;
 using namespace shawn;
 
+// Creating the instance
+//traci::TraCIClient traci::TraCIClient::instance_;
+
 namespace traci{
+	
+	// Creating the instance
+	TraCIClient TraCIClient::instance_;
 
 	// Add domains here. 
 	// Make sure that: 
 	// -the counts of elements in both arrays are the same and
 	// -the order of the domain_ids corresponds to the order of corresponding domain_names
-	const int traci::TraCINodeMovementCreator::DOMAIN_IDS[] = {0x01,0x02};
-	const std::string traci::TraCINodeMovementCreator::DOMAIN_NAMES[] = {"vehicle","traffic_light"};
+	const int traci::TraCIClient::DOMAIN_IDS[] = {0x01,0x02};
+	const std::string traci::TraCIClient::DOMAIN_NAMES[] = {"vehicle","traffic_light"};
 
-	TraCINodeMovementCreator::
-		TraCINodeMovementCreator(SimulationController& sc) : 
-	sc_(sc),
+	TraCIClient::
+		TraCIClient() : 
 	socket_(NULL),
 	remotehost_("localhost"),
 	remoteport_(8888),
@@ -42,37 +47,44 @@ namespace traci{
 	target_time_(0.0),
 	mi_(NULL)
 	{
-		cout << "TraCINodeMovementCreator ctor" << endl;
+		cout << "TraCIClient ctor" << endl;
 	}
 	//---------------------------------------------------------------------
-   TraCINodeMovementCreator::
-	   ~TraCINodeMovementCreator(void)
-   {
+	TraCIClient::
+	   ~TraCIClient(void)
+	{
 	   if (socket_) close();
 	   reset();
-	   cout << "TraCINodeMovementCreator dtor" << endl;
-   }
+	   cout << "TraCIClient dtor" << endl;
+	}
 	//---------------------------------------------------------------------
-   string 
-	   TraCINodeMovementCreator::
-	   name( void ) 
-	   const 
-	   throw()
-   {
-		return "TraCI";
-   }
+	TraCIClient*
+		TraCIClient::
+		instance()
+	{
+		return &instance_;
+	}
 	//---------------------------------------------------------------------
-   string 
-	   TraCINodeMovementCreator::
-	   description( void ) 
-	   const 
-	   throw()
-   {
-		return "TraCINodeMovementCreator.";
-   }
+ //  string 
+	//   TraCIClient::
+	//   name( void ) 
+	//   const 
+	//   throw()
+ //  {
+	//	return "TraCI";
+ //  }
+	////---------------------------------------------------------------------
+ //  string 
+	//   TraCIClient::
+	//   description( void ) 
+	//   const 
+	//   throw()
+ //  {
+	//	return "TraCIClient.";
+ //  }
 	//---------------------------------------------------------------------
 	void 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		node_added( Node& ) 
 		throw()
 	{
@@ -80,7 +92,7 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	void 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		node_removed( Node& node ) 
 		throw()
 	{
@@ -88,35 +100,35 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	void 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		id_changed( int, int ) 
 		throw()
 	{
-		ABORT_NOT_IMPLEMENTED;
+		//ABORT_NOT_IMPLEMENTED;
 	}
 	//---------------------------------------------------------------------
 	bool 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		invalidate( void ) 
 		throw()
 	{
 		// Do nothing here
-		return true;
+		return false;
 	}
 	//---------------------------------------------------------------------
    void 
-	   TraCINodeMovementCreator::
-	   run(SimulationController&) 
-	   throw( runtime_error )
+	   TraCIClient::
+	   run(SimulationController& sc) 
+	   throw()
    {
-	   require_world(sc_);
-	   sc_.world_w().add_node_change_listener(*this);
+	   sc_ = &sc;
+	   sc_->world_w().add_node_change_listener(*this);
 	   // Fetch parameters
-	   remoteport_ = sc_.environment().optional_int_param("remote_port",remoteport_);
-	   remotehost_ = sc_.environment().optional_string_param("remote_host",remotehost_);
-       feed_time_ =  sc_.environment().optional_double_param("feed_time",feed_time_);
-	   //target_time_ = sc_.environment().optional_double_param("target_time",target_time_);
-	   //time_interval_ = sc_.environment().optional_double_param("time_interval",time_interval_);
+	   remoteport_ = sc_->environment().optional_int_param("remote_port",remoteport_);
+	   remotehost_ = sc_->environment().optional_string_param("remote_host",remotehost_);
+       feed_time_ =  sc_->environment().optional_double_param("feed_time",feed_time_);
+	   //target_time_ = sc_->environment().optional_double_param("target_time",target_time_);
+	   //time_interval_ = sc_->environment().optional_double_param("time_interval",time_interval_);
 
 	   fetch_processor_factories();
 	   // Connect it!
@@ -139,7 +151,7 @@ namespace traci{
 		   try{
 			   socket_->sendExact(s);
 		   }catch(SocketException e){
-			   cerr << "Error in method TraCINodeMovementCreator::next_movement() while sending: " 
+			   cerr << "Error in method TraCIClient::next_movement() while sending: " 
 						 << e.what() << endl;
 			   abort();
 		   }
@@ -147,7 +159,7 @@ namespace traci{
 		   try{
 			   socket_->receiveExact(s);
 		   }catch(SocketException e){
-			   cerr << "Error in method TraCINodeMovementCreator::next_movement while receiving: "
+			   cerr << "Error in method TraCIClient::next_movement while receiving: "
 						 << e.what() << endl;
 			   abort();
 		   }
@@ -156,8 +168,8 @@ namespace traci{
 		   string description;
 		   extract_command_status(s, CMD_SIMSTEP, description);
 
-		   bool aatl = sc_.environment_w().optional_bool_param("traffic_light_nodes",false);
-		   if (aatl) add_traffic_lights();
+		   bool tln = sc_->environment_w().optional_bool_param("traffic_light_nodes",false);
+		   if (tln) add_traffic_lights();
 
          // No node position informations requested
       }
@@ -165,12 +177,12 @@ namespace traci{
 	//---------------------------------------------------------------------
    // next_movement = command_simulation_step -> scheduled "magically"
    MovementInfo* 
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   next_movement()
        throw( runtime_error )
    {
 	   if (!socket_){
-		  cerr << "Error in method TraCINodeMovementCreator::next_movement, socket_ == NULL!" << endl;
+		  cerr << "Error in method TraCIClient::next_movement, socket_ == NULL!" << endl;
 	      abort();
 	   }
 
@@ -178,7 +190,7 @@ namespace traci{
 	   // If in-storage is empty ask for new data from movement simulator (e.g. SUMO)
 	   if (!in_.valid_pos()){
          // If the right simulation time for sending the next question is not yet arrived ...
-         if (sc_.world().scheduler().current_time() < target_time_)
+         if (sc_->world().scheduler().current_time() < target_time_)
          {
             //... wait until then
             mi_ = new MovementInfo();
@@ -189,7 +201,7 @@ namespace traci{
             return mi_;
          }
          // If target_time is reached, ask for new movements
-	      target_time_ = sc_.world().scheduler().current_time() + time_interval_;
+	      target_time_ = sc_->world().scheduler().current_time() + time_interval_;
 		   check_for_unused_vehicle_nodes();
 		   current_vehicle_nodes_.clear();
 		   // Build command
@@ -207,7 +219,7 @@ namespace traci{
 		   try{
 			   socket_->sendExact(out);
 		   }catch(SocketException e){
-			   cerr << "Error in method TraCINodeMovementCreator::next_movement() while sending: " 
+			   cerr << "Error in method TraCIClient::next_movement() while sending: " 
 					<< e.what() << endl;
 			   abort();
 		   }
@@ -215,7 +227,7 @@ namespace traci{
 		   try{
 			   socket_->receiveExact(in_);
 		   }catch(SocketException e){
-			   cerr << "Error in method TraCINodeMovementCreator::next_movement() while receiving: "
+			   cerr << "Error in method TraCIClient::next_movement() while receiving: "
 					<< e.what() << endl;
 			   abort();
 		   }
@@ -231,7 +243,7 @@ namespace traci{
 	   double dest_time = 0.0;
 	   double x = 0.0;
 	   double y = 0.0;
-	   double now = sc_.world().scheduler().current_time();
+	   double now = sc_->world().scheduler().current_time();
 	   double velocity = 0.0;
 	   Node* node = NULL;
 
@@ -255,7 +267,7 @@ namespace traci{
 
 	   if (unsigned int command_id = in_.readChar() != CMD_MOVENODE){
 			// Move node command expected
-		   cerr << "Error in method TraCINodeMovementCreator::next_movement, move node command \
+		   cerr << "Error in method TraCIClient::next_movement, move node command \
 						expected. Got command_id " << command_id << endl;
 		   abort();
 	   }
@@ -265,7 +277,7 @@ namespace traci{
 
 	   // PositionType
 	   if (in_.readByte() != POSITION_2D){
-		   cerr << "Error in method TraCINodeMovementCreator::next_movement, \
+		   cerr << "Error in method TraCIClient::next_movement, \
 						I can handle only 2D-coordinates!" << endl;
 		   abort();
 	   }
@@ -299,7 +311,7 @@ namespace traci{
 				velocity = sqrt( (node->real_position().x() - x)*(node->real_position().x() - x) +
 								 (node->real_position().y() - y)*(node->real_position().y() - y) )/
 								 (dest_time - now);
-				lm->set_parameters(velocity,Vec(x,y,0.0),sc_.world_w());
+				lm->set_parameters(velocity,Vec(x,y,0.0),sc_->world_w());
 			}
 		}
 		mi_->set_urgency(shawn::MovementInfo::Immediately);
@@ -313,7 +325,7 @@ namespace traci{
 	   // Right length???
        if (command_start + command_length != in_.position()){
 		   // Last read command has wrong length
-		   cerr << "Error in method TraCINodeMovementCreator::next_movement, command at position " 
+		   cerr << "Error in method TraCIClient::next_movement, command at position " 
 				<< command_start << " was read with wrong length." << endl;
 		   abort();
        }
@@ -322,7 +334,7 @@ namespace traci{
    }
    //---------------------------------------------------------------------
    void
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   add_traffic_lights()
    {
 	   int count = 0;
@@ -345,7 +357,7 @@ namespace traci{
    }
    //---------------------------------------------------------------------
    void 
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   extract_command_status(Storage& s, unsigned char command_id, string& description)
    {
 		 unsigned int command_start = s.position();
@@ -354,8 +366,8 @@ namespace traci{
 		 // CommandID needs to fit
 		 if (unsigned char rcvd_command_id = s.readChar() != command_id)
 		 {
-			 cerr << sc_.world().scheduler().current_time() 
-				  << ": Error in method TraCINodeMovementCreator::extract_command_status, Server \
+			 cerr << sc_->world().scheduler().current_time() 
+				  << ": Error in method TraCIClient::extract_command_status, Server \
 					 answered to command: " << rcvd_command_id << ". Expected command: " << command_id << endl;
 			 abort();
 		 }
@@ -366,8 +378,8 @@ namespace traci{
 
 		 if (result != RTYPE_OK)
 		 {
-			cerr << sc_.world().scheduler().current_time() 
-				 << ": Error in method TraCINodeMovementCreator::extract_command_status, Server returned error " 
+			cerr << sc_->world().scheduler().current_time() 
+				 << ": Error in method TraCIClient::extract_command_status, Server returned error " 
 				 << "[" << result << "] "
 				 << description << endl;
 			abort();
@@ -377,8 +389,8 @@ namespace traci{
 		 if (command_start + command_length != s.position())
 		 {
 			// Last read command has wrong length
-			 cerr << sc_.world().scheduler().current_time() 
-			     << ": Error in method TraCINodeMovementCreator::extract_command_status, command at position " 
+			 cerr << sc_->world().scheduler().current_time() 
+			     << ": Error in method TraCIClient::extract_command_status, command at position " 
 				 << command_start << " was read with wrong length." << endl;
 			 abort();
 		 }
@@ -386,12 +398,10 @@ namespace traci{
    }
    //--------------------------------------------------------------------- 
    void 
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   reset()
    {
-	   for (map<int,set<ProcessorFactoryHandle>* >::iterator it = 
-		   domain_processor_factories_.begin(); it != domain_processor_factories_.end();
-		   ++it){
+	   for (map<int,set<ProcessorFactoryHandle>* >::iterator it = domain_processor_factories_.begin(); it != domain_processor_factories_.end();++it){
 			   it->second->clear();
 			   delete it->second;
 	   }
@@ -402,7 +412,7 @@ namespace traci{
    }
 	//---------------------------------------------------------------------
    bool 
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   connect()
    {
 		if (socket_) close();
@@ -413,7 +423,7 @@ namespace traci{
 			socket_->connect();
 		}
 		catch(SocketException e){
-			cerr << "Error in method TraCINodeMovementCreator::connect(): "
+			cerr << "Error in method TraCIClient::connect(): "
 						 << e.what() << endl;
 			delete socket_;
 			socket_ = NULL;
@@ -423,11 +433,11 @@ namespace traci{
    }
 	//---------------------------------------------------------------------
    void
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   close()
    {
 	   if(!socket_){
-		   cerr << "Error in method TraCINodeMovementCreator::close(): socket_ == NULL" << endl;
+		   cerr << "Error in method TraCIClient::close(): socket_ == NULL" << endl;
 		   abort();
 	   }
 	   Storage out;
@@ -437,7 +447,7 @@ namespace traci{
 		socket_->sendExact(out);
 	   }
 	   catch(SocketException e){
-			cerr << "Error in method TraCINodeMovementCreator::close(): "
+			cerr << "Error in method TraCIClient::close(): "
 						 << e.what() << endl;
 			delete socket_;
 			socket_ = NULL;
@@ -449,15 +459,15 @@ namespace traci{
    }
 	//---------------------------------------------------------------------
    void
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   fetch_processor_factories()
    {
 	   for(int i = 0; i < sizeof(DOMAIN_IDS)/sizeof(int); ++i){
 		   ProcessorFactoryHandle pfh;
 		   set<ProcessorFactoryHandle>* processor_factories = new set<ProcessorFactoryHandle>();
-		   StrTok tok(sc_.environment().optional_string_param(DOMAIN_NAMES[i] + "_processors",""), ", ");
+		   StrTok tok(sc_->environment().optional_string_param(DOMAIN_NAMES[i] + "_processors",""), ", ");
 		   for(StrTok::iterator it = tok.begin(); it!=tok.end(); ++it){
-				pfh = sc_.processor_keeper_w().find_w( *it );
+				pfh = sc_->processor_keeper_w().find_w( *it );
 				assert( pfh != NULL );
 				processor_factories->insert(pfh);
 			}
@@ -467,7 +477,7 @@ namespace traci{
    }
 	//---------------------------------------------------------------------
    void 
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   add_node_change_listener( TraCINodeChangeListener& listener ) 
 	   throw()
    {
@@ -475,7 +485,7 @@ namespace traci{
    }
 	//---------------------------------------------------------------------
    Node* 
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   new_node(const TraCIID& traci_id, bool attach_processors_by_domain)
    {
 	   // If node exists return NULL
@@ -501,11 +511,11 @@ namespace traci{
    }
 	//---------------------------------------------------------------------
    void 
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   check_for_unused_vehicle_nodes()
    {
-	   for (World::node_iterator ni = sc_.world_w().begin_nodes_w(); 
-		    ni != sc_.world_w().end_nodes_w(); ++ni){
+	   for (World::node_iterator ni = sc_->world_w().begin_nodes_w(); 
+		    ni != sc_->world_w().end_nodes_w(); ++ni){
 
 			TraCIID ti;
 			try{
@@ -515,18 +525,18 @@ namespace traci{
 				continue;
 			}
 			if (ti.domain() == 0x01 && current_vehicle_nodes_.find(ti) == current_vehicle_nodes_.end()){
-				sc_.world_w().remove_node(*ni);
+				sc_->world_w().remove_node(*ni);
 			}
 	   }
    }
    //---Movement-Simulator-Commands---
    //---------------------------------------------------------------------
    void 
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   command_set_maximum_speed(const Node& node, double max_speed)
    {
 	   if (!socket_){
-		   cerr << "Error in method TraCINodeMovementCreator::command_set_maximum_speed, \
+		   cerr << "Error in method TraCIClient::command_set_maximum_speed, \
 						socket_ == NULL" << endl;
 		   abort();
 	   }
@@ -542,10 +552,10 @@ namespace traci{
 	   try{
 			ti = find_traci_id_by_node(node);
 	   }catch(logic_error e){
-		   cerr << "Error in method TraCINodeMovementCreator::command_set_maximum_speed: " << e.what() << endl;
+		   cerr << "Error in method TraCIClient::command_set_maximum_speed: " << e.what() << endl;
 		   abort();
 	   }
-	   check_domain(0x01,ti,true,"Error in method TraCINodeMovementCreator::command_set_maximum_speed: \
+	   check_domain(0x01,ti,true,"Error in method TraCIClient::command_set_maximum_speed: \
 					Command not applicable for elements in domain " + number_to_string(ti.domain()) + "!");
 	   out.writeInt(ti.id());
 	   // Max speed
@@ -556,7 +566,7 @@ namespace traci{
 	   try{
 		   socket_->sendExact(out);
 	   }catch(SocketException e){
-		   cerr << "Error in method TraCINodeMovementCreator::command_set_maximum_speed \
+		   cerr << "Error in method TraCIClient::command_set_maximum_speed \
 						while sending: " << e.what() << endl;
 		   abort();
 	   }
@@ -565,7 +575,7 @@ namespace traci{
 	   try{
 		   socket_->receiveExact(in);
 	   }catch(SocketException e){
-		   cerr << "Error in method TraCINodeMovementCreator::command_set_maximum_speed \
+		   cerr << "Error in method TraCIClient::command_set_maximum_speed \
 						while receiving: " << e.what() << endl;
 		   abort();
 	   }
@@ -576,11 +586,11 @@ namespace traci{
    }
 	//---------------------------------------------------------------------
    void 
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   command_stop(const Node& node, double x, double y, double radius, double wait_time)
    {
 	   if (!socket_){
-		   cerr << "Error in method TraCINodeMovementCreator::command_stop, \
+		   cerr << "Error in method TraCIClient::command_stop, \
 						socket_ == NULL" << endl;
 		   abort();
 	   }
@@ -597,10 +607,10 @@ namespace traci{
 			//out.writeInt(find_traci_id_by_node(node).id());
 		   ti = find_traci_id_by_node(node);
 	   }catch(logic_error e){
-		   cerr << "Error in method TraCINodeMovementCreator::command_stop: " << e.what() << endl;
+		   cerr << "Error in method TraCIClient::command_stop: " << e.what() << endl;
 		   abort();
 	   }
-	   check_domain(0x01,ti,true,"Error in method TraCINodeMovementCreator::command_stop: \
+	   check_domain(0x01,ti,true,"Error in method TraCIClient::command_stop: \
 					Command not applicable for elements in domain " + number_to_string(ti.domain()) + "!");
 	   out.writeInt(ti.id());
 	   // Position type
@@ -617,7 +627,7 @@ namespace traci{
 	   try{
 		   socket_->sendExact(out);
 	   }catch(SocketException e){
-		   cerr << "Error in method TraCINodeMovementCreator::command_stop while sending: "
+		   cerr << "Error in method TraCIClient::command_stop while sending: "
 					 << e.what() << endl;
 		   abort();
 	   }
@@ -626,7 +636,7 @@ namespace traci{
 	   try{
 		   socket_->receiveExact(in);
 	   }catch(SocketException e){
-		   cerr << "error in method TraCINodeMovementCreator::command_stop while recieving: "
+		   cerr << "error in method TraCIClient::command_stop while recieving: "
 					 << e.what() << endl;
 		   abort();
 	   }
@@ -637,11 +647,11 @@ namespace traci{
    }
 	//---------------------------------------------------------------------
    void 
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   command_change_route(const Node& node, string road_id, double travel_time)
    {
 	   if (!socket_){
-		   cerr << "Error in method TraCINodeMovementCreator::command_change_route, \
+		   cerr << "Error in method TraCIClient::command_change_route, \
 						socket == NULL" << endl;
 		   abort();
 	   }
@@ -657,10 +667,10 @@ namespace traci{
 	   try{
 			ti = find_traci_id_by_node(node);
 	   }catch(logic_error e){
-		   cerr << "Error in method TraCINodeMovementCreator::command_change_route: " << e.what() << endl;
+		   cerr << "Error in method TraCIClient::command_change_route: " << e.what() << endl;
 		   abort();
 	   }
-	   check_domain(0x01,ti,true,"Error in method TraCINodeMovementCreator::command_change_route: \
+	   check_domain(0x01,ti,true,"Error in method TraCIClient::command_change_route: \
 					Command not applicable for elements in domain " + number_to_string(ti.domain()) + "!");
 	   out.writeInt(ti.id());
 	   // Road ID
@@ -672,7 +682,7 @@ namespace traci{
 	   try{
 		   socket_->sendExact(out);
 	   }catch(SocketException e){
-		   cerr << "Error in method TraCINodeMovementCreator::coammand_change_route while sending: " 
+		   cerr << "Error in method TraCIClient::coammand_change_route while sending: " 
 			   << e.what() << endl;
 		   abort();
 	   }
@@ -680,7 +690,7 @@ namespace traci{
 	   try{
 		   socket_->receiveExact(in);
 	   }catch(SocketException e){
-		   cerr << "Error in method TraCINodeMovementCreator::command_change_route while receiving: " 
+		   cerr << "Error in method TraCIClient::command_change_route while receiving: " 
 					 << e.what() << endl;
 		   abort();
 	   }
@@ -690,11 +700,11 @@ namespace traci{
    }
 	//---------------------------------------------------------------------
    void 
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   command_change_lane(const Node& node, char lane, float time)
    {
 		if (!socket_){
-		   cerr << "Error in method TraCINodeMovementCreator::command_change_lane, \
+		   cerr << "Error in method TraCIClient::command_change_lane, \
 						socket == NULL" << endl;
 		   abort();
 	   }
@@ -711,10 +721,10 @@ namespace traci{
 	  try{
 		  ti = find_traci_id_by_node(node);
 	  }catch(logic_error e){
-		   cerr << "Error in method TraCINodeMovementCreator::command_change_lane: " << e.what() << endl;
+		   cerr << "Error in method TraCIClient::command_change_lane: " << e.what() << endl;
 		   abort();
 	  }
-	  check_domain(0x01,ti,true,"Error in method TraCINodeMovementCreator::command_change_lane: \
+	  check_domain(0x01,ti,true,"Error in method TraCIClient::command_change_lane: \
 				   Command not applicable for elements in domain " + number_to_string(ti.domain()) + "!");
 	  out.writeInt(ti.id());
 	  // Lane 
@@ -726,7 +736,7 @@ namespace traci{
 	   try{
 		   socket_->sendExact(out);
 	   }catch(SocketException e){
-		   cerr << "Error in method TraCINodeMovementCreator::coammand_change_lane while sending: " 
+		   cerr << "Error in method TraCIClient::coammand_change_lane while sending: " 
 			   << e.what() << endl;
 		   abort();
 	   }
@@ -734,7 +744,7 @@ namespace traci{
 	   try{
 		   socket_->receiveExact(in);
 	   }catch(SocketException e){
-		   cerr << "Error in method TraCINodeMovementCreator::command_change_lane while receiving: " 
+		   cerr << "Error in method TraCIClient::command_change_lane while receiving: " 
 					 << e.what() << endl;
 		   abort();
 	   }
@@ -745,7 +755,7 @@ namespace traci{
    }
 	//---------------------------------------------------------------------
 	bool 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		command_roadmap_position(const Node& node, double targetTime, string& roadId_, float& relPosition_, string& laneID_)
 	{
 		// Preconditions
@@ -808,7 +818,7 @@ namespace traci{
          
 			if ( unsigned char commandId = in.readChar() != CMD_MOVENODE){
 				// move node command expected
-				cerr << "Error in method TraCINodeMovementCreator::command_roadmap_position, move node command expected. \
+				cerr << "Error in method TraCIClient::command_roadmap_position, move node command expected. \
 						Got commandId " << commandId << endl;
 				abort();
 			}
@@ -828,10 +838,10 @@ namespace traci{
 				try{
 					ti = find_traci_id_by_node(node);
 				}catch(logic_error e){
-					cerr << "Error in method TraCINodeMovementCreator::command_roadmap_position: " << e.what() << endl;
+					cerr << "Error in method TraCIClient::command_roadmap_position: " << e.what() << endl;
 					abort();
 				}
-				//check_domain(0x01,ti,true,"Error in method TraCINodeMovementCreator::command_roadmap_position: \
+				//check_domain(0x01,ti,true,"Error in method TraCIClient::command_roadmap_position: \
 				//			 Command not applicable for elements in domain " + number_to_string(ti.domain()) + "!");
 				if(ti.id() == id){
 					//string laneIdString = "";
@@ -850,12 +860,12 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	bool 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		command_scenario_integer(bool write, int domain, int domainId, int variable, int& value)
 	{
 		// Preconditions
 		if (socket_ == NULL){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioInteger, socket_ == NULL" << endl;
+			cerr << "Error in method TraCIClient::commandScenarioInteger, socket_ == NULL" << endl;
 			abort();
 		}
  
@@ -887,7 +897,7 @@ namespace traci{
 			socket_->sendExact(out);
 		}
 		catch (SocketException e){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioInteger while sending: " << e.what() << endl;
+			cerr << "Error in method TraCIClient::commandScenarioInteger while sending: " << e.what() << endl;
 			abort();
 		}
  
@@ -896,7 +906,7 @@ namespace traci{
 			socket_->receiveExact(in);
 		}
 		catch (SocketException e){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioInteger while receiving: " << e.what() << endl;
+			cerr << "Error in method TraCIClient::commandScenarioInteger while receiving: " << e.what() << endl;
 			abort();
 		}
  
@@ -906,7 +916,7 @@ namespace traci{
  
 		// Next received command ahs the same structure as the send command and contains the always the value-field
 		if (!in.valid_pos()){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioInteger, expected additional answer command" << endl;
+			cerr << "Error in method TraCIClient::commandScenarioInteger, expected additional answer command" << endl;
 			abort();
 		}
  
@@ -915,37 +925,37 @@ namespace traci{
  
 		if (unsigned char commandId = in.readChar() != CMD_SCENARIO){
 			// scenario command expected
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioInteger while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioInteger while parsing answer command, \
 					scenario command expected. Got commandId " << showbase << hex << commandId << endl;
 			abort();
 		}
  
 		if (bool writeFlag = static_cast<bool>(in.readUnsignedByte()) != write){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioInteger while parsing answer command, writeFlag=" 
+			cerr << "Error in method TraCIClient::commandScenarioInteger while parsing answer command, writeFlag=" 
 				<< write << " expected. Got writeFlag=" << writeFlag << endl;
 			abort();
 		}
  
 		if (int rcvdDomain = in.readUnsignedByte() != domain){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioInteger while parsing answer command, domain=" 
+			cerr << "Error in method TraCIClient::commandScenarioInteger while parsing answer command, domain=" 
 				<< domain << " expected. Got domain=" << rcvdDomain << endl;
 			abort();
 		}
  
 		if (int rcvdDomainId = in.readInt() != domainId){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioInteger while parsing answer command, domainId=" 
+			cerr << "Error in method TraCIClient::commandScenarioInteger while parsing answer command, domainId=" 
 				<< domainId << " expected. Got domainId=" << rcvdDomainId << endl;
 			abort();
 		}
  
 		if (int rcvdVariable = in.readUnsignedByte() != variable){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioInteger while parsing answer command, variable=" 
+			cerr << "Error in method TraCIClient::commandScenarioInteger while parsing answer command, variable=" 
 				<< variable << " expected. Got variable=" << rcvdVariable << endl;
 			abort();
 		}
 
 		if (int rcvdDataType = in.readUnsignedByte() != TYPE_INTEGER){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioInteger while parsing answer command, datatype integer \
+			cerr << "Error in method TraCIClient::commandScenarioInteger while parsing answer command, datatype integer \
 					expected. Got datatype=" << rcvdDataType << endl;
 			abort();
 		}
@@ -955,7 +965,7 @@ namespace traci{
 		// Right length???
 		if (commandStart + commandLength != in.position()){
 			// Last read command has wrong length
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioInteger, command at position " 
+			cerr << "Error in method TraCIClient::commandScenarioInteger, command at position " 
 				 << commandStart << " was read with wrong length - expected " << commandLength << " but was " << 
 				 in.position()-commandStart << endl;
 			abort();
@@ -965,13 +975,13 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	bool 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		command_scenario_string(bool write, int domain, int domainId, int variable, string& value)
 	{
 		// Preconditions
 		if (socket_ == NULL)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioString, socket_ == NULL" << endl;
+			cerr << "Error in method TraCIClient::commandScenarioString, socket_ == NULL" << endl;
 			abort();
 		}
  
@@ -1005,7 +1015,7 @@ namespace traci{
 		}
 		catch (SocketException e)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioString while sending: " << e.what() << endl;
+			cerr << "Error in method TraCIClient::commandScenarioString while sending: " << e.what() << endl;
 			abort();
 		}
  
@@ -1016,7 +1026,7 @@ namespace traci{
 		}
 		catch (SocketException e)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioString while receiving: " << e.what() << endl;
+			cerr << "Error in method TraCIClient::commandScenarioString while receiving: " << e.what() << endl;
 			abort();
 		}
  
@@ -1027,7 +1037,7 @@ namespace traci{
 		// Next received command ahs the same structure as the send command and contains the always the value-field
 		if (!in.valid_pos())
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioString, expected additional answer command" << endl;
+			cerr << "Error in method TraCIClient::commandScenarioString, expected additional answer command" << endl;
 			abort();
 		}
  
@@ -1038,42 +1048,42 @@ namespace traci{
 		if (unsigned char commandId = in.readChar() != CMD_SCENARIO)
 		{
 			// scenario command expected
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioString while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioString while parsing answer command, \
 					scenario command expected. Got commandId " << showbase << hex << commandId << endl;
 			abort();
 		}
  
 		if (bool writeFlag = static_cast<bool>(in.readUnsignedByte()) != write)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioString while parsing answer command, writeFlag=" << write 
+			cerr << "Error in method TraCIClient::commandScenarioString while parsing answer command, writeFlag=" << write 
 				 << " expected. Got writeFlag=" << writeFlag << endl;
 			abort();
 		}
  
 		if (int rcvdDomain = in.readUnsignedByte() != domain)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioString while parsing answer command, domain=" << domain 
+			cerr << "Error in method TraCIClient::commandScenarioString while parsing answer command, domain=" << domain 
 				 << " expected. Got domain=" << rcvdDomain << endl;
 			abort();
 		}
  
 		if (int rcvdDomainId = in.readInt() != domainId)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioString while parsing answer command, domainId=" << domainId 
+			cerr << "Error in method TraCIClient::commandScenarioString while parsing answer command, domainId=" << domainId 
 				 << " expected. Got domainId=" << rcvdDomainId << endl;
 			abort();
 		}
  
 		if (int rcvdVariable = in.readUnsignedByte() != variable)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioString while parsing answer command, variable=" << variable 
+			cerr << "Error in method TraCIClient::commandScenarioString while parsing answer command, variable=" << variable 
 				 << " expected. Got variable=" << rcvdVariable << endl;
 			abort();
 		}
  
 		if (int rcvdDataType = in.readUnsignedByte() != TYPE_STRING)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioString while parsing answer command, datatype integer expected.\
+			cerr << "Error in method TraCIClient::commandScenarioString while parsing answer command, datatype integer expected.\
 					Got datatype=" << rcvdDataType << endl;
 			abort();
 		}
@@ -1084,7 +1094,7 @@ namespace traci{
 		if (commandStart + commandLength != in.position())
 		{
 			// Last read command has wrong length
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioString, command at position " 
+			cerr << "Error in method TraCIClient::commandScenarioString, command at position " 
 				 << commandStart << " was read with wrong length - expected " << commandLength << " but was " 
 				 << in.position()-commandStart << endl;
 			abort();
@@ -1094,12 +1104,12 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	bool 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		command_scenario_pos3d(bool write, int domain, int domainId, int variable, float& x, float& y, float& z)
 	{
 		// Preconditions
 		if (socket_ == NULL){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioPos3d, socket_ == NULL" << endl;
+			cerr << "Error in method TraCIClient::commandScenarioPos3d, socket_ == NULL" << endl;
 			abort();
 		}
  
@@ -1135,7 +1145,7 @@ namespace traci{
 			socket_->sendExact(out);
 		}
 		catch (SocketException e){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioPos3d while sending: " << e.what() << endl;
+			cerr << "Error in method TraCIClient::commandScenarioPos3d while sending: " << e.what() << endl;
 			abort();
 		}
  
@@ -1144,7 +1154,7 @@ namespace traci{
 			socket_->receiveExact(in);
 		}
 		catch (SocketException e){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioPos3d while receiving: " << e.what() << endl;
+			cerr << "Error in method TraCIClient::commandScenarioPos3d while receiving: " << e.what() << endl;
 			abort();
 		}
  
@@ -1154,7 +1164,7 @@ namespace traci{
  
 		// Next received command has the same structure as the send command and contains the always the value-field
 		if (!in.valid_pos()){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioPos3d, expected additional answer command" << endl;
+			cerr << "Error in method TraCIClient::commandScenarioPos3d, expected additional answer command" << endl;
 			abort();
 		}
  
@@ -1163,37 +1173,37 @@ namespace traci{
  
 		if (unsigned char commandId = in.readChar() != CMD_SCENARIO){
 			// scenario command expected
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioPos3d while parsing answer command, scenario command\
+			cerr << "Error in method TraCIClient::commandScenarioPos3d while parsing answer command, scenario command\
 					expected. Got commandId " << showbase << hex << commandId << endl;
 			abort();
 		}
  
 		if (bool writeFlag = static_cast<bool>(in.readUnsignedByte()) != write){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioPos3d while parsing answer command, writeFlag=" 
+			cerr << "Error in method TraCIClient::commandScenarioPos3d while parsing answer command, writeFlag=" 
 				 << write << " expected. Got writeFlag=" << writeFlag << endl;
 			abort();
 		}
  
 		if (int rcvdDomain = in.readUnsignedByte() != domain){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioPos3d while parsing answer command, domain=" << domain 
+			cerr << "Error in method TraCIClient::commandScenarioPos3d while parsing answer command, domain=" << domain 
 				 << " expected. Got domain=" << rcvdDomain << endl;
 			abort();
 		}
  
 		if (int rcvdDomainId = in.readInt() != domainId){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioPos3d while parsing answer command, domainId=" << domainId 
+			cerr << "Error in method TraCIClient::commandScenarioPos3d while parsing answer command, domainId=" << domainId 
 				 << " expected. Got domainId=" << rcvdDomainId << endl;
 			abort();
 		}
  
 		if (int rcvdVariable = in.readUnsignedByte() != variable){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioPos3d while parsing answer command, variable=" << variable 
+			cerr << "Error in method TraCIClient::commandScenarioPos3d while parsing answer command, variable=" << variable 
 				 << " expected. Got variable=" << rcvdVariable << endl;
 			abort();
 		}
  
 		if (int rcvdDataType = in.readUnsignedByte() != POSITION_3D){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioPos3d while parsing answer command, datatype integer \
+			cerr << "Error in method TraCIClient::commandScenarioPos3d while parsing answer command, datatype integer \
 					expected. Got datatype=" << rcvdDataType << endl;
 			abort();
 		}
@@ -1205,7 +1215,7 @@ namespace traci{
 		// Right length???
 		if (commandStart + commandLength != in.position()){
 			// Last read command has wrong length
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioPos3d, command at position " 
+			cerr << "Error in method TraCIClient::commandScenarioPos3d, command at position " 
 				 << commandStart << " was read with wrong length - expected " << commandLength 
 				 << " but was " << in.position()-commandStart << endl;
 			abort();
@@ -1215,13 +1225,13 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	bool 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		command_scenario_bounding_box(bool write, int domain, int domainId, int variable, float& x1, float& y1, float& x2, float& y2)
 	{
 		// Preconditions
 		if (socket_ == NULL)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioBoundingBox, socket_ == NULL" << endl;
+			cerr << "Error in method TraCIClient::commandScenarioBoundingBox, socket_ == NULL" << endl;
 			abort();
 		}
  
@@ -1261,7 +1271,7 @@ namespace traci{
 		}
 		catch (SocketException e)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioBoundingBox while sending: " 
+			cerr << "Error in method TraCIClient::commandScenarioBoundingBox while sending: " 
 				 << e.what() << endl;
 			abort();
 		}
@@ -1273,7 +1283,7 @@ namespace traci{
 		}
 		catch (SocketException e)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioBoundingBox while receiving: " 
+			cerr << "Error in method TraCIClient::commandScenarioBoundingBox while receiving: " 
 				 << e.what() << endl;
 			abort();
 		}
@@ -1285,7 +1295,7 @@ namespace traci{
 		// Next received command has the same structure as the send command and contains the always the value-field
 		if (!in.valid_pos())
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioBoundingBox, \
+			cerr << "Error in method TraCIClient::commandScenarioBoundingBox, \
 					expected additional answer command" << endl;
 			abort();
 		}
@@ -1296,42 +1306,42 @@ namespace traci{
 		if (unsigned char commandId = in.readChar() != CMD_SCENARIO)
 		{
 			// scenario command expected
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioBoundingBox while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioBoundingBox while parsing answer command, \
 					scenario command expected. Got commandId " << showbase << hex << commandId << endl;
 			abort();
 		}
  
 		if (bool writeFlag = static_cast<bool>(in.readUnsignedByte()) != write)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioBoundingBox while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioBoundingBox while parsing answer command, \
 					writeFlag=" << write << " expected. Got writeFlag=" << writeFlag << endl;
 			abort();
 		}
  
 		if (int rcvdDomain = in.readUnsignedByte() != domain)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioBoundingBox while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioBoundingBox while parsing answer command, \
 					domain=" << domain << " expected. Got domain=" << rcvdDomain << endl;
 			abort();
 		}
  
 		if (int rcvdDomainId = in.readInt() != domainId)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioBoundingBox while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioBoundingBox while parsing answer command, \
 					domainId=" << domainId << " expected. Got domainId=" << rcvdDomainId << endl;
 			abort();
 		}
  
 		if (int rcvdVariable = in.readUnsignedByte() != variable)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioBoundingBox while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioBoundingBox while parsing answer command, \
 					variable=" << variable << " expected. Got variable=" << rcvdVariable << endl;
 			abort();
 		}
  
 		if (int rcvdDataType = in.readUnsignedByte() != TYPE_BOUNDINGBOX)
 		{
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioBoundingBox while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioBoundingBox while parsing answer command, \
 					datatype integer expected. Got datatyoe=" << rcvdDataType << endl;
 			abort();
 		}
@@ -1345,7 +1355,7 @@ namespace traci{
 		if (commandStart + commandLength != in.position())
 		{
 			// Last read command has wrong length
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioBoundingBox, command at position " 
+			cerr << "Error in method TraCIClient::commandScenarioBoundingBox, command at position " 
 			<< commandStart << " was read with wrong length - expected " << commandLength << " but was " 
 			<< in.position()-commandStart << endl;
 			abort();
@@ -1355,13 +1365,13 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	float 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		command_scenario_distance_to_roadmap_position(bool write, int domain, int domainId, int variable, 
 													  string roadId, float roadPos, int lane)
 	{
 		// Preconditions
 		if (socket_ == NULL){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioDistanceToRoadmapPosition, socket_ == NULL" << endl;
+			cerr << "Error in method TraCIClient::commandScenarioDistanceToRoadmapPosition, socket_ == NULL" << endl;
 			abort();
 		}
  
@@ -1394,7 +1404,7 @@ namespace traci{
 			socket_->sendExact(out);
 		}
 		catch (SocketException e){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioDistanceToRoadmapPosition while sending: " 
+			cerr << "Error in method TraCIClient::commandScenarioDistanceToRoadmapPosition while sending: " 
 				 << e.what() << endl;
 			abort();
 		}
@@ -1404,7 +1414,7 @@ namespace traci{
 			socket_->receiveExact(in);
 		}
 		catch (SocketException e){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioDistanceToRoadmapPosition while receiving: " 
+			cerr << "Error in method TraCIClient::commandScenarioDistanceToRoadmapPosition while receiving: " 
 				 << e.what() << endl;
 			abort();
 		}
@@ -1415,7 +1425,7 @@ namespace traci{
  
 		// Next received command has the same structure as the send command and contains the always the value-field
 		if (!in.valid_pos()){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioDistanceToRoadmapPosition, \
+			cerr << "Error in method TraCIClient::commandScenarioDistanceToRoadmapPosition, \
 					expected additional answer command" << endl;
 			abort();
 		}
@@ -1425,37 +1435,37 @@ namespace traci{
  
 		if (unsigned char commandId = in.readChar() != CMD_SCENARIO){
 			// scenario command expected
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioDistanceToRoadmapPosition while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioDistanceToRoadmapPosition while parsing answer command, \
 					scenario command expected. Got commandId " << showbase << hex << commandId << endl;
 			abort();
 		}
  
 		if (bool writeFlag = static_cast<bool>(in.readUnsignedByte()) != write){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioDistanceToRoadmapPosition while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioDistanceToRoadmapPosition while parsing answer command, \
 					writeFlag=" << write << " expected. Got writeFlag=" << writeFlag << endl;
 			abort();
 		}
  
 		if (int rcvdDomain = in.readUnsignedByte() != domain){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioDistanceToRoadmapPosition while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioDistanceToRoadmapPosition while parsing answer command, \
 					domain=" << domain << " expected. Got domain=" << rcvdDomain << endl;
 			abort();
 		}
  
 		if (int rcvdDomainId = in.readInt() != domainId){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioDistanceToRoadmapPosition while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioDistanceToRoadmapPosition while parsing answer command, \
 					domainId=" << domainId << " expected. Got domainId=" << rcvdDomainId << endl;
 			abort();
 		}
  
 		if (int rcvdVariable = in.readUnsignedByte() != variable){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioDistanceToRoadmapPosition while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioDistanceToRoadmapPosition while parsing answer command, \
 					variable=" << variable << " expected. Got variable=" << rcvdVariable << endl;
 			abort();
 		}
  
 		if (int rcvdDataType = in.readUnsignedByte() != TYPE_FLOAT){
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioDistanceToRoadmapPosition while parsing answer command, \
+			cerr << "Error in method TraCIClient::commandScenarioDistanceToRoadmapPosition while parsing answer command, \
 					datatype float expected. Got datatype=" << rcvdDataType << endl;
 			abort();
 		}
@@ -1465,7 +1475,7 @@ namespace traci{
 		// Right length???
 		if (commandStart + commandLength != in.position()){
 			// Last read command has wrong length
-			cerr << "Error in method TraCINodeMovementCreator::commandScenarioBoundingBox, command at position " 
+			cerr << "Error in method TraCIClient::commandScenarioBoundingBox, command at position " 
 				 << commandStart << " was read with wrong length - expected " << commandLength << " but was " 
 				 << in.position()-commandStart << endl;
 			abort();
@@ -1475,12 +1485,12 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	bool 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		command_get_TL_status(int tlId, double from, double until, TLSwitchInfoVec& switchInfos)
 	{
 		// Preconditions
 		if (socket_ == NULL){
-			cerr << "Error in method TraCINodeMovementCreator::commandgetTLStatus, socket_ == NULL" << endl;
+			cerr << "Error in method TraCIClient::commandgetTLStatus, socket_ == NULL" << endl;
 			abort();
 		}
      
@@ -1502,7 +1512,7 @@ namespace traci{
 			socket_->sendExact(out);
 		}
 		catch (SocketException e){
-			cerr << "Error in method TraCINodeMovementCreator::commandgetTLStatus while sending: " 
+			cerr << "Error in method TraCIClient::commandgetTLStatus while sending: " 
 				 << e.what() << endl;
 			abort();
 		}
@@ -1512,7 +1522,7 @@ namespace traci{
 			socket_->receiveExact(in);
 		}
 		catch (SocketException e){
-		cerr << "Error in method TraCINodeMovementCreator::commandgetTLStatus while receiving: " 
+		cerr << "Error in method TraCIClient::commandgetTLStatus while receiving: " 
 			 << e.what() << endl;
 			abort();
 		}
@@ -1531,7 +1541,7 @@ namespace traci{
  
 			if (unsigned char commandId = in.readChar() != CMD_TLSWITCH){
 				// move node command expected
-				cerr << "Error in method TraCINodeMovementCreator::commandgetTLStatus, TLSWITCH command expected. Got commandId " 
+				cerr << "Error in method TraCIClient::commandgetTLStatus, TLSWITCH command expected. Got commandId " 
 					 << showbase << hex << commandId << endl;
 				abort();
 			}
@@ -1543,7 +1553,7 @@ namespace traci{
 			tlswitch.toEdge = in.readString();
 			tlswitch.newStatus = in.readUnsignedByte();
 			if (tlswitch.newStatus != TLPHASE_RED && tlswitch.newStatus != TLPHASE_GREEN){
-				cerr << "Error in method TraCINodeMovementCreator::commandgetTLStatus while parsing answer command, new phase <" 
+				cerr << "Error in method TraCIClient::commandgetTLStatus while parsing answer command, new phase <" 
 					 << tlswitch.newStatus << "> unknown." << endl;
 				abort();
 			}
@@ -1552,7 +1562,7 @@ namespace traci{
 			// Correct length???
 			if (commandStart + commandLength != in.position()){
 				// Last read command has wrong length
-				cerr << "Error in method TraCINodeMovementCreator::commandgetTLStatus, command at position " 
+				cerr << "Error in method TraCIClient::commandgetTLStatus, command at position " 
 					 << commandStart << " was read with wrong length - expected " << commandLength << " but was " 
 					 << in.position()-commandStart << endl;
 				abort();
@@ -1563,22 +1573,22 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	const Node* 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		find_node_by_traci_id(const TraCIID& traci_id)
 	{
 		return find_node_by_traci_id_w(traci_id);
 	}
 	//---------------------------------------------------------------------
 	Node* 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		find_node_by_traci_id_w(const TraCIID& traci_id)
 	{
 		TraCIIDToNodeMap::iterator it = traci_ids_to_node_.find(traci_id);
 		return it != traci_ids_to_node_.end() ? it->second : NULL;
 	}
 	//---------------------------------------------------------------------
-	const TraCINodeMovementCreator::TraCIID& 
-		TraCINodeMovementCreator::
+	const TraCIClient::TraCIID& 
+		TraCIClient::
 		find_traci_id_by_node(const Node& node)
 		throw(logic_error)
 	{
@@ -1588,11 +1598,11 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	void 
-	   TraCINodeMovementCreator::
+	   TraCIClient::
 	   add_node(Node* node, const TraCIID& traci_id)
 	{	
 		assert(node);
-		sc_.world_w().add_node( *node );
+		sc_->world_w().add_node( *node );
 		assert(node_to_traci_ids_.find(node) == node_to_traci_ids_.end());
 		assert(traci_ids_to_node_.find(traci_id) == traci_ids_to_node_.end());
 
@@ -1608,7 +1618,7 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	void 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		remove_node_from_map(Node* node)
 	{
 		assert(node);
@@ -1642,7 +1652,7 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	bool 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		check_domain(int domain, const TraCIID& traci_id, bool abrt, string err_msg)
 	{
 		if (domain == traci_id.domain()) return true;
@@ -1654,7 +1664,7 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	std::string 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		number_to_string(double n)
 	{
 		stringstream oss;
@@ -1662,8 +1672,8 @@ namespace traci{
 		return oss.str();
 	}
 	//---------------------------------------------------------------------
-	traci::TraCINodeMovementCreator::NodeToTraCIIDMap::const_iterator 
-		TraCINodeMovementCreator::
+	traci::TraCIClient::NodeToTraCIIDMap::const_iterator 
+		TraCIClient::
 		begin_traci_nodes()
 		const 
 		throw()
@@ -1671,8 +1681,8 @@ namespace traci{
 		return node_to_traci_ids_.begin();
 	}
 	//---------------------------------------------------------------------
-	traci::TraCINodeMovementCreator::NodeToTraCIIDMap::const_iterator 
-		TraCINodeMovementCreator::
+	traci::TraCIClient::NodeToTraCIIDMap::const_iterator 
+		TraCIClient::
 		end_traci_nodes()
 		const 
 		throw()
@@ -1682,34 +1692,34 @@ namespace traci{
 	//---------------------------------------------------------------------
 	//---TraCIID---
 	//---------------------------------------------------------------------
-	TraCINodeMovementCreator::
+	TraCIClient::
 		TraCIID::
 		TraCIID() :
 		domain_(-1),
 		id_(-1)
 	{}
 	//---------------------------------------------------------------------
-	TraCINodeMovementCreator::
+	TraCIClient::
 		TraCIID::
 		TraCIID(int d, int i) : 
 		domain_(d), 
 		id_(i)
 	{}
 	//---------------------------------------------------------------------
-	TraCINodeMovementCreator::
+	TraCIClient::
 		TraCIID::
 		TraCIID(const TraCIID& o) : 
 		domain_(o.domain()),
 		id_(o.id())
 	{}
 	//---------------------------------------------------------------------
-	TraCINodeMovementCreator::
+	TraCIClient::
 		TraCIID::
 		~TraCIID()
 	{}
 	//---------------------------------------------------------------------
 	int 
-		TraCINodeMovementCreator::
+		TraCIClient::
 		TraCIID::
 		domain()
 		const
@@ -1718,7 +1728,7 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	int
-		TraCINodeMovementCreator::
+		TraCIClient::
 		TraCIID::
 		id()
 		const
@@ -1726,10 +1736,10 @@ namespace traci{
 		return id_;
 	}
 	//---------------------------------------------------------------------
-	traci::TraCINodeMovementCreator::TraCIID& 
-		TraCINodeMovementCreator::
+	traci::TraCIClient::TraCIID& 
+		TraCIClient::
 		TraCIID::
-		operator=(const traci::TraCINodeMovementCreator::TraCIID& rv)
+		operator=(const traci::TraCIClient::TraCIID& rv)
 	{
 		if(this == & rv) return *this;
 		id_ = rv.id();
@@ -1738,8 +1748,8 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	int 
-		operator<(const traci::TraCINodeMovementCreator::TraCIID& left, 
-				  const traci::TraCINodeMovementCreator::TraCIID& right)
+		operator<(const traci::TraCIClient::TraCIID& left, 
+				  const traci::TraCIClient::TraCIID& right)
 	{
 		if(left.domain_ < right.domain_) return 1;
 		if(left.domain_ > right.domain_) return 0;
@@ -1749,15 +1759,15 @@ namespace traci{
 	}
 	//---------------------------------------------------------------------
 	int 
-		operator>(const traci::TraCINodeMovementCreator::TraCIID& left, 
-				  const traci::TraCINodeMovementCreator::TraCIID& right)
+		operator>(const traci::TraCIClient::TraCIID& left, 
+				  const traci::TraCIClient::TraCIID& right)
 	{
 		return (right < left);
 	}
 	//---------------------------------------------------------------------
 	int 
-		operator==(const traci::TraCINodeMovementCreator::TraCIID& left, 
-				   const traci::TraCINodeMovementCreator::TraCIID& right)
+		operator==(const traci::TraCIClient::TraCIID& left, 
+				   const traci::TraCIClient::TraCIID& right)
 	{
 		if(left.domain_ == right.domain_ && left.id_ == right.id_) return 1;
 		return 0;
