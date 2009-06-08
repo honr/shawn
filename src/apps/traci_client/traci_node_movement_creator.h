@@ -35,22 +35,14 @@ namespace traci
 {
 	class TraCIClient :
 		public shawn::NodeMovementCreator,
-		//public shawn::SimulationTask,
 		public shawn::NodeChangeListener
 	{
 		friend class shawn::SimulationTaskNodeMovement;
 	public:
-		//TraCIClient(shawn::SimulationController& sc);
 		~TraCIClient();
 
 		// For fetching the instance
 		static TraCIClient* instance();
-
-		//void run(shawn::SimulationController&) throw();
-
-		//std::string name( void ) const throw();
-
-		//std::string description( void ) const throw();
 
 		shawn::MovementInfo* next_movement(void) throw( std::runtime_error );
 
@@ -194,8 +186,6 @@ namespace traci
 
 		static const int DOMAIN_IDS[];
 		static const std::string DOMAIN_NAMES[];
-
-		static TraCIClient instance_;
 
    };
 }

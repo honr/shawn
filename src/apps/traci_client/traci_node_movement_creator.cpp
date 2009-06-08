@@ -22,13 +22,7 @@ using namespace std;
 using namespace tcpip;
 using namespace shawn;
 
-// Creating the instance
-//traci::TraCIClient traci::TraCIClient::instance_;
-
 namespace traci{
-	
-	// Creating the instance
-	TraCIClient TraCIClient::instance_;
 
 	// Add domains here. 
 	// Make sure that: 
@@ -62,26 +56,9 @@ namespace traci{
 		TraCIClient::
 		instance()
 	{
-		return &instance_;
+		static TraCIClient* inst = new TraCIClient();
+		return inst;
 	}
-	//---------------------------------------------------------------------
- //  string 
-	//   TraCIClient::
-	//   name( void ) 
-	//   const 
-	//   throw()
- //  {
-	//	return "TraCI";
- //  }
-	////---------------------------------------------------------------------
- //  string 
-	//   TraCIClient::
-	//   description( void ) 
-	//   const 
-	//   throw()
- //  {
-	//	return "TraCIClient.";
- //  }
 	//---------------------------------------------------------------------
 	void 
 		TraCIClient::
@@ -128,7 +105,7 @@ namespace traci{
 	   remotehost_ = sc_->environment().optional_string_param("remote_host",remotehost_);
        feed_time_ =  sc_->environment().optional_double_param("feed_time",feed_time_);
 	   //target_time_ = sc_->environment().optional_double_param("target_time",target_time_);
-	   //time_interval_ = sc_->environment().optional_double_param("time_interval",time_interval_);
+	   time_interval_ = sc_->environment().optional_double_param("time_interval",time_interval_);
 
 	   fetch_processor_factories();
 	   // Connect it!
