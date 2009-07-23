@@ -20,6 +20,7 @@
 #include "sys/transm_models/maca_transmission_model_factory.h"
 #include "sys/transm_models/csma_transmission_model_factory.h"
 #include "sys/transm_models/zigbee_csma_transmission_model_factory.h"
+#include "sys/transm_models/traces_transmission_model_factory.h"
 
 namespace shawn
 {
@@ -27,6 +28,7 @@ namespace shawn
    void init_transmission_models( SimulationController& sc ) throw()
    {
       sc.transmission_model_keeper_w().add( new ReliableTransmissionModelFactory() );
+      sc.transmission_model_keeper_w().add( new TracesTransmissionModelFactory() );
       sc.transmission_model_keeper_w().add( new StatsChainTransmissionModelFactory() );
       sc.transmission_model_keeper_w().add( new RandomDropTransmissionModelFactory() );
       sc.transmission_model_keeper_w().add( new AlohaTransmissionModelFactory() );

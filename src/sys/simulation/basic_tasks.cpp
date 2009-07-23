@@ -254,7 +254,7 @@ namespace shawn
    description( void )
       const throw()
    {
-      return "constructs an empty world with given models. $transm_model defaults to 'reliadble'";
+      return "constructs an empty world with given models. $transm_model defaults to 'reliable'";
    }
 
 
