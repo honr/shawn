@@ -67,6 +67,8 @@ namespace vis
 			   this->owner_w().add_tag(new shawn::DoubleTag("VisBattery", 0.0));
             return true;
          }
+      this->owner_w().remove_tag_by_name("VisBattery");
+	   this->owner_w().add_tag(new shawn::DoubleTag("VisBattery", 0.0));
       return Processor::process_message( mh );
    }
    // ----------------------------------------------------------------------
