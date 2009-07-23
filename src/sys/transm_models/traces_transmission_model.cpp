@@ -53,7 +53,7 @@ namespace shawn
         std::string tmp;
         TracesTransmissionModel::TracesMessageInfo * mi = NULL;
 
-        tracefile.open("mytraces.txt");
+        tracefile.open(filename_.c_str());
         if(!tracefile)
            return;
 
