@@ -32,7 +32,7 @@ namespace shawn
         ///
         explicit Box( const Vec& );
         ///
-        ~Box();
+        virtual ~Box();
         ///@}
 
 

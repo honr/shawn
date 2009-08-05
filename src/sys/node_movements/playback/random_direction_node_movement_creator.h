@@ -63,7 +63,7 @@ namespace shawn
 
 	  const shawn::Vec get_destination(const shawn::Node&) const;
 
-	  enum Borders{noborder, left, bottom, right, top};
+	  enum Borders{noborder, left, bottom, right, top, lowerleftcorner, lowerrightcorner, upperrightcorner, upperleftcorner};
 
 	  Borders get_border(const shawn::Vec&) const;
 
@@ -73,7 +73,7 @@ namespace shawn
       std::multimap<double, const Node*> next_movement_times_;
 
 	  struct RDNMCInfo{
-		RDNMCInfo(double d,double v,double m,double s);
+		RDNMCInfo(double d, double v, double m, double s);
 		virtual ~RDNMCInfo();
 		double direction() const;
 		double velocity() const;

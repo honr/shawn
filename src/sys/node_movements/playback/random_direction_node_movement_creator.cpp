@@ -1,14 +1,29 @@
-#include "sys/node_movements/playback/random_direction_node_movement_creator.h"
+/************************************************************************
+ ** This file is part of the network simulator Shawn.                  **
+ ** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
+ ** Shawn is free software; you can redistribute it and/or modify it   **
+ ** under the terms of the BSD License. Refer to the shawn-licence.txt **
+ ** file in the root of the Shawn source tree for further details.     **
+ ************************************************************************/
+#include <cfloat>
+#include <cmath>
+
 #include "sys/node_movements/playback/movement_controller.h"
 #include "sys/node_movements/playback/movement_info.h"
 #include "sys/node_movements/linear_movement.h"
 #include "sys/node_movement.h"
 #include "sys/node.h"
 #include "sys/world.h"
-#include <cfloat>
-#include <cmath>
 
+#include "sys/node_movements/playback/random_direction_node_movement_creator.h"
+
+#ifdef RANDOMDIRECTION_STARTNOW
+#undef RANDOMDIRECTION_STARTNOW
+#endif
 #define RANDOMDIRECTION_STARTNOW 0.0
+#ifdef PI
+#undef PI
+#endif
 #define PI 3.14159265
 
 using namespace std;
@@ -35,10 +50,8 @@ namespace shawn{
       urv_direction_.set_upper_bound_inclusive(false);
       urv_direction_.init();
 
-	  urv_t_move_.set_lower_bound(sc.environment_w().optional_double_param("random_direction_t_move_min", 
-		  width_ > height_ ? width_ : height_));
-	  urv_t_move_.set_upper_bound(sc.environment_w().optional_double_param("random_direction_t_move_max", 
-		  width_ > height_ ? width_ : height_));
+	  urv_t_move_.set_lower_bound(sc.environment_w().optional_double_param("random_direction_t_move_min", DBL_MAX));
+	  urv_t_move_.set_upper_bound(sc.environment_w().optional_double_param("random_direction_t_move_max", DBL_MAX));
 	  urv_t_move_.set_lower_bound_inclusive(true);
 	  urv_t_move_.set_upper_bound_inclusive(true);
 	  urv_t_move_.init();
@@ -65,7 +78,8 @@ namespace shawn{
          for (World::node_iterator it=sc_.world_w().begin_nodes_w(); it!=sc_.world_w().end_nodes_w(); ++it)
          {
             NodeMovement &nm = it->movement_w();
-			if (nm.name() == "NoMovement"){
+			if (nm.name() == "NoMovement")
+			{
 				return generate_new_movement(*it, RANDOMDIRECTION_STARTNOW);
 			}
             LinearMovement *lm = dynamic_cast<LinearMovement*>(&nm);
@@ -97,7 +111,9 @@ namespace shawn{
       if (start_time <= 0.0) 
       {
          mi->set_urgency(MovementInfo::Immediately);
-      } else {
+      } 
+	  else 
+	  {
          mi->set_urgency(MovementInfo::Delayed);
          mi->set_dispatch_time(start_time);
       }
@@ -113,18 +129,21 @@ namespace shawn{
 	  double t_stop = 0.0;
 	  double vector_length = 0.0;
 	  std::map<const shawn::Node*,RDNMCInfo*>::iterator it = rdnmc_infos_.find(&node);
-	  if (it == rdnmc_infos_.end() ||
-		  EQDOUBLE(it->second->t_move(),0.0)){
+	  if (it == rdnmc_infos_.end() || EQDOUBLE(it->second->t_move(),0.0))
+	  {
 		  direction = urv_direction_;
 		  velocity = urv_speed_;
 		  t_move = urv_t_move_;
 		  t_stop = urv_t_stop_;
 		  vector_length = (velocity * t_move);
-		  if(it != rdnmc_infos_.end()){
+		  if(it != rdnmc_infos_.end())
+		  {
 			  delete it->second;
 			  rdnmc_infos_.erase(it);
 		  }
-	  }else{
+	  }
+	  else
+	  {
 		  direction = it->second->direction();
 		  velocity = it->second->velocity();
 		  t_move = it->second->t_move();
@@ -135,11 +154,14 @@ namespace shawn{
 	  }
       Vec vector(cos(direction) * vector_length, sin(direction) * vector_length, 0.0);
 
-	  if (is_inside(destination + vector)){
+	  if (is_inside(destination + vector))
+	  {
 		  next_movement_times_.insert(std::make_pair(start_time + t_move + t_stop,&node));
 		  lm->set_parameters(velocity,(destination + vector),sc_.world_w());
 		  mi->set_node_movement(lm);
-	  }else{
+	  }
+	  else
+	  {
 		  double intersection = get_intersection(node,vector);
 		  // time_until_hit the border
 		  double time_until_hit = ((vector * intersection).euclidean_norm()/velocity);
@@ -160,7 +182,8 @@ namespace shawn{
    void RandomDirectionNodeMovementCreator::reset()
    {
       next_movement_times_.clear();
-	  for(std::map<const Node*, RDNMCInfo*>::iterator it = rdnmc_infos_.begin(); it != rdnmc_infos_.end(); ++it){
+	  for(std::map<const Node*, RDNMCInfo*>::iterator it = rdnmc_infos_.begin(); it != rdnmc_infos_.end(); ++it)
+	  {
 		  delete it->second;
 	  }
 	  rdnmc_infos_.clear();
@@ -176,18 +199,24 @@ namespace shawn{
 		
 		double intersection = DBL_MAX;
 		// Get x intersection
-		if (vector.x() < 0){
-			double t = (0 - destination.x()) / vector.x();
+		if (vector.x() < 0.0)
+		{
+			double t = (0.0 - destination.x()) / vector.x();
 			if (t < intersection) intersection = t;
-		} else if (vector.x() > 0){
+		} 
+		else if (vector.x() > 0.0)
+		{
 			double t = (width_ - destination.x()) / vector.x();
 			if (t < intersection) intersection = t;
 		}
 		// Get y intersection
-		if (vector.y() < 0){
-			double t = (0 - destination.y()) / vector.y();
+		if (vector.y() < 0.0)
+		{
+			double t = (0.0 - destination.y()) / vector.y();
 			if (t < intersection) intersection = t;
-		} else if (vector.y() > 0){
+		} 
+		else if (vector.y() > 0.0)
+		{
 			double t = (height_ - destination.y()) / vector.y();
 			if (t < intersection) intersection = t;
 		}
@@ -201,11 +230,11 @@ namespace shawn{
    {
 	   Borders border = get_border(vec);
        
-	   if (border == right && alpha >= 0 && alpha < PI/2){
+	   if (border == right && alpha >= 0.0 && alpha < PI/2){
 			return (PI - alpha);
 	   }
-	   if (border == top && alpha >= 0 && alpha < PI/2){
-			return (2*PI - alpha);
+	   if (border == top && alpha >= 0.0 && alpha < PI/2){
+		   return EQDOUBLE(alpha,0.0) ? 0.0 : (2*PI - alpha);
 	   }
 	   if (border == top && alpha >= PI/2 && alpha < PI){
 			return (2*PI - alpha);
@@ -214,7 +243,7 @@ namespace shawn{
 			return (PI - alpha);
 	   }
 	   if (border == left && alpha >= PI && alpha < 3*PI/2){
-			return (3*PI - alpha);
+		   return EQDOUBLE(alpha,PI) ? 0.0 : (3*PI - alpha);
 	   }
 	   if (border == bottom && alpha >= PI && alpha < 3*PI/2){
 			return (2*PI - alpha);
@@ -225,7 +254,51 @@ namespace shawn{
 	   if (border == right && alpha >= 3*PI/2 && alpha < 2*PI){
 			return (3*PI - alpha);
 	   }
-	   assert(border != noborder);
+	   
+	   if (border == lowerleftcorner && alpha >= PI && alpha <= 3*PI/2){
+			return (alpha - PI);
+	   }
+	   if (border == lowerleftcorner && alpha > PI/2 && alpha < PI){
+			return (PI - alpha);
+	   }
+	   if (border == lowerleftcorner && alpha > 3*PI/2 && alpha < 2*PI){
+			return (2*PI - alpha);
+	   }
+
+	   if (border == lowerrightcorner && alpha >= 3*PI/2 && alpha < 2*PI){
+			return (alpha - PI);
+	   }
+	   if (border == lowerrightcorner && alpha > PI && alpha < 3*PI/2){
+			return (2*PI - alpha);
+	   }
+	   if (border == lowerrightcorner && alpha >= 0.0 && alpha < PI/2){
+			return (PI - alpha);
+	   }
+
+	   if (border == upperrightcorner && alpha >= 0.0 && alpha <= PI/2){
+			return (PI + alpha);
+	   }
+	   if (border == upperrightcorner && alpha > PI/2 && alpha < PI){
+			return (2*PI - alpha);
+	   }
+	   if (border == upperrightcorner && alpha > 3*PI/2 && alpha < 2*PI){
+			return (3*PI - alpha);
+	   }
+
+	   if (border == upperleftcorner && alpha >= PI/2 && alpha <= PI){
+		   return EQDOUBLE(alpha,PI) ? 0.0 : (PI + alpha);
+	   }
+	   if (border == upperleftcorner && alpha > PI && alpha < 3*PI/2){
+			return (3*PI - alpha);
+	   }
+	   if (border == upperleftcorner && alpha > 0.0 && alpha < PI/2){
+			return (2*PI - alpha);
+	   }
+#ifdef DEBUG
+	   std::cerr << "ERROR in RandomDirectionNodeMovementCreator: Impossible direction set!" << std::endl;
+	   std::cerr << "vec: " << vec << std::endl;
+	   std::cerr << "border: " << border << " alpha: " << alpha << std::endl;
+#endif
 	   return 2*PI;
    }
 
@@ -234,10 +307,10 @@ namespace shawn{
 	   is_inside(const shawn::Vec &vector) 
 	   const
    {
-		if(vector.x() > width_) return false;
-		if(vector.x() < 0) return false;
-		if(vector.y() > height_) return false;
-		if(vector.y() < 0) return false;
+		if(vector.x() >= width_) return false;
+		if(vector.x() <= 0) return false;
+		if(vector.y() >= height_) return false;
+		if(vector.y() <= 0) return false;
 		return true;
    }
 
@@ -263,10 +336,16 @@ namespace shawn{
 	   get_border(const shawn::Vec& vec)
 	   const
    {
-		if(EQDOUBLE(vec.x(),0.0)) return left;
-		if(EQDOUBLE(vec.x(),width_)) return right;
-		if(EQDOUBLE(vec.y(),0.0)) return bottom;
-		if(EQDOUBLE(vec.y(),height_)) return top;
+		if(EQDOUBLE(vec.x(),0.0) && !EQDOUBLE(vec.y(),0.0) && !EQDOUBLE(vec.y(),height_)) return left;
+		if(EQDOUBLE(vec.y(),0.0) && !EQDOUBLE(vec.x(),0.0) && !EQDOUBLE(vec.x(),width_)) return bottom;
+		if(EQDOUBLE(vec.x(),width_) && !EQDOUBLE(vec.y(),0.0) && !EQDOUBLE(vec.y(),height_)) return right;
+		if(EQDOUBLE(vec.y(),height_) && !EQDOUBLE(vec.x(),0.0) && !EQDOUBLE(vec.x(),width_)) return top;
+
+		if(EQDOUBLE(vec.x(),0.0) && EQDOUBLE(vec.y(),0.0)) return lowerleftcorner;
+		if(EQDOUBLE(vec.x(),width_) && EQDOUBLE(vec.y(),0.0)) return lowerrightcorner;
+		if(EQDOUBLE(vec.x(),width_) && EQDOUBLE(vec.y(),height_)) return upperrightcorner;
+		if(EQDOUBLE(vec.x(),0.0) && EQDOUBLE(vec.y(),height_)) return upperleftcorner;
+
 		return noborder;
    }
 
@@ -274,16 +353,17 @@ namespace shawn{
 
    RandomDirectionNodeMovementCreator::
 	   RDNMCInfo::
-	   RDNMCInfo(double d,double v,double m,double s) : 
+	   RDNMCInfo(double d, double v, double m, double s) : 
 		direction_(d),
 		velocity_(v),
 	    t_move_(m),
 		t_stop_(s)
 		{
-			assert(direction_ >=0 && direction_ < 2*PI);
-			assert(velocity_ >= 0);
-			assert(t_move_ >= 0);
-			assert(t_stop_ >= 0);
+			assert(direction_ >= 0.0);
+			assert(direction_ < 2*PI);
+			assert(velocity_ >= 0.0);
+			assert(t_move_ >= 0.0);
+			assert(t_stop_ >= 0.0);
 		}
 
 	RandomDirectionNodeMovementCreator::
@@ -325,6 +405,5 @@ namespace shawn{
 		const
 	{
 		return t_stop_;
-	}
-   	
+	}	
 }

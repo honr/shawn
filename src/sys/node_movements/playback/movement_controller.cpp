@@ -71,7 +71,7 @@ namespace shawn
 		movement_info_ = nmc_->next_movement();
 	      
 		if (movement_info_ != NULL)
-         {
+		{
 
 // if ( movement_info_->node()->id() == 0 )
 // {

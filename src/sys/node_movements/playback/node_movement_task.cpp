@@ -60,10 +60,10 @@ namespace shawn
 	  else if(sc.environment_w().optional_string_param("mode","")=="TraCI")
 	  {
 #ifdef ENABLE_TRACICLIENT
-		  shawn::KeeperManagedHandle kmh = sc.simulation_task_keeper_w().find_managed_w("TraCI");
-		  traci::TraCINodeMovementCreator * tnmc = dynamic_cast<traci::TraCINodeMovementCreator*>( kmh.get() );
-		  sc.world_w().movement_controller_w().set_node_movement_creator( tnmc );
-        tnmc->run(sc);
+		  //shawn::KeeperManagedHandle kmh = sc.simulation_task_keeper_w().find_managed_w("TraCI");
+		  //traci::TraCINodeMovementCreator * tnmc = dynamic_cast<traci::TraCINodeMovementCreator*>( kmh.get() );
+		  sc.world_w().movement_controller_w().set_node_movement_creator( /*tnmc*/ traci::TraCIClient::instance() );
+		  traci::TraCIClient::instance()->run(sc);
 		  sc.world_w().movement_controller_w().start();
 #else
 		  std::cerr << "TraCI node movement not built!" << std::endl;

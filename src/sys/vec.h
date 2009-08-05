@@ -27,7 +27,7 @@ namespace shawn
          : x_(x), y_(y), z_(z)
       {}
 
-      ~Vec();
+      virtual ~Vec();
 
       inline double x( void ) 
          const throw()
