@@ -99,11 +99,11 @@
 
 // Omit position
 #define POSITION_NONE    0x00
-// 2D cartesian coordinates
+// 2D Cartesian coordinates
 #define POSITION_2D      0x01
-// 2.5D cartesian coordinates
+// 2.5D Cartesian coordinates
 #define POSITION_2_5D    0x02
-// 3D cartesian coordinates
+// 3D Cartesian coordinates
 #define POSITION_3D      0x03
 // Position on road map
 #define POSITION_ROADMAP 0x04
@@ -136,7 +136,7 @@
 // RESULT TYPES
 // ****************************************
 
-// result type: Ok
+// result type: OK
 #define RTYPE_OK    0x00
 // result type: not implemented
 #define RTYPE_NOTIMPLEMENTED  0x01
