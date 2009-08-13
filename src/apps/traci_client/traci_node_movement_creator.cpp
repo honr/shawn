@@ -1,20 +1,30 @@
-#include "traci_node_movement_creator.h"
-//#include "traci_processor.h"
-#include "sys/node_movements/playback/movement_controller.h"
-#include "sys/node_movements/playback/movement_info.h"
+/************************************************************************
+ ** This file is part of the network simulator Shawn.                  **
+ ** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
+ ** Shawn is free software; you can redistribute it and/or modify it   **
+ ** under the terms of the BSD License. Refer to the shawn-licence.txt **
+ ** file in the root of the Shawn source tree for further details.     **
+ ************************************************************************/
+//#include <string>
+//#include <sstream>
+//#include <limits>
+//#include <cmath>
+
+//#include "sys/node_movements/playback/movement_controller.h"
+//#include "sys/node_movements/playback/movement_info.h"
 #include "sys/node_movements/linear_movement.h"
 #include "sys/node_movements/jump_movement.h"
 #include "sys/processors/processor_keeper.h"
-#include "sys/node_movement.h"
-#include "sys/node.h"
-#include "sys/tag.h"
-#include "sys/taggings/basic_tags.h"
-#include "sys/world.h"
+//#include "sys/node_movement.h"
+//#include "sys/node.h"
+//#include "sys/tag.h"
+//#include "sys/taggings/basic_tags.h"
+//#include "sys/world.h"
 #include "sys/misc/tokenize.h"
-#include <string>
-#include <sstream>
-#include <limits>
-#include <cmath>
+
+#include "traci_node_movement_creator.h"
+
+
 #ifdef ENABLE_TRACICLIENT
 
 

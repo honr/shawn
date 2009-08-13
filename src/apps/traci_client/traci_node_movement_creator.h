@@ -5,30 +5,34 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-
-#ifndef __SHAWN_LEGACYAPPS_TraCIClient_H
-#define __SHAWN_LEGACYAPPS_TraCIClient_H
+#ifndef __SHAWN_APPS_TRACI_CLIENT_TRACI_NODE_MOVEMENT_CREATOR_H
+#define __SHAWN_APPS_TRACI_CLIENT_TRACI_NODE_MOVEMENT_CREATOR_H
 
 #include "_apps_enable_cmake.h"
 //#include "sys/event_scheduler.h"
-#include "sys/node_movements/playback/movement_info.h"
-#include "sys/node_movements/playback/node_movement_creator.h"
-#include "sys/node_movements/playback/node_movement_task.h"
-#include "sys/simulation/simulation_controller.h"
-#include "sys/simulation/simulation_task.h"
-#include "sys/node_movement.h"
-#include "sys/node.h"
-#include "sys/misc/node_change_listener.h"
-#include "sys/simulation/simulation_environment.h"
-#include "sys/processors/processor_factory.h"
-#include "sys/node_movements/playback/movement_info.h"
-#include "sys/vec.h"
-#include "apps/tcpip/socket.h"
-#include "apps/tcpip/storage.h"
-#include "mobility_interface_constants.h"
+
 #include <string>
 #include <list>
 #include <map>
+
+//#include "sys/node_movements/playback/movement_info.h"
+#include "sys/node_movements/playback/node_movement_creator.h"
+#include "sys/node_movements/playback/node_movement_task.h"
+//#include "sys/simulation/simulation_controller.h"
+//#include "sys/simulation/simulation_task.h"
+//#include "sys/node_movement.h"
+//#include "sys/node.h"
+#include "sys/misc/node_change_listener.h"
+//#include "sys/simulation/simulation_environment.h"
+#include "sys/processors/processor_factory.h"
+//#include "sys/node_movements/playback/movement_info.h"
+//#include "sys/vec.h"
+
+#include "apps/tcpip/socket.h"
+#include "apps/tcpip/storage.h"
+
+#include "mobility_interface_constants.h"
+
 #ifdef ENABLE_TRACICLIENT
 
 namespace traci
