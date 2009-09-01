@@ -342,9 +342,9 @@ endif(COMMAND cmake_policy)
 
 		if ( OPT_ENABLE_BOOST )
 			if ( CYGWIN )
-				set ( LIB_BOOST boost_regex-gcc-mt boost_date_time-gcc-mt boost_thread-gcc-mt )
+				set ( LIB_BOOST boost_regex-gcc-mt boost_date_time-gcc-mt boost_thread-gcc-mt boost_system-gcc-mt )
 			else ( CYGWIN )
-				set ( LIB_BOOST boost_regex boost_date_time boost_thread )
+				set ( LIB_BOOST boost_regex-mt boost_date_time-mt boost_thread-mt boost_system-mt )
 			endif ( CYGWIN )
 		endif ( OPT_ENABLE_BOOST )
 

@@ -18,6 +18,12 @@
 	#include "sys/misc/os/system_time.h"
 #endif
 
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+#include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/condition_variable.hpp>
+#endif
+
 namespace shawn
 {
 
@@ -136,6 +142,12 @@ namespace shawn
 
 	   ///@name Running
 	   ///@{
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+      ///
+      double update_time( void ) const throw();
+      ///
+      bool timed_wait( int millis ) throw();
+#endif
 	   ///
 	   void playback( double stop_time ) throw();
 	   ///
@@ -144,11 +156,32 @@ namespace shawn
 
 	private:
 	   EventSet events_;
-	   double time_;
+	   mutable double time_;
 
 		#ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
 			SystemTime sys_time_;
 		#endif
+
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+      boost::posix_time::ptime last_event_;
+      /// Time of last update of time_ - required in update_time() to define
+      /// the passed time.
+      mutable boost::posix_time::ptime begin_cond_wait_;
+      /// Set when EventScheduler is going to sleep - if so, current_time()
+      /// updates time_ when called (because if called at this moment, it
+      /// *must* have happened externally.
+      bool waiting_;
+      /// Global storage of maximal time that time_ can be set to. The value
+      /// is given by the parameter stop_time in playback().
+      double max_stop_time_;
+      ///< Protect EventSet events_ from multiple access
+      mutable boost::mutex events_mutex_;
+      /// Used by condition variable external_event_cond_
+      boost::mutex external_event_mutex_;
+      /// Sleep when nothing to do, but get notified when new event added
+      boost::condition_variable external_event_cond_;
+#endif
+
 	};
 
 

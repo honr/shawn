@@ -11,6 +11,10 @@
 #include "sys/util/defutils.h"
 #include <iostream>
 
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+#include "boost/date_time/posix_time/posix_time.hpp"
+#endif
+
 namespace shawn
 {
    const EventScheduler::EventHandle EventScheduler::NO_EVENT = NULL;
@@ -71,6 +75,10 @@ namespace shawn
 	EventScheduler::
 		EventScheduler()
 		: time_ ( 0.0 )
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+         , last_event_( boost::posix_time::microsec_clock::local_time() ),
+         waiting_     ( false )
+#endif
 	{}
 
    // ----------------------------------------------------------------------
@@ -86,7 +94,9 @@ namespace shawn
 	{
 		assert( t >= current_time() );
 		EventHandle eh = new EventInfo( h, t, eth );
-
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+      boost::unique_lock<boost::mutex> event_queue_lock( events_mutex_ );
+#endif
 		std::pair<EventSet::iterator,bool> worked = events_.insert(eh);
 		if( !worked.second )
 		{
@@ -96,6 +106,9 @@ namespace shawn
 		}
 		assert( worked.second );
 		eh->pos_ = worked.first;
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+      external_event_cond_.notify_all();
+#endif
 		return eh;
 	}
 
@@ -107,7 +120,9 @@ namespace shawn
    {
 		assert( !eh->dead_ ); // must not delete_event in it's timeout
 		assert( eh != NULL );
-
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+      boost::unique_lock<boost::mutex> event_queue_lock( events_mutex_ );
+#endif
 		bool event_found = false;
 		if (events_.find(eh) == events_.end())
 		{
@@ -138,7 +153,9 @@ namespace shawn
 	{
 		assert( newt >= current_time() );
 		assert( eh != NULL );
-
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+      boost::unique_lock<boost::mutex> event_queue_lock( events_mutex_ );
+#endif
 		bool event_found = false;
 		if (events_.find(eh) == events_.end())
 		{
@@ -163,6 +180,9 @@ namespace shawn
 		assert( worked.second );
 		eh->pos_ = worked.first;
 		eh->dead_ = false;
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+      external_event_cond_.notify_all();
+#endif
 	}
 
 /*
@@ -180,76 +200,209 @@ namespace shawn
       return NULL;
    }
 */
+
 	// ----------------------------------------------------------------------
 	double
 		EventScheduler::
 		current_time( void )
-		const throw()
+		 const throw()
 	{
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+      if ( waiting_ )
+         update_time();
+#endif
 		return time_;
 	}
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+   // ----------------------------------------------------------------------
+   double
+   EventScheduler::
+   update_time( void )
+      const throw()
+   {
+      boost::posix_time::ptime end_cond_wait =
+            boost::posix_time::microsec_clock::local_time();
+      boost::posix_time::time_duration td = end_cond_wait - begin_cond_wait_;
+      time_ += td.total_milliseconds() / 1000.0;
+      if ( time_ > max_stop_time_ )
+         time_ = max_stop_time_;
+      begin_cond_wait_ = boost::posix_time::microsec_clock::local_time();
+   }
+   // ----------------------------------------------------------------------
+   bool
+   EventScheduler::
+   timed_wait( int millis )
+      throw()
+   {
+      boost::unique_lock<boost::mutex> lk( external_event_mutex_ );
+      boost::posix_time::time_duration td = boost::posix_time::milliseconds( millis );
 
-	// ----------------------------------------------------------------------
-	void
-		EventScheduler::
-		playback( double stop_time )
-		throw()
-	{
-		assert( stop_time >= current_time() );
+      double wakeup_time = (millis / 1000.0) + current_time();
+      if ( !empty() && next_event_time() < wakeup_time )
+         return false;
 
-		while( 1 )
-		{
-			if( empty() )
-			{
-				#ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
-					sys_time_.sleep( int(1000.0 * (stop_time - current_time())) );
-					sys_time_.touch();
-				#endif
-				time_ = stop_time;
-				return;
-			}
+      // FIXME: If an event is "injected" exactly at this moment (and thus
+      //        before external_event_cond_.timed_wait is called), the
+      //        EventScheduler would not recognize this, and the potential
+      //        event would be executed delayed!
 
-			double net = next_event_time();
-			if( net < stop_time )
-			{
-				#ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
-					double real_duration = double(sys_time_.ms_since_last_touch());
-					double virt_duration = 1000.0 * (net - time_);
+      begin_cond_wait_ = boost::posix_time::microsec_clock::local_time();
+      waiting_ = true;
+      if ( external_event_cond_.timed_wait( lk, td ) )
+      {
+         update_time();
+         waiting_ = false;
+         return false;
+      }
 
-					if( real_duration < virt_duration )
-						sys_time_.sleep( int(virt_duration - real_duration) );
-					sys_time_.touch();
-				#endif
+      waiting_ = false;
+      return true;
+   }
+   // ----------------------------------------------------------------------
+   void
+   EventScheduler::
+   playback( double stop_time )
+      throw()
+   {
+      assert( stop_time >= current_time() );
 
-				time_ = net;
-				EventScheduler::EventHandle eh = front_w();
+      max_stop_time_ = stop_time;
+      while( 1 )
+      {
+         if( empty() )
+         {
+            int millis = 1000.0 * (stop_time - current_time());
+            if ( !timed_wait( millis ) )
+            {
+//                std::cout << "EventScheduler: Net < Stop: Interrupted at "
+//                   << time_ << std::endl;
+               continue;
+            }
 
-				assert( eh );
-				assert( eh->pos_ == events_.begin() );
-				assert( net == eh->time_ );
-				assert( !eh->dead_ );
+            last_event_ = boost::posix_time::microsec_clock::local_time();
+            time_ = stop_time;
+            return;
+         }
 
-				eh->dead_ = true;
-				eh->handler_->timeout( *this, eh, net, eh->tag_ );
+         double net = next_event_time();
+//          std::cout << "Next event at " << net << "; "
+//             << "we have " << current_time() << std::endl;
+         if( net < stop_time )
+         {
+            boost::posix_time::ptime now =
+               boost::posix_time::microsec_clock::local_time();
+            boost::posix_time::time_duration td = now - last_event_;
+            int real_duration = td.total_milliseconds();
+            int virt_duration = 1000.0 * (net - time_);
 
-				if( eh->dead_ )
-				{
-					events_.erase( eh->pos_ );
-					delete eh;
-				}
-			}
-			else
-			{
-				#ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
-					sys_time_.sleep( int(1000.0 * (stop_time - current_time())) );
-					sys_time_.touch();
-				#endif
-				time_ = stop_time;
-				return;
-			}
-		}
-	}
+            if( real_duration < virt_duration )
+            {
+               double millis = virt_duration - real_duration;
+               if ( !timed_wait( millis ) )
+               {
+//                   std::cout << "EventScheduler: Net < Stop: Interrupted at "
+//                      << time_ << std::endl;
+                  continue;
+               }
+            }
+            last_event_ = boost::posix_time::microsec_clock::local_time();
 
+            time_ = net;
+            EventScheduler::EventHandle eh = front_w();
+
+            assert( eh );
+            assert( eh->pos_ == events_.begin() );
+            assert( net == eh->time_ );
+            assert( !eh->dead_ );
+
+            eh->dead_ = true;
+            eh->handler_->timeout( *this, eh, net, eh->tag_ );
+
+            if( eh->dead_ )
+            {
+               boost::unique_lock<boost::mutex> event_queue_lock( events_mutex_ );
+               events_.erase( eh->pos_ );
+               delete eh;
+            }
+         }
+         else
+         {
+            int millis = 1000.0 * (stop_time - current_time());
+            if ( !timed_wait( millis ) )
+            {
+//                std::cout << "EventScheduler: Net >= Stop: Interrupted at "
+//                   << time_ << std::endl;
+               continue;
+            }
+
+            last_event_ = boost::posix_time::microsec_clock::local_time();
+            time_ = stop_time;
+            return;
+         }
+      }
+   }
+#else
+   // ----------------------------------------------------------------------
+   void
+   EventScheduler::
+   playback( double stop_time )
+      throw()
+   {
+      assert( stop_time >= current_time() );
+
+      while( 1 )
+      {
+         if( empty() )
+         {
+            #ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
+               sys_time_.sleep( int(1000.0 * (stop_time - current_time())) );
+               sys_time_.touch();
+            #endif
+            time_ = stop_time;
+            return;
+         }
+
+         double net = next_event_time();
+         if( net < stop_time )
+         {
+            #ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
+               double real_duration = double(sys_time_.ms_since_last_touch());
+               double virt_duration = 1000.0 * (net - time_);
+
+               if( real_duration < virt_duration )
+                  sys_time_.sleep( int(virt_duration - real_duration) );
+               sys_time_.touch();
+            #endif
+
+            time_ = net;
+            EventScheduler::EventHandle eh = front_w();
+
+            assert( eh );
+            assert( eh->pos_ == events_.begin() );
+            assert( net == eh->time_ );
+            assert( !eh->dead_ );
+
+            eh->dead_ = true;
+            eh->handler_->timeout( *this, eh, net, eh->tag_ );
+
+            if( eh->dead_ )
+            {
+               events_.erase( eh->pos_ );
+               delete eh;
+            }
+         }
+         else
+         {
+            #ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
+               sys_time_.sleep( int(1000.0 * (stop_time - current_time())) );
+               sys_time_.touch();
+            #endif
+            time_ = stop_time;
+            return;
+         }
+      }
+   }
+#endif
 	// ----------------------------------------------------------------------
 	double
 		EventScheduler::
@@ -266,6 +419,9 @@ namespace shawn
 		empty( void )
 		const throw()
 	{
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+      boost::unique_lock<boost::mutex> event_queue_lock( events_mutex_ );
+#endif
 		return events_.empty();
 	}
 
@@ -276,6 +432,9 @@ namespace shawn
 		throw()
 	{
 		assert( !empty() );
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+      boost::unique_lock<boost::mutex> event_queue_lock( events_mutex_ );
+#endif
 		return *events_.begin();
 	}
 
@@ -286,6 +445,9 @@ namespace shawn
 		const throw()
 	{
 		assert( !empty() );
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+      boost::unique_lock<boost::mutex> event_queue_lock( events_mutex_ );
+#endif
 		return *events_.begin();
 	}
 
@@ -295,12 +457,15 @@ namespace shawn
 		clear( double new_time )
 		throw()
 	{
+#ifdef MULTITHREADED_EVENT_SCHEDULER
+      boost::unique_lock<boost::mutex> event_queue_lock( events_mutex_ );
+#endif
 		for( EventSet::iterator it = events_.begin(); it != events_.end(); ++it )
 			if(*it)
 				delete *it;
 
 		events_.clear();
-		time_=new_time;
+		time_ = new_time;
 	}
 
 }
