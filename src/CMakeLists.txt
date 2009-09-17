@@ -57,8 +57,44 @@ endif(COMMAND cmake_policy)
 # Collect all source files recursively to be compiled
 #=============
 
-	file( GLOB_RECURSE shawnSourcesAppsCPP apps/*.cpp )
-	file( GLOB_RECURSE shawnSourcesAppsH apps/*.h )
+	file( GLOB_RECURSE shawnAutocastCPP apps/autocast/*.cpp )
+	file( GLOB_RECURSE shawnAutocastH apps/autocast/*.h )
+
+	file( GLOB_RECURSE shawnDistestCPP apps/distest/*.cpp )
+	file( GLOB_RECURSE shawnDistestH apps/distest/*.h )
+
+	file( GLOB_RECURSE shawnExamplesCPP apps/examples/*.cpp )
+	file( GLOB_RECURSE shawnExamplesH apps/examples/*.h )
+
+	file( GLOB_RECURSE shawnIsenseCPP apps/isense/*.cpp )
+	file( GLOB_RECURSE shawnIsenseH apps/isense/*.h )
+
+	file( GLOB_RECURSE shawnLocalizationCPP apps/localization/*.cpp )
+	file( GLOB_RECURSE shawnLocalizationH apps/localization/*.h )
+
+	file( GLOB_RECURSE shawnMotionEventTaskCPP apps/motion_event_task/*.cpp )
+	file( GLOB_RECURSE shawnMotionEventTaskH apps/motion_event_task/*.h )
+
+	file( GLOB_RECURSE shawnReadingCPP apps/reading/*.cpp )
+	file( GLOB_RECURSE shawnReadingH apps/reading/*.h )
+
+	file( GLOB_RECURSE shawnRoutingCPP apps/routing/*.cpp )
+	file( GLOB_RECURSE shawnRoutingH apps/routing/*.h )
+
+	file( GLOB_RECURSE shawnSpyglassCPP apps/spyglass/*.cpp )
+	file( GLOB_RECURSE shawnSpyglassH apps/spyglass/*.h )
+
+	file( GLOB_RECURSE shawnTcpipCPP apps/tcpip/*.cpp )
+	file( GLOB_RECURSE shawnTcpipgH apps/tcpip/*.h )
+
+	file( GLOB_RECURSE shawnTopologyCPP apps/topology/*.cpp )
+	file( GLOB_RECURSE shawnTopologyH apps/topology/*.h )
+
+	file( GLOB_RECURSE shawnTraciClientCPP apps/traci_client/*.cpp )
+	file( GLOB_RECURSE shawnTraciClientH apps/traci_client/*.h )
+
+	file( GLOB_RECURSE shawnVisCPP apps/vis/*.cpp )
+	file( GLOB_RECURSE shawnVisH apps/vis/*.h )
 
 	file( GLOB_RECURSE shawnSourcesFrontendCPP frontend/*.cpp )
 	file( GLOB_RECURSE shawnSourcesFrontendH frontend/*.h )
@@ -75,6 +111,7 @@ endif(COMMAND cmake_policy)
 	set( LEGACYAPPS_PATH "" CACHE PATH "Path to legacy apps. Leave blank to not use legacy apps." )
 	if ( LEGACYAPPS_PATH )
 		file( GLOB_RECURSE legacyappsSourcesCPP ${LEGACYAPPS_PATH}/*.cpp )
+		file( GLOB_RECURSE legacyappsSourcesH ${LEGACYAPPS_PATH}/*.h )
 	endif ( LEGACYAPPS_PATH )
 
 	#
@@ -92,18 +129,74 @@ endif(COMMAND cmake_policy)
 		set( shawnSources ${shawnSources} ${shawnSourcesFrontendCPP} )
 		set( shawnSources ${shawnSources} ${shawnSourcesFrontendH} )
 		set( shawnSources ${shawnSources} shawn_config.h )
+		set( shawnSources ${shawnSources} apps/apps_init.h )
+		set( shawnSources ${shawnSources} apps/apps_init.cpp )
 
 	# shawnSourcesLib - Sources for library build
 
 		set( shawnSourcesLib ${shawnSourcesLib} ${shawnSourcesSysCPP} )
 		set( shawnSourcesLib ${shawnSourcesLib} ${shawnSourcesSysH} )
 
-		set( shawnSourcesLib ${shawnSourcesLib} ${shawnSourcesAppsCPP} )
-		set( shawnSourcesLib ${shawnSourcesLib} ${shawnSourcesAppsH} )
-
-		set( shawnSourcesLib ${shawnSourcesLib} ${legacyappsSourcesCPP} )
-
 		set( shawnSourcesLib ${shawnSourcesLib} shawn_config.h )
+
+	# LegacyApps
+		set( shawnLegacyLib ${shawnLegacyLib} ${legacyappsSourcesCPP} )
+		set( shawnLegacyLib ${shawnLegacyLib} ${legacyappsSourcesH} )
+
+	# shawnAutocast - Source for autocast library build
+		set( shawnAutocast ${shawnAutocast} ${shawnAutocastCPP} )
+		set( shawnAutocast ${shawnAutocast} ${shawnAutocastH} )
+
+	# shawnDistest - Source for Examples library build
+		set( shawnDistest ${shawnDistest} ${shawnDistestCPP} )
+		set( shawnDistest ${shawnDistest} ${shawnDistestH} )
+
+	# shawnExamples - Source for Examples library build
+		set( shawnExamples ${shawnExamples} ${shawnExamplesCPP} )
+		set( shawnExamples ${shawnExamples} ${shawnExamplesH} )
+
+	# shawnIsense - Source for Examples library build
+		set( shawnIsense ${shawnIsense} ${shawnIsenseCPP} )
+		set( shawnIsense ${shawnIsense} ${shawnIsenseH} )
+
+	# shawnLocalization - Source for Examples library build
+		set( shawnLocalization ${shawnLocalization} ${shawnLocalizationCPP} )
+		set( shawnLocalization ${shawnLocalization} ${shawnLocalizationH} )
+
+	# shawnMotionEventTask - Source for Examples library build
+		set( shawnMotionEventTask ${shawnMotionEventTask} ${shawnMotionEventTaskCPP} )
+		set( shawnMotionEventTask ${shawnMotionEventTask} ${shawnMotionEventTaskH} )
+
+	# shawnReading - Source for Reading library build
+		set( shawnReading ${shawnReading} ${shawnReadingCPP} )
+		set( shawnReading ${shawnReading} ${shawnReadingH} )
+
+	# shawnRouting - Source for Routing library build
+		set( shawnRouting ${shawnRouting} ${shawnRoutingCPP} )
+		set( shawnRouting ${shawnRouting} ${shawnRoutingH} )
+
+	# shawnSpyglass - Source for Spyglass library build
+		set( shawnSpyglass ${shawnSpyglass} ${shawnSpyglassCPP} )
+		set( shawnSpyglass ${shawnSpyglass} ${shawnSpyglassH} )
+
+	# shawnTcpip - Source for Tcpip library build
+		set( shawnTcpip ${shawnTcpip} ${shawnTcpipCPP} )
+		set( shawnTcpip ${shawnTcpip} ${shawnTcpipH} )
+
+	# shawnTopology - Source for Topology library build
+		set( shawnTopology ${shawnTopology} ${shawnTopologyCPP} )
+		set( shawnTopology ${shawnTopology} ${shawnTopologyH} )
+
+	# shawnTraciClient - Source for TraciClient library build
+		set( shawnTraciClient ${shawnTraciClient} ${shawnTraciClientCPP} )
+		set( shawnTraciClient ${shawnTraciClient} ${shawnTraciClientH} )
+
+	# shawnVis - Source for Vis library build
+		set( shawnVis ${shawnVis} ${shawnVisCPP} )
+		set( shawnVis ${shawnVis} ${shawnVisH} )
+
+
+		
 
 #=============
 # Add include and library directories for the compiler/linker
@@ -292,6 +385,22 @@ endif(COMMAND cmake_policy)
 		add_library( shawnlib ${shawnSources} ${shawnSourcesLib} )
 	ELSE(BUILD_LIB_WITH_MAIN)
 		add_library( shawnlib ${shawnSourcesLib} )
+	if( LEGACYAPPS_PATH )	
+		add_library( legacyapps ${shawnLegacyLib} )
+	endif( LEGACYAPPS_PATH )
+		add_library( apps_autocastlib ${shawnAutocast} )
+		add_library( apps_distestlib ${shawnDistest} )
+		add_library( apps_exampleslib ${shawnExamples} )
+		add_library( apps_isenselib ${shawnIsense} )
+		add_library( apps_localizationlib ${shawnLocalization} )
+		add_library( apps_motioneventtasklib ${shawnMotionEventTask} )
+		add_library( apps_readinglib ${shawnReading} )
+		add_library( apps_routinglib ${shawnRouting} )
+		add_library( apps_spyglasslib ${shawnSpyglass} )
+		add_library( apps_tcpiplib ${shawnTcpip} )
+		add_library( apps_topologylib ${shawnTopology} )
+		add_library( apps_traciclientlib ${shawnTraciClient} )
+		add_library( apps_vislib ${shawnVis} )
 		add_executable( shawn ${shawnSources} )
 	ENDIF(BUILD_LIB_WITH_MAIN)
 
@@ -360,6 +469,9 @@ endif(COMMAND cmake_policy)
 	endif ( WIN32 AND NOT CYGWIN  )
 
 	IF(NOT BUILD_LIB_WITH_MAIN)
-		target_link_libraries( shawn shawnlib ${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
+		target_link_libraries( shawn shawnlib legacyapps apps_exampleslib apps_autocastlib apps_distestlib 
+			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_readinglib apps_routinglib
+			apps_spyglasslib apps_tcpiplib apps_topologylib apps_traciclientlib apps_vislib
+			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
 			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
 	ENDIF(NOT BUILD_LIB_WITH_MAIN)
