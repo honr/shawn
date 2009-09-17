@@ -87,6 +87,8 @@ namespace shawn
             virtual void handle_start_element(std::string name, AttList& atts) throw(std::runtime_error);
             /// Empty stub
             virtual void handle_end_element(std::string name) throw(std::runtime_error);
+			/// Empty stub
+			virtual void handle_text_element(std::string content) throw(std::runtime_error);
 
             bool stop_flag_;                ///< Tells the parsing process to stop at the next feasible point in time
 
@@ -102,6 +104,7 @@ namespace shawn
 
             friend void saxreader_start(void *userdata, const char *name, const char **atts);
             friend void saxreader_end(void *userdata, const char *name);
+			friend void saxreader_text(void *userdata, const char *text, int length);
         };
 
 

@@ -41,6 +41,13 @@ namespace shawn
 			SAXReader* ptr = (SAXReader*) userdata;
 			ptr->handle_end_element(name);
 		}
+
+		void XMLCALL saxreader_text(void *userdata, const char* text, int length)
+		{
+			SAXReader* ptr = (SAXReader*) userdata;
+			string content(text, length);
+			ptr->handle_text_element(content);
+		}
 	
 	    // ----------------------------------------------------------------------
 	    std::string 
@@ -141,6 +148,7 @@ namespace shawn
 			parser = XML_ParserCreate(NULL);
 			XML_SetUserData(parser, (void*)this);
 			XML_SetElementHandler(parser, saxreader_start, saxreader_end);
+			XML_SetCharacterDataHandler(parser, saxreader_text);
 			
             //Read the file until the end of file
             while( !is_->eof() && !stop_flag_ ) 
@@ -206,6 +214,13 @@ namespace shawn
         void 
         	SAXReader::
         	handle_end_element(std::string name)
+        	throw(std::runtime_error)
+        {}
+
+		// ----------------------------------------------------------------------
+        void 
+        	SAXReader::
+        	handle_text_element(std::string content)
         	throw(std::runtime_error)
         {}
 
