@@ -140,8 +140,10 @@ endif(COMMAND cmake_policy)
 		set( shawnSourcesLib ${shawnSourcesLib} shawn_config.h )
 
 	# LegacyApps
+	if ( LEGACYAPPS_PATH )
 		set( shawnLegacyLib ${shawnLegacyLib} ${legacyappsSourcesCPP} )
 		set( shawnLegacyLib ${shawnLegacyLib} ${legacyappsSourcesH} )
+	endif ( LEGACYAPPS_PATH )
 
 	# shawnAutocast - Source for autocast library build
 		set( shawnAutocast ${shawnAutocast} ${shawnAutocastCPP} )
@@ -385,9 +387,9 @@ endif(COMMAND cmake_policy)
 		add_library( shawnlib ${shawnSources} ${shawnSourcesLib} )
 	ELSE(BUILD_LIB_WITH_MAIN)
 		add_library( shawnlib ${shawnSourcesLib} )
-	if( LEGACYAPPS_PATH )	
-		add_library( legacyapps ${shawnLegacyLib} )
-	endif( LEGACYAPPS_PATH )
+		if( LEGACYAPPS_PATH )	
+		  add_library( legacyapps ${shawnLegacyLib} )
+		endif( LEGACYAPPS_PATH )
 		add_library( apps_autocastlib ${shawnAutocast} )
 		add_library( apps_distestlib ${shawnDistest} )
 		add_library( apps_exampleslib ${shawnExamples} )
@@ -469,9 +471,15 @@ endif(COMMAND cmake_policy)
 	endif ( WIN32 AND NOT CYGWIN  )
 
 	IF(NOT BUILD_LIB_WITH_MAIN)
-		target_link_libraries( shawn shawnlib legacyapps apps_exampleslib apps_autocastlib apps_distestlib 
-			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_readinglib apps_routinglib
-			apps_spyglasslib apps_tcpiplib apps_topologylib apps_traciclientlib apps_vislib
+	   if( LEGACYAPPS_PATH )
+		  target_link_libraries( shawn shawnlib legacyapps )
+		endif( LEGACYAPPS_PATH )
+		target_link_libraries( shawn
+			apps_exampleslib apps_autocastlib apps_distestlib
+			apps_isenselib apps_localizationlib apps_motioneventtasklib
+			apps_routinglib apps_spyglasslib apps_tcpiplib
+			apps_topologylib apps_readinglib apps_traciclientlib apps_vislib
+			shawnlib
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
 			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
 	ENDIF(NOT BUILD_LIB_WITH_MAIN)
