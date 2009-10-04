@@ -57,12 +57,12 @@ namespace shawn
         if(!tracefile)
            return;
 
-        while (!tracefile.eof())  
+        while (!tracefile.eof())
         {
-           getline(tracefile, tmp); 
+           getline(tracefile, tmp);
 
            // New message
-           if(tmp.compare("[message]")==0)
+           if(tmp.find("[message]")==0)
            {
               // Last one wasn't finished, so delete the unfinished object first
               if(mi != NULL)
@@ -103,17 +103,17 @@ namespace shawn
               continue;
            }
 
-           if(tmp.compare("[/message]")==0)
+           if(tmp.find("[/message]")==0)
            {
               queued_messages_.push(mi);
               std::cout << "Message queued" << std::endl;
               mi = NULL;
               continue;
            }
-           
+
         }
         tracefile.close();
-        
+
         next_timeout_ = world_w().scheduler_w().new_event(*this, queued_messages_.front()->rec_time_, NULL);
     }
 
@@ -184,7 +184,6 @@ namespace shawn
          shawn::Node *dest = world_w().find_node_by_label_w(mi->dest_);
          dest->receive(ConstMessageHandle(mi->msg_));
          delete(mi);
-
          if(!queued_messages_.empty())
             next_timeout_ = world_w().scheduler_w().new_event(*this, queued_messages_.front()->rec_time_, NULL);
    	}
