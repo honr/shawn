@@ -239,6 +239,8 @@ namespace shawn
    set_transmission_range(double range)
    {
       transmission_range_ = range;
+      if(transmission_range_ < 0.0)
+         transmission_range_ = 0.0;
    }
    // ----------------------------------------------------------------------
    double
