@@ -71,6 +71,7 @@ namespace shawn
       ///@}
 
 
+
       ///@name Message properties
       ///@{
       /** ID of the sender. Set via set_source() automatically from within
@@ -92,6 +93,11 @@ namespace shawn
        *  Set via set_timestamp() automatically from within
        *  Processor::send() resp. Node::send().
        */
+
+      /**
+       * Returns the individual transmission range of the sender.
+       */
+      virtual double transmission_range();
       
       ///@name Message properties
       ///@{

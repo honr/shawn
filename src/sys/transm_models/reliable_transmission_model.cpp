@@ -70,9 +70,10 @@ namespace shawn
         send_message( TransmissionModel::MessageInfo& mi )
         throw()
     {
-    	queued_messages_.push( &mi );
+        queued_messages_.push( &mi );
         if( immediate_delivery_ && next_timeout_ == NULL)
-        	next_timeout_ = world_w().scheduler_w().new_event(*this, world_w().scheduler_w().current_time() + EPSILON_TIME, NULL);
+            next_timeout_ = world_w().scheduler_w().new_event(*this, 
+            world_w().scheduler_w().current_time() + EPSILON_TIME, NULL);
     }
 
     // ----------------------------------------------------------------------
@@ -108,7 +109,7 @@ namespace shawn
 		throw ()
    	{
        	next_timeout_ = NULL;
-		deliver_messages();
+		   deliver_messages();
    	}
 
     // ----------------------------------------------------------------------
@@ -126,7 +127,13 @@ namespace shawn
         
         for( EdgeModel::adjacency_iterator it = world_w().begin_adjacent_nodes_w( *mi.src_ ),
              endit = world_w().end_adjacent_nodes_w( *mi.src_ ); it != endit; ++it )
-            it->receive( ConstMessageHandle(mi.msg_) );
+        {
+           Node *cur_dst = &(*it);
+           if(transmission_in_range(mi.src_, cur_dst, &mi))
+           {
+               it->receive( ConstMessageHandle(mi.msg_) );
+           }
+        }
 
         const Message* m = mi.msg_.get();
 		if (m->has_sender_proc())

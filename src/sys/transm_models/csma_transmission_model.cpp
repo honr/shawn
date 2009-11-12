@@ -307,8 +307,12 @@ namespace shawn
 		{
 			if (*it != *(msg->pmi_->src_))
 			{
-				csma_state.destinations_.insert(&(*it));
-				start_receive(&(*it), msg);
+            Node *cur_dst = &(*it);
+            if(transmission_in_range(msg->pmi_->src_, cur_dst, msg->pmi_))
+            {
+				   csma_state.destinations_.insert(&(*it));
+				   start_receive(&(*it), msg);
+            }
 		//		count++;
 			}
 		}

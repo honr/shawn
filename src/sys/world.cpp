@@ -322,6 +322,7 @@ namespace shawn
       mi->src_pos_ = source.real_position();
       mi->time_    = current_time();
       mi->msg_     = mh;
+      mi->range_   = mh.get()->transmission_range();
 
       transmission_model_w().send_message(*mi);
 	  // Think about delete mi;

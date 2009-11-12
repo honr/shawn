@@ -40,6 +40,7 @@ namespace shawn
             Vec               src_pos_;
             double            time_;
             MessageHandle     msg_;
+            double            range_;
         };
 
     public:
@@ -83,6 +84,11 @@ namespace shawn
           */
         virtual void deliver_messages() throw() = 0;
 
+        ///@}
+
+        ///@name Transmission model helper
+        ///@{
+        virtual bool transmission_in_range(Node*, Node*, MessageInfo*);
         ///@}
 
     private:

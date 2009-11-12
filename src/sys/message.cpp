@@ -7,6 +7,7 @@
  ************************************************************************/
 
 #include "sys/message.h"
+#include "sys/node.h"
 
 
 namespace shawn
@@ -68,6 +69,20 @@ namespace shawn
       const throw()
    {
       return source_ != NULL;
+   }
+   // ----------------------------------------------------------------------
+   double
+   Message::
+   transmission_range()
+   {
+      if(has_source())
+      {
+         return source_->transmission_range();
+      }
+      else
+      {
+         return 1.0;
+      }
    }
    // ----------------------------------------------------------------------
    const Processor&

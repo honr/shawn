@@ -406,7 +406,11 @@ namespace shawn
             it != endit;
             ++it )
 		{
-			pmsg->push_new_destination( &(*it) );
+         Node *cur_dst = &(*it);
+         if(transmission_in_range(pmsg->pmi->src_, cur_dst, pmsg->pmi))
+         {
+			   pmsg->push_new_destination( &(*it) );
+         }
 		}
 
 		//print destination info and othe info of a msg.

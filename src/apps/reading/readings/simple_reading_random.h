@@ -25,7 +25,7 @@ namespace reading
       virtual std::string name( void ) const throw();
       virtual std::string description( void ) const throw();
 
-      virtual double value( const shawn::Vec& v ) const throw();
+      virtual double value( const shawn::Vec& position ) const throw();
    };
    DECLARE_HANDLES(DoubleReadingRandom);
 
@@ -38,9 +38,35 @@ namespace reading
       virtual std::string name( void ) const throw();
       virtual std::string description( void ) const throw();
 
-      virtual int value( const shawn::Vec& v ) const throw();
+      virtual int value( const shawn::Vec& position ) const throw();
    };
    DECLARE_HANDLES(IntegerReadingRandom);
+
+   class BoolReadingRandom
+      : public BoolReading
+   {
+   public:
+      BoolReadingRandom();
+      virtual ~BoolReadingRandom();
+      virtual std::string name( void ) const throw();
+      virtual std::string description( void ) const throw();
+
+      virtual bool value( const shawn::Vec& position ) const throw();
+   };
+   DECLARE_HANDLES(BoolReadingRandom);
+
+   class StringReadingRandom
+      : public StringReading
+   {
+   public:
+      StringReadingRandom();
+      virtual ~StringReadingRandom();
+      virtual std::string name( void ) const throw();
+      virtual std::string description( void ) const throw();
+
+      virtual std::string value( const shawn::Vec& position ) const throw();
+   };
+   DECLARE_HANDLES(StringReadingRandom);
 }
 
 #endif

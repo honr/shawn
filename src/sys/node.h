@@ -110,6 +110,14 @@ namespace shawn
 		 * transmission model. Distributes the information to all processors
 		 */
       virtual void receive_dropped( const ConstMessageHandle& ) throw();
+
+	   /** Individual transmission ranges.
+	    * Allows individual transmission ranges for nodes.
+	    */
+	  ///Return the individual transmission range
+	  virtual double transmission_range();
+	  ///Sets the individual transmission range value for this node
+	  virtual void set_transmission_range(double);
 	  
 	  ///@}
 	  //---------------------------------------------------------------------
@@ -311,6 +319,8 @@ namespace shawn
       ///Extension of this node component is at most max_hop_component_extent_ hops.
       mutable int max_hop_count_;
       ///Maximum of all values of maxdist.
+	  double transmission_range_;
+	  ///Individual transmission range.
 
   };
 }

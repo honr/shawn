@@ -55,6 +55,10 @@ namespace helloworld
 				cout << "ID '" << owner().label() << "' GOT HELLO FROM '" << hmsg->source().label() << "'" << endl;
 			return true;
 		}
+      else
+      {
+         cout << "ID '" << owner().label() << "' GOT MESSAGE FROM '" << mh.get()->source().label() << "'" << endl;
+      }
 
       return Processor::process_message( mh );
    }

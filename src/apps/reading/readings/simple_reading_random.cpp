@@ -16,11 +16,13 @@ namespace reading
 {
    DoubleReadingRandom::DoubleReadingRandom()
    {
-      srand(time(NULL));
+      srand((unsigned int)time(NULL));
    }
+   // ----------------------------------------------------------------------
 
    DoubleReadingRandom::~DoubleReadingRandom()
    {}
+   // ----------------------------------------------------------------------
 
    double DoubleReadingRandom::value( const shawn::Vec &pos )
       const throw()
@@ -29,6 +31,7 @@ namespace reading
       ival /= 1000.0;
       return ival;
    }
+   // ----------------------------------------------------------------------
 
    std::string
    DoubleReadingRandom::
@@ -43,17 +46,19 @@ namespace reading
    description( void )
       const throw()
    {
-      return "XXX";
+      return "A random double reading";
    }
-
+   // ----------------------------------------------------------------------
 
    IntegerReadingRandom::IntegerReadingRandom()
    {
-      srand(time(NULL));
+      srand((unsigned int)time(NULL));
    }
+   // ----------------------------------------------------------------------
 
    IntegerReadingRandom::~IntegerReadingRandom()
    {}
+   // ----------------------------------------------------------------------
 
    std::string
    IntegerReadingRandom::
@@ -63,13 +68,15 @@ namespace reading
       return "integer_reading_random";
    }
    // ----------------------------------------------------------------------
+
    std::string
    IntegerReadingRandom::
    description( void )
       const throw()
    {
-      return "XXX";
+      return "A random integer reading";
    }
+   // ----------------------------------------------------------------------
 
    int IntegerReadingRandom::value( const shawn::Vec &pos )
       const throw()
@@ -77,6 +84,80 @@ namespace reading
       int ival = rand() % 1001;
       return ival;
    }
+   // ----------------------------------------------------------------------
+
+   BoolReadingRandom::BoolReadingRandom()
+   {
+      srand((unsigned int)time(NULL));
+   }
+   // ----------------------------------------------------------------------
+
+   BoolReadingRandom::~BoolReadingRandom()
+   {}
+   // ----------------------------------------------------------------------
+
+   std::string
+   BoolReadingRandom::
+   name( void )
+      const throw()
+   {
+      return "bool_reading_random";
+   }
+   // ----------------------------------------------------------------------
+
+   std::string
+   BoolReadingRandom::
+   description( void )
+      const throw()
+   {
+      return "A random bool reading.";
+   }
+   // ----------------------------------------------------------------------
+
+   bool BoolReadingRandom::value( const shawn::Vec &pos )
+      const throw()
+   {
+      int ival = rand() % 2;
+      return (ival<1);
+   }
+   // ----------------------------------------------------------------------
+   StringReadingRandom::StringReadingRandom()
+   {
+      srand((unsigned int)time(NULL));
+   }
+   // ----------------------------------------------------------------------
+
+   StringReadingRandom::~StringReadingRandom()
+   {}
+   // ----------------------------------------------------------------------
+
+   std::string
+   StringReadingRandom::
+   name( void )
+      const throw()
+   {
+      return "string_reading_random";
+   }
+   // ----------------------------------------------------------------------
+
+   std::string
+   StringReadingRandom::
+   description( void )
+      const throw()
+   {
+      return "A random string reading.";
+   }
+   // ----------------------------------------------------------------------
+
+   std::string StringReadingRandom::value( const shawn::Vec &pos )
+      const throw()
+   {
+      std::string strOut("str");
+      int ival = rand() % 1001;
+      strOut += ival;
+      return strOut;
+   }
+   // ----------------------------------------------------------------------
 }
 
 #endif

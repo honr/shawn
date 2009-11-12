@@ -39,7 +39,8 @@ namespace shawn
 	nh_time_stamp_             ( 0.0 ),
 	has_fixpoint_              ( false ),
 	max_hop_component_extent_  ( std::numeric_limits<int>::max() ),
-	max_hop_count_             (0) 
+	max_hop_count_             (0),
+	transmission_range_        (1.0)
    {
       //NeighborhoodHandle nh0 = new Neighborhood;
       //nh0->insert( this );
@@ -231,6 +232,20 @@ namespace shawn
       mh->set_source( *this );
       mh->set_timestamp( simulation_round(), current_time() );
       world_->send_message( *this, mh );
+   }
+   // ----------------------------------------------------------------------
+   void
+   Node::
+   set_transmission_range(double range)
+   {
+      transmission_range_ = range;
+   }
+   // ----------------------------------------------------------------------
+   double
+   Node::
+   transmission_range()
+   {
+      return transmission_range_;
    }
    // ----------------------------------------------------------------------
    int

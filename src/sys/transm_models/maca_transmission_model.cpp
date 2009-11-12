@@ -188,8 +188,12 @@ namespace shawn
             it != endit;
             ++it )
 		{
+         Node *cur_dst = &(*it);
+         if(transmission_in_range(msg->pmi->src_, cur_dst, msg->pmi))
+         {
             it->receive( ConstMessageHandle(msg->pmi->msg_) );
-			std::cout << it->id() << std::endl;
+			   std::cout << it->id() << std::endl;
+         }
 		}
 	}
 

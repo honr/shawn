@@ -7,6 +7,7 @@
  ************************************************************************/
 
 #include "sys/transmission_model.h"
+#include "sys/communication_model.h"
 #include "sys/world.h"
 #include "sys/node.h"
 
@@ -62,6 +63,31 @@ namespace shawn
    reset( void ) 
       throw()
    {
+
+   }
+   // ----------------------------------------------------------------------
+   bool
+   TransmissionModel::
+   transmission_in_range(Node *src, Node *dst, MessageInfo *mi)
+   {
+      if(world().communication_model().exists_communication_upper_bound())
+      {
+         double euc_distance = euclidean_distance(src->real_position(),
+            dst->real_position());
+         double g_range = 
+            world().communication_model().communication_upper_bound();
+
+         if(euc_distance <= g_range * mi->range_)
+         {
+            return true;
+         }
+
+         return false;
+      }
+      else
+      {
+         return true;
+      }
 
    }
 
