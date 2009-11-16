@@ -285,6 +285,10 @@ endif(COMMAND cmake_policy)
 # Compiler definitions
 #=============
 
+##############################################################################
+#   add_definitions( -DSHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION -DWITH_NONAMESPACES -DMULTITHREADED_EVENT_SCHEDULER )
+##############################################################################
+
 	if( OPT_ENABLE_CGAL )
 		add_definitions( -DHAVE_CGAL )
 	endif( OPT_ENABLE_CGAL )
@@ -471,7 +475,7 @@ endif(COMMAND cmake_policy)
 	IF(NOT BUILD_LIB_WITH_MAIN)
 		target_link_libraries( shawn shawnlib legacyapps apps_exampleslib apps_autocastlib apps_distestlib 
 			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_readinglib apps_routinglib
-			apps_spyglasslib apps_tcpiplib apps_topologylib apps_traciclientlib apps_vislib
+			apps_spyglasslib apps_tcpiplib apps_topologylib apps_traciclientlib apps_vislib shawnlib
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
 			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
 	ENDIF(NOT BUILD_LIB_WITH_MAIN)
