@@ -83,7 +83,8 @@ namespace shawn
 #endif
 #ifdef MULTITHREADED_EVENT_SCHEDULER
          , last_event_( boost::posix_time::microsec_clock::local_time() ),
-         waiting_     ( false )
+            last_round_( boost::posix_time::microsec_clock::local_time() ),
+            waiting_     ( false )
 #endif
 	{}
 
@@ -244,6 +245,11 @@ namespace shawn
       boost::posix_time::time_duration td = boost::posix_time::milliseconds( millis );
 
       double wakeup_time = (millis / 1000.0) + current_time();
+
+      //std::cout << "At " << current_time() << std::endl;
+      //std::cout << "  wait for " << td.total_milliseconds() << std::endl;
+      //std::cout << "  wakeup: " << wakeup_time << "; ne: " << next_event_time() << std::endl;
+
       if ( !empty() && next_event_time() < wakeup_time )
          return false;
 
@@ -277,17 +283,37 @@ namespace shawn
       {
          if( empty() )
          {
-            int millis = 1000.0 * (stop_time - current_time());
-            if ( !timed_wait( millis ) )
+
+            boost::posix_time::ptime now =
+               boost::posix_time::microsec_clock::local_time();
+            boost::posix_time::time_duration td = now - last_event_;
+            int real_duration = td.total_milliseconds();
+            int virt_duration = 1000.0 * (stop_time - time_);
+
+            //std::cout << "ev::empty: real=" << real_duration << "; virt=" << virt_duration << std::endl;
+
+            if( real_duration < virt_duration )
             {
-//                std::cout << "EventScheduler: Net < Stop: Interrupted at "
-//                   << time_ << std::endl;
-               continue;
+               double millis = virt_duration - real_duration;
+               if ( !timed_wait( millis ) )
+               {
+//                   std::cout << "EventScheduler: Net < Stop: Interrupted at "
+//                      << time_ << std::endl;
+                  continue;
+               }
             }
+
+//             int millis = 1000.0 * (stop_time - current_time());
+//             if ( !timed_wait( millis ) )
+//             {
+// //                std::cout << "EventScheduler: Net < Stop: Interrupted at "
+// //                   << time_ << std::endl;
+//                continue;
+//             }
 
             last_event_ = boost::posix_time::microsec_clock::local_time();
             time_ = stop_time;
-            return;
+            break;
          }
 
          double net = next_event_time();
@@ -301,6 +327,8 @@ namespace shawn
             int real_duration = td.total_milliseconds();
             int virt_duration = 1000.0 * (net - time_);
 
+//             std::cout << "ev::nec<stop: real=" << real_duration << "; virt=" << virt_duration << std::endl;
+
             if( real_duration < virt_duration )
             {
                double millis = virt_duration - real_duration;
@@ -310,8 +338,8 @@ namespace shawn
 //                      << time_ << std::endl;
                   continue;
                }
+               last_event_ = boost::posix_time::microsec_clock::local_time();
             }
-            last_event_ = boost::posix_time::microsec_clock::local_time();
 
             time_ = net;
             EventScheduler::EventHandle eh = front_w();
@@ -333,19 +361,46 @@ namespace shawn
          }
          else
          {
-            int millis = 1000.0 * (stop_time - current_time());
-            if ( !timed_wait( millis ) )
+
+            boost::posix_time::ptime now =
+               boost::posix_time::microsec_clock::local_time();
+            boost::posix_time::time_duration td = now - last_event_;
+            int real_duration = td.total_milliseconds();
+            int virt_duration = 1000.0 * (stop_time - time_);
+
+            //std::cout << "ev::nec>stop: real=" << real_duration << "; virt=" << virt_duration << std::endl;
+
+            if( real_duration < virt_duration )
             {
-                std::cout << "EventScheduler: Net >= Stop: Interrupted at "
-                   << time_ << std::endl;
-               continue;
+               double millis = virt_duration - real_duration;
+               if ( !timed_wait( millis ) )
+               {
+//                   std::cout << "EventScheduler: Net < Stop: Interrupted at "
+//                      << time_ << std::endl;
+                  continue;
+               }
             }
+
+//             std::cout << "ev::nec>stop: stop=" << stop_time << "; cur=" << current_time() << std::endl;
+// 
+//             int millis = 1000.0 * (stop_time - current_time());
+//             if ( !timed_wait( millis ) )
+//             {
+// //                std::cout << "EventScheduler: Net >= Stop: Interrupted at "
+// //                   << time_ << std::endl;
+//                continue;
+//             }
 
             last_event_ = boost::posix_time::microsec_clock::local_time();
             time_ = stop_time;
-            return;
+            break;
          }
       }
+
+      boost::posix_time::ptime pb = boost::posix_time::microsec_clock::local_time();
+      boost::posix_time::time_duration td = pb - last_round_;
+      //std::cout << "PB fin at " << pb << " with duration of " << td.total_milliseconds() << std::endl;
+      last_round_ = boost::posix_time::microsec_clock::local_time();
    }
 #else
    // ----------------------------------------------------------------------

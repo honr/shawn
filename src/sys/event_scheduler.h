@@ -172,6 +172,8 @@ namespace shawn
 		#endif
 
 #ifdef MULTITHREADED_EVENT_SCHEDULER
+      boost::posix_time::ptime last_round_;
+
       boost::posix_time::ptime last_event_;
       /// Time of last update of time_ - required in update_time() to define
       /// the passed time.
