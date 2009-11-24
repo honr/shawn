@@ -9,11 +9,13 @@
 #include "sys/constants.h"
 #include "sys/event_scheduler.h"
 #include "sys/util/defutils.h"
-#include <iostream>
+#include <stdlib.h>
 
 #ifdef MULTITHREADED_EVENT_SCHEDULER
 #include "boost/date_time/posix_time/posix_time.hpp"
 #endif
+
+
 
 namespace shawn
 {
@@ -39,7 +41,7 @@ namespace shawn
 	operator < ( const EventScheduler::EventInfo& ei )
 	{
 		if (EQDOUBLE(time_, ei.time_))
-			return (void*)this < (void*)(&ei);
+			return (void*)this > (void*)(&ei);
 		else
 			return time_ < ei.time_;
 	}
@@ -75,6 +77,10 @@ namespace shawn
 	EventScheduler::
 		EventScheduler()
 		: time_ ( 0.0 )
+#ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
+		, last_touch_time_(0.0)
+		, rate_adaptation_enabled_(true)
+#endif
 #ifdef MULTITHREADED_EVENT_SCHEDULER
          , last_event_( boost::posix_time::microsec_clock::local_time() ),
          waiting_     ( false )
@@ -187,9 +193,9 @@ namespace shawn
 
 /*
     // ----------------------------------------------------------------------
-   const EventScheduler::EventHandle 
+   const EventScheduler::EventHandle
    EventScheduler::
-   find_event( EventHandler& eh ) 
+   find_event( EventHandler& eh )
    const
    {
       for (EventSet::const_iterator it = events_.begin(); it != events_.end(); ++it){
@@ -330,8 +336,8 @@ namespace shawn
             int millis = 1000.0 * (stop_time - current_time());
             if ( !timed_wait( millis ) )
             {
-//                std::cout << "EventScheduler: Net >= Stop: Interrupted at "
-//                   << time_ << std::endl;
+                std::cout << "EventScheduler: Net >= Stop: Interrupted at "
+                   << time_ << std::endl;
                continue;
             }
 
@@ -352,28 +358,32 @@ namespace shawn
 
       while( 1 )
       {
+
          if( empty() )
          {
             #ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
-               sys_time_.sleep( int(1000.0 * (stop_time - current_time())) );
+			   /*sys_time_.sleep( int(1000.0 * (stop_time - current_time())) );
                sys_time_.touch();
+               last_touch_time_ = stop_time;
+               */
+        	 if (rate_adaptation_enabled_)
+        		 adapt_rate(stop_time);
             #endif
             time_ = stop_time;
             return;
          }
 
+         //double temp = (1000.0 * stop_time - 1000.0*last_touch_time_); // ms
+         //double real = double(sys_time_.us_since_last_touch()); // us
          double net = next_event_time();
-         if( net < stop_time )
+         //std::cout << "cur " << current_time() << " net " << net << " stop time " << stop_time << " virt " << temp << " real " << real << std::endl << std::flush;
+
+         if( net < stop_time)
          {
-            #ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
-               double real_duration = double(sys_time_.ms_since_last_touch());
-               double virt_duration = 1000.0 * (net - time_);
-
-               if( real_duration < virt_duration )
-                  sys_time_.sleep( int(virt_duration - real_duration) );
-               sys_time_.touch();
+        	#ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
+        	 if (rate_adaptation_enabled_)
+				 adapt_rate(net);
             #endif
-
             time_ = net;
             EventScheduler::EventHandle eh = front_w();
 
@@ -394,13 +404,57 @@ namespace shawn
          else
          {
             #ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
+        	 /*
+               std::cout << "cur " << current_time() << " net " << net << " stop time " << stop_time << " virt " << temp << " real " << real << std::endl << std::flush;
+               //std::cout << "2 sleep " << int(1000.0 * (stop_time - current_time())) << " stop " << stop_time << std::endl << std::flush;
                sys_time_.sleep( int(1000.0 * (stop_time - current_time())) );
                sys_time_.touch();
+               last_touch_time_ = stop_time;
+               */
+        	 if (rate_adaptation_enabled_)
+			   adapt_rate(stop_time);
             #endif
             time_ = stop_time;
             return;
          }
       }
+   }
+
+   // ----------------------------------------------------------------------
+   void
+   EventScheduler::
+   adapt_rate(double net)
+   throw()
+   {
+	   #ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION_RESOLUTION_MICROSECONDS
+		   double real_duration = double(sys_time_.us_since_last_touch()); // us
+		   double virt_duration = (1000000.0 * net - 1000000.0*last_touch_time_); // us
+		   if( (real_duration + 1000.0) <= virt_duration )
+		   {
+			   sys_time_.sleep_us( int((virt_duration - real_duration)) - 100 );
+			   sys_time_.touch();
+			   last_touch_time_ = net;
+		   }
+		   else if( real_duration > virt_duration+1000000 )
+		   {
+			   sys_time_.touch();
+			   last_touch_time_ = net;
+		   }
+		#else
+		   double real_duration = double(sys_time_.ms_since_last_touch()); // ms
+		   double virt_duration = (1000.0 * net - 1000.0*last_touch_time_); // ms
+		   if( real_duration + 10 <= virt_duration ) // 10ms is minimum resolution for windows sleep function
+		   {
+			   sys_time_.sleep( int((virt_duration - real_duration)) );
+			   last_touch_time_ = net;
+			   sys_time_.touch();
+		   }
+		   else if( real_duration > virt_duration+1000 )
+		   {
+			   last_touch_time_ = net;
+			   sys_time_.touch();
+		   }
+		#endif
    }
 #endif
 	// ----------------------------------------------------------------------
@@ -467,6 +521,20 @@ namespace shawn
 		events_.clear();
 		time_ = new_time;
 	}
+	// ----------------------------------------------------------------------
+	void
+		EventScheduler::
+		set_rate_adaptation( bool enable )
+		throw()
+	{
+		#ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
+			rate_adaptation_enabled_ = enable;
+		#else
+			if (enable)
+				std::cout << "Rate adaptation support not available." << std::endl;
+		#endif
+	}
+
 
 }
 

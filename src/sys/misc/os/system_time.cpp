@@ -6,6 +6,11 @@
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
 #include "sys/misc/os/system_time.h"
+#include <iostream>
+
+#ifdef SYS_MISC_OS_SYSTEM_TIME_WINDOWS
+	#include <windows.h>
+#endif
 
 namespace shawn
 {
@@ -15,6 +20,13 @@ namespace shawn
 		SystemTime()
 	{
 		touch();
+		#ifdef SYS_MISC_OS_SYSTEM_TIME_WINDOWS
+			LARGE_INTEGER f;
+			if (!QueryPerformanceFrequency((LARGE_INTEGER*)&f))
+				std::cout << "Performance Counter not applicable" << std::endl;
+			else
+				g_Frequency = f.QuadPart;
+		#endif
 	}
 
 	// ----------------------------------------------------------------------
@@ -26,7 +38,13 @@ namespace shawn
 		#ifdef SYS_MISC_OS_SYSTEM_TIME_UNIX
 			gettimeofday(&last_touch_, NULL);
 		#else
-			last_touch_ = GetTickCount();
+			#ifdef SYS_MISC_OS_SYSTEM_TIME_WINDOWS
+				LARGE_INTEGER t;
+				QueryPerformanceCounter((LARGE_INTEGER*)&t);
+				g_LastTouch = t.QuadPart;
+			#else
+				last_touch_ = GetTickCount();
+			#endif
 		#endif
 	}
 
@@ -70,7 +88,33 @@ namespace shawn
 			diff(&res, &now, &last_touch_ );
 			return res.tv_sec * 1000 + (res.tv_usec / 1000);
 		#else
-			return GetTickCount() - last_touch_;
+			#ifdef SYS_MISC_OS_SYSTEM_TIME_WINDOWS
+				long long now;
+				QueryPerformanceCounter((LARGE_INTEGER*)&now);
+				return (unsigned long)((1000.0*(double)(now-g_LastTouch))/((double)g_Frequency));
+			#else
+				return GetTickCount() - last_touch_;
+			#endif
+		#endif
+	}
+	// ----------------------------------------------------------------------
+	unsigned long
+		SystemTime::
+		us_since_last_touch()
+	{
+		#ifdef SYS_MISC_OS_SYSTEM_TIME_UNIX
+			struct timeval	now, res;
+			gettimeofday(&now, NULL);
+			diff(&res, &now, &last_touch_ );
+			return res.tv_sec * 1000000 + (res.tv_usec);
+		#else
+			#ifdef SYS_MISC_OS_SYSTEM_TIME_WINDOWS
+				LARGE_INTEGER now;
+				QueryPerformanceCounter((LARGE_INTEGER*)&now);
+				return (unsigned long)((1000000.0*(double)((long long)(now.QuadPart)-g_LastTouch))/((double)g_Frequency));
+			#else
+				return (GetTickCount() - last_touch_)/1000;
+			#endif
 		#endif
 	}
 
@@ -83,7 +127,40 @@ namespace shawn
 		#ifdef SYS_MISC_OS_SYSTEM_TIME_UNIX
 			usleep( 1000 * ms );
 		#else
-			Sleep( 1000 * ms );
+			#ifdef SYS_MISC_OS_SYSTEM_TIME_WINDOWS
+				Sleep( ms );
+			#else
+				Sleep( ms );
+			#endif
+		#endif
+	}
+
+	// ----------------------------------------------------------------------
+	void
+		SystemTime::
+		sleep_us(unsigned long us)
+		throw()
+	{
+		#ifdef SYS_MISC_OS_SYSTEM_TIME_UNIX
+			usleep( us );
+		#else
+			#ifdef SYS_MISC_OS_SYSTEM_TIME_WINDOWS
+				LONGLONG start, now;
+				QueryPerformanceCounter((LARGE_INTEGER*)&start);
+				//int count = 0;
+				if (us > 10000)
+					sleep( (us / 10000) *10);
+				while (1)
+				{
+					//count++;
+					QueryPerformanceCounter((LARGE_INTEGER*)&now);
+					if ( ((1000000.0*(double)(now-start))/((double)g_Frequency)) >= (double)us)
+						break;
+				}
+				//std::cout << count << " done " << ((1000000.0*(double)(now-start))/((double)g_Frequency)) << " should be: " << us  << std::endl << std::flush;
+			#else
+				Sleep( us /1000 );
+			#endif
 		#endif
 	}
 

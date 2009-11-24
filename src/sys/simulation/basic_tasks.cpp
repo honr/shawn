@@ -40,12 +40,12 @@ namespace shawn
 	SimulationTaskSimulation::
 		SimulationTaskSimulation()
 	{}
-	
+
 	// ----------------------------------------------------------------------
 	SimulationTaskSimulation::
 		~SimulationTaskSimulation()
    {}
-	
+
    // ----------------------------------------------------------------------
 	void
 		SimulationTaskSimulation::
@@ -58,27 +58,29 @@ namespace shawn
          throw std::runtime_error( std::string("Task '") + name() + std::string("' needs a world.") );
 
       World& w = sc.world_w();
-      
+
+      w.scheduler_w().set_rate_adaptation(sc.environment().optional_bool_param("enable_realtime_rate", false));
+
       while( !(w.is_done()) && (max_it>0) )
-      { 
-    	  w.step(); 
-    	  --max_it; 
+      {
+    	  w.step();
+    	  --max_it;
       }
    }
-	
+
    // ----------------------------------------------------------------------
 	std::string
 		SimulationTaskSimulation::
-		name( void ) 
+		name( void )
 		const throw()
    {
       return "simulation";
    }
-	
+
 	// ----------------------------------------------------------------------
 	std::string
 		SimulationTaskSimulation::
-		description( void ) 
+		description( void )
 		const throw()
    {
       return "runs the real simulation";
@@ -94,12 +96,12 @@ namespace shawn
 		SimulationTaskAddWorldTask( bool pre )
 		: pre_ ( pre )
 	{}
-		
+
 	// ----------------------------------------------------------------------
 	SimulationTaskAddWorldTask::
 		~SimulationTaskAddWorldTask()
 	{}
-	
+
 	// ----------------------------------------------------------------------
 	void
 		SimulationTaskAddWorldTask::
@@ -115,7 +117,7 @@ namespace shawn
 		else
 			sc.world_w().add_post_step_task( sth );
 	}
-	
+
 	// ----------------------------------------------------------------------
 	std::string
 		SimulationTaskAddWorldTask::
@@ -127,7 +129,7 @@ namespace shawn
 		else
 			return std::string("add_poststep");
    }
-	
+
 	// ----------------------------------------------------------------------
 	std::string
 		SimulationTaskAddWorldTask::
@@ -144,12 +146,12 @@ namespace shawn
 	SimulationTaskWorld::
 		SimulationTaskWorld()
 	{}
-	
+
 	// ----------------------------------------------------------------------
 	SimulationTaskWorld::
 		~SimulationTaskWorld()
 	{}
-	
+
 	// ----------------------------------------------------------------------
 	void
 		SimulationTaskWorld::
@@ -172,7 +174,7 @@ namespace shawn
             nw->set_size_hint( size_hint );
 
       }
-      catch( std::runtime_error& ) 
+      catch( std::runtime_error& )
 	  {
          delete nw;
          throw;
@@ -181,9 +183,9 @@ namespace shawn
       nw->init();
 	  sc.set_world(nw);
    }
-   
+
    // ----------------------------------------------------------------------
-   void 
+   void
 	   SimulationTaskWorld::
 	   load_environment_tags(SimulationController& sc)
 	   const  throw( std::runtime_error )
@@ -196,7 +198,7 @@ namespace shawn
 		   cl.parse();
 	   }
    }
-   
+
    // ----------------------------------------------------------------------
    void
 	   SimulationTaskWorld::
@@ -207,7 +209,7 @@ namespace shawn
 	   EdgeModelFactoryHandle emfh = sc.edge_model_keeper_w().find_w(em);
 	   w.set_edge_model( *(emfh->create(sc)) );
    }
-   
+
    // ----------------------------------------------------------------------
    void
 	   SimulationTaskWorld::
@@ -218,7 +220,7 @@ namespace shawn
 	   TransmissionModelFactoryHandle tmfh = sc.transmission_model_keeper_w().find_w(tm_name);
 	   w.set_transmission_model( *(tmfh->create(sc)) );
    }
-   
+
    // ----------------------------------------------------------------------
    void
 	   SimulationTaskWorld::
@@ -229,7 +231,7 @@ namespace shawn
 	   CommunicationModelFactoryHandle fh = sc.communication_model_keeper_w().find_w(name);
 	   w.set_communication_model(*(fh->create(sc)));
    }
-   
+
    // ----------------------------------------------------------------------
    void
    SimulationTaskWorld::
@@ -238,7 +240,7 @@ namespace shawn
    {
       w.set_movement_controller( new MovementController(sc) );
    }
-   
+
    // ----------------------------------------------------------------------
    std::string
    SimulationTaskWorld::
@@ -247,7 +249,7 @@ namespace shawn
    {
       return "prepare_world";
    }
-   
+
    // ----------------------------------------------------------------------
    std::string
    SimulationTaskWorld::
@@ -277,7 +279,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    void
    SimulationTaskDegreeHistogram::
-   run( SimulationController& sc ) 
+   run( SimulationController& sc )
       throw( std::runtime_error )
    {
       if( !sc.has_world() )
@@ -287,7 +289,7 @@ namespace shawn
       ofstream out(ofn.c_str());
       if( !out )
          throw std::runtime_error( std::string("Cannot write to '") + ofn + std::string("'!") );
-      
+
       DegreeHistogram dhist;
       dhist.set_world(sc.world());
       dhist.init();
@@ -306,7 +308,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    std::string
    SimulationTaskDegreeHistogram::
-   name( void ) 
+   name( void )
       const throw()
    {
       return "dhist";
@@ -314,7 +316,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    std::string
    SimulationTaskDegreeHistogram::
-   description( void ) 
+   description( void )
       const throw()
    {
       return "writes a degree histogram to $dhist_file";
@@ -326,7 +328,7 @@ namespace shawn
 
 
 
-   
+
    template<typename KeeperClass>
    SimulationTaskShowHandleKeeper<KeeperClass>::
    SimulationTaskShowHandleKeeper()
@@ -346,7 +348,7 @@ namespace shawn
       bool v = sc.environment().optional_bool_param("verbose",0);
       keeper(sc).print_contents(std::cout,v);
    }
-    
+
 
    SimulationTaskShowTasks::
    SimulationTaskShowTasks()
@@ -358,7 +360,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    std::string
    SimulationTaskShowTasks::
-   name( void ) 
+   name( void )
       const throw()
    {
       return std::string("show_tasks");
@@ -372,7 +374,7 @@ namespace shawn
       return std::string("prints all known simulation tasks");
    }
    // ----------------------------------------------------------------------
-   const SimulationTaskKeeper& 
+   const SimulationTaskKeeper&
    SimulationTaskShowTasks::
    keeper( const SimulationController& sc )
       const throw()
@@ -396,7 +398,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    std::string
    SimulationTaskShowProcessors::
-   name( void ) 
+   name( void )
       const throw()
    {
       return std::string("show_processors");
@@ -410,7 +412,7 @@ namespace shawn
       return std::string("prints all known processors (resp. factories)");
    }
    // ----------------------------------------------------------------------
-   const ProcessorKeeper& 
+   const ProcessorKeeper&
    SimulationTaskShowProcessors::
    keeper( const SimulationController& sc )
       const throw()
@@ -434,7 +436,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    std::string
    SimulationTaskShowRandomVariables::
-   name( void ) 
+   name( void )
       const throw()
    {
       return std::string("show_random_variables");
@@ -448,7 +450,7 @@ namespace shawn
       return std::string("prints all registered random variables");
    }
    // ----------------------------------------------------------------------
-   const RandomVariableKeeper& 
+   const RandomVariableKeeper&
    SimulationTaskShowRandomVariables::
    keeper( const SimulationController& sc )
       const throw()
@@ -470,7 +472,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    std::string
    SimulationTaskShowEdgeModels::
-   name( void ) 
+   name( void )
       const throw()
    {
       return std::string("show_edge_models");
@@ -484,7 +486,7 @@ namespace shawn
       return std::string("prints all registered edge models (resp. factories)");
    }
    // ----------------------------------------------------------------------
-   const EdgeModelKeeper& 
+   const EdgeModelKeeper&
    SimulationTaskShowEdgeModels::
    keeper( const SimulationController& sc )
       const throw()
@@ -507,7 +509,7 @@ namespace shawn
    // ----------------------------------------------------------------------
    std::string
    SimulationTaskShowDistanceEstimates::
-   name( void ) 
+   name( void )
       const throw()
    {
       return std::string("show_distance_estimates");
@@ -521,7 +523,7 @@ namespace shawn
       return std::string("prints all registered NodeDistanceEstimate instances");
    }
    // ----------------------------------------------------------------------
-   const DistanceEstimateKeeper& 
+   const DistanceEstimateKeeper&
    SimulationTaskShowDistanceEstimates::
    keeper( const SimulationController& sc )
       const throw()

@@ -24,7 +24,8 @@
   {std::cerr << "SORRY, THIS CONFIGURATION IS INCONSISTENT -- " << __FILE__ << ":" << __LINE__ << " -- " << reason << std::endl; abort();}
 
 
-#define EPSILON .00000001
+//#define EPSILON .00000001
+#define EPSILON .00000000001
 
 #define EQDOUBLE(a,b) (fabs((a)-(b))<EPSILON)
 

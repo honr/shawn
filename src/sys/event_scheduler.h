@@ -14,10 +14,15 @@
 #include "shawn_config.h"
 #include <set>
 
+// Note that this define does enable the rate adaptation automatically!
+// The simulation task must be called with the (optional) boolean parameter "enable_realtime_rate=true" to enable the rate adaptation.
+#define SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
 #ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
+	#define SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION_RESOLUTION_MICROSECONDS
 	#include "sys/misc/os/system_time.h"
 #endif
 
+//#define MULTITHREADED_EVENT_SCHEDULER
 #ifdef MULTITHREADED_EVENT_SCHEDULER
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
@@ -124,7 +129,7 @@ namespace shawn
 	   void move_event( EventHandle, double ) throw();
 	   ///@}
 
-//       const EventScheduler::EventHandle find_event( EventHandler& eh ) const; 
+//       const EventScheduler::EventHandle find_event( EventHandler& eh ) const;
 
 	   ///@name Info Access
 	   ///@{
@@ -153,13 +158,17 @@ namespace shawn
 	   ///
 	   void clear( double new_time = 0.0 ) throw();
 	   ///@}
+	   void set_rate_adaptation(bool enable) throw();
 
 	private:
 	   EventSet events_;
 	   mutable double time_;
 
 		#ifdef SHAWN_EV_SCHED_ENABLE_RATE_ADAPTATION
+		    void adapt_rate(double net) throw();
 			SystemTime sys_time_;
+			mutable double last_touch_time_;
+			bool rate_adaptation_enabled_;
 		#endif
 
 #ifdef MULTITHREADED_EVENT_SCHEDULER

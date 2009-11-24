@@ -9,6 +9,7 @@
 #ifndef __SHAWN_SYS_MISC_OS_SYSTEM_TIME_H__
 #define __SHAWN_SYS_MISC_OS_SYSTEM_TIME_H__
 
+/* This does not work, because you can have a GNU compiler under windows, too.
 #ifdef __GNUC__
 	#define SYS_MISC_OS_SYSTEM_TIME_UNIX
 #elif defined WIN32
@@ -16,6 +17,11 @@
 #else
 	#error No operating system support defined
 #endif
+*/
+
+// Enable none or one of the two following defines:
+//#define SYS_MISC_OS_SYSTEM_TIME_WINDOWS
+//#define SYS_MISC_OS_SYSTEM_TIME_UNIX
 
 
 
@@ -23,8 +29,8 @@
 	#include <unistd.h>
 	#include <sys/time.h>
 #else
-	#include <windows.h>
-	#include <winbase.h>
+	//#include <windows.h>
+	//#include <winbase.h>
 #endif
 
 
@@ -52,11 +58,13 @@ namespace shawn
 		 * @return
 		 */
 		unsigned long ms_since_last_touch();
+		unsigned long us_since_last_touch();
 
 		/**
 		 * @param ms
 		 */
 		void sleep(unsigned long ms) throw();
+		void sleep_us(unsigned long us) throw();
 
 	private:
 		#ifdef SYS_MISC_OS_SYSTEM_TIME_UNIX
@@ -73,8 +81,13 @@ namespace shawn
 			/// The reference time for all calls
 			struct timeval last_touch_;
 		#else
-			/// The reference time for all calls
-			unsigned long last_touch_;
+			#ifdef SYS_MISC_OS_SYSTEM_TIME_WINDOWS
+				long long g_Frequency, g_LastTouch;
+				//unsigned long last_touch_;
+			#else
+				/// The reference time for all calls
+				unsigned long last_touch_;
+			#endif
 		#endif
 	};
 
