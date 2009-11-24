@@ -448,14 +448,16 @@ endif(COMMAND cmake_policy)
 		endif ( LIB_PATH_LOG4CXX )
 
 		if ( OPT_ENABLE_CAIRO )
-			set (
-				LIB_CAIRO cairo pixman-1 png freetype fontconfig z
-			)
+			if ( CYGWIN )
+				set ( LIB_CAIRO cairo png )
+			else ( CYGWIN )
+				set ( LIB_CAIRO cairo pixman-1 png freetype fontconfig z )
+			endif ( CYGWIN )
 		endif ( OPT_ENABLE_CAIRO )
 
 		if ( OPT_ENABLE_BOOST )
 			if ( CYGWIN )
-				set ( LIB_BOOST boost_regex-gcc-mt boost_date_time-gcc-mt boost_thread-gcc-mt boost_system-gcc-mt )
+				set ( LIB_BOOST boost_regex-gcc-mt boost_date_time-gcc-mt boost_thread-gcc-mt )
 			else ( CYGWIN )
 				set ( LIB_BOOST boost_regex-mt boost_date_time-mt boost_thread-mt boost_system-mt )
 			endif ( CYGWIN )
