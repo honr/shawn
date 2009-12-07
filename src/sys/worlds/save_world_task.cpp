@@ -279,7 +279,8 @@ namespace shawn
         if(!append_) //Write preamble to the file since we do not append
         {
             outf = new ofstream(filename_.c_str(), ofstream::out | ofstream::trunc);
-            *outf <<  "<scenario>" << endl;
+            *outf << "<?xml version=\"1.0\" ?>" << endl;
+            *outf << "<scenario>" << endl;
         }
         else //Append to an existing file: Seek to the insert position first
         {
