@@ -11,9 +11,9 @@
 
 #include "sys/processors/processor_factory.h"
 
-namespace shawn 
-{ 
-    class SimulationController; 
+namespace shawn
+{
+    class SimulationController;
 }
 
 
@@ -21,7 +21,8 @@ namespace helloworld
 {
 
 	//--------------------------------------------------------------------------
-	/**This class is used to create HelloworldRandomProcessor. It is added to to the SimulationController
+	/**This class is used to create HelloworldRandomProcessor. It is added
+	 * to the SimulationController.
 	**/
    class HelloworldRandomProcessorFactory
       : public shawn::ProcessorFactory
@@ -37,7 +38,7 @@ namespace helloworld
 	   static void register_factory( shawn::SimulationController& ) throw();
 	private:
       shawn::SimulationController* sc_;
-      
+
 	};
 
 }
