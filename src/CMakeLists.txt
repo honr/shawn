@@ -96,6 +96,9 @@ endif(COMMAND cmake_policy)
 	file( GLOB_RECURSE shawnVisCPP apps/vis/*.cpp )
 	file( GLOB_RECURSE shawnVisH apps/vis/*.h )
 
+	file( GLOB_RECURSE shawnExternalAppCPP apps/external_application/*.cpp )
+	file( GLOB_RECURSE shawnExternalAppH apps/external_application/*.h )
+
 	file( GLOB_RECURSE shawnSourcesFrontendCPP frontend/*.cpp )
 	file( GLOB_RECURSE shawnSourcesFrontendH frontend/*.h )
 	
@@ -194,7 +197,9 @@ endif(COMMAND cmake_policy)
 		set( shawnVis ${shawnVis} ${shawnVisCPP} )
 		set( shawnVis ${shawnVis} ${shawnVisH} )
 
-
+	# shawnExternalApp - Source for ExternalApplication library build
+		set( shawnExternalApp ${shawnExternalApp} ${shawnExternalAppCPP} )
+		set( shawnExternalApp ${shawnExternalApp} ${shawnExternalAppH} )
 		
 
 #=============
@@ -407,6 +412,7 @@ endif(COMMAND cmake_policy)
 	add_library( apps_topologylib ${shawnTopology} )
 	add_library( apps_traciclientlib ${shawnTraciClient} )
 	add_library( apps_vislib ${shawnVis} )
+	add_library( apps_externalapplib ${shawnExternalApp} )
 
 
 #=============
@@ -481,13 +487,13 @@ endif(COMMAND cmake_policy)
 	ENDIF ( LEGACYAPPS_PATH )
 
 	IF(NOT BUILD_LIB_WITH_MAIN)
-		target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_exampleslib apps_autocastlib apps_distestlib 
+		target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
 			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
 			apps_spyglasslib apps_tcpiplib apps_traciclientlib apps_vislib shawnlib
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
 			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
 	ELSEIF(NOT BUILD_LIB_WITH_MAIN)
-		target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_exampleslib apps_autocastlib apps_distestlib 
+		target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
 			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
 			apps_spyglasslib apps_tcpiplib apps_traciclientlib apps_vislib shawnlib
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
