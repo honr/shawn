@@ -118,11 +118,14 @@ namespace localization
 			}
 			linearizationTool=beacons_->front();
 			if(linearizationTool->has_est_position()){
-				shawn::Vec est_pos(linearizationTool->est_position());			
-				tool = &(est_pos);
+				shawn::Vec est_pos(linearizationTool->est_position());
+				tool = &est_pos;
 			}
 			else
-				tool = &(linearizationTool->real_position());
+			{
+				shawn::Vec real_pos(linearizationTool->real_position());
+				tool = &real_pos;
+			}
 
 			beacons_->erase(beacons_->begin());
 			matrix_a_ = new SimpleMatrix<double>(beacons_->size(),3); 

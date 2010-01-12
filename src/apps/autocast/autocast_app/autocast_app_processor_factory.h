@@ -23,7 +23,7 @@
 namespace shawn 
 { 
     class SimulationController; 
-    class shawn::Processor;
+    class Processor;
 }
 
 
