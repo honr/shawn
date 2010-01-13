@@ -23,6 +23,8 @@
 #include "sys/misc/tokenize.h"
 
 #include "traci_node_movement_creator.h"
+#include <iomanip>
+#include <sstream>
 
 
 #ifdef ENABLE_TRACICLIENT
@@ -792,7 +794,7 @@ namespace traci{
 		double destTime = 0.0;
 		string roadId = "";
 		float relPosition = 0.0;
-		//int laneID = 0;
+		int laneId = 0;
    
 		unsigned int commandStart = 0;
 		unsigned int commandLength = 0;
@@ -802,11 +804,12 @@ namespace traci{
 			commandStart = in.position();
 			commandLength = in.readByte();
 
-         
 			if ( unsigned char commandId = in.readChar() != CMD_MOVENODE){
 				// move node command expected
-				cerr << "Error in method TraCIClient::command_roadmap_position, move node command expected. \
-						Got commandId " << commandId << endl;
+				cerr << "Error in method TraCIClient::command_roadmap_position, "
+                     << "move node command expected. Got commandId 0x"
+                     << hex << setfill('0') << setw(2) << static_cast<int>(commandId)
+                     << dec << setfill(' ') << endl;
 				abort();
 			}
 
@@ -818,7 +821,7 @@ namespace traci{
 			if (in.readByte() == POSITION_ROADMAP ){
 				roadId = in.readString(); 
 				relPosition = in.readFloat();
-				//laneID = in.readByte();
+				laneId = in.readByte();
             
 				// Update the node's road map position
 				TraCIID ti;
@@ -834,11 +837,9 @@ namespace traci{
 					//string laneIdString = "";
 					roadId_ = roadId;
 					relPosition_ = relPosition;
-					// Consider only the first lane (this should be changed)
-					laneID_ = roadId_ + "_0";
-					//laneID_.append("_"); 
-					//laneID_ = roadId + "_" + laneID;
-					//cout << "TraCIClient.commandRoadmapPosition() ---> " << destTime << ", " << id << ", " << roadId << ", " << relPosition << endl;
+                    ostringstream laneIdStream;
+                    laneIdStream << roadId_ << '_' << laneId;
+                    laneID_ = laneIdStream.str();
 				}
        
 			}   
