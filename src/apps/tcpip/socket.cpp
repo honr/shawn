@@ -364,8 +364,7 @@ namespace tcpip
 		if( socket_ < 0 ) return;
 
 		size_t numbytes = b.size();
-		unsigned char *buf = new unsigned char[numbytes];
-		unsigned char *buf_ = buf;
+		unsigned char *const buf = new unsigned char[numbytes];
 
 		for(size_t i = 0; i < numbytes; ++i)
 		{
@@ -383,21 +382,26 @@ namespace tcpip
 			cerr << "]" << endl;
 		}
 
+		unsigned char const *buf_ptr = buf;
 		while( numbytes > 0 )
 		{
 #ifdef WIN32
-			int n = ::send( socket_, (const char*)buf, static_cast<int>(numbytes), 0 );
+			int n = ::send( socket_, (const char*)buf_ptr, static_cast<int>(numbytes), 0 );
 #else
-			int n = ::send( socket_, buf, numbytes, 0 );
+			int n = ::send( socket_, buf_ptr, numbytes, 0 );
 #endif
 			if( n<0 )
+			{
+				// BailOnSocketError definitely throws an exception so clear up heap
+				delete[] buf;
 				BailOnSocketError( "send failed" );
+			}
 
 			numbytes -= n;
-			buf += n;
+			buf_ptr += n;
 		}
 
-		delete[] buf_;
+		delete[] buf;
 	}
 	
 
@@ -434,11 +438,15 @@ namespace tcpip
 		if( !datawaiting( socket_) )
 			return b;
 
-		unsigned char* buf = new unsigned char[bufSize];
+		unsigned char const * const buf = new unsigned char[bufSize];
 		int a = recv( socket_, (char*)buf, bufSize, 0 );
 
 		if( a <= 0 )
+		{
+			// BailOnSocketError definitely throws an exception so clear up heap
+			delete[] buf;
 			BailOnSocketError( "tcpip::Socket::receive() @ recv" );
+		}
 
 		b.resize(a);
 		for(int i = 0; i < a; ++i)
@@ -469,7 +477,7 @@ namespace tcpip
 		throw( SocketException )
 	{
 		/* receive length of vector */
-		unsigned char* bufLength = new unsigned char[4];
+		unsigned char * const bufLength = new unsigned char[4];
 		int bytesRead = 0;
 		int readThisTime = 0;
 		
@@ -478,7 +486,11 @@ namespace tcpip
 			readThisTime = recv( socket_, (char*)(bufLength + bytesRead), 4-bytesRead, 0 );
 
 			if( readThisTime <= 0 )
+			{
+				// BailOnSocketError definitely throws an exception so clear up heap
+				delete[] bufLength;
 				BailOnSocketError( "tcpip::Socket::receive() @ recv" );
+			}
 
 			bytesRead += readThisTime;
 		}
@@ -486,7 +498,7 @@ namespace tcpip
 		int NN = length_storage.readInt() - 4;
 
 		/* receive vector */
-		unsigned char* buf = new unsigned char[NN];
+		unsigned char * const buf = new unsigned char[NN];
 		bytesRead = 0;
 		readThisTime = 0;
 		
@@ -495,7 +507,12 @@ namespace tcpip
 			readThisTime = recv( socket_, (char*)(buf + bytesRead), NN-bytesRead, 0 );
 
 			if( readThisTime <= 0 )
+			{
+				// BailOnSocketError definitely throws an exception so clear up heap
+				delete[] bufLength;
+				delete[] buf;
 				BailOnSocketError( "tcpip::Socket::receive() @ recv" );
+			}
 
 			bytesRead += readThisTime;
 		}
