@@ -234,20 +234,22 @@ namespace shawn
       world_->send_message( *this, mh );
    }
    // ----------------------------------------------------------------------
+   double
+   Node::
+   transmission_range()
+      const throw()
+   {
+      return transmission_range_;
+   }
+   // ----------------------------------------------------------------------
    void
    Node::
    set_transmission_range(double range)
+      throw()
    {
       transmission_range_ = range;
       if(transmission_range_ < 0.0)
          transmission_range_ = 0.0;
-   }
-   // ----------------------------------------------------------------------
-   double
-   Node::
-   transmission_range()
-   {
-      return transmission_range_;
    }
    // ----------------------------------------------------------------------
    int

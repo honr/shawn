@@ -115,9 +115,9 @@ namespace shawn
 	    * Allows individual transmission ranges for nodes.
 	    */
 	  ///Return the individual transmission range
-	  virtual double transmission_range();
+	  virtual double transmission_range() const throw();
 	  ///Sets the individual transmission range value for this node
-	  virtual void set_transmission_range(double);
+	  virtual void set_transmission_range(double) throw();
 	  
 	  ///@}
 	  //---------------------------------------------------------------------
