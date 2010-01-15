@@ -45,9 +45,10 @@ namespace traci
 	public:
 		~TraCIClient();
 
-		// For fetching the instance
+		/// Get single instance.
 		static TraCIClient* instance();
 
+		/// Executes traffic simulation until TraCIClient::target_time_.
 		shawn::MovementInfo* next_movement(void) throw( std::runtime_error );
 
 		void reset();
@@ -56,17 +57,9 @@ namespace traci
 		virtual void node_added( shawn::Node& ) throw();
 		/// Is called whenever a node gets removed from the world
 		virtual void node_removed( shawn::Node& ) throw();
-		/** Is called whenever the id of a node has changed. This occurs, for
-         *  example, if the method reorganize_nodes() of the world is called,
-         *  because the internal NodeVector is optimized (compressed) there
-         *  and ids may change.
-         *
-         *  \param int Old ID
-         *  \param int New ID
-         */
+		/// Is called whenever the id of a node has changed.
 		virtual void id_changed( int, int ) throw();
 		/// Is called when the world gets deleted.
-		/** \return true, if the world should delete the listener */
 		virtual bool invalidate( void ) throw();
 
 		struct TraCIID{
@@ -77,12 +70,12 @@ namespace traci
 			int domain() const;
 			int id() const;
 			traci::TraCIClient::TraCIID& operator=(const traci::TraCIClient::TraCIID& rv);
-		private:
+	private:
 			//friend class traci::TraCIClient;
 			friend int operator<(const traci::TraCIClient::TraCIID&, const traci::TraCIClient::TraCIID&);
 			friend int operator>(const traci::TraCIClient::TraCIID&, const traci::TraCIClient::TraCIID&);
 			friend int operator==(const traci::TraCIClient::TraCIID&, const traci::TraCIClient::TraCIID&);
-			
+
 			int domain_;
 			int id_;
 		};
@@ -115,17 +108,45 @@ namespace traci
 		};
 		typedef std::vector<TLSwitchInfo> TLSwitchInfoVec;
 
+		/** \name Commands
+		 *
+		 *  These member functions send special TraCI-commands and analyze the answer.
+		 */
+		//@{
+
+		/// Send set maximum speed command (0x11).
 		void command_set_maximum_speed(const shawn::Node& node, double max_speed);
+
+		/// Send stop node command (0x12) in 2DPosition format.
 		void command_stop(const shawn::Node& node, double x, double y, double radius, double wait_time);
+
+		/// Send change route command (0x30).
 		void command_change_route(const shawn::Node& node, std::string road_id, double travel_time);
+
+		/// Send change lane command (0x30).
 		void command_change_lane(const shawn::Node& node, char lane, float time);
+
+		/// Send simulation step command (0x80) and extracts %position data of \p node from answer.
 		bool command_roadmap_position(const shawn::Node& node, double targetTime, std::string& roadId_, float& relPosition_, std::string& laneID_);
+
+		/// Send scenario command (0x73) with \c ValueDataType integer (0x09).
 		bool command_scenario_integer(bool write, int domain, int domainId, int variable, int& value);
+
+		/// Send scenario command (0x73) with \c ValueDataType string (0x0C).
 		bool command_scenario_string(bool write, int domain, int domainId, int variable, std::string& value);
+
+		/// Send scenario command (0x73) with \c ValueDataType 3DPosition (0x03).
 		bool command_scenario_pos3d(bool write, int domain, int domainId, int variable, float& x, float& y, float& z);
+
+		/// Send scenario command (0x73) with \c ValueDataType Boundary Box (0x05).
 		bool command_scenario_bounding_box(bool write, int domain, int domainId, int variable, float& x1, float& y1, float& x2, float& y2);
+
+		/// Send scenario command (0x73) with \c ValueDataType Road Map Position (0x04).
 		float command_scenario_distance_to_roadmap_position(bool write, int domain, int domainId, int variable, std::string roadId, float roadPos, int lane);
+
+		/// Send get traffic light status command (0x41).
 		bool command_get_TL_status(int tlId, double from, double until, TLSwitchInfoVec& switchInfos);
+		//@}
 
 	public:
 
@@ -144,8 +165,8 @@ namespace traci
 
 		void run(shawn::SimulationController& sc) throw();
 
-		// Connect and disconnect to the mobility server         
-		// The connect method is called by startSimStepHandler         
+		// Connect and disconnect to the mobility server
+		// The connect method is called by startSimStepHandler
 		// The close method is called by the destructor
 		bool connect();
 
@@ -191,7 +212,7 @@ namespace traci
 		static const int DOMAIN_IDS[];
 		static const std::string DOMAIN_NAMES[];
 
-   };
+	};
 }
 #endif
 #endif
