@@ -34,7 +34,7 @@ namespace shawn
 	shawn::EdgeModel::AbstractAdjacencyIterator<NodeType>::
 		AbstractAdjacencyIterator( Helper* h )
 		: helper_( h )
-	{ 
+	{
 		if( h != NULL )
 			helper_->init();
 	}
@@ -55,10 +55,10 @@ namespace shawn
 	template<typename NodeType>
 	shawn::EdgeModel::AbstractAdjacencyIterator<NodeType>&
 		shawn::EdgeModel::AbstractAdjacencyIterator<NodeType>::
-		operator = ( const AbstractAdjacencyIterator<NodeType>& ait ) 
+		operator = ( const AbstractAdjacencyIterator<NodeType>& ait )
 		throw()
 	{
-		if( helper_ != NULL ) 
+		if( helper_ != NULL )
 			delete helper_;
 
 		if( ait.helper_ == NULL )
@@ -75,7 +75,7 @@ namespace shawn
 	shawn::EdgeModel::AbstractAdjacencyIterator<NodeType>::
 		~AbstractAdjacencyIterator()
 	{
-		if( helper_ != NULL ) 
+		if( helper_ != NULL )
 			delete helper_;
 	}
 
@@ -86,7 +86,7 @@ namespace shawn
 		operator++ ( void )
 		throw()
 	{
-		if( helper_ != NULL ) 
+		if( helper_ != NULL )
 			helper_->next();
 		return *this;
 	}
@@ -167,7 +167,7 @@ namespace shawn
 	// ----------------------------------------------------------------------
 	void
 		EdgeModel::
-		set_world( World& w ) 
+		set_world( World& w )
 		throw()
 	{
 		world_ = &w;
@@ -185,7 +185,7 @@ namespace shawn
 	// ----------------------------------------------------------------------
 	World&
 		EdgeModel::
-		world_w( void ) 
+		world_w( void )
 		throw()
 	{
 		assert( world_ != NULL );
@@ -237,7 +237,7 @@ namespace shawn
 		are_adjacent( const Node& u, const Node& v, CommunicationDirection d )
 		const throw()
 	{
-		switch( d ) 
+		switch( d )
 		{
 			case CD_IN:
 				return communication_model().can_communicate_uni(v,u);
@@ -251,6 +251,10 @@ namespace shawn
 			case CD_ANY:
 				return communication_model().can_communicate_uni(u,v) ||
 					communication_model().can_communicate_uni(v,u);
+
+			default:
+				// empty statement to avoid warning about not handled enum element
+				;
 		}
 
 		return false;
@@ -278,7 +282,7 @@ namespace shawn
 		invalidate( void )
 		throw()
 	{
-		return false; 
+		return false;
 	}
 
 

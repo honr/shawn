@@ -29,7 +29,7 @@ namespace routing
 		// FloodRoutingMessageHistory:
 
 		FloodRoutingMessageHistory::
-			FloodRoutingMessageHistory() 
+			FloodRoutingMessageHistory()
 		{}
 		// ----------------------------------------------------------------------
 		FloodRoutingMessageHistory::
@@ -41,74 +41,75 @@ namespace routing
 			~FloodRoutingMessageHistory()
 		{}
 		// ----------------------------------------------------------------------
-		int 
+		int
 			FloodRoutingMessageHistory::
-			history_size() 
-			const 
+			history_size()
+			const
 			throw()
 		{
 			return history_.size();
 		}
 		// ----------------------------------------------------------------------
-		FloodRoutingMessageHistory::MessageHistoryListConstIterator 
+		FloodRoutingMessageHistory::MessageHistoryListConstIterator
 			FloodRoutingMessageHistory::
-			find_history( const shawn::ConstMessageHandle& mh ) 
-			const 
+			find_history( const shawn::ConstMessageHandle& mh )
+			const
 			throw()
 		{
 			return find(history_.begin(),history_.end(),mh);
 		}
 		// ----------------------------------------------------------------------
-		FloodRoutingMessageHistory::MessageHistoryListConstIterator 
+		FloodRoutingMessageHistory::MessageHistoryListConstIterator
 			FloodRoutingMessageHistory::
-			begin_history() 
-			const 
+			begin_history()
+			const
 			throw()
 		{
 			return history_.begin();
 		}
 		// ----------------------------------------------------------------------
-		FloodRoutingMessageHistory::MessageHistoryListConstIterator 
+		FloodRoutingMessageHistory::MessageHistoryListConstIterator
 			FloodRoutingMessageHistory::
-			end_history() 
-			const 
+			end_history()
+			const
 			throw()
 		{
 			return history_.end();
 		}
 		// ----------------------------------------------------------------------
-		FloodRoutingMessageHistory::MessageHistoryListIterator 
+		FloodRoutingMessageHistory::MessageHistoryListIterator
 			FloodRoutingMessageHistory::
-			find_history_w( const shawn::ConstMessageHandle& mh ) 
+			find_history_w( const shawn::ConstMessageHandle& mh )
 			throw()
 		{
 			return find(history_.begin(),history_.end(),mh);
 		}
 		// ----------------------------------------------------------------------
-		FloodRoutingMessageHistory::MessageHistoryListIterator 
+		FloodRoutingMessageHistory::MessageHistoryListIterator
 			FloodRoutingMessageHistory::
-			begin_history_w() 
+			begin_history_w()
 			throw()
 		{
 			return history_.begin();
 		}
 		// ----------------------------------------------------------------------
-		FloodRoutingMessageHistory::MessageHistoryListIterator 
+		FloodRoutingMessageHistory::MessageHistoryListIterator
 			FloodRoutingMessageHistory::
-			end_history_w() 
+			end_history_w()
 			throw()
 		{
 			return history_.end();
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			FloodRoutingMessageHistory::
-			history_push_back( const shawn::ConstMessageHandle& mh, int history_max_size ) 
+			history_push_back( const shawn::ConstMessageHandle& mh, int history_max_size )
 			throw()
 		{
 			if( history_max_size > 0 )
 			{
-				if( history_.size() == history_max_size )
+				// cast history_max_size to avoid implicit integer conversion
+				if( history_.size() == static_cast<unsigned long>(history_max_size) )
 				{
 					history_.pop_front();
 				}
@@ -131,35 +132,35 @@ namespace routing
 			~FloodRoutingNodeInfo()
 		{}
 		// ----------------------------------------------------------------------
-		const 
-			FloodRoutingMessageHistory& 
+		const
+			FloodRoutingMessageHistory&
 			FloodRoutingNodeInfo::
-			message_history() 
-			const 
+			message_history()
+			const
 			throw()
 		{
 			return message_history_;
 		}
 		// ----------------------------------------------------------------------
-		FloodRoutingMessageHistory& 
+		FloodRoutingMessageHistory&
 			FloodRoutingNodeInfo::
-			message_history_w() 
+			message_history_w()
 			throw()
 		{
 			return message_history_;
 		}
 		// ----------------------------------------------------------------------
-		const 
-			FloodRoutingNodeInfo::FloodRoutingEventHandleSet& 
-			FloodRoutingNodeInfo::sending_jitter_timer() 
-			const 
+		const
+			FloodRoutingNodeInfo::FloodRoutingEventHandleSet&
+			FloodRoutingNodeInfo::sending_jitter_timer()
+			const
 			throw()
 		{
 			return sending_jitter_timer_;
 		}
-		// ----------------------------------------------------------------------	 
-		FloodRoutingNodeInfo::FloodRoutingEventHandleSet& 
-			FloodRoutingNodeInfo::sending_jitter_timer_w()  
+		// ----------------------------------------------------------------------
+		FloodRoutingNodeInfo::FloodRoutingEventHandleSet&
+			FloodRoutingNodeInfo::sending_jitter_timer_w()
 			throw()
 		{
 			return sending_jitter_timer_;
@@ -168,11 +169,11 @@ namespace routing
 		// FloodRouting:
 
 		FloodRouting::
-			FloodRouting( const string& name, 
-						  int history_max_size, 
+			FloodRouting( const string& name,
+						  int history_max_size,
 						  double probability,
 						  double message_sending_jitter_lower_bound,
-						  double message_sending_jitter_upper_bound ) : 
+						  double message_sending_jitter_upper_bound ) :
 		name_(name),
 		history_max_size_(history_max_size),
 		probability_(probability)
@@ -194,7 +195,7 @@ namespace routing
 		FloodRouting::~FloodRouting()
 		{}
 		//-----------------------------------------------------------------------
-		bool 
+		bool
 			FloodRouting::
 			send_to( shawn::Node& sender, const shawn::ConstMessageHandle& mh, const int& hops )
 		{
@@ -210,28 +211,28 @@ namespace routing
 			return true;
 		}
 		//-----------------------------------------------------------------------
-		std::string 
+		std::string
 			FloodRouting::
 			name()
-			const 
+			const
 			throw()
 		{
 			return name_;
 		}
 		//-----------------------------------------------------------------------
-		string 
+		string
 			FloodRouting::
-			description() 
-			const 
+			description()
+			const
 			throw()
 		{
 			return "This is a decentralized flood routing algorithm. It's associated processor is '"
-				+ routing::flood::FloodRoutingProcessorFactory::PROCESSOR_NAME + "'."; 
+				+ routing::flood::FloodRoutingProcessorFactory::PROCESSOR_NAME + "'.";
 		}
 		//-----------------------------------------------------------------------
-		void 
+		void
 			FloodRouting::
-			timeout( shawn::EventScheduler& es, shawn::EventScheduler::EventHandle eh, 
+			timeout( shawn::EventScheduler& es, shawn::EventScheduler::EventHandle eh,
 					 double time, shawn::EventScheduler::EventTagHandle& eth )
 			throw()
 		{
@@ -253,32 +254,32 @@ namespace routing
 			}
 		}
 		//-----------------------------------------------------------------------
-		void 
+		void
 			FloodRouting::
-			observers_added(FloodRoutingObserver& obs) 
+			observers_added(FloodRoutingObserver& obs)
 			throw()
 		{
 			// Ignore
 		}
 		//-----------------------------------------------------------------------
-		int 
+		int
 			FloodRouting::
-			history_max_size() 
-			const 
+			history_max_size()
+			const
 			throw()
 		{
 			return history_max_size_;
 		}
 		//-----------------------------------------------------------------------
-		void 
+		void
 			FloodRouting::
-			boot( shawn::Node& owner ) 
+			boot( shawn::Node& owner )
 			throw()
 		{
 			init( owner.world_w() );
 		}
 		//-----------------------------------------------------------------------
-		bool 
+		bool
 			FloodRouting::
 			process_flood_routing_message( shawn::Node& owner, const FloodRoutingMessage& frm )
 			throw()
@@ -312,27 +313,27 @@ namespace routing
 			return true;
 		}
 		//-----------------------------------------------------------------------
-		inline bool 
+		inline bool
 			FloodRouting::
-			probabilistic_sending_decision() 
+			probabilistic_sending_decision()
 			throw()
 		{
 			return ( probability_ == 1.0 ? true : ( shawn::uniform_random_0i_1i() <= probability_ ) );
 		}
 		//-----------------------------------------------------------------------
-		void	
+		void
 			FloodRouting::
-			add_message_to_history( const shawn::Node& owner, const shawn::ConstMessageHandle& mh ) 
+			add_message_to_history( const shawn::Node& owner, const shawn::ConstMessageHandle& mh )
 			throw()
 		{
 			FloodRoutingNodeInfo& rni = node_info_w(owner);
 			rni.message_history_w().history_push_back( mh, history_max_size_ );
 		}
 		//-----------------------------------------------------------------------
-		bool 
+		bool
 			FloodRouting::
-			message_in_history( const shawn::Node& owner, const shawn::ConstMessageHandle& mh ) 
-			const 
+			message_in_history( const shawn::Node& owner, const shawn::ConstMessageHandle& mh )
+			const
 			throw()
 		{
 			const FloodRoutingNodeInfo& rni = node_info(owner);
@@ -347,10 +348,10 @@ namespace routing
 			}
 		}
 		//-----------------------------------------------------------------------
-		const shawn::EventScheduler::EventHandle 
+		const shawn::EventScheduler::EventHandle
 			FloodRouting::
 			find_sending_jitter_timer( const shawn::Node& owner, const shawn::EventScheduler::EventHandle eh )
-			const 
+			const
 			throw()
 		{
 			const FloodRoutingNodeInfo& rni = node_info(owner);
@@ -362,7 +363,7 @@ namespace routing
 			return NULL;
 		}
 		//-----------------------------------------------------------------------
-		shawn::EventScheduler::EventHandle 
+		shawn::EventScheduler::EventHandle
 			FloodRouting::
 			find_sending_jitter_timer_w( const shawn::Node& owner, shawn::EventScheduler::EventHandle eh )
 			throw()
@@ -376,9 +377,9 @@ namespace routing
 			return NULL;
 		}
 		//-----------------------------------------------------------------------
-		void 
+		void
 			FloodRouting::
-			delete_all_sending_jitter_timer( shawn::Node& owner ) 
+			delete_all_sending_jitter_timer( shawn::Node& owner )
 			throw()
 		{
 			FloodRoutingNodeInfo& rni = node_info_w( owner );

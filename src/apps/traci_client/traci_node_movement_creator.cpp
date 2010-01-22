@@ -471,7 +471,7 @@ namespace traci{
 		TraCIClient::
 		fetch_processor_factories()
 	{
-		for(int i = 0; i < sizeof(DOMAIN_IDS)/sizeof(int); ++i){
+		for(unsigned int i = 0; i < sizeof(DOMAIN_IDS)/sizeof(int); ++i){
 			ProcessorFactoryHandle pfh;
 			set<ProcessorFactoryHandle>* processor_factories = new set<ProcessorFactoryHandle>();
 			StrTok tok(sc_->environment().optional_string_param(DOMAIN_NAMES[i] + "_processors",""), ", ");

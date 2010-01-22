@@ -113,14 +113,14 @@ namespace localization
 
       IterLaterationState state_;
       int last_useful_msg_;
-     
+
 	 SimpleMatrix<double>* matrix_at_;
 	SimpleMatrix<double>* vector_r_;
 	SimpleMatrix<double>* covariance_a_;
 	shawn::Node* linearization_tool_;
 	std::vector<shawn::Node*>* beacons_;
-	int neighbor_cnt_;
-	
+	std::size_t neighbor_cnt_;
+
 	std::vector<const shawn::Vec*>* iter_positions_;
 
    };
