@@ -16,51 +16,51 @@ namespace localization
 
    LocalizationDLSInitMessage::
 	   LocalizationDLSInitMessage( SimpleMatrix<double>* matrix_a,SimpleMatrix<double>* vector_r,SimpleMatrix<double>* covariance,shawn::Node* lt, std::vector<shawn::Node*>* beacons )
-   : matrix_a_(matrix_a),vector_r_(vector_r),linearization_tool_(lt),beacons_(beacons),covariance_(covariance)
+   : vector_r_(vector_r),linearization_tool_(lt),matrix_a_(matrix_a),beacons_(beacons),covariance_(covariance)
    {}
    // ----------------------------------------------------------------------
    LocalizationDLSInitMessage::
    LocalizationDLSInitMessage(const LocalizationDLSInitMessage* dls_message )
-   : matrix_a_(dls_message->matrix_A()),vector_r_(dls_message->vector_R()),linearization_tool_(dls_message->linearization_tool()),beacons_(dls_message->beacons()),covariance_(dls_message->covariance())
+   : vector_r_(dls_message->vector_R()),linearization_tool_(dls_message->linearization_tool()),matrix_a_(dls_message->matrix_A()),beacons_(dls_message->beacons()),covariance_(dls_message->covariance())
    {}
    // ----------------------------------------------------------------------
    LocalizationDLSInitMessage::
    ~LocalizationDLSInitMessage()
    {}
    // ----------------------------------------------------------------------
-    
-   SimpleMatrix<double>* 
+
+   SimpleMatrix<double>*
 	   LocalizationDLSInitMessage::
-	   matrix_A( void ) 
+	   matrix_A( void )
 	   const throw(){
 		   return matrix_a_;
 	}
-      SimpleMatrix<double>* 
+      SimpleMatrix<double>*
 		  LocalizationDLSInitMessage::
-		  vector_R( void ) 
+		  vector_R( void )
 		  const throw(){
 			  return vector_r_;
 	  }
 
-      shawn::Node* 
+      shawn::Node*
 		  LocalizationDLSInitMessage::
-		  linearization_tool(void) 
+		  linearization_tool(void)
 		  const throw(){
 			  return linearization_tool_;
 	  }
-	  std::vector<shawn::Node*>* 
+	  std::vector<shawn::Node*>*
 		  LocalizationDLSInitMessage::
-		  beacons(void) 
+		  beacons(void)
 		  const throw(){
 			  return beacons_;
 	  }
-	   SimpleMatrix<double>* 
+	   SimpleMatrix<double>*
 		  LocalizationDLSInitMessage::
-		  covariance( void ) 
+		  covariance( void )
 		  const throw(){
 			  return covariance_;
 	  }
-	 
+
 	   LocalizationDLSIterMessage::
 		 LocalizationDLSIterMessage(const shawn::Vec* new_pos){
 		new_pos_=new_pos;

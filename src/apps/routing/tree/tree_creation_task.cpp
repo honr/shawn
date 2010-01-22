@@ -40,27 +40,27 @@ namespace routing
 			~TreeCreationTask()
 		{}
 		// ----------------------------------------------------------------------
-		std::string 
+		std::string
 			TreeCreationTask::
-			name( void ) 
-			const 
+			name( void )
+			const
 			throw()
 		{
 			return "tree_creation";
 		}
 		// ----------------------------------------------------------------------
-		std::string 
+		std::string
 			TreeCreationTask::
-			description( void ) 
-			const 
+			description( void )
+			const
 			throw()
 		{
 			return "This task creates a tree for a TreeRouting.\nIt can be run with the following configuration of parameters: \ntree_routing_instance and sink_id: creates a tree directly in the given tree routing instance. \nfilename and sink_id (and optional max_hops): is a dry run mode which stores a tree representation in a file. \ntree_routing_instance and filename: creates a tree directli in the given tree routing instance from file.";
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			TreeCreationTask::
-			run( shawn::SimulationController& sc ) 
+			run( shawn::SimulationController& sc )
 			throw( std::runtime_error )
 		{
 			require_world( sc );
@@ -81,7 +81,7 @@ namespace routing
 				}
 				routing_instance->init( sc.world_w() );
 			}
-			
+
 			if( tree_routing_set && filename_set )
 			{
 				create_tree_from_file(sc,*routing_instance,filename);
@@ -104,9 +104,9 @@ namespace routing
 			}
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			TreeCreationTask::
-			create_tree_in_tree_routing( routing::tree::TreeRouting& routing_instance, const shawn::Node& sink ) 
+			create_tree_in_tree_routing( routing::tree::TreeRouting& routing_instance, const shawn::Node& sink )
 			throw()
 		{
 			// Init stuff
@@ -116,14 +116,14 @@ namespace routing
 			routing_instance.tree_routing_table_update( sink,sink,TreeRoutingTableInfo(sink,0,now) );
 			nodes_to_examine.insert( NodesToExamineMapValueType(0,&sink) );
 			// Main loop
-			while( ! nodes_to_examine.empty() ) 
+			while( ! nodes_to_examine.empty() )
 			{
 				// Fetch the min_node
 				NodesToExamineMapIterator min_it = nodes_to_examine.begin();
 				const shawn::Node* min_node = min_it->second;
 				nodes_to_examine.erase( min_it );
 				// Check the neighbors
-				for( World::const_adjacency_iterator adj_it = min_node->begin_adjacent_nodes(); 
+				for( World::const_adjacency_iterator adj_it = min_node->begin_adjacent_nodes();
 					 adj_it != min_node->end_adjacent_nodes(); ++adj_it )
 				{
 					const TreeRoutingNodeInfo& rni_min_node = routing_instance.node_info(*min_node);
@@ -145,12 +145,12 @@ namespace routing
 			}
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			TreeCreationTask::
-			create_tree_in_file( shawn::SimulationController& sc, 
-								 const std::string& filename, 
-								 const shawn::Node& sink, 
-								 int max_hops ) 
+			create_tree_in_file( shawn::SimulationController& sc,
+								 const std::string& filename,
+								 const shawn::Node& sink,
+								 int max_hops )
 			throw()
 		{
 			// Avoid appending
@@ -160,16 +160,16 @@ namespace routing
 				remove( filename.c_str() );
 			}
 			// Init stuff
-			double now = sink.current_time();
+//			double now = sink.current_time();
 			NodesToExamineMap nodes_to_examine;
 			TreeCreationHopsToSinkResult& result = *( new TreeCreationHopsToSinkResult( sc.world_w() ) );
 			ofstream file_op(filename.c_str(),ios::app);
 			// Treat the sink
-			file_op << sink.id() << "\t" 
-					<< sink.id() << "\t" 
-					<< sink.id() << "\t" 
-					<< 0 << "\t" 
-					<< sink.real_position().x() << "\t" 
+			file_op << sink.id() << "\t"
+					<< sink.id() << "\t"
+					<< sink.id() << "\t"
+					<< 0 << "\t"
+					<< sink.real_position().x() << "\t"
 					<< sink.real_position().y() << endl;
 			result[sink].hops_ = 0;
 			nodes_to_examine.insert( NodesToExamineMapValueType(0,&sink) );
@@ -179,7 +179,7 @@ namespace routing
 				NodesToExamineMapIterator min_it = nodes_to_examine.begin();
 				const shawn::Node* min_node = min_it->second;
 				nodes_to_examine.erase( min_it );
-				for( World::const_adjacency_iterator adj_it = min_node->begin_adjacent_nodes(); 
+				for( World::const_adjacency_iterator adj_it = min_node->begin_adjacent_nodes();
 					 adj_it != min_node->end_adjacent_nodes(); ++adj_it )
 				{
 					int hops = result[*min_node].hops_ + 1;
@@ -187,11 +187,11 @@ namespace routing
 					{
 						assert( result[*adj_it].hops_ == INT_MAX );
 						result[*adj_it].hops_ = hops;
-						file_op << adj_it->id() << "\t" 
-								<< sink.id() << "\t" 
-								<< min_node->id() << "\t" 
-								<< hops << "\t" 
-								<< adj_it->real_position().x() << "\t" 
+						file_op << adj_it->id() << "\t"
+								<< sink.id() << "\t"
+								<< min_node->id() << "\t"
+								<< hops << "\t"
+								<< adj_it->real_position().x() << "\t"
 								<< adj_it->real_position().y() << endl;
 						if( hops < max_hops )
 						{
@@ -205,11 +205,11 @@ namespace routing
 			delete &result;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			TreeCreationTask::
-			create_tree_from_file( shawn::SimulationController& sc, 
-								   routing::tree::TreeRouting& routing_instance, 
-								   const std::string& filename ) 
+			create_tree_from_file( shawn::SimulationController& sc,
+								   routing::tree::TreeRouting& routing_instance,
+								   const std::string& filename )
 			throw()
 		{
 			double now = sc.world().current_time();
@@ -246,8 +246,8 @@ namespace routing
 				if( node_x != node_real_pos_x ||
 					node_y != node_real_pos_y )
 				{
-					ERROR(this->logger(),"Position mismatch! Read x: " 
-						  + conv_double_to_string(node_x) 
+					ERROR(this->logger(),"Position mismatch! Read x: "
+						  + conv_double_to_string(node_x)
 						  + ", y: " + conv_double_to_string(node_y)
 						  + " Real position x: " + conv_double_to_string(node_real_pos_x)
 						  + ", y: " + conv_double_to_string(node_real_pos_y));
@@ -259,7 +259,7 @@ namespace routing
 		}
 		// ----------------------------------------------------------------------
 		std::string
-			conv_double_to_string(double d) 
+			conv_double_to_string(double d)
 			throw()
 		{
 			stringstream ss;

@@ -34,7 +34,7 @@ MovementInfo* TagNodeMovementCreator::next_movement()
 {
 	double min=numeric_limits<double>::max();
 	double start_time=0;
-	double arrival_time=0;
+//	double arrival_time=0;
 	double velocity=0.0;
 	movement_info_ =NULL;
 	DoubleTag* min_time_tag=NULL;

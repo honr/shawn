@@ -29,7 +29,7 @@ namespace shawn
     LinearMovement::
         ~LinearMovement()
     {
-       bool has_event_handle = (event_handle_ != NULL);
+//       bool has_event_handle = (event_handle_ != NULL);
         if ((event_handle_ != NULL)&&(!world_->scheduler_w().empty()))
         {
             world_->scheduler_w().delete_event(event_handle_);
@@ -113,7 +113,7 @@ namespace shawn
     {
         if (world_->current_time() >= arrival_time_)
 		{
-			LM_DEBUG("position: dest: " << dest_ << ", because current_time("<< world_->current_time() 
+			LM_DEBUG("position: dest: " << dest_ << ", because current_time("<< world_->current_time()
 				<<") >= arrival_time_("<< arrival_time_ <<")" );
             return dest_;
 		}
@@ -165,10 +165,10 @@ namespace shawn
     }
 
     // ----------------------------------------------------------------------
-    void LinearMovement::timeout(EventScheduler & event_scheduler, 
-        EventScheduler::EventHandle event_handle, 
-        double time, 
-        EventScheduler::EventTagHandle & event_tag_handle) 
+    void LinearMovement::timeout(EventScheduler & event_scheduler,
+        EventScheduler::EventHandle event_handle,
+        double time,
+        EventScheduler::EventTagHandle & event_tag_handle)
         throw()
     {
         LM_DEBUG("timeout(time:"<<time<<"): Entering" );
@@ -181,9 +181,9 @@ namespace shawn
     }
 
     // ----------------------------------------------------------------------
-    void 
+    void
         LinearMovement::
-		boxes_changed() 
+		boxes_changed()
 		throw()
     {
         LM_DEBUG("boxes_changed: Entering" );
@@ -203,7 +203,7 @@ namespace shawn
             LM_DEBUG("boxes_changed: New event created" );
             assert(node_ != NULL);
             event_handle_ = (world_->scheduler_w().new_event(*this, box_exit_time, NULL));
-        } 
+        }
         else
         {
             LM_DEBUG("boxes_changed: No event created (arrival_time("<< arrival_time_ <<
@@ -211,9 +211,9 @@ namespace shawn
         }
     }
     // ----------------------------------------------------------------------
-    double     
+    double
         LinearMovement::
-        arrival_time() 
+        arrival_time()
         const throw()
     {
         double at = starting_time_ + (dest_ - pos_).euclidean_norm() / skalar_velocity_;
@@ -241,9 +241,9 @@ namespace shawn
 
     }
     // ----------------------------------------------------------------------
-    double 
+    double
         LinearMovement::
-        box_exit_duration(const Box& b) 
+        box_exit_duration(const Box& b)
         const throw()
     {
         double duration = std::numeric_limits<double>::max(), tmptime;

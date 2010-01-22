@@ -51,12 +51,12 @@ namespace shawn
 
    void MovementController::timeout_action()
    {
-		
+
       begin:
       if (movement_info_ != NULL)
       {
          DEBUG(sc_->logger(), "MovementController::timeout_action() setting a delayed node movement");
-			NodeMovement* n =movement_info_->node_movement();
+//			NodeMovement* n =movement_info_->node_movement();
 			if (movement_info_->node()){
 				movement_info_->node()->set_movement(movement_info_->node_movement());
 			}
@@ -69,7 +69,7 @@ namespace shawn
       }
 	    assert(movement_info_ == NULL);
 		movement_info_ = nmc_->next_movement();
-	      
+
 		if (movement_info_ != NULL)
 		{
 
@@ -78,7 +78,7 @@ namespace shawn
 //    WARN( sc_->logger(), "It's 0 that is going to be at " << movement_info_->node_movement()->position() );
 //    WARN( sc_->logger(), "Before at " << movement_info_->node()->real_position() );
 // }
-         
+
          switch(movement_info_->urgency())
             {
             case MovementInfo::Immediately:
@@ -93,7 +93,7 @@ namespace shawn
 //    WARN( sc_->logger(), "And after (still) at " << movement_info_->node()->real_position() );
 //    WARN( sc_->logger(), "----" );
 // }
-               
+
                // OLD //movement_info_ = NULL;
 			   //NEW
 			   assert(movement_info_);
@@ -115,7 +115,7 @@ namespace shawn
 //    WARN( sc_->logger(), "Delayed" );
 //    WARN( sc_->logger(), "----" );
 // }
-                  
+
                }
                else
                if EQDOUBLE(sc_->world_w().current_time(),movement_info_->dispatch_time())
@@ -133,7 +133,7 @@ namespace shawn
 //    WARN( sc_->logger(), "And after (still) at " << movement_info_->node()->real_position() );
 //    WARN( sc_->logger(), "----" );
 // }
-                  
+
                   // OLD //movement_info_ = NULL;
 				  // NEW
 				  assert(movement_info_);

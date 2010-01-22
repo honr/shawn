@@ -38,7 +38,7 @@ namespace localization
 		boot( void )
 		throw()
 	{
-		const SimulationEnvironment& se = node().world().simulation_controller().environment();
+//		const SimulationEnvironment& se = node().world().simulation_controller().environment();
 		iter_positions_ = new std::vector<const shawn::Vec*>();
 		neighbor_cnt_ = owner().owner().get_adjacent_nodes().size();
 	}
@@ -77,7 +77,7 @@ namespace localization
 					if(ldlsm != NULL){
 						covariance_a_ = new SimpleMatrix<double>(*(ldlsm->getCovariance()));
 						linearization_tool_ = ldlsm->getLinearizationTool();
-						state_ = il_wait;	
+						state_ = il_wait;
 					}
 					send( new LocalizationDLSIterMessage(&node().est_position() ) );
 				}
@@ -100,7 +100,7 @@ namespace localization
 			state_ = il_finished;
 		}
 		return true;
-	
+
 	}
 	// ----------------------------------------------------------------------
 	void
@@ -108,7 +108,7 @@ namespace localization
 		iter_step( void )
 		throw()
 	{
-		SimpleMatrix<double>* w = new SimpleMatrix<double>(3,1); 
+		SimpleMatrix<double>* w = new SimpleMatrix<double>(3,1);
 		SimpleMatrix<double>* x = new SimpleMatrix<double>(3,1);
 		x->at(0,0) = node().est_position().x();
 		x->at(1,0) = node().est_position().y();
@@ -122,9 +122,9 @@ namespace localization
 			SimpleMatrix<double>* temp = new SimpleMatrix<double>(w->transposed() * *u);
 			*u= 1/(1+ temp->at(0,0)) * *u * u->transposed();
 			*covariance_a_ = *covariance_a_ - *u;
-			
+
 			temp->at(0,0) = euclidean_distance( *iter_positions_->at(i), linearization_tool_->est_position());
-			SimpleMatrix<double>* temp2 = new SimpleMatrix<double>(*covariance_a_ * *w);		
+			SimpleMatrix<double>* temp2 = new SimpleMatrix<double>(*covariance_a_ * *w);
 			SimpleMatrix<double>* temp3 = new SimpleMatrix<double>(*temp - (w->transposed()* *x));
 			*temp1=*x;
 			*temp2 = temp3->at(0,0) * *temp2;
@@ -145,7 +145,7 @@ namespace localization
 	bool
 		LocalizationiDLSModule::
 		finished( void )
-		throw() 
+		throw()
 	{
 		return state_ == il_finished;
 	}

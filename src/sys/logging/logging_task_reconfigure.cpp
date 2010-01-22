@@ -118,8 +118,8 @@ namespace shawn
    {
       std::string logger_name = sc.world().simulation_controller().environment().
          required_string_param( "logger" );
-     bool additivity = sc.world().simulation_controller().environment().
-         optional_bool_param( "additivity", true );
+/*     bool additivity = sc.world().simulation_controller().environment().
+         optional_bool_param( "additivity", true );*/
 
 #if defined ( HAVE_LOG4CXX )
       log4cxx::LoggerPtr logger;

@@ -50,7 +50,7 @@ namespace autocast
       virtual void boot( void ) throw();
       virtual bool process_message( const shawn::ConstMessageHandle& ) throw();
       virtual void work( void ) throw();
-      void timeout( shawn::EventScheduler&, shawn::EventScheduler::EventHandle, 
+      void timeout( shawn::EventScheduler&, shawn::EventScheduler::EventHandle,
          double, shawn::EventScheduler::EventTagHandle& ) throw();
       virtual bool send_to(const ConstDataUnitHandle&, shawn::Processor* creator = NULL) throw();
       bool booted() const throw();
@@ -65,26 +65,26 @@ namespace autocast
       /// virtually a "cell" stored in complete_DataUnits_.
       class LocalDataUnit{
       public:
-         LocalDataUnit() : unknown_count_(0),
+         LocalDataUnit() : duh_(NULL),
+            unknown_count_(0),
             last_send_time_(0),
             last_received_time_(0),
             creator_(NULL),
-            refresh_before_send_(false),
-            duh_(NULL)
+            refresh_before_send_(false)
          {}
-         LocalDataUnit(const ConstDataUnitHandle& duh) : unknown_count_(0),
+         LocalDataUnit(const ConstDataUnitHandle& duh) : duh_(duh),
+            unknown_count_(0),
             last_send_time_(0),
             last_received_time_(0),
             creator_(NULL),
-            refresh_before_send_(false),
-            duh_(duh)
+            refresh_before_send_(false)
          {}
-         LocalDataUnit(const LocalDataUnit& o) : unknown_count_(o.unknown_count()),
+         LocalDataUnit(const LocalDataUnit& o) : duh_(o.dataUnit()),
+            unknown_count_(o.unknown_count()),
             last_send_time_(o.last_send_time()),
             last_received_time_(o.last_received_time()),
             creator_(o.creator()),
-            refresh_before_send_(o.refresh_before_send()),
-            duh_(o.dataUnit())
+            refresh_before_send_(o.refresh_before_send())
          {}
          ~LocalDataUnit(){}
          const ConstDataUnitHandle& dataUnit() const { return duh_; }
@@ -166,7 +166,7 @@ namespace autocast
       int msgCountAnswer_only_;
       int msgCountFlood_only_;
       int msgCountRequest_only_;
-      
+
       double activeTime_;
 
 	  std::vector<int> active_times_;

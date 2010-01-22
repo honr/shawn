@@ -19,115 +19,115 @@ namespace autocast
 {
 
    AutoCastMessage::
-	   AutoCastMessage() :	uid_(0),
-							packet_type_(AUTOCAST_TYPE_INVALID),
-							next_update_interval_(0),
+	   AutoCastMessage() :	packet_type_(AUTOCAST_TYPE_INVALID),
+							uid_(0),
+							autoCast_message_size_(0),
 							last_hop_addr_(0),
 							last_hop_x_(0),
 							last_hop_y_(0),
-							autoCast_message_size_(0)
+							next_update_interval_(0)
    {}
    AutoCastMessage::AutoCastMessage(int uid,
 									int packet_type,
 									double next_update_interval,
 									int last_hop_addr,
 									double last_hop_x,
-									double last_hop_y) : uid_(uid),
-														 packet_type_(packet_type),
-														 next_update_interval_(next_update_interval),
+									double last_hop_y) : packet_type_(packet_type),
+														 uid_(uid),
+														 autoCast_message_size_(0),
 														 last_hop_addr_(last_hop_addr),
 														 last_hop_x_(last_hop_x),
 														 last_hop_y_(last_hop_y),
-														 autoCast_message_size_(0)
+														 next_update_interval_(next_update_interval)
    {}
    // ----------------------------------------------------------------------
    AutoCastMessage::
    ~AutoCastMessage()
    {}
    // ----------------------------------------------------------------------
-   double 
+   double
 	   AutoCastMessage::
-	   next_update_interval() 
+	   next_update_interval()
 	   const
 	   throw()
    {
 	   return next_update_interval_;
    }
    // ----------------------------------------------------------------------
-   int 
+   int
 	   AutoCastMessage::
-	   packet_type() 
-	   const 
+	   packet_type()
+	   const
 	   throw()
    {
 	   return packet_type_;
    }
    // ----------------------------------------------------------------------
-   unsigned int 
+   unsigned int
 	   AutoCastMessage::
-	   uid() 
-	   const 
+	   uid()
+	   const
 	   throw()
    {
 		return uid_;
    }
    // ----------------------------------------------------------------------
-   int 
+   int
 	   AutoCastMessage::
 	   last_hop_addr()
-	   const 
+	   const
 	   throw()
    {
 	   return last_hop_addr_;
    }
    // ----------------------------------------------------------------------
-   double 
+   double
 	   AutoCastMessage::
-	   last_hop_x() 
-	   const 
+	   last_hop_x()
+	   const
 	   throw()
    {
 	   return last_hop_x_;
    }
    // ----------------------------------------------------------------------
-   double 
+   double
 	   AutoCastMessage::
-	   last_hop_y() 
-	   const 
+	   last_hop_y()
+	   const
 	   throw()
    {
 	   return last_hop_y_;
    }
    // ----------------------------------------------------------------------
-   const std::set<unsigned int>& 
+   const std::set<unsigned int>&
 	   AutoCastMessage::
-	   known_DataUnits() 
-	   const 
+	   known_DataUnits()
+	   const
 	   throw()
    {
 	   return known_DataUnits_;
    }
    // ----------------------------------------------------------------------
-   const std::set<autocast::ConstDataUnitHandle>& 
+   const std::set<autocast::ConstDataUnitHandle>&
 	   AutoCastMessage::
-	   complete_DataUnits() 
-	   const 
+	   complete_DataUnits()
+	   const
 	   throw()
    {
 	   return complete_DataUnits_;
    }
-   
+
    // ----------------------------------------------------------------------
-   const std::set<unsigned int>& 
+   const std::set<unsigned int>&
 	   AutoCastMessage::
-	   stale_ids() 
-	   const 
+	   stale_ids()
+	   const
 	   throw()
    {
-		return stale_ids_; 
+		return stale_ids_;
    }
    // ----------------------------------------------------------------------
-   void 
+   void
 	   AutoCastMessage::
 	   insert_id(const unsigned int id)
    {
@@ -135,7 +135,7 @@ namespace autocast
 	   autoCast_message_size_ += 4;
    }
    // ----------------------------------------------------------------------
-   void 
+   void
 	   AutoCastMessage::
 	   insert_complete_DataUnit(const ConstDataUnitHandle& duh)
    {
@@ -143,7 +143,7 @@ namespace autocast
 	   autoCast_message_size_ += duh->size();
    }
    // ----------------------------------------------------------------------
-   void 
+   void
 	   AutoCastMessage::
 	   insert_stale_id(unsigned int id)
    {
@@ -151,13 +151,13 @@ namespace autocast
 	   autoCast_message_size_ += 4;
    }
    // ----------------------------------------------------------------------
-   int 
+   int
 	   AutoCastMessage::
 	   size()
 	   const
 	   throw()
    {
-	   /// Returns the size of the user data AND the size of the header 
+	   /// Returns the size of the user data AND the size of the header
 	   /// which is what is sent with every message.
 	   /// And the overhead is:
 	   /// 4 for packet_type_ int

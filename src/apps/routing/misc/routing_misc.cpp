@@ -34,49 +34,49 @@ namespace routing
 		HopsToSourceResultInfo::
 			HopsToSourceResultInfo( const HopsToSourceResultInfo& other ) :
 		predecessor_(other.predecessor_),
-		hops_(other.hops_),
-		successors_(other.successors_)
+		successors_(other.successors_),
+		hops_(other.hops_)
 		{}
 		// ----------------------------------------------------------------------
 		HopsToSourceResultInfo::
 			~HopsToSourceResultInfo()
 		{}
 		// ----------------------------------------------------------------------
-		const shawn::Node* 
+		const shawn::Node*
 			HopsToSourceResultInfo::
-			predecessor() 
-			const 
+			predecessor()
+			const
 			throw()
 		{
 			return predecessor_;
 		}
 		// ----------------------------------------------------------------------
-		const HopsToSourceResultInfo::SuccessorList& 
+		const HopsToSourceResultInfo::SuccessorList&
 			HopsToSourceResultInfo::
-			successors() 
-			const 
+			successors()
+			const
 			throw()
 		{
 			return successors_;
 		}
 		// ----------------------------------------------------------------------
-		int 
+		int
 			HopsToSourceResultInfo::
 			hops()
-			const 
+			const
 			throw()
 		{
 			return hops_;
 		}
-		
+
 
 		// hops_to_source:
 
-		void 
+		void
 			hops_to_source::
-			operator() ( const shawn::Node& source, 
-						 HopsToSourceResult& result, 
-						 const shawn::Node* target, 
+			operator() ( const shawn::Node& source,
+						 HopsToSourceResult& result,
+						 const shawn::Node* target,
 						 int max_hops )
 		{
 			// Init stuff
@@ -86,17 +86,17 @@ namespace routing
 			// Start from source
 			nodes_to_examine.insert( NodesToExamineMapValueType(0,&source) );
 			// Main loop
-			while( ! nodes_to_examine.empty() ) 
+			while( ! nodes_to_examine.empty() )
 			{
 				// Detach min_node
 				NodesToExamineMapIterator min_it = nodes_to_examine.begin();
 				const shawn::Node* min_node = min_it->second;
 				nodes_to_examine.erase( min_it );
-				// 
-				for( World::const_adjacency_iterator adj_it = min_node->begin_adjacent_nodes(); 
+				//
+				for( World::const_adjacency_iterator adj_it = min_node->begin_adjacent_nodes();
 					 adj_it != min_node->end_adjacent_nodes(); ++adj_it )
 				{
-					assert( result[*min_node].hops_ < INT_MAX ); 
+					assert( result[*min_node].hops_ < INT_MAX );
 					int hops = result[*min_node].hops_ + 1;
 					if( hops < result[*adj_it].hops_ )
 					{
@@ -141,19 +141,19 @@ namespace routing
 			~GreedyPathInfo()
 		{}
 		// ----------------------------------------------------------------------
-		const shawn::Node* 
+		const shawn::Node*
 			GreedyPathInfo::
-			predecessor() 
-			const 
+			predecessor()
+			const
 			throw()
 		{
 			return predecessor_;
 		}
 		// ----------------------------------------------------------------------
-		int 
+		int
 			GreedyPathInfo::
-			hops() 
-			const 
+			hops()
+			const
 			throw()
 		{
 			return hops_;
@@ -161,10 +161,10 @@ namespace routing
 
 		// greedy_path:
 
-		bool 
+		bool
 			greedy_path::
-			operator() ( const shawn::Node& source, 
-						 const shawn::Node& target, 
+			operator() ( const shawn::Node& source,
+						 const shawn::Node& target,
 						 GreedyPathResult& result )
 		{
 			// Init stuff
@@ -188,7 +188,7 @@ namespace routing
 				result[*min_node].visited_ = true;
 				//std::cerr << "Explore node: " << min_node->id() << std::endl;
 				//
-				for( World::const_adjacency_iterator adj_it = min_node->begin_adjacent_nodes(); 
+				for( World::const_adjacency_iterator adj_it = min_node->begin_adjacent_nodes();
 					 adj_it != min_node->end_adjacent_nodes(); ++adj_it )
 				{
 					if( &(*adj_it) == min_node )
@@ -226,7 +226,7 @@ namespace routing
 		}//
 
 		// Partitions:
-		
+
 		Partitions::
 			Partitions()
 		{}
@@ -235,14 +235,14 @@ namespace routing
 			~Partitions()
 		{}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			Partitions::
-			init( shawn::SimulationController& sc ) 
+			init( shawn::SimulationController& sc )
 			throw()
 		{
 			partitions_.clear();
 			shawn::World& world = sc.world_w();
-			for( shawn::World::const_node_iterator source_it = world.begin_nodes(); 
+			for( shawn::World::const_node_iterator source_it = world.begin_nodes();
 				 source_it != world.end_nodes(); ++source_it )
 			{
 				bool found = false;
@@ -258,13 +258,13 @@ namespace routing
 				NodesSet nodes_to_examine;
 				nodes_to_examine.insert( &(*source_it) );
 				NodesSet nodes;
-				while( ! nodes_to_examine.empty() ) 
+				while( ! nodes_to_examine.empty() )
 				{
 					NodesSetIterator node_to_examine_it = nodes_to_examine.begin();
 					const shawn::Node* examined_node = *node_to_examine_it;
 					nodes_to_examine.erase( node_to_examine_it );
-					// 
-					for( World::const_adjacency_iterator adj_it = examined_node->begin_adjacent_nodes(); 
+					//
+					for( World::const_adjacency_iterator adj_it = examined_node->begin_adjacent_nodes();
 						 adj_it != examined_node->end_adjacent_nodes(); ++adj_it )
 					{
 						if( nodes.find( &(*adj_it) ) == nodes.end() )
@@ -278,9 +278,9 @@ namespace routing
 			}
 		}
 		// ----------------------------------------------------------------------
-		bool 
+		bool
 			Partitions::
-			reachable(const shawn::Node& a, const shawn::Node& b) 
+			reachable(const shawn::Node& a, const shawn::Node& b)
 			throw()
 		{
 			bool found_a = false;
@@ -296,8 +296,8 @@ namespace routing
 			}
 			return true;
 		}
-		
+
 	}
 }
 #endif
- 
+

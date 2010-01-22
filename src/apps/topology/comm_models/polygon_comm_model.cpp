@@ -31,14 +31,14 @@ using namespace shawn;
 namespace topology
 {
 
-	
+
 	CommonTaggedPolygonBase::
 		CommonTaggedPolygonBase(const PolygonTopology& topo,double upper, double lower, std::string fn, std::string rssi2distfile)
 		: topo_(topo),
 		initialized_ ( false ),
 		upper_bound_  ( upper ),
-		has_range_   ( false ),
 		lower_bound_ ( lower ),
+		has_range_   ( false ),
 		fname_		 ( fn ),
 		distance_estimate_rssi_dist_file_ (rssi2distfile)
 	{}
@@ -101,13 +101,13 @@ namespace topology
 		can_communicate_uni( const Node& u, const Node& v )
 		const throw()
 	{
-		if(u.id() == v.id()) 
+		if(u.id() == v.id())
 			return true;
 
 		double rssi = getRSSI(euclidean_distance( u.real_position(), v.real_position() ));
 
-		if( ( rssi  ) >= lower_bound_ ) 
-			return true; 
+		if( ( rssi  ) >= lower_bound_ )
+			return true;
 
 		double variable = (urv_);
 		if( variable  <= (rssi /lower_bound_) )
@@ -120,16 +120,16 @@ namespace topology
 	}
 
 	// ----------------------------------------------------------------------
-	bool 
+	bool
 		PolygonTopologyDistEst::
-		estimate_distance( const Node& source, const Node& target, double& result ) 
+		estimate_distance( const Node& source, const Node& target, double& result )
 		const throw()
 	{
 		//If nodes can not communication, no estimate is possible
 		if( !source.world().communication_model().can_communicate_uni(source, target) )
 			return false;
 
-		
+
 		double real_dist = euclidean_distance( source.real_position(), target.real_position() );
 		double rssi = getRSSI( real_dist ) ;
 		result = get_distance( rssi );
@@ -143,35 +143,35 @@ namespace topology
 	}
 
 	// ----------------------------------------------------------------------
-	std::string 
+	std::string
 		PolygonTopologyDistEst::
-		name( void ) 
+		name( void )
 		const throw()
 	{
 		return name_;
 	}
 
 	// ----------------------------------------------------------------------
-	std::string 
+	std::string
 		PolygonTopologyDistEst::
-		description( void ) 
+		description( void )
 		const throw()
 	{
 		return "";
 
 	}// ----------------------------------------------------------------------
-	std::string 
+	std::string
 		PolygonTopologyCommunicationModel::
-		name( void ) 
+		name( void )
 		const throw()
 	{
 		return "polygon_topology";
 	}
 
 	// ----------------------------------------------------------------------
-	std::string 
+	std::string
 		PolygonTopologyCommunicationModel::
-		description( void ) 
+		description( void )
 		const throw()
 	{
 		return "";
@@ -214,12 +214,12 @@ namespace topology
 	}
 
 	// ----------------------------------------------------------------------
-	void 
+	void
 		PolygonTopologyCommunicationModel::
 		set_size_hint(double size_hint)
 		throw()
 	{
-		if(has_range_) 
+		if(has_range_)
 			return;
 
 		has_range_ = true;
@@ -227,7 +227,7 @@ namespace topology
 	}
 
 	// ----------------------------------------------------------------------
-	bool 
+	bool
 		CommonTaggedPolygonBase::
 		readFile()
 		throw(std::runtime_error)
@@ -262,7 +262,7 @@ namespace topology
 	}
 
 	// ----------------------------------------------------------------------
-	void 
+	void
 		CommonTaggedPolygonBase::
 		create_default_map()
 		throw()
@@ -304,15 +304,15 @@ namespace topology
 		rssi_.insert( make_pair( 32.5,18.90 ) );
 		rssi_.insert( make_pair( 37.0,6.6 ) );
 		rssi_.insert( make_pair( 41.5,12.65 ) );
-		
+
 		value_set::const_iterator iter;
 		for(iter = rssi_.begin(); iter != rssi_.end(); ++iter)
 			distance_estimate_rssi_dist_.insert( make_pair(	iter->second,iter->first) );
-		
+
 
 	}
 	// ----------------------------------------------------------------------
-	double 
+	double
 		CommonTaggedPolygonBase::
 		get_distance(double measuredRssi)
 		const throw()
@@ -320,7 +320,7 @@ namespace topology
 		std::cout << "CommonTaggedPolygonBase::measuredRssi " << measuredRssi << std::endl;
 
 		bool isFirstRssi = true;
-		
+
 		value_set::const_reverse_iterator firstRssi;
 		value_set::const_reverse_iterator secondRssi;
 
@@ -340,7 +340,7 @@ namespace topology
 				continue;
 			}
 
-			if (measuredRssi > secondRssi->first) 
+			if (measuredRssi > secondRssi->first)
 			{
 				double firstDist = firstRssi->second;
 				double secondDist = secondRssi->second;
@@ -361,18 +361,18 @@ namespace topology
 	}
 
 	// ----------------------------------------------------------------------
-	double 
+	double
 		CommonTaggedPolygonBase::
 		getRSSI(double distance)
 		const throw()
 	{
-		bool set_value = false;
+//		bool set_value = false;
 		double old_rssi = std::numeric_limits<double>::max();
 		double old_dist = 0.0;
 
 		/*
-		* Search for the interval the given distance fits in and afterwards 
-		* approximate the RSSI value by a linear function. 
+		* Search for the interval the given distance fits in and afterwards
+		* approximate the RSSI value by a linear function.
 		*/
 		for(value_set::const_iterator iter = rssi_.begin(); iter != rssi_.end(); ++iter)
 		{
@@ -392,10 +392,10 @@ namespace topology
 		double m = - old_rssi / (upper_bound_ - old_dist);
 		double value = m * (distance - old_dist) + old_rssi;
 
-		if(value < 0) 
+		if(value < 0)
 			value = 0;
 
-		return value;		
+		return value;
 	}
 }
 

@@ -38,9 +38,9 @@ namespace autocast
 {
    AutoCastAppProcessor::
 	   AutoCastAppProcessor() : AutoCastApplication(),
-								disseminate_every_n_round_(1),
 								sending_point_x_(0),
-								sending_point_y_(0)
+								sending_point_y_(0),
+								disseminate_every_n_round_(1)
 
    {}
    // ----------------------------------------------------------------------
@@ -68,7 +68,7 @@ namespace autocast
    // ----------------------------------------------------------------------
    bool
    AutoCastAppProcessor::
-   process_message( const ConstMessageHandle& mh ) 
+   process_message( const ConstMessageHandle& mh )
       throw()
    {
       return Processor::process_message( mh );
@@ -81,14 +81,14 @@ namespace autocast
    {
 	   // Fake a sending position
 	   if(owner().is_special_node()){
-		   if ( (owner().simulation_round() - 30) % disseminate_every_n_round_ == 0 && disseminate_every_n_round_ != 999999 ){ 
+		   if ( (owner().simulation_round() - 30) % disseminate_every_n_round_ == 0 && disseminate_every_n_round_ != 999999 ){
 			   double min_distance = DBL_MAX;
 			   int min_node = 0;
-			   for(shawn::World::node_iterator it = owner_w().world_w().begin_nodes_w(); 
+			   for(shawn::World::node_iterator it = owner_w().world_w().begin_nodes_w();
 				   it != owner_w().world_w().end_nodes_w(); it++){
 					   double distance = /*sqrt(*/
 						   pow((sending_point_x_ - it->real_position().x()),2)+
-						   pow((sending_point_y_ - it->real_position().y()),2)/*)*/; 
+						   pow((sending_point_y_ - it->real_position().y()),2)/*)*/;
 						   if( distance < min_distance ){
 								min_distance = distance;
 								min_node = it->id();
@@ -108,7 +108,7 @@ namespace autocast
 	   }
    }
    // ----------------------------------------------------------------------
-   bool 
+   bool
 	   AutoCastAppProcessor::
 	   receive_DataUnit(const autocast::ConstDataUnitHandle& duh)
 	   throw()
@@ -117,7 +117,7 @@ namespace autocast
 	   return dispatch_DataUnit;
    }
    // ----------------------------------------------------------------------
-   const autocast::ConstDataUnitHandle& 
+   const autocast::ConstDataUnitHandle&
 	   AutoCastAppProcessor::
 	   refresh(const autocast::ConstDataUnitHandle& duh)
 	   throw()

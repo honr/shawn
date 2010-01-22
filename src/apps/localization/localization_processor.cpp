@@ -43,6 +43,7 @@ namespace localization
          pos_algo_            ( min_max ),
          ref_algo_            ( none ),
          phase_               ( distance ),
+         isServer_            (false),
          startup_anchor_frac_ ( 0 ),
          check_residue_       ( true ),
          floodlimit_          ( 4 ),
@@ -54,8 +55,7 @@ namespace localization
          rollback_cnt_        ( 0 ),
          rollback_limit_      ( 0 ),
          confidence_          ( 0 ),
-         dist_est_            ( NULL ),
-		 isServer_            (false)
+         dist_est_            ( NULL )
    {}
    // ----------------------------------------------------------------------
    LocalizationProcessor::
@@ -92,15 +92,15 @@ namespace localization
    }
       /**
    * This is only proccessed if the positioning algorithm is DLS.
-   * This fakes the step of processing the Matrix Ap and the vector d. 
+   * This fakes the step of processing the Matrix Ap and the vector d.
    * under "normal" circumstances beacon processors have to transmit their
-    * positions to the "server";   
+    * positions to the "server";
    **/
     void
    LocalizationProcessor::
    special_boot( void )
 		throw()
-	{   	   	
+	{
 	}
 
    // ----------------------------------------------------------------------
@@ -306,17 +306,17 @@ namespace localization
 				urv->set_upper_bound(2*position_error);
 				urv->set_upper_bound_inclusive(false);
 				urv->set_lower_bound_inclusive(false);
-				urv->init();	
+				urv->init();
 				double dx = (*urv)-position_error;
 				double dy = (*urv) - position_error;
 				double dz =(*urv) - position_error;
 				*/
-				
+
 				shawn::UniformRandomVariable urv;
 				urv.set_upper_bound(2*position_error);
 				urv.set_upper_bound_inclusive(false);
 				urv.set_lower_bound_inclusive(false);
-				urv.init();	
+				urv.init();
 				double dx = (urv)-position_error;
 				double dy = (urv) - position_error;
 				double dz =(urv) - position_error;
@@ -325,7 +325,7 @@ namespace localization
 				if(tmp.z()==0)
 					dz=0;
 				Vec pos(tmp.x()+dx, tmp.y()+dy,tmp.z()+dz);
-				owner_w().set_est_position(pos);				
+				owner_w().set_est_position(pos);
 			}
 			else
 				owner_w().set_est_position( owner().real_position() );

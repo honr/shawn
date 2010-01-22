@@ -22,7 +22,7 @@
 #include <iostream>
 
 //#define EUCDEBUG(x) std::cout << "euclidean debug["<< owner().id() <<"]: " << x << std::endl
-#define EUCDEBUG(x) 
+#define EUCDEBUG(x)
 
 using namespace shawn;
 
@@ -55,7 +55,7 @@ namespace localization
    // ----------------------------------------------------------------------
    bool
    LocalizationEuclideanModule::
-   process_message( const ConstMessageHandle& mh ) 
+   process_message( const ConstMessageHandle& mh )
       throw()
    {
       ///
@@ -94,7 +94,7 @@ namespace localization
       // received and state is set to 'broadcast'.
       if ( state_ == eu_wait && simulation_round() - last_useful_msg_ > observer().idle_time() )
          state_ = eu_broadcast;
- 
+
       // broadcast collected information
       if ( state_ == eu_broadcast )
          broadcast_neighborhood();
@@ -135,7 +135,7 @@ namespace localization
       if ( leim.proc_type() == LocalizationProcessor::anchor )
          neighborhood_w().update_anchor( source, source_pos, distance );
       else
-         neighborhood_w().update_neighbor( source, distance );	 
+         neighborhood_w().update_neighbor( source, distance );
 
 	  //BugFix: One-hop to anchor
 	  if ( neighborhood().valid_anchor_cnt() >= (int)observer().floodlimit() )
@@ -163,11 +163,11 @@ namespace localization
       neighborhood_w().update_nneighbors( lenm.source(), lenm.neighbors() );
 
       // if source is valid anchor, send anchor-message
-                 
+
       ConstNeighborhoodIterator it = neighborhood().find( lenm.source() );
        if(it == neighborhood().end_neighborhood())
            std::cout << " Knoten nicht gefunden" << std::cout;
-       else 
+       else
            std::cout << "knoten gefunden" << std::endl;
       if(it->second->is_anchor())
         std::cout << "isAnchor" << std::endl;
@@ -194,7 +194,7 @@ namespace localization
          return true;
 
       const Node& anchor = leam.anchor();
-      Vec anchor_pos = 
+      Vec anchor_pos =
 		  ( leam.anchor().has_est_position() )?
 		  ( leam.anchor().est_position() ) : ( leam.anchor().real_position() );
       const Node& source = leam.source();
@@ -244,7 +244,7 @@ namespace localization
                break;
          }
 
-         if ( distance == -1 ) 
+         if ( distance == -1 )
 		 {
 			 EUCDEBUG("Distance to anchor "<< anchor.id() <<" is -1");
 			 return;
@@ -325,7 +325,7 @@ namespace localization
             NodeList nl_cn = find_common_neighbor_neighbors( anchor, *it1->first, *it2->first );
             double dist_nv = neighbor_vote( anchor, *it1->first, *it2->first, dp, nl_nv );
             double dist_cn = common_neighbor( anchor, *it1->first, *it2->first, dp, nl_cn );
-			
+
 			{
 				std::ostringstream oss;
 				for(NodeList::iterator lalait = nl_nv.begin(); lalait != nl_nv.end(); ++lalait)
@@ -450,7 +450,7 @@ namespace localization
 			EUCDEBUG("n1["<< (*(it1->first)).id() <<"], n2["<< (*(it2->first)).id() <<"], anchor["<< anchor.id() <<"]");
 
             DistancePair dp = localization::trilateration_distance( self_n1, self_n2, n1_n2, n1_anchor, n2_anchor );
-			
+
 			if ( dp.first > -1.00000000001 && dp.first < -0.999999999999 )
 			{
 				EUCDEBUG("trilateration failed "<< anchor.id());
@@ -458,11 +458,11 @@ namespace localization
 			}
 /*			std::string filename= "euclideanDist.txt";
 			std::ofstream out((char*)(filename.c_str()), std::ios::app);
-			double real = (node().real_position() - anchor.real_position()).euclidean_norm();
-/*			out << " real dist: " << (node().real_position() - anchor.real_position()).euclidean_norm() 
-				<< " dist1: " << dp.first << " dist2: " << dp.second << std::endl; 
+			double real = (node().real_position() - anchor.real_position()).euclidean_norm();*/
+/*			out << " real dist: " << (node().real_position() - anchor.real_position()).euclidean_norm()
+				<< " dist1: " << dp.first << " dist2: " << dp.second << std::endl;
 		if(( ((dp.first- real) < -0.0000000000001) || ((dp.first- real) > 0.0000000000001 ))
-				&& 
+				&&
 				( ((dp.second- real) < -0.0000000000001) || ((dp.second- real) > 0.0000000000001 ))
 				)
 				out << " real dist: " << real
@@ -472,13 +472,13 @@ namespace localization
 				" n1_anchor " << n1_anchor << " n2_anchor " << n2_anchor << std::endl;*/
             double measure;
             NodeList nl = find_common_neighbor_neighbors_opt( anchor, *it1->first, *it2->first, measure );
-			
+
 	/*		std::ostringstream oss;
 			for(NodeList::iterator lalait = nl.begin(); lalait != nl.end(); ++lalait)
 				oss << (**lalait).id() << ", ";
 			EUCDEBUG("Neighborlist: " << oss.str());
 */
-				
+
 
             double dist_nv = neighbor_vote( anchor, *it1->first, *it2->first, dp, nl );
             double dist_cn = common_neighbor( anchor, *it1->first, *it2->first, dp, nl );
@@ -639,7 +639,7 @@ namespace localization
       // The following lines are inspired by above mentioned people and their
       // code.
 
-	   if ( nl.empty() ) 
+	   if ( nl.empty() )
 	   {
 		   EUCDEBUG("List empty (neighbor_vote)");
 		   return -1;
@@ -858,7 +858,7 @@ namespace localization
 
          if ( side_n3 == 1 && side_a == 1 )
             return dp.first;
-         else if ( side_n3 * side_a == -1 || side_n3 == -1 && side_a == -1 )
+         else if ( side_n3 * side_a == -1 || ( side_n3 == -1 && side_a == -1 ) )
             return dp.second;
       }// for
 

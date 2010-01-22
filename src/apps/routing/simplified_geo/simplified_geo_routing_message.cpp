@@ -42,42 +42,42 @@ namespace routing
 		RoutingMessage(routing_instance,
 					   application_message,
 					   destination_address),
-	    next_hop_(NULL),
-		time_to_live_(time_to_live > 0 ? time_to_live : 0)
+		time_to_live_(time_to_live > 0 ? time_to_live : 0),
+	    next_hop_(NULL)
 		{}
 		// ----------------------------------------------------------------------
 		SimplifiedGeoRoutingGreedyMessage::
 			SimplifiedGeoRoutingGreedyMessage( const SimplifiedGeoRoutingGreedyMessage& other,
 											   const shawn::Node& next_hop ) :
 		RoutingMessage(other),
-		next_hop_(&next_hop),
-		time_to_live_(other.time_to_live_ - 1)
+		time_to_live_(other.time_to_live_ - 1),
+		next_hop_(&next_hop)
 		{}
 		// ----------------------------------------------------------------------
 		SimplifiedGeoRoutingGreedyMessage::
 			SimplifiedGeoRoutingGreedyMessage( const SimplifiedGeoRoutingGreedyMessage& other, bool ) :
 		RoutingMessage(other),
-		next_hop_(NULL),
-		time_to_live_(other.time_to_live_ - 1)
+		time_to_live_(other.time_to_live_ - 1),
+		next_hop_(NULL)
 		{}
 		// ----------------------------------------------------------------------
 		SimplifiedGeoRoutingGreedyMessage::
 			~SimplifiedGeoRoutingGreedyMessage()
 		{}
 		// ----------------------------------------------------------------------
-		int 
+		int
 			SimplifiedGeoRoutingGreedyMessage::
 			size( void )
-			const 
+			const
 			throw()
 		{
-			return (USE_ROUTING_MESSAGE_OVERHEAD ? RoutingMessage::size() : 
+			return (USE_ROUTING_MESSAGE_OVERHEAD ? RoutingMessage::size() :
 					application_message()->size()) + MESSAGE_OVERHEAD;
 		}
 		// ----------------------------------------------------------------------
-		int 
+		int
 			SimplifiedGeoRoutingGreedyMessage::
-			time_to_live() 
+			time_to_live()
 			const
 			throw()
 		{
@@ -86,15 +86,15 @@ namespace routing
 		// ----------------------------------------------------------------------
 		const shawn::Node*
 			SimplifiedGeoRoutingGreedyMessage::
-			next_hop() 
-			const 
+			next_hop()
+			const
 			throw()
 		{
 			assert( next_hop_ );
 			return next_hop_;
 		}
 		// ----------------------------------------------------------------------
-		std::ostream& 
+		std::ostream&
 			operator<<(std::ostream& os, const SimplifiedGeoRoutingGreedyMessage& gm)
 		{
 			return os << "Destination address: " << gm.destination_address_ << "\n"
@@ -106,7 +106,7 @@ namespace routing
 
 		// For perimeter init
 		SimplifiedGeoRoutingPerimeterMessage::
-			SimplifiedGeoRoutingPerimeterMessage( const SimplifiedGeoRoutingGreedyMessage& greedy_message, 
+			SimplifiedGeoRoutingPerimeterMessage( const SimplifiedGeoRoutingGreedyMessage& greedy_message,
 												  const shawn::Node& right_hand_receiver,
 												  const shawn::Node& source ) :
 		SimplifiedGeoRoutingGreedyMessage(greedy_message,
@@ -117,7 +117,7 @@ namespace routing
 		{}
 		// ----------------------------------------------------------------------
 		// For perimeter forward. The necessary members
-		// location_entering_current_face_, first_edge_on_current_face_ and 
+		// location_entering_current_face_, first_edge_on_current_face_ and
 		// next_hop are altered via their setters
 		SimplifiedGeoRoutingPerimeterMessage::
 			SimplifiedGeoRoutingPerimeterMessage( const SimplifiedGeoRoutingPerimeterMessage& other ) :
@@ -127,78 +127,78 @@ namespace routing
 		first_edge_on_current_face_(other.first_edge_on_current_face_)
 		{}
 		// ----------------------------------------------------------------------
-		int 
+		int
 			SimplifiedGeoRoutingPerimeterMessage::
-			size( void ) 
-			const 
+			size( void )
+			const
 			throw()
 		{
-			return (USE_GREEDY_MESSAGE_OVERHEAD ? SimplifiedGeoRoutingGreedyMessage::size() : 
-					USE_ROUTING_MESSAGE_OVERHEAD ? RoutingMessage::size() : 
+			return (USE_GREEDY_MESSAGE_OVERHEAD ? SimplifiedGeoRoutingGreedyMessage::size() :
+					USE_ROUTING_MESSAGE_OVERHEAD ? RoutingMessage::size() :
 					application_message()->size()) + MESSAGE_OVERHEAD;
 		}
 		// ----------------------------------------------------------------------
-		const shawn::Vec& 
+		const shawn::Vec&
 			SimplifiedGeoRoutingPerimeterMessage::
-			location_entering_perimeter_mode() 
-			const 
+			location_entering_perimeter_mode()
+			const
 			throw()
 		{
 			return location_entering_perimeter_mode_;
 		}
 		// ----------------------------------------------------------------------
-		const shawn::Vec& 
+		const shawn::Vec&
 			SimplifiedGeoRoutingPerimeterMessage::
-			location_entering_current_face() 
-			const 
+			location_entering_current_face()
+			const
 			throw()
 		{
 			return location_entering_current_face_;
 		}
 		// ----------------------------------------------------------------------
-		const geo::GeoRoutingDirectedLink& 
+		const geo::GeoRoutingDirectedLink&
 			SimplifiedGeoRoutingPerimeterMessage::
-			first_edge_on_current_face() 
-			const 
+			first_edge_on_current_face()
+			const
 			throw()
 		{
 			return first_edge_on_current_face_;
 		}
 		// ----------------------------------------------------------------------
-		const shawn::Node* 
+		const shawn::Node*
 			SimplifiedGeoRoutingPerimeterMessage::
-			next_hop() 
-			const 
+			next_hop()
+			const
 			throw()
 		{
 			return next_hop_;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			SimplifiedGeoRoutingPerimeterMessage::
-			location_entering_current_face( const shawn::Vec& l ) 
+			location_entering_current_face( const shawn::Vec& l )
 			throw()
 		{
 			location_entering_current_face_ = l;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			SimplifiedGeoRoutingPerimeterMessage::
-			first_edge_on_current_face( const geo::GeoRoutingDirectedLink& e ) 
+			first_edge_on_current_face( const geo::GeoRoutingDirectedLink& e )
 			throw()
 		{
 			first_edge_on_current_face_ = e;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			SimplifiedGeoRoutingPerimeterMessage::
-			next_hop( const shawn::Node& n ) 
+			next_hop( const shawn::Node& n )
 			throw()
 		{
 			next_hop_ = &n;
 		}
 		// ----------------------------------------------------------------------
-		ostream& 
+		ostream&
 			operator<<(ostream& os, const SimplifiedGeoRoutingPerimeterMessage& pm)
 		{
 			return os << static_cast<const SimplifiedGeoRoutingGreedyMessage&>( pm ) << "\n"

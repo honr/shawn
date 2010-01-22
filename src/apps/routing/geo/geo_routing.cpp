@@ -9,7 +9,7 @@
 #ifdef ENABLE_ROUTING
 
 #include <float.h>
-#include <algorithm> 
+#include <algorithm>
 
 #include "sys/node.h"
 #include "sys/simulation/simulation_controller.h"
@@ -49,52 +49,52 @@ namespace routing
 			~GeoRoutingNeighborhoodInfo()
 		{}
 		// ----------------------------------------------------------------------
-		double 
+		double
 			GeoRoutingNeighborhood::GeoRoutingNeighborhoodInfo::
-			last_heard_time() 
-			const 
+			last_heard_time()
+			const
 			throw()
 		{
 			return last_heard_time_;
 		}
 		// ----------------------------------------------------------------------
-		const shawn::Vec& 
+		const shawn::Vec&
 			GeoRoutingNeighborhood::GeoRoutingNeighborhoodInfo::
-			position() 
-			const 
+			position()
+			const
 			throw()
 		{
 			return position_;
 		}
 		// ----------------------------------------------------------------------
-		bool 
+		bool
 			GeoRoutingNeighborhood::GeoRoutingNeighborhoodInfo::
-			blacklisted() 
-			const 
+			blacklisted()
+			const
 			throw()
 		{
 			return blacklisted_;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRoutingNeighborhood::GeoRoutingNeighborhoodInfo::
-			last_heard_time(double t)  
+			last_heard_time(double t)
 			throw()
 		{
 			last_heard_time_ = t;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRoutingNeighborhood::GeoRoutingNeighborhoodInfo::
-			position(const shawn::Vec& p) 
+			position(const shawn::Vec& p)
 			throw()
 		{
 			position_ = p;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRoutingNeighborhood::GeoRoutingNeighborhoodInfo::
-			blacklisted(bool b) 
+			blacklisted(bool b)
 			throw()
 		{
 			blacklisted_ = b;
@@ -115,28 +115,28 @@ namespace routing
 			~GeoRoutingNeighborhood()
 		{}
 		// ----------------------------------------------------------------------
-		geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodMapConstIterator 
+		geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodMapConstIterator
 			GeoRoutingNeighborhood::
-			begin_neighborhood() 
-			const 
+			begin_neighborhood()
+			const
 			throw()
 		{
 			return neighborhood_.begin();
 		}
 		// ----------------------------------------------------------------------
-		geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodMapConstIterator 
+		geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodMapConstIterator
 			GeoRoutingNeighborhood::
-			end_neighborhood() 
-			const 
+			end_neighborhood()
+			const
 			throw()
 		{
 			return neighborhood_.end();
 		}
 		// ----------------------------------------------------------------------
-		geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodMapConstIterator 
+		geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodMapConstIterator
 			GeoRoutingNeighborhood::
-			find_neighborhood( const shawn::Node& neighbor ) 
-			const 
+			find_neighborhood( const shawn::Node& neighbor )
+			const
 			throw()
 		{
 			return neighborhood_.find(&neighbor);
@@ -144,8 +144,8 @@ namespace routing
 		// ----------------------------------------------------------------------
 		const geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodInfo*
 			GeoRoutingNeighborhood::
-			neighborhood_info( const shawn::Node& neighbor ) 
-			const 
+			neighborhood_info( const shawn::Node& neighbor )
+			const
 			throw()
 		{
 			GeoRoutingNeighborhoodMapConstIterator it = neighborhood_.find(&neighbor);
@@ -157,25 +157,25 @@ namespace routing
 			return info;
 		}
 		// ----------------------------------------------------------------------
-		geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodMapIterator 
+		geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodMapIterator
 			GeoRoutingNeighborhood::
-			begin_neighborhood_w() 
+			begin_neighborhood_w()
 			throw()
 		{
 			return neighborhood_.begin();
 		}
 		// ----------------------------------------------------------------------
-		geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodMapIterator 
+		geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodMapIterator
 			GeoRoutingNeighborhood::
-			end_neighborhood_w() 
+			end_neighborhood_w()
 			throw()
 		{
 			return neighborhood_.end();
 		}
 		// ----------------------------------------------------------------------
-		geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodMapIterator 
+		geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodMapIterator
 			GeoRoutingNeighborhood::
-			find_neighborhood_w( const shawn::Node& neighbor ) 
+			find_neighborhood_w( const shawn::Node& neighbor )
 			throw()
 		{
 			return neighborhood_.find(&neighbor);
@@ -183,7 +183,7 @@ namespace routing
 		// ----------------------------------------------------------------------
 		geo::GeoRoutingNeighborhood::GeoRoutingNeighborhoodInfo*
 			GeoRoutingNeighborhood::
-			neighborhood_info_w( const shawn::Node& neighbor ) 
+			neighborhood_info_w( const shawn::Node& neighbor )
 			throw()
 		{
 			GeoRoutingNeighborhoodMapIterator it = neighborhood_.find(&neighbor);
@@ -195,9 +195,9 @@ namespace routing
 			return info;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRoutingNeighborhood::
-			neighborhood_insert( const shawn::Node& neighbor, const GeoRoutingNeighborhoodInfo& info ) 
+			neighborhood_insert( const shawn::Node& neighbor, const GeoRoutingNeighborhoodInfo& info )
 			throw()
 		{
 			GeoRoutingNeighborhoodMapIterator it = neighborhood_.find(&neighbor);
@@ -213,9 +213,9 @@ namespace routing
 			}
 		}
 		// ----------------------------------------------------------------------
-		bool 
+		bool
 			GeoRoutingNeighborhood::
-			neighborhood_erase( const shawn::Node& neighbor ) 
+			neighborhood_erase( const shawn::Node& neighbor )
 			throw()
 		{
 			GeoRoutingNeighborhoodMapIterator it = neighborhood_.find(&neighbor);
@@ -227,9 +227,9 @@ namespace routing
 			return false;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRoutingNeighborhood::
-			neighborhood_erase( GeoRoutingNeighborhoodMapIterator it ) 
+			neighborhood_erase( GeoRoutingNeighborhoodMapIterator it )
 			throw()
 		{
 			neighborhood_.erase(it);
@@ -238,7 +238,7 @@ namespace routing
 		// GeoRoutingAddress:
 
 		GeoRoutingAddress::
-			GeoRoutingAddress( const shawn::Vec& destination_position, 
+			GeoRoutingAddress( const shawn::Vec& destination_position,
 							   double radius,
 							   const shawn::Node* designated_receiver ) :
 		destination_position_(destination_position),
@@ -257,10 +257,10 @@ namespace routing
 			~GeoRoutingAddress()
 		{}
 		// ----------------------------------------------------------------------
-		const shawn::Vec& 
+		const shawn::Vec&
 			GeoRoutingAddress::
-			destination_position() 
-			const 
+			destination_position()
+			const
 			throw()
 		{
 			return destination_position_;
@@ -268,17 +268,17 @@ namespace routing
 		// ----------------------------------------------------------------------
 		double
 			GeoRoutingAddress::
-			radius() 
-			const 
+			radius()
+			const
 			throw()
 		{
 			return radius_;
 		}
 		// ----------------------------------------------------------------------
-		const shawn::Node* 
+		const shawn::Node*
 			GeoRoutingAddress::
-			designated_receiver() 
-			const 
+			designated_receiver()
+			const
 			throw()
 		{
 			return designated_receiver_;
@@ -289,7 +289,7 @@ namespace routing
 		{
 			if( gra.designated_receiver_ )
 			{
-				return os << "destination_position_ : " << gra.destination_position_ 
+				return os << "destination_position_ : " << gra.destination_position_
 					<< ", radius_ : " << gra.radius_ << ", designated_receiver_/ID : " << gra.designated_receiver_
 					<< "/" << gra.designated_receiver_->id() << endl;
 			}
@@ -316,24 +316,24 @@ namespace routing
 			~GeoRoutingNodeInfo()
 		{}
 		// ----------------------------------------------------------------------
-		const GeoRoutingNeighborhood& 
+		const GeoRoutingNeighborhood&
 			GeoRoutingNodeInfo::
-			geo_routing_neighborhood() 
-			const 
+			geo_routing_neighborhood()
+			const
 			throw()
 		{
 			return geo_routing_neighborhood_;
 		}
 		// ----------------------------------------------------------------------
-		GeoRoutingNeighborhood& 
+		GeoRoutingNeighborhood&
 			GeoRoutingNodeInfo::
-			geo_routing_neighborhood_w() 
+			geo_routing_neighborhood_w()
 			throw()
 		{
 			return geo_routing_neighborhood_;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRoutingNodeInfo::
 			beacon_timer( shawn::EventScheduler::EventHandle eh )
 			throw()
@@ -341,18 +341,18 @@ namespace routing
 			beacon_timer_ = eh;
 		}
 		// ----------------------------------------------------------------------
-		const shawn::EventScheduler::EventHandle 
+		const shawn::EventScheduler::EventHandle
 			GeoRoutingNodeInfo::
-			beacon_timer() 
-			const 
+			beacon_timer()
+			const
 			throw()
 		{
 			return beacon_timer_;
 		}
 		// ----------------------------------------------------------------------
-		shawn::EventScheduler::EventHandle 
+		shawn::EventScheduler::EventHandle
 			GeoRoutingNodeInfo::
-			beacon_timer_w() 
+			beacon_timer_w()
 			throw()
 		{
 			return beacon_timer_;
@@ -376,17 +376,17 @@ namespace routing
 			~GeoRoutingDirectedLink()
 		{}
 		// ----------------------------------------------------------------------
-		int 
+		int
 			operator==(const routing::geo::GeoRoutingDirectedLink& left, const routing::geo::GeoRoutingDirectedLink& right)
 		{
 			return left.u_ == right.u_ && left.v_ == right.v_;
 		}
 		// ----------------------------------------------------------------------
-		ostream& 
+		ostream&
 			operator<<(ostream& os, const GeoRoutingDirectedLink& grdl)
 		{
-			return os << "(" << grdl.u_ << ", " << grdl.v_ << ")" << "/" 
-					  << "(" << grdl.u_->id() << ", " << grdl.v_->id() << ")"; 
+			return os << "(" << grdl.u_ << ", " << grdl.v_ << ")" << "/"
+					  << "(" << grdl.u_->id() << ", " << grdl.v_->id() << ")";
 		}
 
 		// GeoRouting:
@@ -397,12 +397,12 @@ namespace routing
 		 */
 
 		GeoRouting::
-			GeoRouting( const string& name, 
-						double beacon_interval, 
-					    double magnitude_in_beacon_interval, 
-						double beacon_expiration_interval, 
+			GeoRouting( const string& name,
+						double beacon_interval,
+					    double magnitude_in_beacon_interval,
+						double beacon_expiration_interval,
 					    int messages_time_to_live,
-						bool route_always_in_perimeter_mode ) : 
+						bool route_always_in_perimeter_mode ) :
 		name_(name),
 		beacon_interval_(beacon_interval),
 		magnitude_in_beacon_interval_(magnitude_in_beacon_interval),
@@ -421,7 +421,7 @@ namespace routing
 			~GeoRouting()
 		{}
 		//-----------------------------------------------------------------------
-		bool 
+		bool
 			GeoRouting::
 			send_to( shawn::Node& sender, const shawn::ConstMessageHandle& mh, const GeoRoutingAddress& destination_address )
 		{
@@ -432,10 +432,10 @@ namespace routing
 				return false;
 			}
 
-			GeoRoutingNodeInfo& rni = node_info_w( sender );
+//			GeoRoutingNodeInfo& rni = node_info_w( sender );
 			geo_routing_neighborhood_update(sender);
-	
-			GeoRoutingGreedyMessage gm = 
+
+			GeoRoutingGreedyMessage gm =
 				GeoRoutingGreedyMessage(*this,mh,destination_address,sender.real_position(),messages_time_to_live_);
 			/// Loopback
 			if( receive_message_for_me(sender,gm) )
@@ -462,26 +462,26 @@ namespace routing
 			return true;
 		}
 		// ----------------------------------------------------------------------
-		std::string 
+		std::string
 			GeoRouting::
-			name() 
-			const 
+			name()
+			const
 			throw()
 		{
 			return name_;
 		}
 		// ----------------------------------------------------------------------
-		string 
+		string
 			GeoRouting::
-			description() 
-			const 
+			description()
+			const
 			throw()
 		{
 			return "This is a decentralized geo routing algorithm. It's associated processor is '"
-				+ routing::geo::GeoRoutingProcessorFactory::PROCESSOR_NAME + "'."; 
+				+ routing::geo::GeoRoutingProcessorFactory::PROCESSOR_NAME + "'.";
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRouting::
 			messages_time_to_live(int t)
 			throw()
@@ -489,18 +489,18 @@ namespace routing
 			messages_time_to_live_ = t;
 		}
 		// ----------------------------------------------------------------------
-		int 
-			GeoRouting:: 
+		int
+			GeoRouting::
 			messages_time_to_live()
-			const 
+			const
 			throw()
 		{
 			return messages_time_to_live_;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRouting::
-			timeout( EventScheduler& es, EventScheduler::EventHandle eh, double time, EventScheduler::EventTagHandle& eth ) 
+			timeout( EventScheduler& es, EventScheduler::EventHandle eh, double time, EventScheduler::EventTagHandle& eth )
 			throw()
 		{
 			RoutingEventTag* et = static_cast<RoutingEventTag*>( eth.get() );
@@ -511,7 +511,7 @@ namespace routing
 			{
 				// Send a beacon and start the timer for the next beacon
 				GeoRoutingBeaconMessage* nbm = new GeoRoutingBeaconMessage( *this, owner.real_position() );
-				INFORM_ROUTING_OBSERVERS( send_geo_routing_beacon_message( *this, owner, *nbm ) ); 
+				INFORM_ROUTING_OBSERVERS( send_geo_routing_beacon_message( *this, owner, *nbm ) );
 
 				rni.beacon_timer( NULL );
 				RoutingEventTag* net = new RoutingEventTag( *et );
@@ -521,17 +521,17 @@ namespace routing
 			}
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRouting::
-			observers_added(GeoRoutingObserver& obs) 
+			observers_added(GeoRoutingObserver& obs)
 			throw()
 		{
 			// Ignore
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRouting::
-			boot( shawn::Node& owner ) 
+			boot( shawn::Node& owner )
 			throw()
 		{
 			init( owner.world_w() );
@@ -547,18 +547,18 @@ namespace routing
 			//rni.beacon_timer( eh );
 		}
 		// ---------------------------------------------------------------------
-		bool 
+		bool
 			GeoRouting::
-			process_beacon_message( shawn::Node& owner, const GeoRoutingBeaconMessage& bm ) 
+			process_beacon_message( shawn::Node& owner, const GeoRoutingBeaconMessage& bm )
 			throw()
 		{
-			INFORM_ROUTING_OBSERVERS( receive_geo_routing_beacon_message(*this,owner,bm) ); 
+			INFORM_ROUTING_OBSERVERS( receive_geo_routing_beacon_message(*this,owner,bm) );
 			// Prevent owner from adding himself to his neighbors
 			if( &bm.source() != &owner )
 			{
-				GeoRoutingNodeInfo& rni = node_info_w(owner);
+//				GeoRoutingNodeInfo& rni = node_info_w(owner);
 				// Update neighborhood
-				if( geo_routing_neighborhood_update( owner, bm.source(), 
+				if( geo_routing_neighborhood_update( owner, bm.source(),
 					GeoRoutingNeighborhoodInfo( owner.current_time(), bm.source_position() ) ) /*||
 					rni.last_position() != owner.real_position()*/ )
 				{
@@ -569,18 +569,18 @@ namespace routing
 			return true;
 		}
 		// ---------------------------------------------------------------------
-		bool 
+		bool
 			GeoRouting::
-			process_greedy_message( shawn::Node& owner, const GeoRoutingGreedyMessage& gm ) 
+			process_greedy_message( shawn::Node& owner, const GeoRoutingGreedyMessage& gm )
 			throw()
 		{
 			INFORM_ROUTING_OBSERVERS( receive_geo_routing_greedy_message(*this,owner,gm) );
 			// Prevent owner from adding himself to his neighbors
 			if( &gm.source() != &owner )
 			{
-				GeoRoutingNodeInfo& rni = node_info_w(owner);
+//				GeoRoutingNodeInfo& rni = node_info_w(owner);
 				// Update neighborhood
-				if( geo_routing_neighborhood_update( owner, gm.source(), 
+				if( geo_routing_neighborhood_update( owner, gm.source(),
 					GeoRoutingNeighborhoodInfo(owner.current_time(), gm.source_position() ) ) )
 				{
 					// Only update if neighborhood or own position changes
@@ -617,18 +617,18 @@ namespace routing
 			return true;
 		}
 		// ---------------------------------------------------------------------
-		bool 
+		bool
 			GeoRouting::
-			process_perimeter_message( shawn::Node& owner, const GeoRoutingPerimeterMessage& pm ) 
+			process_perimeter_message( shawn::Node& owner, const GeoRoutingPerimeterMessage& pm )
 			throw()
 		{
-			INFORM_ROUTING_OBSERVERS( receive_geo_routing_perimeter_message(*this,owner,pm) ); 
+			INFORM_ROUTING_OBSERVERS( receive_geo_routing_perimeter_message(*this,owner,pm) );
 			// Prevent owner from adding himself to his neighbors
 			if( &pm.source() != &owner )
 			{
-				GeoRoutingNodeInfo& rni = node_info_w(owner);
+//				GeoRoutingNodeInfo& rni = node_info_w(owner);
 				// Update neighborhood
-				if( geo_routing_neighborhood_update( owner, pm.source(), 
+				if( geo_routing_neighborhood_update( owner, pm.source(),
 					GeoRoutingNeighborhoodInfo(owner.current_time(), pm.source_position() ) ) )
 				{
 					// Only update if neighborhood or own position changes
@@ -653,10 +653,10 @@ namespace routing
 				return true;
 			}
 			bool greedy_forward_successful = false;
-			if( (owner.real_position() - pm.destination_address().destination_position()).euclidean_norm() < 
+			if( (owner.real_position() - pm.destination_address().destination_position()).euclidean_norm() <
 				(pm.location_entering_perimeter_mode() - pm.destination_address().destination_position()).euclidean_norm() )
 			{
-				greedy_forward_successful = 
+				greedy_forward_successful =
 					greedy_forward_and_send(owner,static_cast<const GeoRoutingGreedyMessage&>( pm ));
 			}
 			// Different to Brad Karp's specification that drops messages sometimes ...
@@ -682,19 +682,19 @@ namespace routing
 			return true;
 		}
 		// ---------------------------------------------------------------------
-		const shawn::Node* 
+		const shawn::Node*
 			GeoRouting::
-			face_change( const shawn::Node& owner, GeoRoutingPerimeterMessage& npm, const shawn::Node& out_node ) 
+			face_change( const shawn::Node& owner, GeoRoutingPerimeterMessage& npm, const shawn::Node& out_node )
 			throw()
 		{
 			Vec intercept;
 			const GeoRoutingNodeInfo& rni = node_info(owner);
-			const GeoRoutingNeighborhoodInfo* neighborhood_info = 
+			const GeoRoutingNeighborhoodInfo* neighborhood_info =
 				rni.geo_routing_neighborhood().neighborhood_info( out_node );
 			bool i = false;
 			if( neighborhood_info )
 			{
-				// Keep in mind: this is a distributed algorithm. 
+				// Keep in mind: this is a distributed algorithm.
 				// You can only ask the owner for his real_position. DO NOT ask a neighbor for his real_position!
 				Vec out_node_pos = neighborhood_info->position();
 				i = intersect( out_node_pos, owner.real_position(),
@@ -710,7 +710,7 @@ namespace routing
 			const Node* right_hand_receiver = &out_node;
 			if( i )
 			{
-				if( (intercept - npm.destination_address().destination_position()).euclidean_norm() < 
+				if( (intercept - npm.destination_address().destination_position()).euclidean_norm() <
 					(npm.location_entering_current_face() - npm.destination_address().destination_position()).euclidean_norm() )
 				{
 					npm.location_entering_current_face(intercept);
@@ -723,13 +723,13 @@ namespace routing
 			return right_hand_receiver;
 		}
 		// ---------------------------------------------------------------------
-		const shawn::Node* 
+		const shawn::Node*
 			GeoRouting::
-			perimeter_init_forward( const shawn::Node& owner, const GeoRoutingGreedyMessage& gm ) 
+			perimeter_init_forward( const shawn::Node& owner, const GeoRoutingGreedyMessage& gm )
 			throw()
 		{
 			const Node* a_min = NULL;
-			double b_in = norm( atan2(owner.real_position().y() - gm.destination_address().destination_position().y(), 
+			double b_in = norm( atan2(owner.real_position().y() - gm.destination_address().destination_position().y(),
 									  owner.real_position().x() - gm.destination_address().destination_position().x()) );
 			double delta_min = 3*PI;
 			const GeoRoutingNodeInfo& rni = node_info(owner);
@@ -753,8 +753,8 @@ namespace routing
 					else if( delta_b == delta_min )
 					{
 						assert( a_min );
-						a_min = (it->second.position() - owner.real_position()).euclidean_norm() < 
-								(a_min_pos - owner.real_position()).euclidean_norm() ? 
+						a_min = (it->second.position() - owner.real_position()).euclidean_norm() <
+								(a_min_pos - owner.real_position()).euclidean_norm() ?
 								it->first : a_min;
 					}
 				}
@@ -762,15 +762,15 @@ namespace routing
 			return a_min;
 		}
 		// ---------------------------------------------------------------------
-		const shawn::Node* 
+		const shawn::Node*
 			GeoRouting::
-			right_hand_forward( const shawn::Node& owner, const shawn::Node& in_node ) 
+			right_hand_forward( const shawn::Node& owner, const shawn::Node& in_node )
 			throw()
 		{
 			const Node* a_min = &in_node;
 			double b_in = 0.0;
 			const GeoRoutingNodeInfo& rni = node_info(owner);
-			const GeoRoutingNeighborhoodInfo* neighborhood_info = 
+			const GeoRoutingNeighborhoodInfo* neighborhood_info =
 				rni.geo_routing_neighborhood().neighborhood_info(in_node);
 			if( neighborhood_info )
 			{
@@ -805,17 +805,17 @@ namespace routing
 				}
 				else if( delta_b == delta_min )
 				{
-					a_min = (it->second.position() - owner.real_position()).euclidean_norm() < 
-							(a_min_pos - owner.real_position()).euclidean_norm() ? 
+					a_min = (it->second.position() - owner.real_position()).euclidean_norm() <
+							(a_min_pos - owner.real_position()).euclidean_norm() ?
 							it->first : a_min;
 				}
 			}
 			return a_min;
 		}
 		// ---------------------------------------------------------------------
-		bool 
+		bool
 			GeoRouting::
-			greedy_forward_and_send( shawn::Node& owner, const GeoRoutingGreedyMessage& gm, bool initial_send ) 
+			greedy_forward_and_send( shawn::Node& owner, const GeoRoutingGreedyMessage& gm, bool initial_send )
 			throw()
 		{
 			if( route_always_in_perimeter_mode_ )
@@ -857,9 +857,9 @@ namespace routing
 			return false;
 		}
 		// ---------------------------------------------------------------------
-		void 
+		void
 			GeoRouting::
-			update_comm_graph_gg( const shawn::Node& owner ) 
+			update_comm_graph_gg( const shawn::Node& owner )
 			throw()
 		{
 			const GeoRoutingNodeInfo& rni = node_info(owner);
@@ -884,7 +884,7 @@ namespace routing
 					else
 					{
 						Vec m = midpoint( owner.real_position(), v_it->second.position() );
-						if( (m - w_it->second.position()).euclidean_norm() < 
+						if( (m - w_it->second.position()).euclidean_norm() <
 							(owner.real_position() - m).euclidean_norm() )
 						{
 							blacklist_neighbor(owner,*v_it->first);
@@ -897,16 +897,16 @@ namespace routing
 		// ---------------------------------------------------------------------
 		bool
 			GeoRouting::
-			intersect( const shawn::Vec& neighbor_position, 
-					   const shawn::Vec& self_position, 
-					   const shawn::Vec& location_entering_perimeter_mode, 
+			intersect( const shawn::Vec& neighbor_position,
+					   const shawn::Vec& self_position,
+					   const shawn::Vec& location_entering_perimeter_mode,
 					   const shawn::Vec& destination_position,
-					   shawn::Vec& intersection_position ) 
+					   shawn::Vec& intersection_position )
 			throw()
 		{
 			volatile double m_0 = ( self_position.y() - neighbor_position.y() ) /
 								  ( self_position.x() - neighbor_position.x() );
-			volatile double m_1 = ( destination_position.y() - location_entering_perimeter_mode.y() ) / 
+			volatile double m_1 = ( destination_position.y() - location_entering_perimeter_mode.y() ) /
 								  ( destination_position.x() - location_entering_perimeter_mode.x() );
 			volatile double b_0 = neighbor_position.y() - m_0 * neighbor_position.x();
 			volatile double b_1 = location_entering_perimeter_mode.y() - m_1 * location_entering_perimeter_mode.x();
@@ -916,7 +916,7 @@ namespace routing
 				volatile double x_intercept = ( b_0 - b_1 )/( m_1 - m_0 );
 				volatile double y_intercept = m_1 * x_intercept + b_1;
 				// Intercept in both line segments
-				if( x_intercept < max(neighbor_position.x(),self_position.x()) && 
+				if( x_intercept < max(neighbor_position.x(),self_position.x()) &&
 					x_intercept > min(neighbor_position.x(),self_position.x()) &&
 					y_intercept < max(neighbor_position.y(),self_position.y()) &&
 					y_intercept > min(neighbor_position.y(),self_position.y()) &&
@@ -932,9 +932,9 @@ namespace routing
 			return false;
 		}
 		// ---------------------------------------------------------------------
-		double 
+		double
 			GeoRouting::
-			norm(double d) 
+			norm(double d)
 			throw()
 		{
 			while( d < 0 )
@@ -944,30 +944,30 @@ namespace routing
 			return d;
 		}
 		// ---------------------------------------------------------------------
-		const shawn::Vec 
+		const shawn::Vec
 			GeoRouting::
-			midpoint(const shawn::Vec& u, const shawn::Vec& v) 
+			midpoint(const shawn::Vec& u, const shawn::Vec& v)
 			throw()
 		{
 			Vec d = u - v;
 			return (d * 0.5) + v;
 		}
 		// ---------------------------------------------------------------------
-		bool  
+		bool
 			GeoRouting::
-			receive_message_for_me( shawn::Node& owner, const GeoRoutingGreedyMessage& gm ) 
+			receive_message_for_me( shawn::Node& owner, const GeoRoutingGreedyMessage& gm )
 			throw()
 		{
 			// IF designated receiver set ...
-			if( gm.destination_address().designated_receiver() != NULL && 
+			if( gm.destination_address().designated_receiver() != NULL &&
 				gm.destination_address().designated_receiver() == &owner )
-			{	
+			{
 				INFORM_ROUTING_OBSERVERS( receive_geo_routing_message_for_me( *this, owner, gm ) );
 				owner.receive( gm.application_message() );
 				return true;
 			}
 			// ... ELSE addressing only by position
-			double own_distance_to_center = 
+			double own_distance_to_center =
 				(owner.real_position() - gm.destination_address().destination_position()).euclidean_norm();
 			// Am I inside the circle?
 			if( own_distance_to_center <= gm.destination_address().radius() )
@@ -977,9 +977,9 @@ namespace routing
 				double min_distance_to_center = DBL_MAX;
 				for( GeoRoutingNeighborhoodConstIterator it = grn.begin_neighborhood(); it != grn.end_neighborhood(); ++it)
 				{
-					double neighbor_distance_to_center = 
+					double neighbor_distance_to_center =
 						(it->second.position() - gm.destination_address().destination_position()).euclidean_norm();
-					min_distance_to_center = neighbor_distance_to_center < min_distance_to_center ? 
+					min_distance_to_center = neighbor_distance_to_center < min_distance_to_center ?
 											 neighbor_distance_to_center : min_distance_to_center;
 				}
 				if( own_distance_to_center <= min_distance_to_center )
@@ -993,11 +993,11 @@ namespace routing
 			return false;
 		}
 		// ---------------------------------------------------------------------
-		void 
+		void
 			GeoRouting::
-			send_routing_message( shawn::Node& owner, const shawn::MessageHandle& mh ) 
+			send_routing_message( shawn::Node& owner, const shawn::MessageHandle& mh )
 			throw()
-		{	
+		{
 			GeoRoutingNodeInfo& rni = node_info_w(owner);
 			double now = owner.current_time();
 			EventScheduler& es = owner.world_w().scheduler_w();
@@ -1012,9 +1012,9 @@ namespace routing
 			owner.send( mh );
 		}
 		// ----------------------------------------------------------------------
-		bool 
+		bool
 			GeoRouting::
-			geo_routing_neighborhood_update( const shawn::Node& owner ) 
+			geo_routing_neighborhood_update( const shawn::Node& owner )
 			throw()
 		{
 			double now = owner.current_time();
@@ -1036,11 +1036,11 @@ namespace routing
 			return neighborhood_changed;
 		}
 		// ----------------------------------------------------------------------
-		bool 
+		bool
 			GeoRouting::
-			geo_routing_neighborhood_update( const shawn::Node& owner, 
-											 const shawn::Node& neighbor, 
-											 const GeoRoutingNeighborhoodInfo& info ) 
+			geo_routing_neighborhood_update( const shawn::Node& owner,
+											 const shawn::Node& neighbor,
+											 const GeoRoutingNeighborhoodInfo& info )
 			throw()
 		{
 			GeoRoutingNodeInfo& rni = node_info_w(owner);
@@ -1067,9 +1067,9 @@ namespace routing
 			return neighborhood_changed || geo_routing_neighborhood_update(owner);
 		}
 		// ----------------------------------------------------------------------
-		bool 
+		bool
 			GeoRouting::
-			delete_beacon_timer( shawn::Node& owner ) 
+			delete_beacon_timer( shawn::Node& owner )
 			throw()
 		{
 			GeoRoutingNodeInfo& rni = node_info_w(owner);
@@ -1084,13 +1084,13 @@ namespace routing
 			return false;
 		}
 		// ----------------------------------------------------------------------
-		bool 
+		bool
 			GeoRouting::
-			delete_all_beacon_timer( shawn::SimulationController& sc ) 
+			delete_all_beacon_timer( shawn::SimulationController& sc )
 			throw()
 		{
 			bool ret = true;
-			for( World::node_iterator it = sc.world_w().begin_nodes_w(); 
+			for( World::node_iterator it = sc.world_w().begin_nodes_w();
 				 it != sc.world_w().end_nodes_w(); ++it )
 			{
 				ret &= delete_beacon_timer(*it);
@@ -1098,9 +1098,9 @@ namespace routing
 			return ret;
 		}
 		// ----------------------------------------------------------------------
-		bool 
+		bool
 			GeoRouting::
-			start_beacon_timer( shawn::Node& owner ) 
+			start_beacon_timer( shawn::Node& owner )
 			throw()
 		{
 			double now = owner.current_time();
@@ -1122,13 +1122,13 @@ namespace routing
 			return true;
 		}
 		// ----------------------------------------------------------------------
-		bool 
+		bool
 			GeoRouting::
-			start_all_beacon_timer( shawn::SimulationController& sc ) 
+			start_all_beacon_timer( shawn::SimulationController& sc )
 			throw()
 		{
 			bool ret = true;
-			for( World::node_iterator it = sc.world_w().begin_nodes_w(); 
+			for( World::node_iterator it = sc.world_w().begin_nodes_w();
 				 it != sc.world_w().end_nodes_w(); ++it )
 			{
 				ret &= start_beacon_timer(*it);
@@ -1136,9 +1136,9 @@ namespace routing
 			return ret;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRouting::
-			blacklist_neighbor( const shawn::Node& owner, const shawn::Node& neighbor, bool blacklisted ) 
+			blacklist_neighbor( const shawn::Node& owner, const shawn::Node& neighbor, bool blacklisted )
 			throw()
 		{
 			GeoRoutingNodeInfo& rni = node_info_w(owner);

@@ -38,8 +38,8 @@ namespace reading
       throw( std::runtime_error )
    {
 
-      shawn::Node *node = NULL;
-      shawn::Processor *proc = NULL;
+//      shawn::Node *node = NULL;
+//      shawn::Processor *proc = NULL;
 
 //      for( shawn::World::node_iterator
 //               it = sc.world_w().begin_nodes_w();

@@ -39,8 +39,18 @@ namespace autocast
    int autocast::AutoCastProcessor::uid_counter_ = 0;
 
    AutoCastProcessor::
-	   AutoCastProcessor() : neighborhood_(0.0),
+	   AutoCastProcessor() : use_stale_hashes_(false),
+							 max_startup_time_(AUTOCAST_DEFAULT_STARTUP_TIME),
+							 min_update_time_(AUTOCAST_DEFAULT_MIN_UPDATE_TIME),
+							 max_update_time_(AUTOCAST_DEFAULT_MAX_UPDATE_TIME),
+							 dataUnit_max_live_time_(AUTOCAST_DEFAULT_DATAUNIT_LIVETIME),
+							 max_update_packet_size_(AUTOCAST_MAX_PACKET_LENGTH),
+							 max_update_data_units_(AUTOCAST_DEFAULT_MAX_DATAUNITS_PER_PACKET),
 							 update_time_(1),
+							 update_timer_(NULL),
+							 answer_timer_(NULL),
+							 request_timer_(NULL),
+							 /*NEW*/flood_timer_(NULL),
 							 packets_sent_total_(0),
 							 bytes_sent_total_(0),
 							 dataUnits_sent_total_(0),
@@ -53,19 +63,9 @@ namespace autocast
                         msgCountAnswer_only_(0),
                         msgCountFlood_only_(0),
                         msgCountRequest_only_(0),
-							 logging_(true),
-							 use_stale_hashes_(false),
-							 max_update_packet_size_(AUTOCAST_MAX_PACKET_LENGTH),
-							 max_update_data_units_(AUTOCAST_DEFAULT_MAX_DATAUNITS_PER_PACKET),
-							 max_startup_time_(AUTOCAST_DEFAULT_STARTUP_TIME),
-							 min_update_time_(AUTOCAST_DEFAULT_MIN_UPDATE_TIME),
-							 max_update_time_(AUTOCAST_DEFAULT_MAX_UPDATE_TIME),
-							 dataUnit_max_live_time_(AUTOCAST_DEFAULT_DATAUNIT_LIVETIME),
-							 update_timer_(NULL),
-							 answer_timer_(NULL),
-							 request_timer_(NULL),
-							 /*NEW*/flood_timer_(NULL),
-							 activeTime_(0.0)/*,
+							 activeTime_(0.0),
+                             neighborhood_(0.0),
+							 logging_(true)
 							 /*FOR DEBUG PURPOSES*/
 							 /*neighbors_count_(0),
 							 real_neighbors_count_(0),
@@ -88,7 +88,7 @@ namespace autocast
 		neighborhood_.set_owner(owner());
 		fetch_parameters();
 		double now = owner().world().scheduler().current_time();
-		
+
 		double lb2 = owner().world().simulation_controller().environment().optional_double_param("_lb2__boot",0.9);
 		double ub1 = owner().world().simulation_controller().environment().optional_double_param("_ub1__boot",1.1);
 		update_timer_ = owner_w().world_w().scheduler_w().new_event(*this,now+fabs(max_startup_time_) * uniform_random(lb2,ub1),NULL);
@@ -151,11 +151,11 @@ namespace autocast
 	// ----------------------------------------------------------------------
    bool
       AutoCastProcessor::
-      process_message( const ConstMessageHandle& mh ) 
+      process_message( const ConstMessageHandle& mh )
       throw()
    {
 	   if (state() != Processor::Active) return false;
-   	  
+
 	   const autocast::AutoCastMessage * acm = dynamic_cast<const autocast::AutoCastMessage*>(mh.get());
 	   if (!acm){
 		   std::cerr << "Cast to AutoCastMessage failed!" << std::endl;
@@ -227,7 +227,7 @@ namespace autocast
 					if (ldu){
 						/// DataUnit is now known locally
 						unknown_DataUnit_ids_.erase(ldu->dataUnit()->id());
-                  if ( unknown_DataUnit_ids_.size() == 0 && request_timer_ ) 
+                  if ( unknown_DataUnit_ids_.size() == 0 && request_timer_ )
                   {
                      owner_w().world_w().scheduler_w().delete_event(request_timer_);
                      request_timer_ = NULL;
@@ -258,7 +258,7 @@ namespace autocast
 			   }
 		   }
 	   }
-      
+
       bool need_to_request = false;
       if (answer_decision)
       {
@@ -273,7 +273,7 @@ namespace autocast
 	      }
       }
 
-      // Schedule events 
+      // Schedule events
       double delta = owner().world().simulation_controller().environment().optional_double_param("delay_delta",0.03);
       double delta_variance = owner().world().simulation_controller().environment().optional_double_param("delay_delta_variance",0.0025);
       shawn::EventScheduler& es = owner_w().world_w().scheduler_w();
@@ -319,7 +319,7 @@ namespace autocast
 				   this->set_state(Processor::Sleeping);
 			   } else {
 				   this->set_state(Processor::Active);
-	            if ( update_timer_ ) 
+	            if ( update_timer_ )
 	            {
 		            owner_w().world_w().scheduler_w().delete_event(update_timer_);
 		            update_timer_ = NULL;
@@ -348,9 +348,9 @@ namespace autocast
                received_DataUnits_total_,
                received_DataUnit_ids_total_.size(),
                activeTime_,
-               msgCountBeacon_, 
-               msgCountAnswer_, msgCountAnswer_only_, 
-               msgCountFlood_, msgCountFlood_only_, 
+               msgCountBeacon_,
+               msgCountAnswer_, msgCountAnswer_only_,
+               msgCountFlood_, msgCountFlood_only_,
                msgCountRequest_, msgCountRequest_only_
                );
 			}
@@ -360,11 +360,11 @@ namespace autocast
 	   }
    }
    // ----------------------------------------------------------------------
-   bool 
+   bool
 	   AutoCastProcessor::
 	   send_to(const ConstDataUnitHandle& duh, shawn::Processor* creator)
 	   throw()
-   { 
+   {
    	  if (state() != Processor::Active) return false;
 
 	   LocalDataUnit* ldu = NULL;
@@ -385,10 +385,10 @@ namespace autocast
    // ----------------------------------------------------------------------
    void
 		AutoCastProcessor::
-		timeout( shawn::EventScheduler& es, shawn::EventScheduler::EventHandle eh, 
-					double time, shawn::EventScheduler::EventTagHandle& eth) 
+		timeout( shawn::EventScheduler& es, shawn::EventScheduler::EventHandle eh,
+					double time, shawn::EventScheduler::EventTagHandle& eth)
 		throw()
-   {	
+   {
 	   if(eh == update_timer_){
          msgCountBeacon_++;
 		   // Set the pointer NULL
@@ -420,9 +420,9 @@ namespace autocast
 	   update();
    }
    // ----------------------------------------------------------------------
-   void 
+   void
 	   AutoCastProcessor::
-	   update() 
+	   update()
 	   throw()
    {
 
@@ -436,7 +436,7 @@ namespace autocast
 		   flood_timer_ = NULL;
 	   }
 
-	   if ( update_timer_ ) 
+	   if ( update_timer_ )
 	   {
 		   owner_w().world_w().scheduler_w().delete_event(update_timer_);
 		   update_timer_ = NULL;
@@ -463,7 +463,7 @@ namespace autocast
 	   for (DataUnitsMap::iterator it = complete_DataUnits_.begin(); it != complete_DataUnits_.end(); it++){
 		   it->second->unknown_count(0);
 	   }
-	   
+
       if (state() == Processor::Active) update_timer_ = owner_w().world_w().scheduler_w().new_event(*this,now + time_interval,NULL);
    }
    // ----------------------------------------------------------------------
@@ -481,7 +481,7 @@ namespace autocast
    }
 
    // ----------------------------------------------------------------------
-	void 
+	void
 		AutoCastProcessor::
 		local_update()
 	throw()
@@ -490,7 +490,7 @@ namespace autocast
 
 		/// Throw away old DataUnits (Old behavior)
 		/*for (DataUnitsMap::iterator it = complete_DataUnits_.begin(); it != complete_DataUnits_.end(); it++){
-			if ( (it->second->dataUnit()->max_life_time() >= 0) && 
+			if ( (it->second->dataUnit()->max_life_time() >= 0) &&
 				(now >= it->second->dataUnit()->time() + it->second->dataUnit()->max_life_time()) ){
 					delete it->second;
 					complete_DataUnits_.erase(it);
@@ -526,9 +526,9 @@ namespace autocast
 	}
 	// ----------------------------------------------------------------------
 	/// Retruns NULL if DataUnit is out of region
-	autocast::AutoCastProcessor::LocalDataUnit* 
+	autocast::AutoCastProcessor::LocalDataUnit*
 		AutoCastProcessor::
-		handle_DataUnit(const ConstDataUnitHandle& du, bool& is_new, bool logging) 
+		handle_DataUnit(const ConstDataUnitHandle& du, bool& is_new, bool logging)
 		throw()
 	{
 		double now = owner().world().scheduler().current_time();
@@ -582,9 +582,9 @@ namespace autocast
 		return ldu;
 	}
 	// ----------------------------------------------------------------------
-	void 
+	void
 		AutoCastProcessor::
-		send_update_packet(const double update_time) 
+		send_update_packet(const double update_time)
 		throw()
 	{
 		assert(stale_DataUnits_.size() == 0 || use_stale_hashes_ == false);
@@ -597,7 +597,7 @@ namespace autocast
 		int dataUnits_bytes = 0;
 		// NEW: The stale DataUnits
 		int id_space = 4 * complete_DataUnits_.size() + 4 * stale_DataUnits_.size();
-		while( ldu && ( acm->complete_DataUnits().size() <= max_update_data_units_ ) && 
+		while( ldu && ( acm->complete_DataUnits().size() <= max_update_data_units_ ) &&
 			 ( ( acm->size() + id_space + ldu->dataUnit()->size() ) <= max_update_packet_size_ ) ){
 			ldu->refresh();
 			ldu->last_send_time(now);
@@ -632,7 +632,7 @@ namespace autocast
 		/// Assertion
 		if (acm->size() > max_update_packet_size_){
 			assert(max_update_packet_size_ == AUTOCAST_MAX_PACKET_LENGTH);
-			std::cerr << "Time: " << now << "  Node: " << owner().id() 
+			std::cerr << "Time: " << now << "  Node: " << owner().id()
             << " wants to send " << acm->size()
             << " byte, but only " << max_update_packet_size_ << " are allowed!";
 			exit(1);
@@ -647,9 +647,9 @@ namespace autocast
 		owner_w().send(acm);
 	}
 	// ----------------------------------------------------------------------
-	double 
+	double
 		AutoCastProcessor::
-		get_update_time() 
+		get_update_time()
 		throw()
 	{
 		if(min_update_time_ == max_update_time_) return max_update_time_;
@@ -666,7 +666,7 @@ namespace autocast
 
 		//update_time_ = (1 - alpha) * update_time_ + alpha * (neighborhood_size + 1)*(neighborhood_size + 1)/((double)standard_neighbors + 1) * (range * delta_r)/(owner().movement().velocity().euclidean_norm() + add_to_velocity);
 		update_time_ = (1-alpha) * update_time_ + alpha * (range*delta_r)/(v + add_to_velocity);
- 
+
 		if (update_time_ < min_update_time_) update_time_ = min_update_time_;
 		if (update_time_ > max_update_time_) update_time_ = max_update_time_;
 		return update_time_;
@@ -684,9 +684,9 @@ namespace autocast
 		max_update_data_units_ = owner().world().simulation_controller().environment().optional_double_param("max_update_data_units",AUTOCAST_DEFAULT_MAX_DATAUNITS_PER_PACKET);
 	}
 	// ----------------------------------------------------------------------
-	autocast::AutoCastProcessor::LocalDataUnit * 
+	autocast::AutoCastProcessor::LocalDataUnit *
 		AutoCastProcessor::
-		most_urgent_DataUnit() 
+		most_urgent_DataUnit()
 		throw()
 	{
 		double now = owner().world().scheduler().current_time();
@@ -705,10 +705,10 @@ namespace autocast
 		return tmp_objects.at(idx);
 	}
 	// ----------------------------------------------------------------------
-	bool 
+	bool
 		AutoCastProcessor::
-		booted() 
-		const 
+		booted()
+		const
 		throw()
 	{
 		return booted_;
@@ -738,7 +738,7 @@ namespace autocast
 	// ----------------------------------------------------------------------
 	void
 		AutoCastProcessor::
-		set_state(const Processor::ProcessorState& state) 
+		set_state(const Processor::ProcessorState& state)
 		throw()
 	{
 		if (state == Inactive || state == Sleeping){

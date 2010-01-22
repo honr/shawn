@@ -26,14 +26,14 @@ namespace shawn
 		void XMLCALL saxreader_start(void *userdata, const char *name, const char **atts)
 		{
 			SAXReader* ptr = (SAXReader*) userdata;
-			
-			AttList a;   
+
+			AttList a;
 			for(; *atts; atts += 2)
 				a.insert( pair<string, string>( atts[0], atts[1] ) );
-			
+
 			ptr->handle_start_element(name, a);
 		}
-	
+
 		// ----------------------------------------------------------------------
 	    /// Expat C-style callback funcion
 		void XMLCALL saxreader_end(void *userdata, const char *name)
@@ -48,63 +48,63 @@ namespace shawn
 			string content(text, length);
 			ptr->handle_text_element(content);
 		}
-	
+
 	    // ----------------------------------------------------------------------
-	    std::string 
+	    std::string
 	        attribute(string name, AttList& atts, std::string default_val /* = "" */)
 	    {
 	    	for(AttList::iterator it = atts.begin(), end = atts.end(); it!=end; ++it)
 	    		if( it->first == name )
 	    			return it->second;
-	
+
 	        return default_val;
 	    }
-	
-	
+
+
 		// ----------------------------------------------------------------------
-        /// 
+        ///
         /**
           */
         SAXReader::
-            SAXReader() 
-            : document_uri_(""), 
-              is_(NULL), 
-              stop_flag_(false)
+            SAXReader()
+            : stop_flag_(false),
+              document_uri_(""),
+              is_(NULL)
         {}
 
 		// ----------------------------------------------------------------------
         SAXReader::
             ~SAXReader()
         {
-            reset();        
+            reset();
         }
 
 		// ----------------------------------------------------------------------
-        void 
+        void
         	SAXReader::
-            set_document_uri( const std::string& s) 
-            throw() 
+            set_document_uri( const std::string& s)
+            throw()
         {
             document_uri_ = s;
         }
 
 		// ----------------------------------------------------------------------
-        void 
+        void
         	SAXReader::
-           interrupt() 
+           interrupt()
            throw()
         {
             stop_flag_ = true;
         }
 
 		// ----------------------------------------------------------------------
-        void 
+        void
         	SAXReader::
-            reset() 
-            throw() 
+            reset()
+            throw()
         {
             //Destroy the parser if existing
-            if( is_ ) 
+            if( is_ )
             {
             	delete is_;
                 is_ = NULL;
@@ -114,17 +114,17 @@ namespace shawn
         }
 
 		// ----------------------------------------------------------------------
-        void 
+        void
         	SAXReader::
-            open_file() 
-            throw(std::runtime_error) 
+            open_file()
+            throw(std::runtime_error)
         {
         	assert( document_uri_.c_str() != NULL );
 
 			is_ = new std::ifstream();
 			is_->open(document_uri_.c_str(), std::ios::in);
-			
-			if( ! (*is_) ) 
+
+			if( ! (*is_) )
 			{
 				std::cerr << "SAXReader: Unable to open file ("<< document_uri_.c_str() <<
 					") for reading: " << strerror(errno) << std::endl;
@@ -133,14 +133,14 @@ namespace shawn
         }
 
 		// ----------------------------------------------------------------------
-        void 
+        void
         	SAXReader::
-            parse() 
-            throw(std::runtime_error) 
+            parse()
+            throw(std::runtime_error)
         {
             char buf[16384];
             int len;
-            
+
             //Open the file
             open_file();
 
@@ -149,13 +149,13 @@ namespace shawn
 			XML_SetUserData(parser, (void*)this);
 			XML_SetElementHandler(parser, saxreader_start, saxreader_end);
 			XML_SetCharacterDataHandler(parser, saxreader_text);
-			
+
             //Read the file until the end of file
-            while( !is_->eof() && !stop_flag_ ) 
+            while( !is_->eof() && !stop_flag_ )
             {
             	is_->read( buf, sizeof(buf) );
 				len = is_->gcount();
-				
+
 				if (XML_Parse(parser, buf, len, is_->eof()) == XML_STATUS_ERROR)
 				{
 					std::cerr << XML_ErrorString(XML_GetErrorCode(parser)) << "at line " << XML_GetCurrentLineNumber(parser) << std::endl;
@@ -169,8 +169,8 @@ namespace shawn
             reset();
 			XML_ParserFree(parser);
         }
-        
-        
+
+
         void SAXReader::parse_Object(XMLObj * flegsens_xml_obj) throw(std::runtime_error) {
             char buf[16384];
             int len;
@@ -178,11 +178,11 @@ namespace shawn
 			parser = XML_ParserCreate(NULL);
 			XML_SetUserData(parser, (void*)this);
 			XML_SetElementHandler(parser, saxreader_start, saxreader_end);
-		
+
             while( !flegsens_xml_obj->eof() && !stop_flag_ ) {
             	flegsens_xml_obj->read( buf, sizeof(buf) );
 				len = flegsens_xml_obj->gcount();
-				
+
 				if (XML_Parse(parser, buf, len, flegsens_xml_obj->eof()) == XML_STATUS_ERROR)
 				{
 					std::cerr << XML_ErrorString(XML_GetErrorCode(parser)) << "at line " << XML_GetCurrentLineNumber(parser) << std::endl;
@@ -197,28 +197,28 @@ namespace shawn
         }
 
 		// ----------------------------------------------------------------------
-		void 
+		void
 			SAXReader::
-			parsing_done() 
+			parsing_done()
 			throw()
 		{}
 
 		// ----------------------------------------------------------------------
-        void 
+        void
         	SAXReader::
-        	handle_start_element(std::string name, AttList& atts) 
+        	handle_start_element(std::string name, AttList& atts)
             throw(std::runtime_error)
         {}
 
 		// ----------------------------------------------------------------------
-        void 
+        void
         	SAXReader::
         	handle_end_element(std::string name)
         	throw(std::runtime_error)
         {}
 
 		// ----------------------------------------------------------------------
-        void 
+        void
         	SAXReader::
         	handle_text_element(std::string content)
         	throw(std::runtime_error)
@@ -229,20 +229,20 @@ namespace shawn
         // *********************************************************************
 
 		// ----------------------------------------------------------------------
-        void 
+        void
         	SAXSkipReader::
-            reset() 
-            throw() 
+            reset()
+            throw()
         {
             SAXReader::reset();
             clear_skip_target();
         }
 
 		// ----------------------------------------------------------------------
-        /// 
-        void 
+        ///
+        void
         	SAXSkipReader::
-        	handle_start_element(std::string name, AttList& atts) 
+        	handle_start_element(std::string name, AttList& atts)
             throw(std::runtime_error)
         {
             SAXReader::handle_start_element(name, atts);
@@ -277,9 +277,9 @@ namespace shawn
         }
 
 	    // ----------------------------------------------------------------------
-        void 
+        void
         	SAXSimpleSkipReader::
-            set_skip_target(string name, bool opening_tag /* = true */) 
+            set_skip_target(string name, bool opening_tag /* = true */)
         {
             assert(name != "");
             clear_skip_target();
@@ -288,9 +288,9 @@ namespace shawn
         }
 
 		// ----------------------------------------------------------------------
-        void 
+        void
         	SAXSimpleSkipReader::
-            clear_skip_target() 
+            clear_skip_target()
         {
             skip_to_tag_ = "";
             skip_to_tag_atts_.clear();
@@ -303,25 +303,25 @@ namespace shawn
         /**
           *
           */
-        bool 
+        bool
         	SAXSimpleSkipReader::
-            skipping() 
+            skipping()
         {
             return skip_to_tag_ != "";
         }
 
 		// ----------------------------------------------------------------------
-        void 
+        void
         	SAXSimpleSkipReader::
-            set_skip_target_add_attr(string name, string value) 
+            set_skip_target_add_attr(string name, string value)
         {
             skip_to_tag_atts_[name] = value;
         }
 
 		// ----------------------------------------------------------------------
-        bool 
+        bool
         	SAXSimpleSkipReader::
-            check_skip_target_reached(string name, AttList& atts, bool opening_tag) 
+            check_skip_target_reached(string name, AttList& atts, bool opening_tag)
         {
             string tmp;
 
@@ -334,12 +334,12 @@ namespace shawn
                 return false;
 
             //Check all attributes if we have reached an opening tag
-            if( opening_tag ) 
+            if( opening_tag )
             {
-                for( str_str_map::iterator it = skip_to_tag_atts_.begin(); it != skip_to_tag_atts_.end(); it++) 
+                for( str_str_map::iterator it = skip_to_tag_atts_.begin(); it != skip_to_tag_atts_.end(); it++)
                 {
                     tmp = attribute( (*it).first, atts );
-                    
+
                     //Attribute not found -> No match
                     if(tmp == "")
                         return false;

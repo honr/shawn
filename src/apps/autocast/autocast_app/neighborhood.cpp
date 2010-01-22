@@ -20,16 +20,16 @@ namespace autocast {
 
 	using namespace std;
 
-	Neighborhood::Neighborhood(double time_out) : time_out_(time_out),owner_(NULL)
+	Neighborhood::Neighborhood(double time_out) : owner_(NULL),time_out_(time_out)
 	{
 		//timeOut_ = timeOut;
 	}
 
 	// ----------------------------------------------------------------------
 
-	void 
+	void
 		Neighborhood::
-		set_owner(const shawn::Node& owner) 
+		set_owner(const shawn::Node& owner)
 		throw()
 	{
 		owner_ = &owner;
@@ -54,7 +54,7 @@ namespace autocast {
 		{
 			if (now - duration < it->second.last_heard_time) ++nh;
 		}
-		return nh;	
+		return nh;
 	}
 
 	// ----------------------------------------------------------------------
@@ -68,7 +68,7 @@ namespace autocast {
 		{
 			if (now - duration < it->second.first_heard_time) ++nh;
 		}
-		return nh;	
+		return nh;
 	}
 	// ----------------------------------------------------------------------
 	void Neighborhood::append_to_neighborhood(int node_id, double next_update_time)

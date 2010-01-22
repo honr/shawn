@@ -6,7 +6,7 @@ namespace shawn{
 	/**
 	*@brief The structure for information of a destination node
 	*
-	*The structure includes the pointer of shawn::Node and a tag of this node 
+	*The structure includes the pointer of shawn::Node and a tag of this node
 	*@see shawn::Node
 	*//*
 	struct msg_destination
@@ -24,7 +24,7 @@ namespace shawn{
 	/**
 	*@brief Message structure used in csma transmission model
 	*
-	*The structure includes the pointer of TransmissionModel::MessageInfo, its destinations, 
+	*The structure includes the pointer of TransmissionModel::MessageInfo, its destinations,
 	*the delivery time and the remaining backoff time.
 	* The csma_msg inherits EventScheduler::EventTag.
 	* This is necessary for "adding" the messages to the EventScheduler
@@ -43,18 +43,18 @@ namespace shawn{
 			double duration_;
 			bool sending_;
 			int sending_attempts_;
-			
+
 			/**
 			*@brief construction of structure csma_msg
 			*
-			*The deliver_time of the message is initialized as the sending time, and backoff is given 
+			*The deliver_time of the message is initialized as the sending time, and backoff is given
 			*a negative value to show that the message has not got any backoff time yet.
 			*/
 			csma_msg(){}
 			csma_msg( TransmissionModel::MessageInfo* mi, double duration) :
-				pmi_(mi), 
-				duration_(duration), 
-				deliver_time_(mi->time_), 
+				pmi_(mi),
+				deliver_time_(mi->time_),
+				duration_(duration),
 				sending_(false),
 				sending_attempts_(0)
 			{
@@ -100,7 +100,7 @@ namespace shawn{
 			* @param lowerBound Random value's lowerBound
 			* @param upperBound Random value's upperBound
 			*/
-			
+
 			double random(double lowerBound, double upperBound) throw(){
 				return (lowerBound + shawn::uniform_random_0i_1i()*(upperBound - lowerBound));
 				}
@@ -119,6 +119,6 @@ namespace shawn{
 				return sending_;
 				}
 				*/
-			
+
 		};
 	}

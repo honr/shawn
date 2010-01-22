@@ -51,11 +51,11 @@ namespace shawn
 		slotted_backoff_(slotted_backoff),
 		backOff_(backoff),
 		bandwidth_(bandwidth),
-		nodes_(NULL),
 		max_sending_attempts_(max_sending_attempts),
 		backoff_factor_base_(backoff_factor_base),
 		min_backoff_exponent_(min_backoff_exponent),
-		max_backoff_exponent_(max_backoff_exponent)
+		max_backoff_exponent_(max_backoff_exponent),
+		nodes_(NULL)
 	{}
 
 	// ----------------------------------------------------------------------
@@ -187,7 +187,7 @@ namespace shawn
 
 					// Soften assert
 					if (csma_state.busy_until_ > ((csma_state.ifs_end_)+(0.001)))
-						cout << "csma_transmission_model::timeout (MAC access): busy_until_>ifs_end_! (" << csma_state.busy_until_ << " > " << csma_state.ifs_end_ << ") This must never happen" << endl;	
+						cout << "csma_transmission_model::timeout (MAC access): busy_until_>ifs_end_! (" << csma_state.busy_until_ << " > " << csma_state.ifs_end_ << ") This must never happen" << endl;
 					assert((csma_state.busy_until_ <= ((csma_state.ifs_end_)+(0.001))));
 					while( (!msg->pmi_->msg_->is_ack()) && (csma_state.ifs_end_ > msg->deliver_time_) && (msg->sending_attempts_< max_sending_attempts_))
 					{

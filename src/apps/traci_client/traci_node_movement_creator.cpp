@@ -49,8 +49,8 @@ namespace traci{
 	remotehost_("localhost"),
 	remoteport_(8888),
 	time_interval_(1.0),
-    feed_time_(0.0),
 	target_time_(0.0),
+    feed_time_(0.0),
 	mi_(NULL)
 	{
 		cout << "TraCIClient ctor" << endl;
@@ -902,8 +902,8 @@ namespace traci{
 					cerr << "Error in method TraCIClient::command_roadmap_position: " << e.what() << endl;
 					abort();
 				}
-				//check_domain(0x01,ti,true,"Error in method TraCIClient::command_roadmap_position: \
-				//			 Command not applicable for elements in domain " + number_to_string(ti.domain()) + "!");
+				//check_domain(0x01,ti,true,"Error in method TraCIClient::command_roadmap_position: "
+				//			 "Command not applicable for elements in domain " + number_to_string(ti.domain()) + "!");
 				if(ti.id() == id){
 					//string laneIdString = "";
 					roadId_ = roadId;

@@ -57,13 +57,13 @@ namespace routing
 			~TreeRoutingMessage()
 		{}
 		// ----------------------------------------------------------------------
-		int 
+		int
 			TreeRoutingMessage::
 			size( void )
 			const
 			throw()
 		{
-			return (USE_ROUTING_MESSAGE_OVERHEAD ? RoutingMessage::size() : application_message()->size()) 
+			return (USE_ROUTING_MESSAGE_OVERHEAD ? RoutingMessage::size() : application_message()->size())
 					+ MESSAGE_OVERHEAD;
 		}
 		// ----------------------------------------------------------------------
@@ -76,16 +76,16 @@ namespace routing
 			return next_hop_;
 		}
 		// ----------------------------------------------------------------------
-		int 
+		int
 			TreeRoutingMessage::
-			time_to_live() 
-			const 
+			time_to_live()
+			const
 			throw()
 		{
 			return time_to_live_;
 		}
 		// ----------------------------------------------------------------------
-		std::ostream& 
+		std::ostream&
 			operator<<(std::ostream& os, const TreeRoutingMessage& trm)
 		{
 			return os << "Next hop: " << trm.next_hop_ << "\n"
@@ -97,20 +97,20 @@ namespace routing
 
 		TreeConstructionMessage::
 			TreeConstructionMessage( TreeRouting& ri, const shawn::Node& sink, double sink_creation_time ) :
-		routing_instance_(&ri),
 		sink_(&sink),
 		hop_count_(1),
-		sink_creation_time_(sink_creation_time)
+		sink_creation_time_(sink_creation_time),
+		routing_instance_(&ri)
 		{
 			setSize(MESSAGE_OVERHEAD);
 		}
 		// ----------------------------------------------------------------------
 		TreeConstructionMessage::
 			TreeConstructionMessage( const TreeConstructionMessage& other ) :
-		routing_instance_(other.routing_instance_),
 		sink_(other.sink_),
 		hop_count_(other.hop_count_ + 1),
-		sink_creation_time_(other.sink_creation_time_)
+		sink_creation_time_(other.sink_creation_time_),
+		routing_instance_(other.routing_instance_)
 		{
 			setSize(MESSAGE_OVERHEAD);
 		}
@@ -119,37 +119,37 @@ namespace routing
 			~TreeConstructionMessage()
 		{}
 		// ----------------------------------------------------------------------
-		const shawn::Node* 
+		const shawn::Node*
 			TreeConstructionMessage::
-			sink() 
-			const 
+			sink()
+			const
 			throw()
 		{
 			assert(sink_);
 			return sink_;
 		}
 		// ----------------------------------------------------------------------
-		int 
+		int
 			TreeConstructionMessage::
-			hop_count() 
-			const 
+			hop_count()
+			const
 			throw()
 		{
 			return hop_count_;
 		}
 		// ----------------------------------------------------------------------
-		double 
+		double
 			TreeConstructionMessage::
-			sink_creation_time() 
-			const 
+			sink_creation_time()
+			const
 			throw()
 		{
 			return sink_creation_time_;
 		}
 		// ----------------------------------------------------------------------
-		const TreeRouting* 
+		const TreeRouting*
 			TreeConstructionMessage::
-			routing_instance() 
+			routing_instance()
 			const
 			throw()
 		{
@@ -157,9 +157,9 @@ namespace routing
 			return routing_instance_;
 		}
 		// ----------------------------------------------------------------------
-		TreeRouting* 
+		TreeRouting*
 			TreeConstructionMessage::
-			routing_instance_w() 
+			routing_instance_w()
 			const
 			throw()
 		{
@@ -167,7 +167,7 @@ namespace routing
 			return routing_instance_;
 		}
 		// ----------------------------------------------------------------------
-		std::ostream& 
+		std::ostream&
 			operator<<(std::ostream& os, const TreeConstructionMessage& tcm)
 		{
 			return os << "Sink/Id: " << tcm.sink_ << "/" << tcm.sink_->id() << "\n"

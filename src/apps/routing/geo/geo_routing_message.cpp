@@ -52,27 +52,27 @@ namespace routing
 			~GeoRoutingBeaconMessage()
 		{}
 		// ----------------------------------------------------------------------
-		const shawn::Vec& 
+		const shawn::Vec&
 			GeoRoutingBeaconMessage::
-			source_position() 
-			const 
+			source_position()
+			const
 			throw()
 		{
 			return source_position_;
 		}
 		// ----------------------------------------------------------------------
-		const GeoRouting* 
+		const GeoRouting*
 			GeoRoutingBeaconMessage::
 			routing_instance()
-			const 
+			const
 			throw()
 		{
 			return routing_instance_;
 		}
 		// ----------------------------------------------------------------------
-		GeoRouting* 
+		GeoRouting*
 			GeoRoutingBeaconMessage::
-			routing_instance_w() 
+			routing_instance_w()
 			const
 			throw()
 		{
@@ -90,9 +90,9 @@ namespace routing
 		RoutingMessage(routing_instance,
 					   application_message,
 					   destination_address),
+		time_to_live_(time_to_live > 0 ? time_to_live : 0),
 	    next_hop_(NULL),
-		source_position_(source_position),
-		time_to_live_(time_to_live > 0 ? time_to_live : 0)
+		source_position_(source_position)
 		{}
 		// ----------------------------------------------------------------------
 		GeoRoutingGreedyMessage::
@@ -100,37 +100,37 @@ namespace routing
 									 const shawn::Node& next_hop,
 									 const shawn::Vec& source_position ) :
 		RoutingMessage(other),
+		time_to_live_(other.time_to_live_ - 1),
 		next_hop_(&next_hop),
-		source_position_(source_position),
-		time_to_live_(other.time_to_live_ - 1)
+		source_position_(source_position)
 		{}
 		// ----------------------------------------------------------------------
 		GeoRoutingGreedyMessage::
 			GeoRoutingGreedyMessage( const GeoRoutingGreedyMessage& other,
 									 const shawn::Vec& source_position ) :
 		RoutingMessage(other),
+		time_to_live_(other.time_to_live_ - 1),
 		next_hop_(NULL),
-		source_position_(source_position),
-		time_to_live_(other.time_to_live_ - 1)
+		source_position_(source_position)
 		{}
 		// ----------------------------------------------------------------------
 		GeoRoutingGreedyMessage::
 			~GeoRoutingGreedyMessage()
 		{}
 		// ----------------------------------------------------------------------
-		int 
+		int
 			GeoRoutingGreedyMessage::
 			size( void )
-			const 
+			const
 			throw()
 		{
-			return (USE_ROUTING_MESSAGE_OVERHEAD ? RoutingMessage::size() : 
+			return (USE_ROUTING_MESSAGE_OVERHEAD ? RoutingMessage::size() :
 					application_message()->size()) + MESSAGE_OVERHEAD;
 		}
 		// ----------------------------------------------------------------------
-		int 
+		int
 			GeoRoutingGreedyMessage::
-			time_to_live() 
+			time_to_live()
 			const
 			throw()
 		{
@@ -139,24 +139,24 @@ namespace routing
 		// ----------------------------------------------------------------------
 		const shawn::Node*
 			GeoRoutingGreedyMessage::
-			next_hop() 
-			const 
+			next_hop()
+			const
 			throw()
 		{
 			assert( next_hop_ );
 			return next_hop_;
 		}
 		// ----------------------------------------------------------------------
-		const shawn::Vec& 
+		const shawn::Vec&
 			GeoRoutingGreedyMessage::
-			source_position() 
-			const 
+			source_position()
+			const
 			throw()
 		{
 			return source_position_;
 		}
 		// ----------------------------------------------------------------------
-		std::ostream& 
+		std::ostream&
 			operator<<(std::ostream& os, const GeoRoutingGreedyMessage& gm)
 		{
 			if(gm.has_source() && gm.next_hop())
@@ -177,11 +177,11 @@ namespace routing
 
 		// For perimeter init
 		GeoRoutingPerimeterMessage::
-			GeoRoutingPerimeterMessage( const GeoRoutingGreedyMessage& greedy_message, 
+			GeoRoutingPerimeterMessage( const GeoRoutingGreedyMessage& greedy_message,
 										const shawn::Node& right_hand_receiver,
 										const shawn::Node& source ) :
 		GeoRoutingGreedyMessage(greedy_message,
-								right_hand_receiver, 
+								right_hand_receiver,
 								source.real_position()),
 		location_entering_perimeter_mode_(source.real_position()),
 		location_entering_current_face_(source.real_position()),
@@ -189,7 +189,7 @@ namespace routing
 		{}
 		// ----------------------------------------------------------------------
 		// For perimeter forward. The necessary members
-		// location_entering_current_face_, first_edge_on_current_face_ and 
+		// location_entering_current_face_, first_edge_on_current_face_ and
 		// next_hop are altered via their setters
 		GeoRoutingPerimeterMessage::
 			GeoRoutingPerimeterMessage( const GeoRoutingPerimeterMessage& other,
@@ -200,78 +200,78 @@ namespace routing
 		first_edge_on_current_face_(other.first_edge_on_current_face_)
 		{}
 		// ----------------------------------------------------------------------
-		int 
+		int
 			GeoRoutingPerimeterMessage::
-			size( void ) 
-			const 
+			size( void )
+			const
 			throw()
 		{
-			return (USE_GREEDY_MESSAGE_OVERHEAD ? GeoRoutingGreedyMessage::size() : 
-					USE_ROUTING_MESSAGE_OVERHEAD ? RoutingMessage::size() : 
+			return (USE_GREEDY_MESSAGE_OVERHEAD ? GeoRoutingGreedyMessage::size() :
+					USE_ROUTING_MESSAGE_OVERHEAD ? RoutingMessage::size() :
 					application_message()->size()) + MESSAGE_OVERHEAD;
 		}
 		// ----------------------------------------------------------------------
-		const shawn::Vec& 
+		const shawn::Vec&
 			GeoRoutingPerimeterMessage::
-			location_entering_perimeter_mode() 
-			const 
+			location_entering_perimeter_mode()
+			const
 			throw()
 		{
 			return location_entering_perimeter_mode_;
 		}
 		// ----------------------------------------------------------------------
-		const shawn::Vec& 
+		const shawn::Vec&
 			GeoRoutingPerimeterMessage::
-			location_entering_current_face() 
-			const 
+			location_entering_current_face()
+			const
 			throw()
 		{
 			return location_entering_current_face_;
 		}
 		// ----------------------------------------------------------------------
-		const geo::GeoRoutingDirectedLink& 
+		const geo::GeoRoutingDirectedLink&
 			GeoRoutingPerimeterMessage::
-			first_edge_on_current_face() 
-			const 
+			first_edge_on_current_face()
+			const
 			throw()
 		{
 			return first_edge_on_current_face_;
 		}
 		// ----------------------------------------------------------------------
-		const shawn::Node* 
+		const shawn::Node*
 			GeoRoutingPerimeterMessage::
-			next_hop() 
-			const 
+			next_hop()
+			const
 			throw()
 		{
 			return next_hop_;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRoutingPerimeterMessage::
-			location_entering_current_face( const shawn::Vec& l ) 
+			location_entering_current_face( const shawn::Vec& l )
 			throw()
 		{
 			location_entering_current_face_ = l;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRoutingPerimeterMessage::
-			first_edge_on_current_face( const geo::GeoRoutingDirectedLink& e ) 
+			first_edge_on_current_face( const geo::GeoRoutingDirectedLink& e )
 			throw()
 		{
 			first_edge_on_current_face_ = e;
 		}
 		// ----------------------------------------------------------------------
-		void 
+		void
 			GeoRoutingPerimeterMessage::
-			next_hop( const shawn::Node& n ) 
+			next_hop( const shawn::Node& n )
 			throw()
 		{
 			next_hop_ = &n;
 		}
 		// ----------------------------------------------------------------------
-		ostream& 
+		ostream&
 			operator<<(ostream& os, const GeoRoutingPerimeterMessage& pm)
 		{
 			return os << static_cast<const GeoRoutingGreedyMessage&>( pm ) << "\n"

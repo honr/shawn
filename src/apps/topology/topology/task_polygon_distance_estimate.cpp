@@ -7,7 +7,7 @@
  ************************************************************************/
 #include "_apps_enable_cmake.h"
 #include "shawn_config.h"
-#ifdef ENABLE_TOPOLOGY 
+#ifdef ENABLE_TOPOLOGY
 
 #include "sys/distance_estimates/absolute_error_distance_estimate.h"
 #include "sys/distance_estimates/distance_estimate_keeper.h"
@@ -31,12 +31,12 @@ namespace topology
 	SimulationTaskPolygonDistanceEstimate::
 		SimulationTaskPolygonDistanceEstimate()
 	{}
-	   
+
 	// ----------------------------------------------------------------------
 	SimulationTaskPolygonDistanceEstimate::
 		~SimulationTaskPolygonDistanceEstimate()
 	{}
-	   
+
 	// ----------------------------------------------------------------------
 	void
 		SimulationTaskPolygonDistanceEstimate::
@@ -50,7 +50,7 @@ namespace topology
 		string fname = sc.environment().required_string_param("file_name");
 		string rssi_dist = sc.environment().required_string_param("rssi_dist");
 		string normal_rand = sc.environment().optional_string_param("normaldist", "");
-		bool attenuation = sc.environment().optional_bool_param("with_attenuation", false);
+//		bool attenuation = sc.environment().optional_bool_param("with_attenuation", false);
 
 		//Retrieve the topology by the supplied name
 		reading::ConstReadingHandle h = topology::topology_keeper(sc).find(topology_name);
@@ -63,18 +63,18 @@ namespace topology
 			exit(1);
 		}
 
-		
+
 
 
 		//Parameterize the newly created model
 		PolygonTopologyDistEst* de = new PolygonTopologyDistEst(distest_name, *pt, upper, lower, fname, rssi_dist/*, attenuation*/);
-		de->set_transmission_range(upper);	
+		de->set_transmission_range(upper);
 		de->init();
-		sc.distance_estimate_keeper_w().add(de);	
+		sc.distance_estimate_keeper_w().add(de);
 
-		
+
 	}
-	
+
 	// ----------------------------------------------------------------------
 	std::string
 	SimulationTaskPolygonDistanceEstimate::

@@ -27,7 +27,7 @@
 #include <cstdio>
 #include <cstring>
 #include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h>
 
 using namespace std;
 using namespace shawn::xml;
@@ -36,7 +36,7 @@ namespace shawn {
 
 // ----------------------------------------------------------------------
 FlegsensWorldFactory::FlegsensWorldFactory() :
-	node_count_(0), world_(NULL), parsing_state_(Unknown), current_node_(NULL), flegsens_xml_world() {
+	node_count_(0), world_(NULL), parsing_state_(Unknown), flegsens_xml_world(), current_node_(NULL) {
 }
 
 void FlegsensWorldFactory::set_parameters(int in_x_count, int in_y_count, double in_x_dist, double in_y_dist, double in_x_off,
@@ -45,16 +45,16 @@ void FlegsensWorldFactory::set_parameters(int in_x_count, int in_y_count, double
 	x_count_ = max(1,abs(in_x_count));	// Anzahl Sensorknoten auf der x-Achse
 	y_count_ = max(1,abs(in_y_count));	// Anzahl Sensorknoten auf der y-Achse
 	x_dist_ = abs(in_x_dist);  	// Abstand zwischen zwei Knoten auf der x-Achse in [m]
-	y_dist_ = abs(in_y_dist);  	// Abstand zwischen zwei Knoten auf der y-Achse in [m] 
+	y_dist_ = abs(in_y_dist);  	// Abstand zwischen zwei Knoten auf der y-Achse in [m]
 	x_off_ = abs(in_x_off);   	// Offset zwischen zwei Reihen auf der x-Achse in [m]
-	
+
 	int length = sizeof(int)*5;
-	
+
 	memcpy(gps_row1_, in_gps_row1, length);
 	memcpy(gps_row2_, in_gps_row2, length);
 	memcpy(gps_row3_, in_gps_row3, length);
 	memcpy(gps_row4_, in_gps_row4, length);
-	
+
 	memcpy(gateway_row1_, in_gateway_row1, length);
 	memcpy(gateway_row2_, in_gateway_row2, length);
 	memcpy(gateway_row3_, in_gateway_row3, length);
@@ -81,12 +81,12 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 
 	// {Filling the FlegSens World}
 	char text_buf[100];
-	
+
 	double x_orig = 100.0;
 	double y_orig = 100.0;
-	
+
 	int ext_rotate_alpha_d = w.simulation_controller_w().environment_w().optional_int_param("flegsens_world_rotation", 0);
-	
+
 	while (ext_rotate_alpha_d>=360) {
 		ext_rotate_alpha_d = ext_rotate_alpha_d - 360;
 	}
@@ -94,12 +94,12 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 		ext_rotate_alpha_d = 360+ext_rotate_alpha_d;
 	}
 	cout << "Rotating the world by " << ext_rotate_alpha_d << " degrees. " << endl;
-	
+
 	// ext_rotate_alpha_d = max(min(ext_rotate_alpha_d,90),0);
 	double pi = 3.1415926535897932384626433832795;
-	
+
 	double rotate_alpha = (((double)ext_rotate_alpha_d)/90)*(pi/2);
-		
+
 	double x = 0.0;
 	double y = 0.0;
 	double x2=0.0;
@@ -114,14 +114,14 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 	cout << "x_center" << x_center << endl;
 	cout << "y_center" << y_center << endl;
 	 */
-	
+
 	double z = 0.0;
 	bool is_anchor = false;
 	bool is_gateway = false;
 	double min_x = 0.0;
 	double min_y = 0.0;
 
-	
+
 	// Create x and y position of all nodes
 	for (int j=0; j<y_count_; j++) {
 		for (int i=0; i<x_count_; i++) {
@@ -141,24 +141,24 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 			min_y = min(min_y, y);
 		}
 	}
-	
-	
-	
+
+
+
 	x = 0.0;
 	y = 0.0;
 	x2=0.0;
 	y2=0.0;
-	
+
 	flegsens_xml_world.appendLine("<scenario>");
 	flegsens_xml_world.appendLine("<snapshot id=\"0\">");
 
 	int gps_row_data[5];
 	int gateway_row_data[5];
 	int emtpy_row_data[5] = {-1,500,500,0,0};
-	
+
 	int length = sizeof(int)*5;
-	
-		
+
+
 	//cout << "force_last_node_anchor = " << force_last_node_anchor << endl;
 	// Create x and y position of all nodes
 	for (int j=0; j<y_count_; j++) {
@@ -173,7 +173,7 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 		} else {
 			memcpy(gps_row_data, emtpy_row_data ,length);
 		}
-		
+
 		if (j==gateway_row1_[0]) {
 			memcpy(gateway_row_data, gateway_row1_ ,length);
 		} else if (j==gateway_row2_[0]) {
@@ -185,7 +185,7 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 		} else {
 			memcpy(gateway_row_data, emtpy_row_data ,length);
 		}
-		
+
 		for (int i=0; i<x_count_; i++) {
 			x = (i*x_dist_) + (x_off_*(j%2));
 			y = (j*y_dist_);
@@ -199,16 +199,16 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 				x = x2 + x_center;
 				y = y2 + y_center;
 			}
-			
+
 			sprintf(text_buf, "<node id=\"node_%d-%d\">", i,j);
 			flegsens_xml_world.appendLine(text_buf);
-			
+
 			x = x + x_orig - min_x;
 			y = y + y_orig - min_y;
-			
+
 			sprintf(text_buf, "<location x=\"%f.2\" y=\"%f.2\" z=\"%f.2\" />", x,y,z);
 			flegsens_xml_world.appendLine(text_buf);
-			
+
 			// GPS ########################################################################
 			// Is this a row with gps?
 			is_anchor = false;
@@ -221,17 +221,17 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 					is_anchor = true;
 				} else {
 					is_anchor = false;
-				}			
+				}
 				int counter = gps_row_data[2]; //offset
 				while (counter<=i) {
 					if (counter==i) {
 						is_anchor= true;
 					}
 					counter = counter + gps_row_data[1]; //interval
-				}		
+				}
 			}
 
-			
+
 			// Gateway ########################################################################
 			// Is this a row with gateways?
 			is_gateway = false;
@@ -244,16 +244,16 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 					is_gateway = true;
 				} else {
 					is_gateway = false;
-				}			
+				}
 				int counter = gateway_row_data[2]; //offset
 				while (counter<=i) {
 					if (counter==i) {
 						is_gateway= true;
 					}
 					counter = counter + gateway_row_data[1]; //interval
-				}		
+				}
 			}
-			
+
 			// XML ########################################################################
 			// Attach information
 			if (is_anchor) {
@@ -261,13 +261,13 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 			} else {
 				flegsens_xml_world.appendLine("<tag type=\"bool\" name=\"anchor\" value=\"false\"/>");
 			}
-			
+
 			if (is_gateway) {
 				flegsens_xml_world.appendLine("<tag type=\"bool\" name=\"gateway\" value=\"true\"/>");
 			} else {
 				flegsens_xml_world.appendLine("<tag type=\"bool\" name=\"gateway\" value=\"false\"/>");
 			}
-			
+
 			/*
 			if ((is_anchor)&&(is_gateway)) {
 				cout << "Node " << j << " / "<< i << " is a Anchor and Gateway." << endl;
@@ -276,14 +276,14 @@ void FlegsensWorldFactory::fill_world(shawn::World& w) throw() {
 			} else if (is_gateway) {
 				cout << "Node " << j << " / "<< i << " is a Gateway." << endl;
 			}*/
-			
+
 			flegsens_xml_world.appendLine("</node>");
 		}
 	}
 	flegsens_xml_world.appendLine("</snapshot>");
-	flegsens_xml_world.appendLine("</scenario>");	
+	flegsens_xml_world.appendLine("</scenario>");
 	// END {Filling the FlegSens World}
-	
+
 	parse_Object(&flegsens_xml_world);
 	sim_controller_ = NULL;
 	world_ = NULL;
@@ -438,7 +438,7 @@ void FlegsensWorldFactory::set_snapshot_id(const std::string tim) throw() {
 
 void FlegsensWorldFactory::create_xml_file() {
 	cerr << "Creating World and Node XML Representation..." << endl;
-	
+
 }
 
 // ----------------------------------------------------------------------

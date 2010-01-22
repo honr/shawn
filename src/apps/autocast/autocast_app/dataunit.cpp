@@ -14,15 +14,15 @@
 
 namespace autocast{
 
-	DataUnit::DataUnit() : id_(0),
-						   from_addr_(NULL),	
-						   x_(0),
-						   y_(0),
-						   time_(0),
+	DataUnit::DataUnit() : area_(NULL),
 						   max_life_time_(0),
 						   priority_(0),
+						   from_addr_(NULL),
+						   time_(0),
+						   x_(0),
+						   y_(0),
 						   responsible_app_(""),
-						   area_(NULL)
+						   id_(0)
 	{
 		hop_count_ = 0;
 		size_ = 1;
@@ -36,15 +36,15 @@ namespace autocast{
 					   double max_life_time,
 					   int priority,
 					   std::string responsible_app,
-					   const autocast::DistributionArea* area) : id_(id),
-																 from_addr_(from_addr),	
-																 x_(from_addr->real_position().x()),
-																 y_(from_addr->real_position().y()),
-																 time_(from_addr->world().current_time()),
+					   const autocast::DistributionArea* area) : area_(area),
 																 max_life_time_(max_life_time),
 																 priority_(priority),
+																 from_addr_(from_addr),
+																 time_(from_addr->world().current_time()),
+																 x_(from_addr->real_position().x()),
+																 y_(from_addr->real_position().y()),
 																 responsible_app_(responsible_app),
-																 area_(area)
+																 id_(id)
 	{
 		hop_count_ = 0;
 		size_ = 1;
@@ -53,14 +53,14 @@ namespace autocast{
 
 	// ----------------------------------------------------------------------
 	DataUnit::
-		DataUnit(const DataUnit& o) : id_(o.id()),
+		DataUnit(const DataUnit& o) : max_life_time_(o.max_life_time()),
+									  priority_(o.priority()),
 									  from_addr_(o.from_addr()),
+									  time_(o.time()),
 									  x_(o.x()),
 									  y_(o.y()),
-									  time_(o.time()),
-									  max_life_time_(o.max_life_time()),
-									  priority_(o.priority()),
-									  responsible_app_(o.responsible_app())
+									  responsible_app_(o.responsible_app()),
+									  id_(o.id())
 	{
 		area_ = o.distribution_area()->copy();
 		hop_count_ = 0;
@@ -74,25 +74,25 @@ namespace autocast{
 		area_ = NULL;
 	}
 	// ----------------------------------------------------------------------
-	int 
+	int
 		DataUnit::
-		id() 
+		id()
 		const
 		throw()
 	{
 		return id_;
 	}
 	// ----------------------------------------------------------------------
-	double 
+	double
 		DataUnit::
-		time() 
+		time()
 		const
 		throw()
 	{
 		return time_;
 	}
 	// ----------------------------------------------------------------------
-	double 
+	double
 		DataUnit::
 		x()
 		const
@@ -101,35 +101,35 @@ namespace autocast{
 		return x_;
 	}
 	// ----------------------------------------------------------------------
-	double 
+	double
 		DataUnit::
-		y() 
+		y()
 		const
 		throw()
 	{
 		return y_;
 	}
 	// ----------------------------------------------------------------------
-	int 
+	int
 		DataUnit::
-		size() 
+		size()
 		const
 		throw()
 	{
 		return size_;
 	}
 	// ----------------------------------------------------------------------
-	void 
+	void
 		DataUnit::
-		size(const int s) 
+		size(const int s)
 		throw()
 	{
 		size_ = s;
 	}
 	// ----------------------------------------------------------------------
-	std::string 
+	std::string
 		DataUnit::
-		responsible_app() 
+		responsible_app()
 		const
 		throw()
 	{
@@ -138,32 +138,32 @@ namespace autocast{
 	// ----------------------------------------------------------------------
 	const autocast::DistributionArea*
 		DataUnit::
-		distribution_area() 
+		distribution_area()
 		const
 		throw()
 	{
 		return area_;
 	}
 	// ----------------------------------------------------------------------
-	double 
+	double
 		DataUnit::
-		max_life_time() 
+		max_life_time()
 		const
 		throw()
 	{
 		return max_life_time_;
 	}
 	// ----------------------------------------------------------------------
-	int 
+	int
 		DataUnit::
-		hop_count() 
+		hop_count()
 		const
 		throw()
 	{
 		return hop_count_;
 	}
 	// ----------------------------------------------------------------------
-	void 
+	void
 		DataUnit::
 		hop_count(const int h)
 		throw()
@@ -171,16 +171,16 @@ namespace autocast{
 		hop_count_ = h;
 	}
 	// ----------------------------------------------------------------------
-	int 
+	int
 		DataUnit::
-		priority() 
+		priority()
 		const
 		throw()
 	{
 		return priority_;
 	}
 	// ----------------------------------------------------------------------
-	const shawn::Node* 
+	const shawn::Node*
 		DataUnit::
 		from_addr()
 		const
@@ -189,7 +189,7 @@ namespace autocast{
 		return from_addr_;
 	}
 	// ----------------------------------------------------------------------
-	int 
+	int
 		operator<(const autocast::DataUnit& lv, const autocast::DataUnit& rv)
 	{
 		return lv.id() < rv.id();

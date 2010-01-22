@@ -27,53 +27,53 @@ namespace shawn{ class Node; class Processor; }
 										(**routing_observer_iterator).m; \
 									}
 
-namespace routing 
+namespace routing
 {
 	// RoutingBase:
 
 	DECLARE_HANDLES(RoutingBase);
-	class RoutingBase : public shawn::KeeperManaged 
+	class RoutingBase : public shawn::KeeperManaged
 	{};// End of RoutingBase
 
 	// RoutingMessage:
 
-	class RoutingMessageBase : public shawn::Message 
+	class RoutingMessageBase : public shawn::Message
 	{
 	public:
-		RoutingMessageBase( RoutingBase& ri, const shawn::ConstMessageHandle& mh ) : 
-			routing_instance_(&ri), 
-			application_message_(mh)
+		RoutingMessageBase( RoutingBase& ri, const shawn::ConstMessageHandle& mh ) :
+			application_message_(mh),
+			routing_instance_(&ri)
 		{}
 		// ----------------------------------------------------------------------
-		RoutingMessageBase( const RoutingMessageBase& o ) : 
-			routing_instance_(o.routing_instance_), 
-			application_message_(o.application_message_)
+		RoutingMessageBase( const RoutingMessageBase& o ) :
+			application_message_(o.application_message_),
+			routing_instance_(o.routing_instance_)
 		{}
 		// ----------------------------------------------------------------------
 		virtual ~RoutingMessageBase()
 		{}
 		// ----------------------------------------------------------------------
-		inline const shawn::ConstMessageHandle& 
-			application_message() 
-			const 
+		inline const shawn::ConstMessageHandle&
+			application_message()
+			const
 			throw()
 		{ return application_message_; }
 		// ----------------------------------------------------------------------
-		inline const routing::RoutingBase* 
-			routing_instance() 
-			const 
+		inline const routing::RoutingBase*
+			routing_instance()
+			const
 			throw()
 		{ return routing_instance_; }
 		// ----------------------------------------------------------------------
-		inline routing::RoutingBase* 
-			routing_instance_w() 
-			const 
+		inline routing::RoutingBase*
+			routing_instance_w()
+			const
 			throw()
 		{ return routing_instance_; }
 		// ----------------------------------------------------------------------
-		virtual int 
-			size( void ) 
-			const 
+		virtual int
+			size( void )
+			const
 			throw()
 		{ return application_message_->size() + 4; }
 
@@ -88,28 +88,28 @@ namespace routing
 
 	// Routing:
 
-	template<typename AbstractAddress, 
+	template<typename AbstractAddress,
 			 typename RoutingNodeInfoTypeName = NoNodeInfo>
 	class Routing : public routing::RoutingBase,
 					public shawn::NodeChangeListener
 	{
 	public:
-		/// Returns true or false whether it's possible in principle to send the message towards the address 
-		virtual bool send_to( shawn::Node& sender, 
-							  const shawn::ConstMessageHandle& mh, 
+		/// Returns true or false whether it's possible in principle to send the message towards the address
+		virtual bool send_to( shawn::Node& sender,
+							  const shawn::ConstMessageHandle& mh,
 							  const AbstractAddress& aa ) = 0;
 		// RoutingMessage:
 
 		class RoutingMessage : public routing::RoutingMessageBase
 		{
 		public:
-			RoutingMessage( RoutingBase& ri, const shawn::ConstMessageHandle& mh, const AbstractAddress& aa ) : 
-				RoutingMessageBase(ri,mh), 
+			RoutingMessage( RoutingBase& ri, const shawn::ConstMessageHandle& mh, const AbstractAddress& aa ) :
+				RoutingMessageBase(ri,mh),
 				destination_address_(aa)
 			{}
 			// ----------------------------------------------------------------------
-			RoutingMessage( const RoutingMessage& o ) : 
-				RoutingMessageBase(*o.routing_instance_,o.application_message_), 
+			RoutingMessage( const RoutingMessage& o ) :
+				RoutingMessageBase(*o.routing_instance_,o.application_message_),
 				destination_address_(o.destination_address_)
 			{}
 			// ----------------------------------------------------------------------
@@ -117,19 +117,19 @@ namespace routing
 			{}
 			// ----------------------------------------------------------------------
 			inline AbstractAddress
-				destination_address() 
-				const 
+				destination_address()
+				const
 				throw()
-			{ 
-				return destination_address_; 
+			{
+				return destination_address_;
 			}
 			// ----------------------------------------------------------------------
-			virtual int 
-				size( void ) 
-				const 
+			virtual int
+				size( void )
+				const
 				throw()
-			{ 
-				return sizeof(AbstractAddress) + RoutingMessageBase::size(); 
+			{
+				return sizeof(AbstractAddress) + RoutingMessageBase::size();
 			}
 
 		protected:
@@ -166,12 +166,12 @@ namespace routing
 		virtual void id_changed( int, int ) throw()
 		{}
 		// ----------------------------------------------------------------------
-		/// If your derived routing will be also an NodeChangeListener 
-		/// overwrite the concerning methods AND ensure that 
+		/// If your derived routing will be also an NodeChangeListener
+		/// overwrite the concerning methods AND ensure that
 		/// Routing<YourRoutingAbstractAddress,YourRoutingNodeInfo>::invalidate
 		/// is called in your YourRouting::invalidate.
-		virtual bool 
-			invalidate( void ) 
+		virtual bool
+			invalidate( void )
 			throw()
 		{
 			if( node_infos_ )
@@ -183,8 +183,8 @@ namespace routing
 			return false;
 		}
 		// ----------------------------------------------------------------------
-		virtual void 
-			init( shawn::World& world ) 
+		virtual void
+			init( shawn::World& world )
 			throw()
 		{
 			if( typeid(RoutingNodeInfoType) == typeid(NoNodeInfo) )
@@ -202,7 +202,7 @@ namespace routing
 			}
 		}
 		// ----------------------------------------------------------------------
-		inline const RoutingNodeInfoType& 
+		inline const RoutingNodeInfoType&
 			node_info( const shawn::Node& owner )
 			const
 			throw()
@@ -259,9 +259,9 @@ namespace routing
 		virtual ~RoutingEventTag()
 		{}
 		// ----------------------------------------------------------------------
-		inline const shawn::Node& 
-			node() 
-			const 
+		inline const shawn::Node&
+			node()
+			const
 			throw()
 		{
 			return *node_;
@@ -274,7 +274,7 @@ namespace routing
 			return *node_;
 		}
 		// ----------------------------------------------------------------------
-		inline const shawn::ConstMessageHandle& 
+		inline const shawn::ConstMessageHandle&
 			const_message_handle()
 			const
 			throw()
@@ -283,8 +283,8 @@ namespace routing
 			return cmh_;
 		}
 		// ----------------------------------------------------------------------
-		inline const shawn::MessageHandle&  
-			message_handle() 
+		inline const shawn::MessageHandle&
+			message_handle()
 			throw()
 		{
 			assert( mh_.is_not_null() );

@@ -57,9 +57,9 @@ namespace localization
 	 // if(node().id() == 13){
 //	 std::ofstream ofs( "distances.csv",std::ios::app );
 	  ConstNeighborInfoListIterator iter = neighbors.begin();
-	  for(; iter!=neighbors.end(); iter++){		 
-		  const shawn::Node* n = &(*iter)->node();
-		
+	  for(; iter!=neighbors.end(); iter++){
+//		  const shawn::Node* n = &(*iter)->node();
+
 	/*	  ofs<< "Distance from Node" <<node().id() << "to Anker"<< n->label() << " real distance:"<<  (node().real_position()-n->real_position()).euclidean_norm()<<
 			  " estimated distance:" << (*iter)->distance()<< std::endl;
 */
@@ -88,7 +88,7 @@ namespace localization
 		rollback(void)
 		throw()
 	{
-		state_ = lat_wait;	
+		state_ = lat_wait;
 	}
 
 }// namespace localization
