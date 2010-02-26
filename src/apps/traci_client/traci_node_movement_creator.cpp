@@ -389,8 +389,8 @@ namespace traci{
 		{
 			cerr << sc_->world().scheduler().current_time()
 			     << ": Error in method TraCIClient::extract_command_status, Server returned error "
-			     << "[" << result << "] "
-			     << description << endl;
+			     << "[0x" << hex << setfill('0') << setw(2) << static_cast<unsigned int>(result) << "]: "
+			     << description << dec << setfill(' ') << endl;
 			abort();
 		}
 
