@@ -48,7 +48,7 @@ namespace shawn
     {
         world_ = &w;
         sim_controller_ = &w.simulation_controller_w();
-		set_tag_factory_keeper( w.simulation_controller_w().tag_factory_keeper_w() );
+		  set_tag_factory_keeper( w.simulation_controller_w().tag_factory_keeper_w() );
 
         parse();
 
