@@ -61,15 +61,15 @@ unsigned char *texture_ = NULL;
 /**
  * Structure used by boost to create the external window thread.
  */
-struct creator { 
+struct creator {
    creator() { }
-void operator()() 
-{ 
+void operator()()
+{
    /**
     * Method to be called in an external thread.
 	*/
    initGL();
-} 
+}
 };
 
 /**
@@ -130,7 +130,7 @@ void initGL()
    int argc = 1;
    char** argv=new char*[2];
    argv[0] = "test";
-   argv[1] = NULL;
+   argv[1] = "";
    glutInit(&argc, argv);
    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
    glutInitWindowSize (sizex_, sizey_);
@@ -178,9 +178,9 @@ void display()
    glLoadIdentity();
    float midX = sizex_ * 0.5f;
    float midY = sizey_ * 0.5f;
-   
-   glBegin(GL_QUADS); 
-   glColor3f(1.0f,1.0f,1.0f); 
+
+   glBegin(GL_QUADS);
+   glColor3f(1.0f,1.0f,1.0f);
 	glTexCoord2f (0.0, 1.0);
 	glVertex2f( midX-resx_*0.5f, midY-resy_*0.5f); // bottom left
 	glTexCoord2f (1.0, 1.0);

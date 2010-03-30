@@ -52,9 +52,6 @@ namespace vis
       shawn::Vec ll = visualization().world().lower_left();
       shawn::Vec ur = visualization().world().upper_right();
 
-//       std::cout << "ll " << ll << std::endl
-//                 << "ur " << ur << std::endl;
-
       double net_width = std::max( ur.x() - ll.x(), 1.0 )*1.05;
       double net_height = std::max( ur.y() - ll.y(), 1.0 )*1.05;
 
