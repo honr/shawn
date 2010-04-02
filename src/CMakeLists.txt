@@ -96,6 +96,9 @@ endif(COMMAND cmake_policy)
 	file( GLOB_RECURSE shawnVisCPP apps/vis/*.cpp )
 	file( GLOB_RECURSE shawnVisH apps/vis/*.h )
 
+	file( GLOB_RECURSE shawnWiseMlCPP apps/wiseml/*.cpp )
+	file( GLOB_RECURSE shawnWiseMlH apps/wiseml/*.h )
+
 	file( GLOB_RECURSE shawnExternalAppCPP apps/external_application/*.cpp )
 	file( GLOB_RECURSE shawnExternalAppH apps/external_application/*.h )
 
@@ -196,6 +199,10 @@ endif(COMMAND cmake_policy)
 	# shawnVis - Source for Vis library build
 		set( shawnVis ${shawnVis} ${shawnVisCPP} )
 		set( shawnVis ${shawnVis} ${shawnVisH} )
+
+	# shawnWiseMl - Source for WiseMl library build
+		set( shawnWiseMl ${shawnWiseMl} ${shawnWiseMlCPP} )
+		set( shawnWiseMl ${shawnWiseMl} ${shawnWiseMlH} )
 
 	# shawnExternalApp - Source for ExternalApplication library build
 		set( shawnExternalApp ${shawnExternalApp} ${shawnExternalAppCPP} )
@@ -412,6 +419,7 @@ endif(COMMAND cmake_policy)
 	add_library( apps_topologylib ${shawnTopology} )
 	add_library( apps_traciclientlib ${shawnTraciClient} )
 	add_library( apps_vislib ${shawnVis} )
+	add_library( apps_wisemllib ${shawnWiseMl} )
 	add_library( apps_externalapplib ${shawnExternalApp} )
 
 
@@ -489,13 +497,13 @@ endif(COMMAND cmake_policy)
 	IF(NOT BUILD_LIB_WITH_MAIN)
 		target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
 			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
-			apps_spyglasslib apps_tcpiplib apps_traciclientlib apps_vislib shawnlib
+			apps_spyglasslib apps_tcpiplib apps_traciclientlib apps_vislib apps_wisemllib shawnlib
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
 			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
 	ELSEIF(NOT BUILD_LIB_WITH_MAIN)
 		target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
 			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
-			apps_spyglasslib apps_tcpiplib apps_traciclientlib apps_vislib shawnlib
+			apps_spyglasslib apps_tcpiplib apps_traciclientlib apps_vislib apps_wisemllib shawnlib
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
 			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
 	ENDIF(NOT BUILD_LIB_WITH_MAIN)
