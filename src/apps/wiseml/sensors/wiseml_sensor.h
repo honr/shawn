@@ -14,6 +14,7 @@
 #include "apps/reading/sensors/sensor.h"
 
 using namespace shawn;
+using namespace std;
 namespace wiseml
 {
    /** \brief Base class for WiseML controlled Sensors.
@@ -26,7 +27,11 @@ namespace wiseml
    public:
       ///@name Contructor/Destructor
       ///@{
-      WiseMlSensor(std::string, const Node&);
+      /*
+       * @param capability Name of the WiseML capability to be read out by the sensor.
+       * @param node The node, the sensor is attached to.
+       */
+      WiseMlSensor(string capability, const Node& node);
       virtual ~WiseMlSensor();
       ///@}
    };

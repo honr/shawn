@@ -12,7 +12,7 @@
 namespace wiseml
 {
    WiseMlSensor::
-   WiseMlSensor(std::string capability, const Node &node)
+   WiseMlSensor(string capability, const Node &node)
    {
 
    }
