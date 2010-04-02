@@ -5,12 +5,23 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-#include "_apps_enable_cmake.h"
-#ifdef	ENABLE_READING
+#include "apps/wiseml/sensors/wiseml_sensor.h"
+#ifdef ENABLE_READING
+#ifdef ENABLE_WISEML
 
-#include "apps/reading/sensors/sensor.h"
-namespace reading
+namespace wiseml
 {
+   WiseMlSensor::
+   WiseMlSensor(std::string capability, const Node &node)
+   {
+
+   }
+   // ----------------------------------------------------------------------
+   WiseMlSensor::
+   ~WiseMlSensor()
+   {}
+   // ----------------------------------------------------------------------
 }
 
+#endif
 #endif

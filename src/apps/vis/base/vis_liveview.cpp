@@ -129,8 +129,11 @@ void initGL()
 {
    int argc = 1;
    char** argv=new char*[2];
-   argv[0] = "test";
-   argv[1] = "";
+   char argv0[] = "test";
+   char argv1[] = "";
+
+   argv[0] = argv0;
+   argv[1] = argv1;
    glutInit(&argc, argv);
    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
    glutInitWindowSize (sizex_, sizey_);

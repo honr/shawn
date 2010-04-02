@@ -23,10 +23,6 @@ namespace reading
    public:
       Sensor(){};
       virtual ~Sensor(){};
-
-      //std::string name();
-   //protected:
-      //std::string name_;
    };
 }
 #endif

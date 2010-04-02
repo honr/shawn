@@ -40,14 +40,13 @@ ShawnSimulationController* master_init( bool jshawn_support )
    throw()
 {
    ShawnSimulationController* sc = NULL;
-   
+
    if(!jshawn_support)
 	   sc = shawn_init_sys();
    else
 	   sc = new JShawnSimulationController;
 
    init_sys_tasks(*sc);
-   std::cout << "rufe init_apps auf" << std::endl;
    init_apps(*sc);
 
 	#ifdef HAVE_LEGACYAPPS
@@ -77,11 +76,11 @@ istream* preprocess_file( istream& in )
 {
    stringstream* tmp_stream = new stringstream();
    char linebuf[1000];
-   
+
    while( in.getline( linebuf, 1000 ) )
    {
       std::string line( linebuf );
-      
+
       if ( line.find( "include_file", 0 ) == 0 )
       {
          // The following searches for a correct "include_file" statement.
@@ -93,11 +92,11 @@ istream* preprocess_file( istream& in )
          // find end of the 'include_file' statement
          fn_beg = line.find_first_of( " ", 0 );
          // find beginning of the filename
-         fn_beg = line.find_first_not_of( " \t", fn_beg );         
+         fn_beg = line.find_first_not_of( " \t", fn_beg );
          if ( fn_beg != std::string::npos )
          {
             fn_end = line.find_first_of( " \t\n\r", fn_beg );
-         
+
             std::string filename;
             if ( fn_end == std::string::npos )
                filename = line.substr( fn_beg );
@@ -113,7 +112,7 @@ istream* preprocess_file( istream& in )
             }
             // If everything has worked fine, add the wanted file line by
             // line to the resulting stream.
-            char fbuf[1000];            
+            char fbuf[1000];
             while( file->getline( fbuf, 1000 ) )
                *tmp_stream << fbuf << std::endl;
             delete file;
@@ -129,7 +128,7 @@ istream* preprocess_file( istream& in )
       // statement, just append the line to the resulting stream
       *tmp_stream << linebuf << std::endl;
    }
-   
+
    return tmp_stream;
 }
 
@@ -187,7 +186,7 @@ int main( int argc, char *argv[] )
 		jshawn_support = true;
 
    shawn::ShawnSimulationController* sc = master_init(jshawn_support);
- 
+
    if( !parse_args( argc, argv, *sc, filen ) )
       exit(1);
 

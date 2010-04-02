@@ -15,33 +15,39 @@
 
 #include "sys/xml/sax_reader.h"
 
-namespace shawn 
+namespace shawn
 {
     namespace xml
     {
 
         // -------------------------------------------------------------------
-        /** 
+        /**
         *
         */
-		class SAXInterruptibleReader 
+		class SAXInterruptibleReader
 			: public SAXReader
         {
 		private:
 
+		   enum TagType
+		   {
+		      SIR_OPENTAG,
+		      SIR_TEXTTAG,
+		      SIR_CLOSETAG
+		   };
 	        // -------------------------------------------------------------------
-	        /** 
+	        /**
 	        *
 	        */
-			struct CacheData 
-			{ 
-				std::string name; 
-				AttList atts; 
-				bool open_tag;
+			struct CacheData
+			{
+				std::string name;
+				AttList atts;
+				TagType tag_type;
 			};
 
 			typedef list<struct CacheData*> Cache;
-			
+
         public:
             ///@name Construction / Destruction
             ///@{
@@ -58,13 +64,15 @@ namespace shawn
             ///@}
 
         protected:
-        	
+
 			virtual void start_element(std::string name, AttList& atts) throw(std::runtime_error) = 0;
+			virtual void text_element(std::string content) throw(std::runtime_error) = 0;
 			virtual void end_element(std::string name) throw(std::runtime_error) = 0;
 
             virtual void handle_start_element(std::string name, AttList& atts) throw(std::runtime_error);
             virtual void handle_end_element(std::string name) throw(std::runtime_error);
-		
+            virtual void handle_text_element(std::string name) throw(std::runtime_error);
+
 		private:
 			Cache cache_;
 			bool initialized_;
