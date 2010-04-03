@@ -41,13 +41,14 @@ namespace wiseml
    typedef std::list<Capability> CapList;
 
    /**
-    * A structure which is used to gather node properties
+    * A class which is used to gather node properties
     * while parsing the wiseml file. It contains all
     * informations which are needed to finally create the
     * node.
     */
-   struct NodeTemplate
+   class NodeTemplate
    {
+   public:
       string label; // ID label
       double posx, posy, posz; // Position
       bool gateway;
@@ -56,48 +57,12 @@ namespace wiseml
       string description;
       CapList capabilities;
 
-      NodeTemplate()
-      {
-         label="";
-         posx = 0.0;
-         posy=0.0;
-         posz=0.0;
-         gateway = false;
-         image = "";
-         nodetype = "";
-         description = "";
-         capabilities = CapList();
-      }
+      NodeTemplate();
 
-      NodeTemplate(NodeTemplate &cpy)
-      {
-         label = cpy.label;
-         posx = cpy.posx;
-         posy = cpy.posy;
-         posz = cpy.posz;
-         gateway = cpy.gateway;
-         image = cpy.image;
-         nodetype = cpy.nodetype;
-         description = cpy.description;
-         capabilities = CapList(cpy.capabilities);
-      }
+      NodeTemplate(const NodeTemplate &cpy);
 
       /// Creates a template based on an existing node
-      NodeTemplate(shawn::Node &src)
-      {
-         label = src.label();
-         shawn::Vec pos = src.real_position();
-         posx = pos.x();
-         posy = pos.y();
-         posz = pos.z();
-
-         // TODO: Reload informations from node:
-         gateway = false;
-         image = "";
-         nodetype = "";
-         description = "";
-         capabilities = CapList();
-      }
+      NodeTemplate(shawn::Node &src);
    };
 
    struct LinkInfo
