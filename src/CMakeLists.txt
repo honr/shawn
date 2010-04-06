@@ -330,6 +330,7 @@ endif(COMMAND cmake_policy)
 	
 	add_definitions( -DHAVE_EXPAT_CONFIG_H )
 	add_definitions( -DXML_STATIC )
+	add_definitions( -DNOMINMAX )
 
 
 #=============
