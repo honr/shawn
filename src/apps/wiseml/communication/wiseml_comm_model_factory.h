@@ -9,6 +9,9 @@
 #ifndef __SHAWN_APPS_WISEML_COMMUNICATION_WISEML_COMM_MODEL_FACTORY_H
 #define __SHAWN_APPS_WISEML_COMMUNICATION_WISEML_COMM_MODEL_FACTORY_H
 
+#include "apps/wiseml/communication/wiseml_comm_model.h"
+#ifdef ENABLE_WISEML
+
 #include "sys/util/keeper_managed.h"
 #include "sys/util/refcnt_pointer.h"
 #include "sys/util/defutils.h"

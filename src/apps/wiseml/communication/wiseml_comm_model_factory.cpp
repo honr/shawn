@@ -5,6 +5,8 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
+#include "apps/wiseml/communication/wiseml_comm_model.h"
+#ifdef ENABLE_WISEML
 
 #include "apps/wiseml/communication/wiseml_comm_model_factory.h"
 #include "apps/wiseml/communication/wiseml_comm_model.h"
