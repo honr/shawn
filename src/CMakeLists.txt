@@ -484,7 +484,7 @@ endif(COMMAND cmake_policy)
 		endif ( OPT_ENABLE_GLUT AND APPLE )
 
 		if ( OPT_ENABLE_GLUT AND NOT APPLE)
-			set ( LIB_GLUT GL glut )
+			set ( LIB_GLUT GL glut GLU )
 		endif ( OPT_ENABLE_GLUT AND NOT APPLE )
 
 	endif ( WIN32 AND NOT CYGWIN  )
