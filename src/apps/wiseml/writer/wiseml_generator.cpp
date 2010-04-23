@@ -148,9 +148,11 @@ namespace wiseml
          // Position
          Vec npos = it->real_position();
          wml << tabs_ << "<position>" << std::endl;
+         add_tab();
          wml << tabs_ << "<x>" << npos.x() << "</x>" << std::endl;
          wml << tabs_ << "<y>" << npos.y() << "</y>" << std::endl;
          wml << tabs_ << "<z>" << npos.z() << "</z>" << std::endl;
+         remove_tab();
          wml << tabs_ << "</position>" << std::endl;
 
          remove_tab();
