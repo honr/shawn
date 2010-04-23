@@ -21,22 +21,22 @@ namespace wiseml
    }
    // ----------------------------------------------------------------------
    // ----------------------------------------------------------------------
-   std::string WisemlWriterTask::name() const
+   std::string WisemlWriterTask::name() const throw()
    {
       return "wiseml_writer";
    }
    // ----------------------------------------------------------------------
-   std::string WisemlWriterTask::description() const
+   std::string WisemlWriterTask::description() const throw()
    {
       return "A task for generating WiseML files of the current topology.";
    }
    // ----------------------------------------------------------------------
    // ----------------------------------------------------------------------
-   void WisemlWriterTask::run(SimulationController &sc)
+   void WisemlWriterTask::run(SimulationController &sc) throw()
    {
       std::string filename = sc.environment().optional_string_param("filename", "simulation.wiseml");
       std::ofstream file;
-      file.open(filename);
+      file.open(filename.c_str());
 
       WisemlGenerator wml_gen(sc);
       file << wml_gen.generate_wiseml();

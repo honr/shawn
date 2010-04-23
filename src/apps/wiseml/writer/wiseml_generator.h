@@ -11,8 +11,8 @@
 #ifdef ENABLE_WISEML
 
 #include "shawn_config.h"
-#include "sys\simulation\simulation_controller.h"
-#include "sys\world.h"
+#include "sys/simulation/simulation_controller.h"
+#include "sys/world.h"
 using namespace shawn;
 namespace wiseml
 {
