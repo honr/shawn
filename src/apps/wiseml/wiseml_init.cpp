@@ -9,6 +9,7 @@
 #include "apps/wiseml/wiseml_init.h"
 #ifdef ENABLE_WISEML
 #include "apps/wiseml/world/wisemlworld_task.h"
+#include "apps/wiseml/writer/wiseml_writer_task.h"
 #include "apps/wiseml/communication/wiseml_comm_model_factory.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task_keeper.h"
@@ -18,6 +19,7 @@
 extern "C" void init_wiseml( shawn::SimulationController& sc )
 {
    sc.simulation_task_keeper_w().add( new wiseml::SimulationTaskWiseMLWorldFactory );
+   sc.simulation_task_keeper_w().add( new wiseml::WisemlWriterTask );
    sc.communication_model_keeper_w().add( new wiseml::WiseMlCommModelFactory );
 }
 

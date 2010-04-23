@@ -5,8 +5,8 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-#ifndef __SHAWN_apps_WISEML_WORLD_TASK_H
-#define __SHAWN_apps_WISEML_WORLD_TASK_H
+#ifndef __SHAWN_APPS_WISEML_WORLD_TASK_H
+#define __SHAWN_APPS_WISEML_WORLD_TASK_H
 #include "_apps_enable_cmake.h"
 #ifdef ENABLE_WISEML
 
