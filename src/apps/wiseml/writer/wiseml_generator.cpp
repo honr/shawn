@@ -167,7 +167,25 @@ namespace wiseml
       for(World::const_node_iterator it = world().begin_nodes(); 
          it != world().end_nodes(); it++)
       {
-         const GroupTag *links = dynamic_cast<const GroupTag*>
+         for(World::const_adjacency_iterator ait = 
+            world().begin_adjacent_nodes(*it, EdgeModel::CD_ANY);
+            ait !=  world().end_adjacent_nodes(*it); ++ait)
+         {
+            wml << tabs_ << "<link source=\"" << it->label()
+               << "\" target=\"" << ait->label()
+               << "\">" << std::endl;
+            add_tab();
+
+            wml << tabs_ << "<encrypted>false</encrypted>" << std::endl;
+            wml << tabs_ << "<virtual>false</virtual>" << std::endl;
+            // ...
+
+            remove_tab();
+            wml << tabs_ << "</link>" << std::endl << std::endl;
+         }
+
+
+         /*const GroupTag *links = dynamic_cast<const GroupTag*>
             (it->find_tag("WISEML_LINKS").get());
 
          for(TagContainer::tag_iterator t_it = links->begin_tags();
@@ -189,7 +207,7 @@ namespace wiseml
             remove_tab();
             wml << tabs_ << "</link>" << std::endl << std::endl;
             
-         }
+         }*/
       }
 
       return wml.str();
