@@ -27,10 +27,31 @@ namespace testbedservice
    class ExperimentControl
    {
    public:
+      struct FlashProgram
+      {
+         uint8_t *data;
+         int data_len;
+         std::string version;
+         std::string name;
+         std::string platform;
+         std::string other;
+      };
+
+      typedef TestbedServiceClient::NodeIdVector NodeIdVector;
+      typedef TestbedServiceClient::StatusValueVector StatusValueVector;
+      typedef TestbedServiceClient::StatusMsgVector StatusMsgVector;
+
+      typedef std::vector<int> IndicesVector;
+      typedef std::vector<FlashProgram> FlashProgramVector;
+
       ExperimentControl();
       virtual ~ExperimentControl();
 
       void init( shawn::SimulationController& sc, TestbedServiceClient& controller ) throw();
+
+      void flash_programs( std::string id, NodeIdVector nodes,
+                           IndicesVector indices, FlashProgramVector programs )
+         throw();
       // --------------------------------------------------------------------
       inline shawn::SimulationController& simulation_controller_w( void ) throw()
       { assert(sc_); return *sc_; }

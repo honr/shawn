@@ -89,6 +89,12 @@ namespace testbedservice
       std::string source = owner().label();
       controller().send_binary_message( source, length, buffer );
    }
+   // ----------------------------------------------------------------------
+   void
+   TestbedServiceProcessor::
+   flash_program( FlashProgram& program )
+      throw()
+   {}
 
 }
 #endif

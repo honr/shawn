@@ -9,6 +9,8 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/ws_handler/experiment_control.h"
+#include "apps/testbedservice/processor/testbedservice_processor.h"
+#include "apps/testbedservice/util/ws_helpers.h"
 #include "apps/testbedservice/core/shawn_serverH.h"
 #include "sys/processors/processor_keeper.h"
 #include "sys/worlds/processor_world_factory.h"
@@ -44,6 +46,46 @@ namespace testbedservice
       sc_ = &sc;
       controller_ = &controller;
       experiment_control_ = this;
+   }
+   // ----------------------------------------------------------------------
+   void
+   ExperimentControl::
+   flash_programs( std::string id, NodeIdVector nodes,
+                   IndicesVector indices, FlashProgramVector programs )
+      throw()
+   {
+      NodeIdVector response_nodes;
+      StatusValueVector response_values;
+      StatusMsgVector response_msgs;
+
+      IndicesVector::iterator idx_it = indices.begin();
+      for ( NodeIdVector::iterator it = nodes.begin();
+               it != nodes.end();
+               ++it, ++idx_it )
+      {
+         shawn::Node *node =
+            simulation_controller_w().world_w().find_node_by_label_w( *it );
+
+         if ( node )
+         {
+            TestbedServiceProcessor *proc =
+               node->get_processor_of_type_w<TestbedServiceProcessor>();
+            if ( proc )
+            {
+               proc->flash_program( programs.at( *idx_it ) );
+               response_values.push_back( 1 );
+            }
+            else
+               response_values.push_back( 0 );
+         }
+         else
+            response_values.push_back( -1 );
+
+         response_nodes.push_back( *it );
+         response_msgs.push_back( "" );
+      }
+
+      controller().send_receive_status( id, response_nodes, response_values, response_msgs );
    }
 
 }
@@ -88,8 +130,52 @@ namespace shawn_server
             shawnts__flashPrograms *shawnts__flashPrograms_,
             shawnts__flashProgramsResponse *shawnts__flashProgramsResponse_ )
    {
-      // TODO !
-      std::cout << "shawn::testbedservice::flashPrograms" << std::endl;
+      if ( !experiment_control_available() )
+         return SOAP_OK;
+
+      int node_cnt = shawnts__flashPrograms_->__sizenodeIds;
+      std::vector<std::string> nodes;
+      for ( int i = 0; i < node_cnt; i++ )
+      {
+         nodes.push_back( std::string(shawnts__flashPrograms_->nodeIds[i]) );
+      }
+
+      int idx_cnt = shawnts__flashPrograms_->__sizeprogramIndices;
+      std::vector<int> indices;
+      for ( int i = 0; i < idx_cnt; i++ )
+      {
+         indices.push_back( shawnts__flashPrograms_->programIndices[i] );
+      }
+
+      int program_cnt = shawnts__flashPrograms_->__sizeprograms;
+      std::vector<testbedservice::ExperimentControl::FlashProgram> programs;
+      for ( int i = 0; i < program_cnt; i++ )
+      {
+         testbedservice::ExperimentControl::FlashProgram program;
+
+         xsd__base64Binary *bin = &shawnts__flashPrograms_->programs[i]->program;
+         program.data = new uint8_t[bin->__size];
+         memcpy( program.data, bin->__ptr, bin->__size );
+         program.data_len = bin->__size;
+
+         shawnts__programMetaData *meta = shawnts__flashPrograms_->programs[i]->metaData;
+         program.version = std::string( meta->version );
+         program.name = std::string( meta->name );
+         program.platform = std::string( meta->platform );
+         program.other = std::string( meta->other );
+
+         programs.push_back(program);
+      }
+
+      std::string id = testbedservice::create_response_id();
+      char *response_id = testbedservice::allocate_string( shawnts__flashProgramsResponse_->soap, id );
+      shawnts__flashProgramsResponse_->return_ = response_id;
+
+      boost::thread thrd( boost::bind(
+         &testbedservice::ExperimentControl::flash_programs,
+         testbedservice::experiment_control_,
+         id, nodes, indices, programs ) );
+
       return SOAP_OK;
    }
 }

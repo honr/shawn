@@ -12,6 +12,7 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/core/testbedservice_client.h"
+#include "apps/testbedservice/ws_handler/experiment_control.h"
 #include "sys/processor.h"
 #include "sys/event_scheduler.h"
 
@@ -25,6 +26,8 @@ namespace testbedservice
       : public shawn::Processor
    {
    public:
+
+      typedef ExperimentControl::FlashProgram FlashProgram;
 
       enum MessageLevel
       {
@@ -74,6 +77,12 @@ namespace testbedservice
       void send_text_message( std::string& message, MessageLevel level ) throw();
       void send_binary_message( int length, uint8_t *buffer ) throw();
       ///@}
+
+      ///@name Promming/Configuration
+      ///@{
+      void flash_program( FlashProgram& program ) throw();
+      ///@}
+
       // --------------------------------------------------------------------
       inline TestbedServiceClient& controller( void ) throw()
       { assert(controller_); return *controller_; }
