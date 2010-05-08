@@ -41,7 +41,7 @@ namespace testbedservice
    // --------------------------------------------------------------------
    // --------------------------------------------------------------------
    // --------------------------------------------------------------------
-   std::string TestbedServiceServer::WorkerThread::wsdl_path = "./WSNService.wsdl";
+   std::string TestbedServiceServer::WorkerThread::wsdl_path = "./";
    // --------------------------------------------------------------------
    TestbedServiceServer::WorkerThread::
    WorkerThread()
@@ -108,12 +108,27 @@ namespace testbedservice
    TestbedServiceServer::WorkerThread::
    http_get( struct soap *soap )
    {
+std::cout << "REQ: " << soap->path << std::endl;
       char *s = strchr(soap->path, '?');
-      if ( !s || strcmp(s, "?wsdl") )
-         return SOAP_GET_METHOD;
+      if ( s && !strcmp(s, "?wsdl") )
+         return pass_file( soap, wsdl_path + "WSNService.wsdl" );
 
+      s = strchr(soap->path, '/');
+      if ( s && !strcmp(s, "/WSNTypes.xsd") )
+         return pass_file( soap, wsdl_path + "WSNTypes.xsd" );
+      if ( s && !strcmp(s, "/CommonTypes.xsd") )
+         return pass_file( soap, wsdl_path + "CommonTypes.xsd" );
+
+      return SOAP_GET_METHOD;
+   }
+   // --------------------------------------------------------------------
+   int
+   TestbedServiceServer::WorkerThread::
+   pass_file( struct soap *soap, std::string path )
+   {
+std::cout << "OPEN: " << path << std::endl;
       // open WSDL file to copy
-      FILE* fd = fopen( wsdl_path.c_str(), "rb");
+      FILE* fd = fopen( path.c_str(), "rb");
       if (!fd)
          return 404; // return HTTP not found error
 

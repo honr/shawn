@@ -35,6 +35,8 @@ namespace testbedservice
          void print_soap_ip( int idx, int socket );
 
          static int http_get( struct soap *soap );
+         static int pass_file( struct soap *soap, std::string file );
+
          static std::string wsdl_path;
 
       private:

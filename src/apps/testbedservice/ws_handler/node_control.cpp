@@ -145,6 +145,10 @@ namespace testbedservice
       StatusValueVector response_values;
       StatusMsgVector response_msgs;
 
+      std::cout << "text message:" << std::endl;
+      std::cout << "  -> from: " << message.source << std::endl;
+      std::cout << "  -> msg : " << message.message << std::endl;
+
       for ( NodeIdVector::iterator it = nodes.begin(); it != nodes.end(); ++it )
       {
          shawn::Node *node =

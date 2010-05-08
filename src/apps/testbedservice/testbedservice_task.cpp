@@ -19,6 +19,7 @@
 #include "sys/simulation/simulation_controller.h"
 #include "sys/world.h"
 #include "sys/processor.h"
+#include <boost/thread.hpp>
 
 
 namespace testbedservice
@@ -69,11 +70,7 @@ namespace testbedservice
          std::cerr << "'TestbedserviceKeeper' not found." << std::endl;
          abort();
       }
-
-      std::cout << "send test data to controller..." << std::endl;
       client->init(sc);
-      client->send_test_data();
-      std::cout << "ok" << std::endl;
 
       // TODO: add these control instances also to control keeper
       experiment_control_.init( sc, *client );
@@ -82,6 +79,15 @@ namespace testbedservice
       virtual_link_control_.init( sc, *client );
 
       testbedservice_server_.start_server( sc );
+
+
+      // WAIT FOR SERVER TO STARTUP
+      std::cout << "wait for server to startup (1/2 second)..." << std::endl;
+      boost::this_thread::sleep( boost::posix_time::milliseconds( 500 ) );
+
+      std::cout << "send test data to controller..." << std::endl;
+      client->send_test_data();
+      std::cout << "ok" << std::endl;
    }
 
 }

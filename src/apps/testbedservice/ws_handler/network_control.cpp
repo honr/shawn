@@ -106,8 +106,8 @@ namespace shawn_server
    }
    // -----------------------------------------------------------------------
    int __shawnts__getNetwork( soap*,
-            shawnts__getNetwork *shawnts__getNetwork_,
-            shawnts__getNetworkResponse *shawnts__getNetworkResponse_ )
+            ns2__getNetwork *shawnts__getNetwork_,
+            ns2__getNetworkResponse *shawnts__getNetworkResponse_ )
    {
 #ifdef ENABLE_WISEML
       if ( network_control_available() )

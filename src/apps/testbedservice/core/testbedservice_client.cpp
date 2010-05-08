@@ -106,16 +106,17 @@ namespace testbedservice
    {
       // prepare basic message types
       shawnts__receive *ts_receive = new shawnts__receive;
-      shawnts__message *ts_message = new shawnts__message;
-      shawnts__textMessage *ts_text = new shawnts__textMessage;
+      ns2__message *ts_message = new ns2__message;
+      ns2__textMessage *ts_text = new ns2__textMessage;
       ts_receive->msg = ts_message;
-      ts_message->textMessage = ts_text;
+      ts_message->__union_message = 1;
+      ts_message->union_message.textMessage = ts_text;
 
       ts_message->timestamp = time(NULL);
       ts_message->sourceNodeId = allocate_string( source );
 
       ts_text->msg = allocate_string( msg );
-      ts_text->messageLevel = new shawnts__messageLevel( (shawnts__messageLevel)level );
+      ts_text->messageLevel = new ns2__messageLevel( (ns2__messageLevel)level );
 
       boost::lock_guard<boost::mutex> pool_lock( pool_mutex_ );
       pool_.schedule( boost::bind( &TestbedServiceClient::call_receive_message, this, ts_receive ) );
@@ -128,9 +129,10 @@ namespace testbedservice
    {
       // prepare basic message types
       shawnts__receive *ts_receive = new shawnts__receive;
-      shawnts__message *ts_message = new shawnts__message;
-      shawnts__binaryMessage *ts_bin = new shawnts__binaryMessage;
-      ts_message->binaryMessage = ts_bin;
+      ns2__message *ts_message = new ns2__message;
+      ns2__binaryMessage *ts_bin = new ns2__binaryMessage;
+      ts_message->__union_message = 2;
+      ts_message->union_message.binaryMessage = ts_bin;
       ts_receive->msg = ts_message;
 
       ts_message->timestamp = time(NULL);
@@ -229,20 +231,20 @@ namespace testbedservice
       }
 
       // at least, clean up...
-      if ( receive->msg->binaryMessage )
+      if ( receive->msg->__union_message == 1 )
       {
-         delete receive->msg->binaryMessage->binaryData.__ptr;
-         delete receive->msg->binaryMessage->binaryData.id;
-         delete receive->msg->binaryMessage->binaryData.type;
-         delete receive->msg->binaryMessage->binaryData.options;
-         delete receive->msg->binaryMessage->binaryType;
-         delete receive->msg->binaryMessage;
+         delete receive->msg->union_message.textMessage->msg;
+         delete receive->msg->union_message.textMessage->messageLevel;
+         delete receive->msg->union_message.textMessage;
       }
-      if ( receive->msg->textMessage )
+      if ( receive->msg->__union_message == 2 )
       {
-         delete receive->msg->textMessage->msg;
-         delete receive->msg->textMessage->messageLevel;
-         delete receive->msg->textMessage;
+         delete receive->msg->union_message.binaryMessage->binaryData.__ptr;
+         delete receive->msg->union_message.binaryMessage->binaryData.id;
+         delete receive->msg->union_message.binaryMessage->binaryData.type;
+         delete receive->msg->union_message.binaryMessage->binaryData.options;
+         delete receive->msg->union_message.binaryMessage->binaryType;
+         delete receive->msg->union_message.binaryMessage;
       }
       delete receive->msg->sourceNodeId;
       delete receive->msg;

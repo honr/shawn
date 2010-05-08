@@ -1,7 +1,7 @@
 all: soaps
 
 client_header:
-	wsdl2h -N shawnts -s -o client_description.h http://localhost:8080/controller?wsdl
+	wsdl2h -N shawnts -s -o client_description.h ControllerService.wsdl
 
 server_header:
 	wsdl2h -N shawnts -s -o server_description.h WSNService.wsdl
