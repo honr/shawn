@@ -5,35 +5,24 @@
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-#ifndef __SHAWN_APPS_TESTBEDSERVICE_CONTROL_KEEPER_H_
-#define __SHAWN_APPS_TESTBEDSERVICE_CONTROL_KEEPER_H_
-
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TESTBEDSERVICE
 
-#include "apps/testbedservice/keeper/testbedservice_control.h"
-#include "sys/util/handle_keeper.h"
+#include "apps/testbedservice/ws_handler/testbedservice_control_keeper.h"
 
 namespace testbedservice
 {
-    ///  Keeper that holds Testbedservice Control Instances.
-    /**
-     */
-    class TestbedserviceControlKeeper
-        : public shawn::HandleKeeper<TestbedserviceControl>
-    {
-    public:
-        ///@name construction / destruction
-        ///@{
-        ///
-        TestbedserviceControlKeeper();
-        ///
-        virtual ~TestbedserviceControlKeeper();
-        ///@}
-    };
 
+   // ----------------------------------------------------------------------
+   TestbedserviceControlKeeper::
+   TestbedserviceControlKeeper()
+      : shawn::HandleKeeper<TestbedserviceControl>( "TestbedserviceKeeper", "testbedservice" )
+   {}
+   // ----------------------------------------------------------------------
+   TestbedserviceControlKeeper::
+   ~TestbedserviceControlKeeper()
+   {}
 
 }
 
-#endif
 #endif

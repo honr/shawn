@@ -8,7 +8,7 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TESTBEDSERVICE
 
-#include "apps/testbedservice/ws_handler/virtual_link_transmission_model.h"
+#include "apps/testbedservice/virtual_links/virtual_link_transmission_model.h"
 #include "legacyapps/wiselib/ext_iface_processor.h"
 #include "sys/edge_model.h"
 #include "sys/world.h"

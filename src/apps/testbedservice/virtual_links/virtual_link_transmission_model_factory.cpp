@@ -8,8 +8,8 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TESTBEDSERVICE
 
-#include "apps/testbedservice/ws_handler/virtual_link_transmission_model_factory.h"
-#include "apps/testbedservice/ws_handler/virtual_link_transmission_model.h"
+#include "apps/testbedservice/virtual_links/virtual_link_transmission_model_factory.h"
+#include "apps/testbedservice/virtual_links/virtual_link_transmission_model.h"
 #include "sys/transm_models/transmission_model_keeper.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_environment.h"

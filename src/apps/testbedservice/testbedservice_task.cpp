@@ -10,7 +10,7 @@
 
 #include "apps/testbedservice/testbedservice_task.h"
 #include "apps/testbedservice/core/testbedservice_client.h"
-#include "apps/testbedservice/keeper/testbedservice_control_keeper.h"
+#include "apps/testbedservice/ws_handler/testbedservice_control_keeper.h"
 #include "sys/processors/processor_keeper.h"
 #include "sys/worlds/processor_world_factory.h"
 #include "sys/misc/random/basic_random.h"

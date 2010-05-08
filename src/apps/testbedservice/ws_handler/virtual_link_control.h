@@ -12,7 +12,7 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/core/testbedservice_client.h"
-#include "apps/testbedservice/ws_handler/virtual_link_message.h"
+#include "apps/testbedservice/virtual_links/virtual_link_message.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task.h"
 #include "sys/event_scheduler.h"

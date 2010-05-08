@@ -8,7 +8,7 @@
 #include "_apps_enable_cmake.h"
 #ifdef ENABLE_TESTBEDSERVICE
 #include "apps/testbedservice/processor/testbedservice_processor.h"
-#include "apps/testbedservice/keeper/testbedservice_control_keeper.h"
+#include "apps/testbedservice/ws_handler/testbedservice_control_keeper.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_environment.h"
 #include "sys/node.h"

@@ -11,7 +11,7 @@
 #include "_apps_enable_cmake.h"
 #ifdef ENABLE_TESTBEDSERVICE
 
-#include "apps/testbedservice/keeper/testbedservice_control.h"
+#include "apps/testbedservice/ws_handler/testbedservice_control.h"
 #include "sys/simulation/simulation_controller.h"
 #include <boost/thread.hpp>
 #include <boost/threadpool.hpp>

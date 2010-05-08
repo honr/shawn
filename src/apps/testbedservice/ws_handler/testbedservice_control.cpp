@@ -8,19 +8,17 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TESTBEDSERVICE
 
-#include "apps/testbedservice/keeper/testbedservice_control_keeper.h"
+#include "apps/testbedservice/ws_handler/testbedservice_control.h"
 
 namespace testbedservice
 {
 
-   // ----------------------------------------------------------------------
-   TestbedserviceControlKeeper::
-   TestbedserviceControlKeeper()
-      : shawn::HandleKeeper<TestbedserviceControl>( "TestbedserviceKeeper", "testbedservice" )
+   TestbedserviceControl::
+   TestbedserviceControl()
    {}
    // ----------------------------------------------------------------------
-   TestbedserviceControlKeeper::
-   ~TestbedserviceControlKeeper()
+   TestbedserviceControl::
+   ~TestbedserviceControl()
    {}
 
 }

@@ -8,7 +8,7 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TESTBEDSERVICE
 
-#include "apps/testbedservice/ws_handler/virtual_link_message.h"
+#include "apps/testbedservice/virtual_links/virtual_link_message.h"
 #include <cstring>
 
 namespace testbedservice

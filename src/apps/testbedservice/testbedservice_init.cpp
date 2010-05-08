@@ -15,10 +15,10 @@
 #include "apps/testbedservice/testbedservice_task.h"
 #include "apps/testbedservice/sockets/socket_task.h"
 #include "apps/testbedservice/ws_handler/virtual_link_control.h"
-#include "apps/testbedservice/ws_handler/virtual_link_task.h"
-#include "apps/testbedservice/ws_handler/virtual_link_transmission_model_factory.h"
+#include "apps/testbedservice/ws_handler/testbedservice_control_keeper.h"
+#include "apps/testbedservice/virtual_links/virtual_link_task.h"
+#include "apps/testbedservice/virtual_links/virtual_link_transmission_model_factory.h"
 #include "apps/testbedservice/processor/example_testbedservice_processor_factory.h"
-#include "apps/testbedservice/keeper/testbedservice_control_keeper.h"
 #include "apps/testbedservice/core/testbedservice_client.h"
 
 #include "sys/simulation/simulation_controller.h"
