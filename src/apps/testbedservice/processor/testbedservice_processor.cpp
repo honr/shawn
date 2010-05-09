@@ -8,9 +8,10 @@
 #include "_apps_enable_cmake.h"
 #ifdef ENABLE_TESTBEDSERVICE
 #include "apps/testbedservice/processor/testbedservice_processor.h"
-#include "apps/testbedservice/ws_handler/testbedservice_control_keeper.h"
+#include "apps/testbedservice/testbedservice_task.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_environment.h"
+#include "sys/simulation/simulation_task_keeper.h"
 #include "sys/node.h"
 #include "sys/world.h"
 
@@ -31,19 +32,14 @@ namespace testbedservice
    boot()
       throw()
    {
-      TestbedserviceControlKeeper *tck =
-         owner_w().world_w().simulation_controller_w().
-         keeper_by_name_w<TestbedserviceControlKeeper>("TestbedserviceKeeper");
+      shawn::SimulationTaskKeeper& stk =
+         owner_w().world_w().simulation_controller_w().simulation_task_keeper_w();
 
-      if ( tck )
+      TestbedServiceTask *tst = dynamic_cast<TestbedServiceTask*>(
+                                    stk.find_w( "testbedservice" ).get() );
+      if ( tst )
       {
-         controller_ = dynamic_cast<TestbedServiceClient*>
-                            ( tck->find_w( "testbedservice_client" ).get() );
-         if ( !controller_ )
-         {
-            std::cerr << "'TestbedServiceClient' not found in Keeper." << std::endl;
-            abort();
-         }
+         controller_ = &tst->testbedservice_client_w();
       }
       else
       {

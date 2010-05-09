@@ -35,9 +35,16 @@ namespace testbedservice
 
       virtual void run( shawn::SimulationController& sc )
          throw( std::runtime_error );
+      // --------------------------------------------------------------------
+      inline const TestbedServiceClient& testbedservice_client( void ) throw()
+      { return service_client_; }
+      // --------------------------------------------------------------------
+      inline TestbedServiceClient& testbedservice_client_w( void ) throw()
+      { return service_client_; }
 
    private:
       TestbedServiceServer testbedservice_server_;
+      TestbedServiceClient service_client_;
 
       ExperimentControl experiment_control_;
       NetworkControl network_control_;

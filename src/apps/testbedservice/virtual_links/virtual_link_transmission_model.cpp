@@ -10,7 +10,6 @@
 
 #include "apps/testbedservice/virtual_links/virtual_link_transmission_model.h"
 #include "apps/testbedservice/virtual_links/virtual_link_message.h"
-#include "apps/testbedservice/ws_handler/testbedservice_control_keeper.h"
 #include "apps/testbedservice/util/types.h"
 #include "legacyapps/wiselib/ext_iface_processor.h"
 #include "sys/edge_model.h"
@@ -25,8 +24,7 @@ namespace testbedservice
    // ----------------------------------------------------------------------
    VirtualLinkTransmissionModel::
    VirtualLinkTransmissionModel()
-      : client_ ( 0 ),
-         vlink_ ( 0 )
+      : client_ ( 0 )
    {}
    // ----------------------------------------------------------------------
    VirtualLinkTransmissionModel::
@@ -39,26 +37,6 @@ namespace testbedservice
       throw()
    {
       ChainableTransmissionModel::init();
-
-      TestbedserviceControlKeeper *tck =
-         world_w().simulation_controller_w().
-         keeper_by_name_w<TestbedserviceControlKeeper>("TestbedserviceKeeper");
-
-      if ( tck )
-      {
-         client_ = dynamic_cast<TestbedServiceClient*>(
-                              tck->find_w( "testbedservice_client" ).get() );
-         if ( !client_ )
-         {
-            std::cerr << "'TestbedserviceClient' not found." << std::endl;
-            abort();
-         }
-      }
-      else
-      {
-         std::cerr << "'TestbedserviceKeeper' not found." << std::endl;
-         abort();
-      }
    }
    // ----------------------------------------------------------------------
    void
@@ -118,12 +96,7 @@ namespace testbedservice
       int size = vmsg.length();
       uint8_t *bytes = vmsg.to_bytes();
       testbedservice_client().send_binary_message( source, size, bytes );
-
-//       std::cout << "vlink::send test data to controller..." << std::endl;
-//       testbedservice_client().send_test_data();
-//       std::cout << "vlink::ok" << std::endl;
-
-//       delete bytes;
+      delete bytes;
    }
    // ----------------------------------------------------------------------
    void
@@ -152,18 +125,16 @@ namespace testbedservice
                      node->get_processor_of_type_w<wiselib::ExtIfaceProcessor>();
                   if ( extiface )
                   {
-// //                      extiface->receive_vlink( msg );
-#warning whats up with wiselib proc???
+                     extiface->receive_vlink( msg );
                      std::cout << "*** ok, delivered " << std::endl;
                   }
                }
             }
 
-         std::cout << "AND ECHO...." <<      std::endl;
-         uint64_t temp = msg->source;
-         msg->source = msg->destination;
-         msg->destination = temp;
-
+//          std::cout << "AND ECHO...." <<      std::endl;
+//          uint64_t temp = msg->source;
+//          msg->source = msg->destination;
+//          msg->destination = temp;
 //          socket_client_.send_data( (uint8_t*)msg, msg->length() );
       }
    }

@@ -11,7 +11,6 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 #ifdef ENABLE_TESTBEDSERVICE
 
-#include "apps/testbedservice/ws_handler/virtual_link_control.h"
 #include "apps/testbedservice/core/testbedservice_client.h"
 #include "apps/testbedservice/sockets/socket_client.h"
 #include "legacyapps/wiselib/ext_iface_processor.h"
@@ -83,7 +82,6 @@ namespace testbedservice
       VirtualLinkListIterator find_virtual_link_w( int shawn_node, int virtual_node ) throw();
       // --------------------------------------------------------------------
       TestbedServiceClient *client_;
-      VirtualLinkControl *vlink_;
 
       VirtualLinkList virtual_links_;
 

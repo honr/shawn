@@ -16,7 +16,6 @@
 #include "apps/testbedservice/sockets/socket_task.h"
 #include "apps/testbedservice/core/testbedservice_client.h"
 #include "apps/testbedservice/ws_handler/virtual_link_control.h"
-#include "apps/testbedservice/ws_handler/testbedservice_control_keeper.h"
 #include "apps/testbedservice/virtual_links/virtual_link_task.h"
 #include "apps/testbedservice/virtual_links/virtual_link_transmission_model_factory.h"
 #include "apps/testbedservice/processor/example_testbedservice_processor_factory.h"
@@ -32,10 +31,6 @@ extern "C" void init_testbedservice( shawn::SimulationController& sc )
    sc.simulation_task_keeper_w().add( new testbedservice::TestbedServiceVirtualLinkTask );
 
    sc.transmission_model_keeper_w().add( new testbedservice::VirtualLinkTransmissionModelFactory() );
-
-   testbedservice::TestbedserviceControlKeeper *tck = new testbedservice::TestbedserviceControlKeeper();
-   tck->add( new testbedservice::TestbedServiceClient() );
-   sc.add_keeper( tck );
 
    testbedservice::ExampleTestbedServiceProcessorFactory::register_factory( sc );
 }

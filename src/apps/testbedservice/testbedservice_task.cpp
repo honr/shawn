@@ -10,7 +10,8 @@
 
 #include "apps/testbedservice/testbedservice_task.h"
 #include "apps/testbedservice/core/testbedservice_client.h"
-#include "apps/testbedservice/ws_handler/testbedservice_control_keeper.h"
+#include "apps/testbedservice/virtual_links/virtual_link_transmission_model.h"
+#include "sys/transm_models/chainable_transmission_model.h"
 #include "sys/processors/processor_keeper.h"
 #include "sys/worlds/processor_world_factory.h"
 #include "sys/misc/random/basic_random.h"
@@ -56,33 +57,40 @@ namespace testbedservice
    {
       require_world( sc );
 
-      TestbedserviceControlKeeper *tck =
-         sc.world_w().simulation_controller_w().
-         keeper_by_name_w<TestbedserviceControlKeeper>("TestbedserviceKeeper");
+      service_client_.init(sc);
 
-      TestbedServiceClient *client;
-      if ( tck )
+      // search for virtual link transmission model
+      VirtualLinkTransmissionModel *vltm = 0;
+      shawn::ChainableTransmissionModel *ctm =
+         dynamic_cast<shawn::ChainableTransmissionModel*>(
+                                 &sc.world_w().transmission_model_w() );
+      do
       {
-         client = dynamic_cast<TestbedServiceClient*>(
-                              tck->find_w( "testbedservice_client" ).get() );
-         if ( !client )
-         {
-            std::cerr << "'TestbedserviceClient' not found." << std::endl;
-            abort();
-         }
+         vltm = dynamic_cast<VirtualLinkTransmissionModel*>( ctm );
+         if (vltm)
+            break;
+
+         ctm = dynamic_cast<shawn::ChainableTransmissionModel*>(
+                                 &ctm->next_transm_model_w() );
+         if (ctm)
+            break;
+      } while ( ctm->has_next_transm_model() );
+
+      if ( vltm )
+      {
+         vltm->set_testbedservice_client( service_client_ );
       }
       else
       {
-         std::cerr << "'TestbedserviceKeeper' not found." << std::endl;
+         std::cerr << "Cannot find 'VirtualLinkTransmissionModel'." << std::endl;
          abort();
       }
-      client->init(sc);
 
       // TODO: add these control instances also to control keeper
-      experiment_control_.init( sc, *client );
-      network_control_.init( sc, *client );
-      virtual_link_control_.init( sc, *client );
-      node_control_.init( sc, *client, virtual_link_control_ );
+      experiment_control_.init( sc, service_client_ );
+      network_control_.init( sc, service_client_ );
+      virtual_link_control_.init( sc, service_client_, vltm );
+      node_control_.init( sc, service_client_, virtual_link_control_ );
 
       testbedservice_server_.start_server( sc );
       // wait for server to startup
@@ -90,7 +98,7 @@ namespace testbedservice
       boost::this_thread::sleep( boost::posix_time::milliseconds( 500 ) );
 
       std::cout << "send test data to controller..." << std::endl;
-      client->send_test_data();
+      service_client_.send_test_data();
       std::cout << "ok" << std::endl;
    }
 

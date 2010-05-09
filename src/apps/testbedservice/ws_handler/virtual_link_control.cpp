@@ -9,6 +9,7 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/ws_handler/virtual_link_control.h"
+#include "apps/testbedservice/virtual_links/virtual_link_transmission_model.h"
 #include "apps/testbedservice/virtual_links/virtual_link_message.h"
 #include "apps/testbedservice/core/shawn_serverH.h"
 #include "sys/processors/processor_keeper.h"
@@ -30,8 +31,9 @@ namespace testbedservice
    // ----------------------------------------------------------------------
    VirtualLinkControl::
    VirtualLinkControl()
-      : controller_ (0),
-         sc_( 0 )
+      : vltm_        ( 0 ),
+         controller_ ( 0 ),
+         sc_         ( 0 )
    {}
    // ----------------------------------------------------------------------
    VirtualLinkControl::
@@ -46,24 +48,25 @@ namespace testbedservice
             shawn::EventScheduler::EventTagHandle& eth )
       throw()
    {
-//       std::cout << "TIMEOUT AT " << sc_->world().current_time() << std::endl;
-//
-//       VirtualLinkMessage *msg = dynamic_cast<VirtualLinkMessage*>( eth.get() );
-//       if ( msg )
-//       {
-//          std::cout << "Got VirtualLinkMessage from " << msg->source  << std::endl;
-//       }
-//       else
-//          std::cout << "ETH of unknown type" << std::endl;
+      std::cout << "TIMEOUT AT " << sc_->world().current_time() << std::endl;
+
+      VirtualLinkMessage *msg = dynamic_cast<VirtualLinkMessage*>( eth.get() );
+      if ( msg )
+      {
+         std::cout << "Got VirtualLinkMessage from " << msg->source  << std::endl;
+      }
+      else
+         std::cout << "ETH of unknown type" << std::endl;
    }
    // ----------------------------------------------------------------------
    void
    VirtualLinkControl::
-   init( shawn::SimulationController& sc, TestbedServiceClient& controller )
+   init( shawn::SimulationController& sc, TestbedServiceClient& controller, VirtualLinkTransmissionModel *vltm )
       throw()
    {
       sc_ = &sc;
       controller_ = &controller;
+      vltm_ = vltm;
       virtual_link_control_ = this;
    }
    // ----------------------------------------------------------------------
@@ -81,7 +84,7 @@ namespace testbedservice
 
          std::cout << "CALLED AT " << sc_->world().current_time() << std::endl;
          double now = sc_->world().current_time();
-// TODO: call vlink-tm
+         sc_->world_w().scheduler_w().new_event( virtual_link_transmission_model_w(), now, vlink_msg );
          sc_->world_w().scheduler_w().new_event( *this, now, vlink_msg );
          std::cout << "ADD EVENT REMOTELY AT " << now << std::endl;
       }

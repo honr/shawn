@@ -12,6 +12,7 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/core/testbedservice_client.h"
+#include "apps/testbedservice/virtual_links/virtual_link_transmission_model.h"
 #include "apps/testbedservice/util/types.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task.h"
@@ -36,7 +37,7 @@ namespace testbedservice
                      double,
                      shawn::EventScheduler::EventTagHandle& ) throw();
 
-      void init( shawn::SimulationController& sc, TestbedServiceClient& controller ) throw();
+      void init( shawn::SimulationController& sc, TestbedServiceClient& controller, VirtualLinkTransmissionModel *vltm ) throw();
 
       void add_virtual_message( std::string dest, BinaryMessage message ) throw();
       // --------------------------------------------------------------------
@@ -46,7 +47,16 @@ namespace testbedservice
       inline const shawn::SimulationController& simulation_controller( void ) const throw()
       { assert(sc_); return *sc_; }
       // --------------------------------------------------------------------
-      inline TestbedServiceClient& controller( void ) throw()
+      inline VirtualLinkTransmissionModel& virtual_link_transmission_model_w( void ) throw()
+      { assert(vltm_); return *vltm_; }
+      // --------------------------------------------------------------------
+      inline const VirtualLinkTransmissionModel& virtual_link_transmission_model( void ) const throw()
+      { assert(vltm_); return *vltm_; }
+      // --------------------------------------------------------------------
+      inline TestbedServiceClient& controller_w( void ) throw()
+      { assert(controller_); return *controller_; }
+      // --------------------------------------------------------------------
+      inline const TestbedServiceClient& controller( void ) const throw()
       { assert(controller_); return *controller_; }
 
    private:
@@ -54,14 +64,13 @@ namespace testbedservice
       typedef EventHandlerList::iterator EventHandlerListIterator;
       typedef EventHandlerList::const_iterator ConstEventHandlerListIterator;
 
+      VirtualLinkTransmissionModel *vltm_;
       TestbedServiceClient *controller_;
       shawn::SimulationController *sc_;
+
       boost::mutex sc_mutex_;
    };
-   // -----------------------------------------------------------------------
-   // -----------------------------------------------------------------------
-   // -----------------------------------------------------------------------
-   void inject_message( int length, unsigned char *buffer );
+
 }
 
 #endif
