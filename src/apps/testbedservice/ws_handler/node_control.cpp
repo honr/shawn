@@ -189,41 +189,50 @@ namespace testbedservice
       StatusValueVector response_values;
       StatusMsgVector response_msgs;
 
-      for ( NodeIdVector::iterator it = nodes.begin(); it != nodes.end(); ++it )
+      std::cout << "binary message:" << std::endl;
+      std::cout << "  -> from: " << message.source << std::endl;
+      if ( message.buffer[0] == VIRTUAL_LINK_MESSAGE )
       {
-         shawn::Node *node =
-            simulation_controller_w().world_w().find_node_by_label_w( *it );
-
-         if ( node )
-         {
-            if ( message.buffer[0] == VIRTUAL_LINK_MESSAGE )
-            {
-               virtual_link_control().add_virtual_message( node->label(), message );
-               response_values.push_back( 1 );
-            }
-            else
-            {
-               TestbedServiceProcessor *proc =
-                  node->get_processor_of_type_w<TestbedServiceProcessor>();
-
-               if ( proc )
-               {
-                  // TODO: do this over event scheduler to change to Shawn's main thread
-                  proc->process_binary_message( message );
-                  response_values.push_back( 1 );
-               }
-               else
-                  response_values.push_back( 0 );
-            }
-         }
-         else
-            response_values.push_back( -1 );
-
-         response_nodes.push_back( *it );
-         response_msgs.push_back( "" );
+         std::cout << "vlink message" << std::endl;
+         virtual_link_control().add_virtual_message( "", message );
+         response_values.push_back( 1 );
       }
 
-      controller().send_receive_status( id, response_nodes, response_values, response_msgs );
+//       for ( NodeIdVector::iterator it = nodes.begin(); it != nodes.end(); ++it )
+//       {
+//          shawn::Node *node =
+//             simulation_controller_w().world_w().find_node_by_label_w( *it );
+// 
+//          if ( node )
+//          {
+//             if ( message.buffer[0] == VIRTUAL_LINK_MESSAGE )
+//             {
+//                virtual_link_control().add_virtual_message( node->label(), message );
+//                response_values.push_back( 1 );
+//             }
+//             else
+//             {
+//                TestbedServiceProcessor *proc =
+//                   node->get_processor_of_type_w<TestbedServiceProcessor>();
+// 
+//                if ( proc )
+//                {
+//                   // TODO: do this over event scheduler to change to Shawn's main thread
+//                   proc->process_binary_message( message );
+//                   response_values.push_back( 1 );
+//                }
+//                else
+//                   response_values.push_back( 0 );
+//             }
+//          }
+//          else
+//             response_values.push_back( -1 );
+// 
+//          response_nodes.push_back( *it );
+//          response_msgs.push_back( "" );
+//       }
+// 
+//       controller().send_receive_status( id, response_nodes, response_values, response_msgs );
    }
    // ----------------------------------------------------------------------
    NodeIdVector

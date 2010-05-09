@@ -85,7 +85,7 @@ namespace testbedservice
          std::cout << "CALLED AT " << sc_->world().current_time() << std::endl;
          double now = sc_->world().current_time();
          sc_->world_w().scheduler_w().new_event( virtual_link_transmission_model_w(), now, vlink_msg );
-         sc_->world_w().scheduler_w().new_event( *this, now, vlink_msg );
+//          sc_->world_w().scheduler_w().new_event( *this, now, vlink_msg );
          std::cout << "ADD EVENT REMOTELY AT " << now << std::endl;
       }
    }
