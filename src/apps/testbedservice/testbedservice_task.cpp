@@ -60,10 +60,16 @@ namespace testbedservice
          sc.world_w().simulation_controller_w().
          keeper_by_name_w<TestbedserviceControlKeeper>("TestbedserviceKeeper");
 
-      TestbedServiceClient *client = new testbedservice::TestbedServiceClient();
+      TestbedServiceClient *client;
       if ( tck )
       {
-        tck->add( client );
+         client = dynamic_cast<TestbedServiceClient*>(
+                              tck->find_w( "testbedservice_client" ).get() );
+         if ( !client )
+         {
+            std::cerr << "'TestbedserviceClient' not found." << std::endl;
+            abort();
+         }
       }
       else
       {
@@ -75,14 +81,12 @@ namespace testbedservice
       // TODO: add these control instances also to control keeper
       experiment_control_.init( sc, *client );
       network_control_.init( sc, *client );
-      node_control_.init( sc, *client );
       virtual_link_control_.init( sc, *client );
+      node_control_.init( sc, *client, virtual_link_control_ );
 
       testbedservice_server_.start_server( sc );
-
-
-      // WAIT FOR SERVER TO STARTUP
-      std::cout << "wait for server to startup (1/2 second)..." << std::endl;
+      // wait for server to startup
+      std::cout << "wait for server to startup (500ms)..." << std::endl;
       boost::this_thread::sleep( boost::posix_time::milliseconds( 500 ) );
 
       std::cout << "send test data to controller..." << std::endl;

@@ -12,6 +12,7 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/ws_handler/testbedservice_control.h"
+#include "apps/testbedservice/util/types.h"
 #include "sys/simulation/simulation_controller.h"
 #include <boost/thread.hpp>
 #include <boost/threadpool.hpp>
@@ -47,13 +48,6 @@ namespace testbedservice
    {
 
    public:
-      typedef std::vector<std::string> NodeIdVector;
-      typedef NodeIdVector::iterator NodeIdVectorIterator;
-      typedef std::vector<int> StatusValueVector;
-      typedef StatusValueVector::iterator StatusValueIterator;
-      typedef std::vector<std::string> StatusMsgVector;
-      typedef StatusMsgVector::iterator StatusMsgVectorIterator;
-      // --------------------------------------------------------------------
       TestbedServiceClient();
       ~TestbedServiceClient();
       // --------------------------------------------------------------------

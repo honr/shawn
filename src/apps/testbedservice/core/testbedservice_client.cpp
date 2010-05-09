@@ -66,9 +66,9 @@ namespace testbedservice
    void
    TestbedServiceClient::
    send_receive_status( std::string id,
-                        TestbedServiceClient::NodeIdVector& nodes,
-                        TestbedServiceClient::StatusValueVector& values,
-                        TestbedServiceClient::StatusMsgVector& msgs  )
+                        NodeIdVector& nodes,
+                        StatusValueVector& values,
+                        StatusMsgVector& msgs  )
       throw()
    {
       assert( nodes.size() == values.size() );
@@ -96,7 +96,8 @@ namespace testbedservice
          req->status[i] = st;
       }
       boost::lock_guard<boost::mutex> pool_lock( pool_mutex_ );
-      pool_.schedule( boost::bind( &TestbedServiceClient::call_receive_status, this, status ) );
+//       pool_.schedule( boost::bind( &TestbedServiceClient::call_receive_status, this, status ) );
+      call_receive_status( status );
    }
    // --------------------------------------------------------------------
    void
@@ -119,7 +120,8 @@ namespace testbedservice
       ts_text->messageLevel = new ns2__messageLevel( (ns2__messageLevel)level );
 
       boost::lock_guard<boost::mutex> pool_lock( pool_mutex_ );
-      pool_.schedule( boost::bind( &TestbedServiceClient::call_receive_message, this, ts_receive ) );
+//       pool_.schedule( boost::bind( &TestbedServiceClient::call_receive_message, this, ts_receive ) );
+      call_receive_message( ts_receive );
    }
    // --------------------------------------------------------------------
    void
@@ -127,6 +129,7 @@ namespace testbedservice
    send_binary_message( std::string& source, int len, uint8_t* buf )
       throw()
    {
+std::cout << "client::sendbin from " << source << " with len " << len << " at " << buf << std::endl;
       // prepare basic message types
       shawnts__receive *ts_receive = new shawnts__receive;
       ns2__message *ts_message = new ns2__message;
@@ -142,9 +145,12 @@ namespace testbedservice
       memcpy( buf_copy, buf, len );
       ts_bin->binaryData.__ptr = buf_copy;
       ts_bin->binaryData.__size = len;
-
+std::cout << "client::send" << std::endl;
       boost::lock_guard<boost::mutex> pool_lock( pool_mutex_ );
-      pool_.schedule( boost::bind( &TestbedServiceClient::call_receive_message, this, ts_receive ) );
+std::cout << "client::mut" << std::endl;
+      call_receive_message( ts_receive );
+//       pool_.schedule( boost::bind( &TestbedServiceClient::call_receive_message, this, ts_receive ) );
+std::cout << "client::sent" << std::endl;
    }
    // --------------------------------------------------------------------
    bool
@@ -216,7 +222,7 @@ namespace testbedservice
    call_receive_message( shawnts__receive *receive )
    {
       boost::lock_guard<boost::mutex> send_lock( send_mutex_ );
-
+std::cout << "client::call_receive_message" << std::endl;
       if ( controller().receive( receive ) == SOAP_OK )
       {
          std::cerr << "Send status ok" << std::endl;

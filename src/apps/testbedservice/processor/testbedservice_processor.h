@@ -13,6 +13,7 @@
 
 #include "apps/testbedservice/core/testbedservice_client.h"
 #include "apps/testbedservice/ws_handler/experiment_control.h"
+#include "apps/testbedservice/util/types.h"
 #include "sys/processor.h"
 #include "sys/event_scheduler.h"
 
@@ -28,32 +29,6 @@ namespace testbedservice
    public:
 
       typedef ExperimentControl::FlashProgram FlashProgram;
-
-      enum MessageLevel
-      {
-         MESSAGE_LEVEL_TRACE = 0,
-         MESSAGE_LEVEL_DEBUG,
-         MESSAGE_LEVEL_INFO,
-         MESSAGE_LEVEL_WARN,
-         MESSAGE_LEVEL_ERROR,
-         MESSAGE_LEVEL_FATAL
-      };
-
-      struct TextMessage
-      {
-         std::string source;
-         time_t timestamp;
-         std::string message;
-         MessageLevel level;
-      };
-
-      struct BinaryMessage
-      {
-         std::string source;
-         time_t timestamp;
-         int size;
-         uint8_t *buffer;
-      };
 
       ///@name Constructor/Destructor
       ///@{

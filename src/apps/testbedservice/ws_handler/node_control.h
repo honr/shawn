@@ -12,7 +12,9 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/core/testbedservice_client.h"
+#include "apps/testbedservice/util/types.h"
 #include "apps/testbedservice/processor/testbedservice_processor.h"
+#include "apps/testbedservice/ws_handler/virtual_link_control.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task.h"
 #include "sys/event_scheduler.h"
@@ -31,18 +33,10 @@ namespace testbedservice
    class NodeControl
    {
    public:
-      typedef TestbedServiceClient::NodeIdVector NodeIdVector;
-      typedef TestbedServiceClient::StatusValueVector StatusValueVector;
-      typedef TestbedServiceClient::StatusMsgVector StatusMsgVector;
-
-      typedef TestbedServiceProcessor::MessageLevel MessageLevel;
-      typedef TestbedServiceProcessor::TextMessage TextMessage;
-      typedef TestbedServiceProcessor::BinaryMessage BinaryMessage;
-
       NodeControl();
       virtual ~NodeControl();
       // --------------------------------------------------------------------
-      void init( shawn::SimulationController& sc, TestbedServiceClient& controller ) throw();
+      void init( shawn::SimulationController& sc, TestbedServiceClient& controller, VirtualLinkControl& vlink_control ) throw();
       // --------------------------------------------------------------------
       void are_nodes_alive( std::string id, NodeIdVector nodes );
       void reset_nodes( std::string id, NodeIdVector nodes );
@@ -61,10 +55,14 @@ namespace testbedservice
       // --------------------------------------------------------------------
       inline TestbedServiceClient& controller( void ) throw()
       { assert(controller_); return *controller_; }
+      // --------------------------------------------------------------------
+      inline VirtualLinkControl& virtual_link_control( void ) throw()
+      { assert(vlink_control_); return *vlink_control_; }
 
    private:
 
       TestbedServiceClient *controller_;
+      VirtualLinkControl *vlink_control_;
       shawn::SimulationController *sc_;
    };
 

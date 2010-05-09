@@ -9,6 +9,7 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/ws_handler/virtual_link_control.h"
+#include "apps/testbedservice/virtual_links/virtual_link_message.h"
 #include "apps/testbedservice/core/shawn_serverH.h"
 #include "sys/processors/processor_keeper.h"
 #include "sys/worlds/processor_world_factory.h"
@@ -68,23 +69,20 @@ namespace testbedservice
    // ----------------------------------------------------------------------
    void
    VirtualLinkControl::
-   add_virtual_message( VirtualLinkMessage *message )
+   add_virtual_message( std::string dest, BinaryMessage message )
       throw()
    {
       boost::lock_guard<boost::mutex> sc_lock( sc_mutex_ );
-      boost::lock_guard<boost::mutex> hl_lock( handler_list_mutex_ );
 
       if ( sc_ )
       {
+         // TODO: check if buffer is of correct size for vlink message
+         VirtualLinkMessage *vlink_msg = new VirtualLinkMessage( message.buffer );
+
          std::cout << "CALLED AT " << sc_->world().current_time() << std::endl;
          double now = sc_->world().current_time();
-         for ( EventHandlerListIterator
-                  it = handler_list_.begin();
-                  it != handler_list_.end();
-                  ++it )
-         {
-            sc_->world_w().scheduler_w().new_event( **it, now, message );
-         }
+// TODO: call vlink-tm
+         sc_->world_w().scheduler_w().new_event( *this, now, vlink_msg );
          std::cout << "ADD EVENT REMOTELY AT " << now << std::endl;
       }
    }
@@ -152,22 +150,6 @@ namespace shawn_server
       std::cout << "shawn::testbedservice::getFilters" << std::endl;
       return SOAP_OK;
    }
-
-// // //    int ns_shawn__send( struct soap *soap,
-// // //                        shawn_server::xsd__base64Binary arg0,
-// // //                        struct shawn_server::ns_shawn__sendResponse& ret )
-// // //    {
-// // //       if ( webservice::webservice_vlink )
-// // //       {
-// // //          webservice::VirtualLinkMessage *msg =
-// // //             new webservice::VirtualLinkMessage( arg0.__ptr );
-// // // 
-// // //          webservice::webservice_vlink->add_virtual_message( msg );
-// // //       }
-// // // 
-// // //       ret._return_ = true;
-// // //       return 0;
-// // //    }
 
 }
 

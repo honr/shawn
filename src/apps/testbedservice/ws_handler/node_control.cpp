@@ -10,6 +10,7 @@
 
 #include "apps/testbedservice/ws_handler/node_control.h"
 #include "apps/testbedservice/util/ws_helpers.h"
+#include "apps/testbedservice/util/types.h"
 #include "apps/testbedservice/core/shawn_serverH.h"
 #include "sys/processors/processor_keeper.h"
 #include "sys/worlds/processor_world_factory.h"
@@ -29,8 +30,9 @@ namespace testbedservice
    // ----------------------------------------------------------------------
    NodeControl::
    NodeControl()
-      : controller_( 0 ),
-         sc_       ( 0 )
+      : controller_     ( 0 ),
+         vlink_control_ ( 0 ),
+         sc_            ( 0 )
    {}
    // ----------------------------------------------------------------------
    NodeControl::
@@ -39,11 +41,12 @@ namespace testbedservice
    // ----------------------------------------------------------------------
    void
    NodeControl::
-   init( shawn::SimulationController& sc, TestbedServiceClient& controller )
+   init( shawn::SimulationController& sc, TestbedServiceClient& controller, VirtualLinkControl& vlink_control )
       throw()
    {
       sc_ = &sc;
       controller_ = &controller;
+      vlink_control_ = &vlink_control;
       node_control_ = this;
    }
    // ----------------------------------------------------------------------
@@ -127,6 +130,7 @@ namespace testbedservice
                   it != node->begin_processors_w();
                   ++it )
          {
+            // TODO: do this over event scheduler to change to Shawn's main thread
             (**it).set_state( state );
          }
          response_values.push_back( 1 );
@@ -160,6 +164,7 @@ namespace testbedservice
                node->get_processor_of_type_w<TestbedServiceProcessor>();
             if ( proc )
             {
+               // TODO: do this over event scheduler to change to Shawn's main thread
                proc->process_text_message( message );
                response_values.push_back( 1 );
             }
@@ -191,16 +196,25 @@ namespace testbedservice
 
          if ( node )
          {
-            TestbedServiceProcessor *proc =
-               node->get_processor_of_type_w<TestbedServiceProcessor>();
-
-            if ( proc )
+            if ( message.buffer[0] == VIRTUAL_LINK_MESSAGE )
             {
-               proc->process_binary_message( message );
+               virtual_link_control().add_virtual_message( node->label(), message );
                response_values.push_back( 1 );
             }
             else
-               response_values.push_back( 0 );
+            {
+               TestbedServiceProcessor *proc =
+                  node->get_processor_of_type_w<TestbedServiceProcessor>();
+
+               if ( proc )
+               {
+                  // TODO: do this over event scheduler to change to Shawn's main thread
+                  proc->process_binary_message( message );
+                  response_values.push_back( 1 );
+               }
+               else
+                  response_values.push_back( 0 );
+            }
          }
          else
             response_values.push_back( -1 );
@@ -212,7 +226,7 @@ namespace testbedservice
       controller().send_receive_status( id, response_nodes, response_values, response_msgs );
    }
    // ----------------------------------------------------------------------
-   NodeControl::NodeIdVector
+   NodeIdVector
    NodeControl::get_neighborhood( std::string urn )
    {
       NodeIdVector neighbors;
@@ -418,14 +432,14 @@ namespace shawn_server
       {
          case 1:
          {
-            testbedservice::NodeControl::TextMessage message;
+            testbedservice::TextMessage message;
             message.source = source;
             message.timestamp = timestamp;
             message.message =
                std::string( shawnts__send_->message->union_message.textMessage->msg );
             // TODO: directly integrate soap-enum into struct?
             int level = *shawnts__send_->message->union_message.textMessage->messageLevel;
-            message.level = (testbedservice::NodeControl::MessageLevel)level;
+            message.level = (testbedservice::MessageLevel)level;
 
             boost::thread thrd( boost::bind(
                &testbedservice::NodeControl::pass_text_message,
@@ -435,7 +449,7 @@ namespace shawn_server
          }
          case 2:
          {
-            testbedservice::NodeControl::BinaryMessage message;
+            testbedservice::BinaryMessage message;
             message.source = source;
             message.timestamp = timestamp;
             message.size =

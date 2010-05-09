@@ -9,10 +9,15 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/virtual_links/virtual_link_transmission_model.h"
+#include "apps/testbedservice/virtual_links/virtual_link_message.h"
+#include "apps/testbedservice/ws_handler/testbedservice_control_keeper.h"
+#include "apps/testbedservice/util/types.h"
 #include "legacyapps/wiselib/ext_iface_processor.h"
 #include "sys/edge_model.h"
 #include "sys/world.h"
 #include <algorithm>
+#include <sstream>
+
 
 namespace testbedservice
 {
@@ -20,6 +25,8 @@ namespace testbedservice
    // ----------------------------------------------------------------------
    VirtualLinkTransmissionModel::
    VirtualLinkTransmissionModel()
+      : client_ ( 0 ),
+         vlink_ ( 0 )
    {}
    // ----------------------------------------------------------------------
    VirtualLinkTransmissionModel::
@@ -32,34 +39,26 @@ namespace testbedservice
       throw()
    {
       ChainableTransmissionModel::init();
-// //       socket_client_.start_client( world().simulation_controller() );
-// // 
-// //       testbedservice::TestbedServiceHandlerKeeper *whk =
-// //          world_w().simulation_controller_w().
-// //          keeper_by_name_w<testbedservice::TestbedServiceHandlerKeeper>
-// //                                           ("TestbedServiceHandlerKeeper");
-// // 
-// //       if ( whk )
-// //       {
-// //          vlink_ = dynamic_cast<VirtualLinkControl*>
-// //                                  ( whk->find_w( "virtual_link" ).get() );
-// //          if ( vlink_ )
-// //          {
-// //             vlink_->add_handler( this );
-// //          }
-// //          else
-// //          {
-// //             std::cerr << "TestbedServiceVirtualLink is of wrong type." << std::endl;
-// //             abort();
-// //          }
-// //       }
-// //       else
-// //       {
-// //          std::cerr << "TestbedServiceHandlerKeeper not registered." << std::endl;
-// //          abort();
-// //       }
-// // 
-// //       std::cout << "TestbedService::virtual_link_transm: Initialised." << std::endl;
+
+      TestbedserviceControlKeeper *tck =
+         world_w().simulation_controller_w().
+         keeper_by_name_w<TestbedserviceControlKeeper>("TestbedserviceKeeper");
+
+      if ( tck )
+      {
+         client_ = dynamic_cast<TestbedServiceClient*>(
+                              tck->find_w( "testbedservice_client" ).get() );
+         if ( !client_ )
+         {
+            std::cerr << "'TestbedserviceClient' not found." << std::endl;
+            abort();
+         }
+      }
+      else
+      {
+         std::cerr << "'TestbedserviceKeeper' not found." << std::endl;
+         abort();
+      }
    }
    // ----------------------------------------------------------------------
    void
@@ -102,19 +101,29 @@ namespace testbedservice
       throw()
    {
       VirtualLinkMessage vmsg;
-      vmsg.destination = message.destination();
-      vmsg.source = message.source().id();
+      vmsg.type = NODE_OUTPUT_VIRTUAL_LINK;
       vmsg.rssi = 127;
       vmsg.lqi = 127;
       vmsg.payload_size = message.payload_size();
+      vmsg.destination = message.destination();
+      vmsg.source = message.source().id();
       vmsg.payload = new uint8_t[vmsg.payload_size];
       memcpy( vmsg.payload, message.payload(), vmsg.payload_size );
-
       std::cout << "Send " << vmsg << std::endl;
 
+      std::stringstream ssource;
+      ssource << message.source().id();
+      std::string source = ssource.str();
+
+      int size = vmsg.length();
       uint8_t *bytes = vmsg.to_bytes();
-//       bool ret = socket_client_.send_data( bytes, vmsg.length() );
-      delete bytes;
+      testbedservice_client().send_binary_message( source, size, bytes );
+
+//       std::cout << "vlink::send test data to controller..." << std::endl;
+//       testbedservice_client().send_test_data();
+//       std::cout << "vlink::ok" << std::endl;
+
+//       delete bytes;
    }
    // ----------------------------------------------------------------------
    void

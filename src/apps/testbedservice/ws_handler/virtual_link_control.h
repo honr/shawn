@@ -12,7 +12,7 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/core/testbedservice_client.h"
-#include "apps/testbedservice/virtual_links/virtual_link_message.h"
+#include "apps/testbedservice/util/types.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task.h"
 #include "sys/event_scheduler.h"
@@ -38,7 +38,7 @@ namespace testbedservice
 
       void init( shawn::SimulationController& sc, TestbedServiceClient& controller ) throw();
 
-      void add_virtual_message( VirtualLinkMessage *message ) throw();
+      void add_virtual_message( std::string dest, BinaryMessage message ) throw();
       // --------------------------------------------------------------------
       inline shawn::SimulationController& simulation_controller_w( void ) throw()
       { assert(sc_); return *sc_; }
@@ -57,9 +57,6 @@ namespace testbedservice
       TestbedServiceClient *controller_;
       shawn::SimulationController *sc_;
       boost::mutex sc_mutex_;
-
-      boost::mutex handler_list_mutex_;
-      EventHandlerList handler_list_;
    };
    // -----------------------------------------------------------------------
    // -----------------------------------------------------------------------

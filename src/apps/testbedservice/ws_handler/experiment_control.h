@@ -12,6 +12,7 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/core/testbedservice_client.h"
+#include "apps/testbedservice/util/types.h"
 #include "apps/testbedservice/virtual_links/virtual_link_message.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task.h"
@@ -36,10 +37,6 @@ namespace testbedservice
          std::string platform;
          std::string other;
       };
-
-      typedef TestbedServiceClient::NodeIdVector NodeIdVector;
-      typedef TestbedServiceClient::StatusValueVector StatusValueVector;
-      typedef TestbedServiceClient::StatusMsgVector StatusMsgVector;
 
       typedef std::vector<int> IndicesVector;
       typedef std::vector<FlashProgram> FlashProgramVector;

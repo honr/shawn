@@ -77,7 +77,13 @@ namespace vis
                       endait = it->end_adjacent_nodes();
                    ait != endait; ++ait )
                {
-                  if( *it != *ait && (ait->label() > it->label()) )
+                  if( *it != *ait && (ait->label() > it->label()) &&
+(euclidean_distance(it->real_position(), ait->real_position()) <=
+    it->transmission_range() *
+      visualization().world().communication_model().communication_upper_bound() ||
+  euclidean_distance(it->real_position(), ait->real_position()) <=
+    ait->transmission_range() *
+      visualization().world().communication_model().communication_upper_bound()) )
                   {
                      const DrawableNode* dsrc =
                              drawable_node(*it,DrawableNodeDefault::PREFIX);

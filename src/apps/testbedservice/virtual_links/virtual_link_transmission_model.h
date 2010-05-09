@@ -69,16 +69,20 @@ namespace testbedservice
                             double,
                             shawn::EventScheduler::EventTagHandle& ) throw();
       ///@}
-
+      // --------------------------------------------------------------------
       void add_virtual_link( int shawn_node, int virtual_node ) throw();
       void remove_virtual_link( int shawn_node, int virtual_node ) throw();
+      // --------------------------------------------------------------------
+      inline void set_testbedservice_client( TestbedServiceClient& client ) throw()
+      { client_ = &client; }
+      // --------------------------------------------------------------------
+      inline TestbedServiceClient& testbedservice_client( void ) throw()
+      { assert( client_ ); return *client_; }
 
    private:
       VirtualLinkListIterator find_virtual_link_w( int shawn_node, int virtual_node ) throw();
-
-
-//       WebserviceClient webservice_client_;
-      SocketClient socket_client_;
+      // --------------------------------------------------------------------
+      TestbedServiceClient *client_;
       VirtualLinkControl *vlink_;
 
       VirtualLinkList virtual_links_;
