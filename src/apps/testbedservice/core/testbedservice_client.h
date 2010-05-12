@@ -54,6 +54,9 @@ namespace testbedservice
       virtual std::string name( void ) const throw();
       virtual std::string description( void ) const throw();
       // --------------------------------------------------------------------
+      void set_controller_uri( std::string ) throw();
+      std::string controller_uri( std::string ) throw();
+      // --------------------------------------------------------------------
       void send_receive_status( std::string id,
                                 NodeIdVector& nodes,
                                 StatusValueVector& values,

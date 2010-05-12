@@ -14,11 +14,13 @@
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task.h"
 #include "apps/testbedservice/core/testbedservice_server.h"
+#include "apps/testbedservice/core/session_management.h"
 #include "apps/testbedservice/core/testbedservice_client.h"
 #include "apps/testbedservice/ws_handler/experiment_control.h"
 #include "apps/testbedservice/ws_handler/network_control.h"
 #include "apps/testbedservice/ws_handler/node_control.h"
 #include "apps/testbedservice/ws_handler/virtual_link_control.h"
+#include "apps/testbedservice/ws_handler/session_control.h"
 
 namespace testbedservice
 {
@@ -44,12 +46,14 @@ namespace testbedservice
 
    private:
       TestbedServiceServer testbedservice_server_;
+      SessionManagement session_management_;
       TestbedServiceClient service_client_;
 
       ExperimentControl experiment_control_;
       NetworkControl network_control_;
       NodeControl node_control_;
       VirtualLinkControl virtual_link_control_;
+      SessionControl session_control_;
    };
 
 }

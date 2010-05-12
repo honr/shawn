@@ -111,9 +111,9 @@ namespace testbedservice
          std::cout << "Rcvd " << *msg << std::endl;
 
          for ( VirtualLinkListIterator
-               it = virtual_links_.begin();
-               it != virtual_links_.end();
-               ++it )
+                  it = virtual_links_.begin();
+                  it != virtual_links_.end();
+                  ++it )
             if ( (*it)->virtual_node == msg->source )
             {
                std::cout << " -> deliver to: " << (*it)->shawn_node
@@ -121,7 +121,7 @@ namespace testbedservice
                shawn::Node* node = world_w().find_node_by_id_w( (*it)->shawn_node );
                if ( node )
                {
-                  wiselib::ExtIfaceProcessor *extiface = 
+                  wiselib::ExtIfaceProcessor *extiface =
                      node->get_processor_of_type_w<wiselib::ExtIfaceProcessor>();
                   if ( extiface )
                   {
@@ -130,12 +130,6 @@ namespace testbedservice
                   }
                }
             }
-
-//          std::cout << "AND ECHO...." <<      std::endl;
-//          uint64_t temp = msg->source;
-//          msg->source = msg->destination;
-//          msg->destination = temp;
-//          socket_client_.send_data( (uint8_t*)msg, msg->length() );
       }
    }
    // ----------------------------------------------------------------------

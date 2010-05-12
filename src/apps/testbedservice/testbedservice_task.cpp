@@ -91,8 +91,10 @@ namespace testbedservice
       network_control_.init( sc, service_client_ );
       virtual_link_control_.init( sc, service_client_, vltm );
       node_control_.init( sc, service_client_, virtual_link_control_ );
+      session_control_.init( sc, service_client_ );
 
       testbedservice_server_.start_server( sc );
+      session_management_.start_server( sc );
       // wait for server to startup
       std::cout << "wait for server to startup (500ms)..." << std::endl;
       boost::this_thread::sleep( boost::posix_time::milliseconds( 500 ) );

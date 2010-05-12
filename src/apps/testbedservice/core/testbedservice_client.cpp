@@ -65,6 +65,23 @@ namespace testbedservice
    // --------------------------------------------------------------------
    void
    TestbedServiceClient::
+   set_controller_uri( std::string uri )
+      throw()
+   {
+      controller_uri_ = uri;
+      controller().soap_endpoint = controller_uri_.c_str();
+   }
+   // --------------------------------------------------------------------
+   std::string
+   TestbedServiceClient::
+   controller_uri( std::string )
+      throw()
+   {
+      return controller_uri_;
+   }
+   // --------------------------------------------------------------------
+   void
+   TestbedServiceClient::
    send_receive_status( std::string id,
                         NodeIdVector& nodes,
                         StatusValueVector& values,
