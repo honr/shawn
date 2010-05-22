@@ -11,7 +11,7 @@
 #include "apps/testbedservice/ws_handler/node_control.h"
 #include "apps/testbedservice/util/ws_helpers.h"
 #include "apps/testbedservice/util/types.h"
-#include "apps/testbedservice/core/shawn_serverH.h"
+#include "apps/testbedservice/core/wsnapi_serverH.h"
 #include "sys/processors/processor_keeper.h"
 #include "sys/worlds/processor_world_factory.h"
 #include "sys/misc/tokenize.h"
@@ -191,7 +191,7 @@ namespace testbedservice
 
       std::cout << "binary message:" << std::endl;
       std::cout << "  -> from: " << message.source << std::endl;
-      if ( message.buffer[0] == VIRTUAL_LINK_MESSAGE )
+      if ( message.buffer[0] == NODE_OUTPUT_VIRTUAL_LINK )
       {
          std::cout << "vlink message" << std::endl;
          virtual_link_control().add_virtual_message( "", message );
@@ -272,7 +272,7 @@ namespace testbedservice
 
 }
 
-namespace shawn_server
+namespace wsnapi_server
 {
 
    // -----------------------------------------------------------------------

@@ -11,7 +11,7 @@
 #include "apps/testbedservice/ws_handler/virtual_link_control.h"
 #include "apps/testbedservice/virtual_links/virtual_link_transmission_model.h"
 #include "apps/testbedservice/virtual_links/virtual_link_message.h"
-#include "apps/testbedservice/core/shawn_serverH.h"
+#include "apps/testbedservice/core/wsnapi_serverH.h"
 #include "sys/processors/processor_keeper.h"
 #include "sys/worlds/processor_world_factory.h"
 #include "sys/misc/random/basic_random.h"
@@ -91,7 +91,7 @@ namespace testbedservice
    }
 }
 
-namespace shawn_server
+namespace wsnapi_server
 {
 
    static bool virtual_link_control_available( void )

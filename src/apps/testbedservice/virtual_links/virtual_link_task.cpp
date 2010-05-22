@@ -60,6 +60,7 @@ namespace testbedservice
       std::string action = se.required_string_param( "action" );
       int shawn_node = se.required_int_param( "shawn_node" );
       int virtual_node = se.required_int_param( "virtual_node" );
+      std::string remote_uri = se.required_string_param( "remote_uri" );
 
       shawn::ChainableTransmissionModel *ctm =
          dynamic_cast<shawn::ChainableTransmissionModel*>
@@ -75,7 +76,7 @@ namespace testbedservice
          if ( vltm )
          {
             if ( action == "add" )
-               vltm->add_virtual_link( shawn_node, virtual_node );
+               vltm->add_virtual_link( shawn_node, virtual_node, remote_uri );
             if ( action == "remove" )
                vltm->remove_virtual_link( shawn_node, virtual_node );
 

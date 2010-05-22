@@ -9,8 +9,8 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/core/testbedservice_client.h"
-#include "apps/testbedservice/core/shawn_clientControllerPortBindingProxy.h"
-#include "apps/testbedservice/core/shawn_client.nsmap"
+#include "apps/testbedservice/core/controller_clientControllerPortBindingProxy.h"
+#include "apps/testbedservice/core/controller_client.nsmap"
 #include "apps/testbedservice/util/ws_helpers.h"
 #include "sys/simulation/simulation_environment.h"
 #include "sys/node.h"

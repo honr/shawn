@@ -12,12 +12,14 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/core/testbedservice_client.h"
+#include "apps/testbedservice/core/wsnapi_client.h"
 #include "apps/testbedservice/sockets/socket_client.h"
 #include "legacyapps/wiselib/ext_iface_processor.h"
 #include "legacyapps/wiselib/wiselib_message.h"
 #include "sys/transm_models/chainable_transmission_model.h"
 #include "sys/event_scheduler.h"
 #include <list>
+#include <map>
 
 namespace testbedservice
 {
@@ -30,14 +32,19 @@ namespace testbedservice
    {
       struct VirtualLink
       {
-         int shawn_node;   /// Node ID in Shawn
-         int virtual_node; /// Node ID at another portal server
-         // TODO: additional stuff like *which* portal server and so
+         int shawn_node;              /// Node ID in Shawn
+         int virtual_node;            /// Node ID at another portal server
+         std::string remote_uri;      /// URI of remote WSN API
+         WsnApiClient *wsnapi_client; /// Remote WSN API webservice
       };
 
       typedef std::list<VirtualLink*> VirtualLinkList;
       typedef VirtualLinkList::iterator VirtualLinkListIterator;
       typedef VirtualLinkList::const_iterator ConstVirtualLinkListIterator;
+
+      typedef std::map<std::string, WsnApiClient*> WsnApiClientMap;
+      typedef WsnApiClientMap::iterator WsnApiClientMapIterator;
+      typedef WsnApiClientMap::const_iterator ConstWsnApiClientMapIterator;
 
    public:
       typedef wiselib::ExtIfaceProcessor::ExtIfaceWiselibMessage WiselibMessage;
@@ -59,7 +66,7 @@ namespace testbedservice
       ///@}
 
       ///
-      void pass_to_webservice_client( WiselibMessage& message ) throw();
+      void pass_to_webservice_client( WiselibMessage& message, WsnApiClient& client ) throw();
 
       ///@name Event Handler
       ///@{
@@ -69,7 +76,7 @@ namespace testbedservice
                             shawn::EventScheduler::EventTagHandle& ) throw();
       ///@}
       // --------------------------------------------------------------------
-      void add_virtual_link( int shawn_node, int virtual_node ) throw();
+      void add_virtual_link( int shawn_node, int virtual_node, std::string remote_uri ) throw();
       void remove_virtual_link( int shawn_node, int virtual_node ) throw();
       // --------------------------------------------------------------------
       inline void set_testbedservice_client( TestbedServiceClient& client ) throw()
@@ -84,7 +91,7 @@ namespace testbedservice
       TestbedServiceClient *client_;
 
       VirtualLinkList virtual_links_;
-
+      WsnApiClientMap wsnapis_clients_;
    };
 
 }

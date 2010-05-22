@@ -9,7 +9,7 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/core/testbedservice_server.h"
-#include "apps/testbedservice/core/shawn_server.nsmap"
+#include "apps/testbedservice/core/wsnapi_server.nsmap"
 #include "sys/simulation/simulation_environment.h"
 #include "sys/node.h"
 #include "sys/world.h"
@@ -61,7 +61,7 @@ namespace testbedservice
    {
       int m, s; // master and slave sockets
       soap_init( &soap_ );
-      soap_.namespaces = shawn_server_namespaces;
+      soap_.namespaces = wsnapi_server_namespaces;
       soap_.fget = http_get;
       m = soap_bind( &soap_, host.c_str(), port, 100 );
       if (m < 0)
@@ -84,7 +84,7 @@ namespace testbedservice
             print_soap_ip( i, s );
 
            // TODO: do this in own thread!
-            if ( shawn_server::shawn_server_serve(&soap_) != SOAP_OK ) // process RPC request
+            if ( wsnapi_server::wsnapi_server_serve(&soap_) != SOAP_OK ) // process RPC request
                soap_print_fault(&soap_, stderr); // print error
 //             std::cerr << "gsoap::server: request served" << std::endl;
             soap_destroy( &soap_ ); // clean up class instances

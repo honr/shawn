@@ -65,7 +65,7 @@ namespace testbedservice
                // TODO: Instead of just "breaking", it should be possible to
                //       have multiple "clients" per shawn node - so that one
                //       message could be passed to multiple portal servers.
-               pass_to_webservice_client( *message );
+               pass_to_webservice_client( *message, *(*it)->wsnapi_client );
                break;
             }
       }
@@ -75,7 +75,7 @@ namespace testbedservice
    // ----------------------------------------------------------------------
    void
    VirtualLinkTransmissionModel::
-   pass_to_webservice_client( WiselibMessage& message )
+   pass_to_webservice_client( WiselibMessage& message, WsnApiClient& client )
       throw()
    {
       VirtualLinkMessage vmsg;
@@ -93,9 +93,23 @@ namespace testbedservice
       ssource << message.source().id();
       std::string source = ssource.str();
 
-      int size = vmsg.length();
+      std::stringstream sdest;
+      sdest << "urn:wisebed:tubs:" << message.destination();
+      std::string destination = sdest.str();
+      NodeIdVector dests;
+      dests.push_back( destination );
+
+      uint8_t len = vmsg.length();
       uint8_t *bytes = vmsg.to_bytes();
-      testbedservice_client().send_binary_message( source, size, bytes );
+
+      BinaryMessage bm;
+      bm.source = source;
+      bm.timestamp = time(0);
+      bm.size = len;
+      bm.buffer = bytes;
+
+      testbedservice_client().send_binary_message( source, len, bytes );
+      client.send_binary_message( dests, bm );
       delete bytes;
    }
    // ----------------------------------------------------------------------
@@ -135,16 +149,30 @@ namespace testbedservice
    // ----------------------------------------------------------------------
    void
    VirtualLinkTransmissionModel::
-   add_virtual_link( int shawn_node, int virtual_node )
+   add_virtual_link( int shawn_node, int virtual_node, std::string remote_uri )
       throw()
    {
-      if ( find_virtual_link_w( shawn_node, virtual_node ) !=
-                                                      virtual_links_.end() )
+      if ( find_virtual_link_w( shawn_node, virtual_node ) != virtual_links_.end() )
          return;
 
       VirtualLink *link = new VirtualLink();
       link->shawn_node = shawn_node;
       link->virtual_node = virtual_node;
+      link->remote_uri = remote_uri;
+
+      if ( wsnapis_clients_.find( remote_uri ) == wsnapis_clients_.end() )
+      {
+         std::cout << "create new wsn api to " << remote_uri << std::endl;
+         WsnApiClient *client = new WsnApiClient();
+         client->init( remote_uri );
+         wsnapis_clients_[remote_uri] = client;
+         link->wsnapi_client = client;
+      }
+      else
+      {
+         std::cout << "use existing wsn api to " << remote_uri << std::endl;
+         link->wsnapi_client = wsnapis_clients_[remote_uri];
+      }
 
       virtual_links_.push_back( link );
    }

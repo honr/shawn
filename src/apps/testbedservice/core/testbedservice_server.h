@@ -11,7 +11,7 @@
 #include "_apps_enable_cmake.h"
 #ifdef ENABLE_TESTBEDSERVICE
 
-#include "apps/testbedservice/core/shawn_serverH.h"
+#include "apps/testbedservice/core/wsnapi_serverH.h"
 #include "sys/simulation/simulation_controller.h"
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
