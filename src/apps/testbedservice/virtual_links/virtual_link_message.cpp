@@ -22,7 +22,8 @@ namespace testbedservice
          payload_size ( 0 ),
          destination  ( 0 ),
          source       ( 0 ),
-         payload      ( 0 )
+         payload      ( 0 ),
+         pass_to      ( 0 )
    {}
    // ----------------------------------------------------------------------
    VirtualLinkMessage::

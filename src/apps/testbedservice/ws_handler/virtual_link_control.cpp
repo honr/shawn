@@ -11,6 +11,7 @@
 #include "apps/testbedservice/ws_handler/virtual_link_control.h"
 #include "apps/testbedservice/virtual_links/virtual_link_transmission_model.h"
 #include "apps/testbedservice/virtual_links/virtual_link_message.h"
+#include "apps/testbedservice/util/ws_helpers.h"
 #include "apps/testbedservice/core/wsnapi_serverH.h"
 #include "sys/processors/processor_keeper.h"
 #include "sys/worlds/processor_world_factory.h"
@@ -72,6 +73,25 @@ namespace testbedservice
    // ----------------------------------------------------------------------
    void
    VirtualLinkControl::
+   set_virtual_link( std::string id, std::string source, std::string destination, std::string uri )
+      throw()
+   {
+      std::cout << "set virtual link from " << source << " to " << destination << " at " << uri << std::endl;
+
+      NodeIdVector response_nodes;
+      StatusValueVector response_values;
+      StatusMsgVector response_msgs;
+
+      virtual_link_transmission_model_w().add_virtual_link( source, destination, uri );
+
+      response_nodes.push_back( source );
+      response_values.push_back( 1 );
+      response_msgs.push_back( "" );
+      controller_w().send_receive_status( id, response_nodes, response_values, response_msgs );
+   }
+   // ----------------------------------------------------------------------
+   void
+   VirtualLinkControl::
    add_virtual_message( std::string dest, BinaryMessage message )
       throw()
    {
@@ -80,13 +100,27 @@ namespace testbedservice
       if ( sc_ )
       {
          // TODO: check if buffer is of correct size for vlink message
-         VirtualLinkMessage *vlink_msg = new VirtualLinkMessage( message.buffer );
+         VirtualLinkMessage *vlink_msg;
 
-         std::cout << "CALLED AT " << sc_->world().current_time() << std::endl;
+         if ( message.buffer[0] == NODE_OUTPUT_VIRTUAL_LINK )
+            vlink_msg = new VirtualLinkMessage( message.buffer );
+         else if (message.buffer[0] == VIRTUAL_LINK_MESSAGE )
+         {
+            vlink_msg = new VirtualLinkMessage( message.buffer + 1 );
+            vlink_msg->type = NODE_OUTPUT_VIRTUAL_LINK;
+         }
+         else
+         {
+            std::cerr << "Received unknown virtual linke message. Skip." << std::endl;
+            return;
+         }
+
+         vlink_msg->pass_to = virtual_link_transmission_model().node_id_from_urn( dest );
+
+//          std::cout << "CALLED AT " << sc_->world().current_time() << std::endl;
          double now = sc_->world().current_time();
          sc_->world_w().scheduler_w().new_event( virtual_link_transmission_model_w(), now, vlink_msg );
-//          sc_->world_w().scheduler_w().new_event( *this, now, vlink_msg );
-         std::cout << "ADD EVENT REMOTELY AT " << now << std::endl;
+//          std::cout << "ADD EVENT REMOTELY AT " << now << std::endl;
       }
    }
 }
@@ -113,8 +147,22 @@ namespace wsnapi_server
             shawnts__setVirtualLink *shawnts__setVirtualLink_,
             shawnts__setVirtualLinkResponse *shawnts__setVirtualLinkResponse_ )
    {
-      // TODO !
-      std::cout << "shawn::testbedservice::setVirtualLink" << std::endl;
+      if ( !virtual_link_control_available() )
+         return SOAP_OK;
+
+      std::string source = std::string( shawnts__setVirtualLink_->sourceNode );
+      std::string destination = std::string( shawnts__setVirtualLink_->targetNode );
+      std::string remote_uri = std::string( shawnts__setVirtualLink_->remoteServiceInstance );
+
+      std::string id = testbedservice::create_response_id();
+      char *response_id = testbedservice::allocate_string( shawnts__setVirtualLinkResponse_->soap, id );
+      shawnts__setVirtualLinkResponse_->return_ = response_id;
+
+      boost::thread thrd( boost::bind(
+         &testbedservice::VirtualLinkControl::set_virtual_link,
+         testbedservice::virtual_link_control_,
+         id, source, destination, remote_uri ) );
+
       return SOAP_OK;
    }
    // -----------------------------------------------------------------------

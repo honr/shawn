@@ -149,9 +149,9 @@ namespace testbedservice
       StatusValueVector response_values;
       StatusMsgVector response_msgs;
 
-      std::cout << "text message:" << std::endl;
-      std::cout << "  -> from: " << message.source << std::endl;
-      std::cout << "  -> msg : " << message.message << std::endl;
+//       std::cout << "text message:" << std::endl;
+//       std::cout << "  -> from: " << message.source << std::endl;
+//       std::cout << "  -> msg : " << message.message << std::endl;
 
       for ( NodeIdVector::iterator it = nodes.begin(); it != nodes.end(); ++it )
       {
@@ -189,27 +189,24 @@ namespace testbedservice
       StatusValueVector response_values;
       StatusMsgVector response_msgs;
 
-      std::cout << "binary message:" << std::endl;
-      std::cout << "  -> from: " << message.source << std::endl;
-      if ( message.buffer[0] == NODE_OUTPUT_VIRTUAL_LINK )
-      {
-         std::cout << "vlink message" << std::endl;
-         virtual_link_control().add_virtual_message( "", message );
-         response_values.push_back( 1 );
-      }
+//       std::cout << "binary message:" << std::endl;
+//       std::cout << "  -> from: " << message.source << std::endl;
+//       dbg_nodevector( id, nodes );
 
-//       for ( NodeIdVector::iterator it = nodes.begin(); it != nodes.end(); ++it )
-//       {
+      for ( NodeIdVector::iterator it = nodes.begin(); it != nodes.end(); ++it )
+      {
 //          shawn::Node *node =
 //             simulation_controller_w().world_w().find_node_by_label_w( *it );
 // 
 //          if ( node )
 //          {
-//             if ( message.buffer[0] == VIRTUAL_LINK_MESSAGE )
-//             {
-//                virtual_link_control().add_virtual_message( node->label(), message );
-//                response_values.push_back( 1 );
-//             }
+            if ( message.buffer[0] == NODE_OUTPUT_VIRTUAL_LINK ||
+                  message.buffer[0] == VIRTUAL_LINK_MESSAGE )
+            {
+//                std::cout << "  -> vlink message" << std::endl;
+               virtual_link_control().add_virtual_message( *it, message );
+               response_values.push_back( 1 );
+            }
 //             else
 //             {
 //                TestbedServiceProcessor *proc =
@@ -227,11 +224,11 @@ namespace testbedservice
 //          }
 //          else
 //             response_values.push_back( -1 );
-// 
-//          response_nodes.push_back( *it );
-//          response_msgs.push_back( "" );
-//       }
-// 
+
+         response_nodes.push_back( *it );
+         response_msgs.push_back( "" );
+      }
+
 //       controller().send_receive_status( id, response_nodes, response_values, response_msgs );
    }
    // ----------------------------------------------------------------------
@@ -461,8 +458,7 @@ namespace wsnapi_server
             testbedservice::BinaryMessage message;
             message.source = source;
             message.timestamp = timestamp;
-            message.size =
-                              shawnts__send_->message->union_message.binaryMessage->binaryData.__size;
+            message.size = shawnts__send_->message->union_message.binaryMessage->binaryData.__size;
             message.buffer = new uint8_t[message.size];
             memcpy( message.buffer,
                     (uint8_t*)shawnts__send_->message->union_message.binaryMessage->binaryData.__ptr,

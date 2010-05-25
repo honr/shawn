@@ -81,7 +81,7 @@ namespace testbedservice
                soap_print_fault( &soap_, stderr );
                break;
             }
-            print_soap_ip( i, s );
+//             print_soap_ip( i, s );
 
            // TODO: do this in own thread!
             if ( wsnapi_server::wsnapi_server_serve(&soap_) != SOAP_OK ) // process RPC request

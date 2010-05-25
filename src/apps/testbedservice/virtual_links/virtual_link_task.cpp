@@ -58,8 +58,8 @@ namespace testbedservice
 
       const shawn::SimulationEnvironment& se = sc.environment();
       std::string action = se.required_string_param( "action" );
-      int shawn_node = se.required_int_param( "shawn_node" );
-      int virtual_node = se.required_int_param( "virtual_node" );
+      std::string shawn_urn = se.required_string_param( "shawn_node_urn" );
+      std::string virtual_urn = se.required_string_param( "virtual_node_urn" );
       std::string remote_uri = se.required_string_param( "remote_uri" );
 
       shawn::ChainableTransmissionModel *ctm =
@@ -76,9 +76,9 @@ namespace testbedservice
          if ( vltm )
          {
             if ( action == "add" )
-               vltm->add_virtual_link( shawn_node, virtual_node, remote_uri );
+               vltm->add_virtual_link( shawn_urn, virtual_urn, remote_uri );
             if ( action == "remove" )
-               vltm->remove_virtual_link( shawn_node, virtual_node );
+               vltm->remove_virtual_link( shawn_urn, virtual_urn );
 
             // Transmission Model found, so end while loop
             break;

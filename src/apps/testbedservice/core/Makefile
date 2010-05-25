@@ -4,25 +4,27 @@ controller_client_header:
 	wsdl2h -N shawnts -s -o controller_client_description.h ControllerService.wsdl
 
 wsnapi_client_header:
-	wsdl2h -N shawnts -s -o wsnapi_client_description.h WSNService.wsdl
+	wsdl2h -qwsnapi_client -N shawnts -s -o wsnapi_client_description.h WSNService.wsdl
 
 wsnapi_server_header:
-	wsdl2h -N shawnts -s -o wsnapi_server_description.h WSNService.wsdl
+	wsdl2h -qwsnapi_server -N shawnts -s -o wsnapi_server_description.h WSNService.wsdl
 
 session_server_header:
-	wsdl2h -N shawnts -s -o session_description.h SessionManagementService.wsdl
+	wsdl2h -qsession_management -N shawnts -s -o session_description.h SessionManagementService.wsdl
 
 headers:
 	make controller_client_header
 	make wsnapi_client_header
 	make wsnapi_server_header
 	make session_server_header
+	@echo "#done"
 
 soaps:
 	soapcpp2 -i -C -L -n -pcontroller_client controller_client_description.h
 	soapcpp2 -i -C -L -n -pwsn_client wsnapi_client_description.h
 	soapcpp2    -S -L -n -pwsn_server wsnapi_server_description.h
 	soapcpp2    -S -L -n -psession_server session_description.h
+	@echo "#done"
 
 clean:
 	rm -f \

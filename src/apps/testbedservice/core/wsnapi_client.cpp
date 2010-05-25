@@ -97,16 +97,21 @@ namespace testbedservice
       send->nodeIds = new char*[ dests.size() ];
       for ( unsigned int i = 0; i < dests.size(); i++ )
       {
-         send->nodeIds[i] = allocate_string( dests.at(i) );;
+         send->nodeIds[i] = allocate_string( dests.at(i) );
+// std::cout << "send to " << send->nodeIds[i] << std::endl;
       }
+// std::cout << "sent " << send->__sizenodeIds << std::endl;
 
       message->timestamp = bin.timestamp;
       message->sourceNodeId = allocate_string( bin.source );
       message->__union_message = 2;
       message->union_message.binaryMessage = binary_message;
 
+      short *binary_type = new short;
+      *binary_type = 10;
       uint8_t *buf_copy = new uint8_t[bin.size];
       memcpy( buf_copy, bin.buffer, bin.size );
+      binary_message->binaryType = binary_type;
       binary_message->binaryData.__ptr = buf_copy;
       binary_message->binaryData.__size = bin.size;
 
@@ -125,10 +130,10 @@ namespace testbedservice
    {
       boost::lock_guard<boost::mutex> send_lock( send_mutex_ );
 
-      shawnts__sendResponse *shawnts__sendResponse = 0;
-      if ( wsnapi().send( send, shawnts__sendResponse ) == SOAP_OK )
+      shawnts__sendResponse *response = new shawnts__sendResponse;
+      if ( wsnapi().send( send, response ) == SOAP_OK )
       {
-         std::cerr << "Send status ok" << std::endl;
+//          std::cerr << "Send status ok" << std::endl;
       }
       else
       {
@@ -138,6 +143,7 @@ namespace testbedservice
          if ( wsnapi().soap_fault_detail() )
             std::cerr << "  Detail: " << wsnapi().soap_fault_detail() << std::endl;
       }
+      delete response;
 
       // at least, clean up...
       if ( send->message->__union_message == 1 )

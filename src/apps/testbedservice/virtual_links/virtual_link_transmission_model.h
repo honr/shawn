@@ -30,15 +30,17 @@ namespace testbedservice
       : public shawn::ChainableTransmissionModel,
          public shawn::EventScheduler::EventHandler
    {
-      struct VirtualLink
+      struct VirtualLinkInfo
       {
-         int shawn_node;              /// Node ID in Shawn
-         int virtual_node;            /// Node ID at another portal server
-         std::string remote_uri;      /// URI of remote WSN API
-         WsnApiClient *wsnapi_client; /// Remote WSN API webservice
+         int shawn_node_id;            /// Node ID in Shawn
+         int virtual_node_id;          /// Node ID at another portal server
+         std::string shawn_node_urn;   /// Node URN in Shawn
+         std::string virtual_node_urn; /// Node URN at another portal server
+         std::string remote_uri;       /// URI of remote WSN API
+         WsnApiClient *wsnapi_client;  /// Remote WSN API webservice
       };
 
-      typedef std::list<VirtualLink*> VirtualLinkList;
+      typedef std::list<VirtualLinkInfo*> VirtualLinkList;
       typedef VirtualLinkList::iterator VirtualLinkListIterator;
       typedef VirtualLinkList::const_iterator ConstVirtualLinkListIterator;
 
@@ -66,7 +68,7 @@ namespace testbedservice
       ///@}
 
       ///
-      void pass_to_webservice_client( WiselibMessage& message, WsnApiClient& client ) throw();
+      void pass_to_webservice_client( WiselibMessage& message, VirtualLinkInfo& info ) throw();
 
       ///@name Event Handler
       ///@{
@@ -76,8 +78,10 @@ namespace testbedservice
                             shawn::EventScheduler::EventTagHandle& ) throw();
       ///@}
       // --------------------------------------------------------------------
-      void add_virtual_link( int shawn_node, int virtual_node, std::string remote_uri ) throw();
-      void remove_virtual_link( int shawn_node, int virtual_node ) throw();
+      void add_virtual_link( std::string shawn_node, std::string virtual_node, std::string remote_uri ) throw();
+      void remove_virtual_link( std::string shawn_node, std::string virtual_node ) throw();
+      // --------------------------------------------------------------------
+      int node_id_from_urn( std::string urn ) const throw();
       // --------------------------------------------------------------------
       inline void set_testbedservice_client( TestbedServiceClient& client ) throw()
       { client_ = &client; }
@@ -86,7 +90,7 @@ namespace testbedservice
       { assert( client_ ); return *client_; }
 
    private:
-      VirtualLinkListIterator find_virtual_link_w( int shawn_node, int virtual_node ) throw();
+      VirtualLinkListIterator find_virtual_link_w( std::string shawn_node, std::string virtual_node ) throw();
       // --------------------------------------------------------------------
       TestbedServiceClient *client_;
 

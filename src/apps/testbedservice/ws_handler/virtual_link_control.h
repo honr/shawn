@@ -38,7 +38,12 @@ namespace testbedservice
                      shawn::EventScheduler::EventTagHandle& ) throw();
 
       void init( shawn::SimulationController& sc, TestbedServiceClient& controller, VirtualLinkTransmissionModel *vltm ) throw();
-
+      // --------------------------------------------------------------------
+      void set_virtual_link( std::string id, std::string source, std::string destination, std::string uri ) throw();
+//       void destroy_virtual_link( std::string id, std::string source, std::string destination );
+//       void enable_physical_link( std::string id, std::string source, std::string destination );
+//       void disable_physical_link( std::string id, std::string source, std::string destination );
+      // --------------------------------------------------------------------
       void add_virtual_message( std::string dest, BinaryMessage message ) throw();
       // --------------------------------------------------------------------
       inline shawn::SimulationController& simulation_controller_w( void ) throw()

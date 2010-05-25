@@ -43,6 +43,8 @@ namespace testbedservice
       uint64_t destination;  // 8 Byte
       uint64_t source;       // 8 Byte
       uint8_t *payload;      // x Byte
+
+      int pass_to;
    };
 
 }

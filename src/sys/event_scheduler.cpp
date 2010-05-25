@@ -99,11 +99,15 @@ namespace shawn
 		new_event( EventScheduler::EventHandler& h, double t, const EventScheduler::EventTagHandle& eth )
 		throw()
 	{
-		assert( t >= current_time() );
-		EventHandle eh = new EventInfo( h, t, eth );
 #ifdef MULTITHREADED_EVENT_SCHEDULER
       boost::unique_lock<boost::mutex> event_queue_lock( events_mutex_ );
+      if ( t < current_time() )
+         t = current_time();
+#else
+      assert( t >= current_time() );
 #endif
+      EventHandle eh = new EventInfo( h, t, eth );
+
 		std::pair<EventSet::iterator,bool> worked = events_.insert(eh);
 		if( !worked.second )
 		{
@@ -346,7 +350,6 @@ namespace shawn
 
             assert( eh );
             assert( eh->pos_ == events_.begin() );
-            assert( net == eh->time_ );
             assert( !eh->dead_ );
 
             eh->dead_ = true;

@@ -203,7 +203,7 @@ namespace testbedservice
       boost::lock_guard<boost::mutex> send_lock( send_mutex_ );
       if ( controller().receiveStatus( rcv_status ) == SOAP_OK )
       {
-         std::cerr << "Send status ok" << std::endl;
+//          std::cerr << "Send status ok" << std::endl;
       }
       else
       {
@@ -236,7 +236,7 @@ namespace testbedservice
 
       if ( controller().receive( receive ) == SOAP_OK )
       {
-         std::cerr << "Send status ok" << std::endl;
+//          std::cerr << "Send status ok" << std::endl;
       }
       else
       {
