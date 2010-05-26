@@ -10,6 +10,7 @@
 #include "../buildfiles/_apps_enable_cmake.h"
 
 #ifdef ENABLE_WISEML
+#ifdef ENABLE_EXAMPLES
 #include <string>
 #include <map>
 #include "sys/util/keeper_managed.h"
@@ -35,5 +36,6 @@ namespace wiseml
    };
    DECLARE_HANDLES(WisemlStringSensorFactory);
 }
+#endif
 #endif
 #endif
