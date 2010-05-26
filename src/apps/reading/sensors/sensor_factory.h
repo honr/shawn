@@ -31,7 +31,7 @@ namespace reading
       virtual std::string description( void ) const throw();
 
    protected:
-      Sensor* find_sensor( std::string name );
+      virtual Sensor* find_sensor( std::string name );
       SensorMap sensor_map_;
    };
    DECLARE_HANDLES(SensorFactory);

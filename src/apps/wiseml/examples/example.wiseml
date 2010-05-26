@@ -39349,6 +39349,7 @@
         <y>118.99211147063826</y>
         <z>0.0</z>
       </position>
+      <data key="battery">20</data>
     </node>
     <node id="urn:wisebed:node:sics:83">
       <position>
@@ -40211,6 +40212,7 @@
         <y>119.2805479453433</y>
         <z>0.0</z>
       </position>
+      <data key="battery">25</data>
     </node>
     <node id="urn:wisebed:node:sics:102">
       <position>

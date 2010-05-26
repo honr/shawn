@@ -11,14 +11,13 @@
 
 namespace wiseml
 {
-   WiseMlSensor::
-   WiseMlSensor(string capability, const Node &node)
-   {
-
-   }
+   WisemlSensor::
+   WisemlSensor(WisemlRawSensor* raw_sensor)
+   :  raw_sensor_(raw_sensor)
+   {}
    // ----------------------------------------------------------------------
-   WiseMlSensor::
-   ~WiseMlSensor()
+   WisemlSensor::
+   ~WisemlSensor()
    {}
    // ----------------------------------------------------------------------
 }

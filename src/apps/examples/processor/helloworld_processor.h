@@ -27,7 +27,7 @@ namespace helloworld
       virtual bool process_message( const shawn::ConstMessageHandle& ) throw();
       virtual void work( void ) throw();
 
-   private:
+   protected:
       int last_time_of_receive_;
       std::set<const shawn::Node*> neighbours_;
    };

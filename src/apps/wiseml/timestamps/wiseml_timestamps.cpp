@@ -28,6 +28,7 @@ namespace wiseml
        elem_count_(0)
    {
       set_document_uri(filename);
+      register_updater(w.simulation_controller_w());
    }
    // *********************************************************************
    void WiseMlTimestamps::set_timefactor(double t)
@@ -36,7 +37,7 @@ namespace wiseml
    }
    // *********************************************************************
    WiseMlTimestamps::~WiseMlTimestamps()
-   {}
+   {}   
    // *********************************************************************
    void WiseMlTimestamps::timeout(shawn::EventScheduler &scheduler,
       shawn::EventScheduler::EventHandle handle, double time,
@@ -277,6 +278,7 @@ namespace wiseml
             return;
          WmlElement parent2 = *(++it);
          WmlElement parent3 = *(++it);
+         // Node positions (mobility):
          if(parent1.name == "x")
          {
             nodes_[attribute("id", parent3.atts)]->posx = atof(content.c_str());
@@ -289,6 +291,15 @@ namespace wiseml
          {
             nodes_[attribute("id", parent3.atts)]->posz = atof(content.c_str());
          }
+         // Sensor data (capabilities):
+         else if(parent2.name == "node" && parent1.name == "data")
+         {
+            // sensor_id = <node id>:<capability key>
+            string sensor_id = attribute("id", parent2.atts);
+            sensor_id += ":" + attribute("key", parent1.atts);
+            update_sensor(sensor_id, content);
+         }
+
       }
    }
    // *********************************************************************

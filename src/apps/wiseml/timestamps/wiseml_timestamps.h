@@ -16,6 +16,8 @@
 #include "sys/world.h"
 #include "sys/event_scheduler.h"
 #include "apps/wiseml/templates.h"
+#include "apps/wiseml/sensors/wiseml_sensor.h"
+#include "apps/wiseml/sensors/wiseml_sensor_updater.h"
 
 using namespace std;
 using namespace shawn;
@@ -48,7 +50,8 @@ namespace wiseml
     */
    class WiseMlTimestamps:
       public EventScheduler::EventHandler,
-      public SAXSimpleSkipReader
+      public SAXSimpleSkipReader,
+      public WisemlSensorUpdater
    {
    public:
       WiseMlTimestamps(string filename, string scenario_id, string trace_id, shawn::World &w);

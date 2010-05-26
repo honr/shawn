@@ -8,10 +8,12 @@
 #ifndef __SHAWN_APPS_WISEML_SENSOR_H
 #define __SHAWN_APPS_WISEML_SENSOR_H
 #include "_apps_enable_cmake.h"
+
 #ifdef ENABLE_READING
 #ifdef ENABLE_WISEML
 #include "sys/node.h"
 #include "apps/reading/sensors/sensor.h"
+#include "apps/wiseml/sensors/wiseml_raw_sensor.h"
 
 using namespace shawn;
 using namespace std;
@@ -21,19 +23,17 @@ namespace wiseml
     * A special sensor class for reading out capability values during
     * a wiseml controlled simulation.
     */
-   class WiseMlSensor:
+   class WisemlSensor:
       public reading::Sensor
    {
    public:
       ///@name Contructor/Destructor
       ///@{
-      /*
-       * @param capability Name of the WiseML capability to be read out by the sensor.
-       * @param node The node, the sensor is attached to.
-       */
-      WiseMlSensor(string capability, const Node& node);
-      virtual ~WiseMlSensor();
+      WisemlSensor(WisemlRawSensor* raw_sensor);
+      virtual ~WisemlSensor();
       ///@}
+   protected:
+      WisemlRawSensor* raw_sensor_;
    };
 }
 
