@@ -41,13 +41,13 @@ namespace helloworld
       throw()
    {
       last_time_of_receive_ = simulation_round();
-		//Creates an event to the event_scheduler  
-		event_handle_ = owner_w().world_w().scheduler_w().new_event(*this,sending_time_ ,NULL);    
+		//Creates an event to the event_scheduler
+		event_handle_ = owner_w().world_w().scheduler_w().new_event(*this,sending_time_ ,NULL);
    }
    // ----------------------------------------------------------------------
    bool
    HelloworldRandomProcessor::
-   process_message( const ConstMessageHandle& mh ) 
+   process_message( const ConstMessageHandle& mh )
       throw()
    {
       const HelloworldMessage* hmsg =
@@ -79,7 +79,7 @@ namespace helloworld
                  << " DONE: "
                  << (unsigned int)neighbours_.size()
                  << " neighbours: ";
-            
+
             for( std::set<const Node*>::const_iterator
                     it    = neighbours_.begin(),
                     first = it,
@@ -91,16 +91,16 @@ namespace helloworld
                   cout << "'"<<(**it).label()<<"'";
                }
             cout << endl;
-            set_state( Inactive );
+            //set_state( Inactive );
          }
    }
 
 	void HelloworldRandomProcessor::timeout(shawn::EventScheduler & event_scheduler, shawn::EventScheduler::EventHandle event_handle, double time, shawn::EventScheduler::EventTagHandle & event_tag_handle) throw()
 	{
-		send( new HelloworldMessage((int)random(1,10)) );	
+		send( new HelloworldMessage((int)random(1,10)) );
 	}
 
-	double 
+	double
 		HelloworldRandomProcessor::random(double lowerBound, double upperBound) throw(){
 		return (lowerBound + shawn::uniform_random_0i_1i()*(upperBound - lowerBound));
     }

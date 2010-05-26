@@ -14,6 +14,7 @@
 #include "apps/reading/sensors/sensor.h"
 #include "apps/wiseml/sensors/wiseml_sensor.h"
 #include "apps/wiseml/sensors/wiseml_raw_sensor.h"
+#include <stdlib.h>
 
 using namespace shawn;
 using namespace std;
