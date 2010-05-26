@@ -37,7 +37,7 @@ namespace wiseml
 	   map<string, WisemlRawSensor*> reg_sensors_;
 
    protected:
-      typedef map<string, RefcntPointer<reading::SensorFactory>>::iterator SFIterator;
+      typedef map<string, RefcntPointer<reading::SensorFactory> >::iterator SFIterator;
    };
 }
 
