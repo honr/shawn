@@ -7,6 +7,7 @@
  ************************************************************************
  **                                                                    **
  ** \author Axel Wegener <wegener@itm.uni-luebeck.de>                  **
+ ** \author Bjoern Hendriks <hendriks@ibr.cs.tu-bs.de>                 **
  **                                                                    **
  ************************************************************************/
 
@@ -15,6 +16,9 @@
 #ifdef BUILD_TCPIP
 
 #include <iostream>
+#include <iterator>
+#include <sstream>
+#include <cassert>
 
 
 using namespace std;
@@ -30,12 +34,13 @@ namespace tcpip
 		init();
 	}
 
+
 	// ----------------------------------------------------------------------
 	Storage::Storage(unsigned char packet[], int length)
 	{
 		// Length is calculated, if -1, or given
 		if (length == -1) length = sizeof(packet) / sizeof(unsigned char);
-		
+
 		store.reserve(length);
 		// Get the content
 		for(int i = 0; i < length; ++i) store.push_back(packet[i]);
@@ -48,64 +53,42 @@ namespace tcpip
 	void Storage::init()
 	{
 		// Initialize local variables
-		pos_=0;
-		iterValid_ = iterEndValid_ = false;
-		valid_pos();
+		iter_ = store.begin();
 
-        short a = 0x0102;
-        unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
-        bigEndian_ = (p_a[0] == 0x01); // big endian?
+		short a = 0x0102;
+		unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
+		bigEndian_ = (p_a[0] == 0x01); // big endian?
 	}
+
 
 	// ----------------------------------------------------------------------
 	Storage::~Storage()
 	{}
 
+
 	// ----------------------------------------------------------------------
 	bool Storage::valid_pos()
 	{
-		if (size() == 0) return false;
-
-		// Check iterator iterEnd_ for validity
-		if ( !iterEndValid_ )
-		{
-			iterEnd_ = store.end();
-			iterEndValid_ = true;
-		}
-
-		// Check Iterator iter_ for validity
-		if ( !iterValid_ ) 
-		{
-			iter_ = store.begin();
-			unsigned int i = 0;
-			while ( i < pos_ 
-				&& iter_ != iterEnd_)
-			{
-				++i;
-				++iter_;
-			}
-			iterValid_ = true;
-		}
-
-		return (iter_ != iterEnd_);
+		return (iter_ != store.end());   // this implies !store.empty()
 	}
+
 
 	// ----------------------------------------------------------------------
 	unsigned int Storage::position() const
 	{
-		// pos_ contains everytime the correct position, 
-		// even if iterValid == false
-		return pos_;
+		// According to C++ standard std::distance will simply compute the iterators
+		// difference for random access iterators as std::vector provides.
+		return std::distance(store.begin(), iter_);
 	}
+
 
 	// ----------------------------------------------------------------------
 	void Storage::reset()
 	{
 		store.clear();
-		pos_=0;
-		iterValid_ = false;
-		iterEndValid_ = false;
+		iter_ = store.begin();
 	}
+
 
 	// ----------------------------------------------------------------------
 	/**
@@ -118,11 +101,9 @@ namespace tcpip
 		{
 			throw std::invalid_argument("Storage::readChar(): invalid position");
 		}
-		char hb = *iter_;
-		++iter_;
-		++pos_;
-		return hb;
+		return readCharUnsafe();
 	}
+
 
 	// ----------------------------------------------------------------------
 	/**
@@ -131,7 +112,9 @@ namespace tcpip
 	void Storage::writeChar(unsigned char value) throw()
 	{
 		store.push_back(value);
+		iter_ = store.begin();
 	}
+
 
 	// ----------------------------------------------------------------------
 	/**
@@ -141,9 +124,10 @@ namespace tcpip
 	int Storage::readByte()	throw(std::invalid_argument)
 	{
 		int i = static_cast<int>(readChar());
-		if (i < 128) return i; 
+		if (i < 128) return i;
 		else return (i - 256);
 	}
+
 
 	// ----------------------------------------------------------------------
 	/**
@@ -158,6 +142,7 @@ namespace tcpip
 		writeChar( static_cast<unsigned char>( (value+256) % 256 ) );
 	}
 
+
 	// ----------------------------------------------------------------------
 	/**
 	* Reads an unsigned byte form the array
@@ -167,6 +152,7 @@ namespace tcpip
 	{
 		return static_cast<int>(readChar());
 	}
+
 
 	// ----------------------------------------------------------------------
 	/**
@@ -181,6 +167,7 @@ namespace tcpip
 		writeChar( static_cast<unsigned char>( value ));
 	}
 
+
 	// -----------------------------------------------------------------------
 	/**
 	* Reads a string form the array
@@ -188,41 +175,47 @@ namespace tcpip
 	*/
 	std::string Storage::readString() throw(std::invalid_argument)
 	{
-		string tmp;
 		int len = readInt();
-        for (int i = 0; i < len; i++) {
-			tmp += (char) readChar();
-        }
+		checkReadSafe(len);
+		StorageType::const_iterator end = iter_;
+		std::advance(end, len);
+		const string tmp(iter_, end);
+		iter_ = end;
 		return tmp;
 	}
+
 
 	// ----------------------------------------------------------------------
 	/**
 	* Writes a string into the array;
 	* @param s		The string to be written
 	*/
-	void Storage::writeString(std::string s) throw()
+	void Storage::writeString(const std::string &s) throw()
 	{
 		writeInt(static_cast<int>(s.length()));
-        for (string::iterator it = s.begin(); it!=s.end() ; it++) {
-			writeChar(*it);
-        }
+
+		store.insert(store.end(), s.begin(), s.end());
+		iter_ = store.begin();
 	}
+
 
 	// -----------------------------------------------------------------------
 	/**
 	* Reads a string list form the array
 	* @return The read string
 	*/
-    std::vector<std::string> Storage::readStringList() throw(std::invalid_argument)
+	std::vector<std::string> Storage::readStringList() throw(std::invalid_argument)
 	{
 		std::vector<std::string> tmp;
-		int len = readInt();
-        for (int i = 0; i < len; i++) {
-            tmp.push_back(readString());
-        }
+		const int len = readInt();
+		tmp.reserve(len);
+		for (int i = 0; i < len; i++) 
+		{
+			tmp.push_back(readString());
+		}
 		return tmp;
 	}
+
 
 	// ----------------------------------------------------------------------
 	/**
@@ -232,10 +225,12 @@ namespace tcpip
 	void Storage::writeStringList(const std::vector<std::string> &s) throw()
 	{
 		writeInt(static_cast<int>(s.size()));
-        for (std::vector<std::string>::const_iterator it = s.begin(); it!=s.end() ; it++) {
+        for (std::vector<std::string>::const_iterator it = s.begin(); it!=s.end() ; it++) 
+		{
 			writeString(*it);
         }
 	}
+
 
 	// ----------------------------------------------------------------------
 	/**
@@ -247,20 +242,12 @@ namespace tcpip
 	*/
 	int Storage::readShort() throw(std::invalid_argument)
 	{
-                short value = 0;
-                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
-                if (bigEndian_)
-                {
-                        // network is big endian
-                        p_value[0] = readChar();
-                        p_value[1] = readChar();
-                } else {
-                        // network is big endian
-                        p_value[1] = readChar();
-                        p_value[0] = readChar();
-                }
-                return value;
-        }
+		short value = 0;
+		unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+		readByEndianess(p_value, 2);
+		return value;
+	}
+
 
 	// ----------------------------------------------------------------------
 	void Storage::writeShort( int value ) throw(std::invalid_argument)
@@ -271,24 +258,13 @@ namespace tcpip
 		}
 
 		short svalue = static_cast<short>(value);
-		//assert(svalue == value);
-
-                unsigned char *p_svalue = reinterpret_cast<unsigned char*>(&svalue);
-                if (bigEndian_)
-                {
-                        // network is big endian
-                        writeChar(p_svalue[0]);
-                        writeChar(p_svalue[1]);
-                } else {
-                       // network is big endian
-                       writeChar(p_svalue[1]);
-                       writeChar(p_svalue[0]);
-                }
+		unsigned char *p_svalue = reinterpret_cast<unsigned char*>(&svalue);
+		writeByEndianess(p_svalue, 2);
 	}
 
-	// ----------------------------------------------------------------------
 
-	/*
+	// ----------------------------------------------------------------------
+	/**
 	* restores an integer, which was split up in four bytes acording to the
 	* specification, it must have been split by its row byte representation
 	* with MSBF-order
@@ -297,48 +273,23 @@ namespace tcpip
 	*/
 	int Storage::readInt() throw(std::invalid_argument)
 	{
-                int value = 0;
-                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
-                if (bigEndian_)
-                {
-                        // network is big endian
-                        p_value[0] = readChar();
-                        p_value[1] = readChar();
-                        p_value[2] = readChar();
-                        p_value[3] = readChar();
-                } else {
-                        // network is big endian
-                        p_value[3] = readChar();
-                        p_value[2] = readChar();
-                        p_value[1] = readChar();
-                        p_value[0] = readChar();
-                }
-                return value;
+		int value = 0;
+		unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+		readByEndianess(p_value, 4);
+		return value;
 	}
+
 
 	// ----------------------------------------------------------------------
 	void Storage::writeInt( int value ) throw()
 	{
-                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
-                if (bigEndian_)
-                {
-                        // network is big endian
-                        writeChar(p_value[0]);
-                        writeChar(p_value[1]);
-                        writeChar(p_value[2]);
-                        writeChar(p_value[3]);
-                } else {
-                        // network is big endian
-                        writeChar(p_value[3]);
-                        writeChar(p_value[2]);
-                        writeChar(p_value[1]);
-                        writeChar(p_value[0]);
-                }
+		unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+		writeByEndianess(p_value, 4);
 	}
 
-	// ----------------------------------------------------------------------
 
-	/*
+	// ----------------------------------------------------------------------
+	/**
 	* restores a float , which was split up in four bytes acording to the
 	* specification, it must have been split by its row byte representation
 	* with MSBF-order
@@ -347,103 +298,106 @@ namespace tcpip
 	*/
 	float Storage::readFloat() throw(std::invalid_argument)
 	{
-                float value = 0;
-                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
-                if (bigEndian_)
-                {
-                        // network is big endian
-                        p_value[0] = readChar();
-                        p_value[1] = readChar();
-                        p_value[2] = readChar();
-                        p_value[3] = readChar();
-                } else {
-                        // network is big endian
-                        p_value[3] = readChar();
-                        p_value[2] = readChar();
-                        p_value[1] = readChar();
-                        p_value[0] = readChar();
-                }
-
-        return value;
-
+		float value = 0;
+		unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+		readByEndianess(p_value, 4);
+		return value;
 	}
+
 
 	// ----------------------------------------------------------------------
 	void Storage::writeFloat( float value ) throw()
 	{
-                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
-                if (bigEndian_)
-                {
-                        // network is big endian
-                        writeChar(p_value[0]);
-                        writeChar(p_value[1]);
-                        writeChar(p_value[2]);
-                        writeChar(p_value[3]);
-                } else {
-                        // network is big endian
-                        writeChar(p_value[3]);
-                        writeChar(p_value[2]);
-                        writeChar(p_value[1]);
-                        writeChar(p_value[0]);
-                }
-        }
-        // ----------------------------------------------------------------------
-        void Storage::writeDouble( double value ) throw ()
+		unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+		writeByEndianess(p_value, 4);
+	}
+
+
+	// ----------------------------------------------------------------------
+	void Storage::writeDouble( double value ) throw ()
 	{
-                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
-                if (bigEndian_)
-                {
-                        // network is big endian
-                        for (int i=0; i<8; ++i)
-			{
-                                writeChar(p_value[i]);
-                        }
-                } else {
-                        // network is big endian
-                        for (int i=7; i>=0; --i)
-	                {
-                                writeChar(p_value[i]);
-                        }
-                }
-        }
+		unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+		writeByEndianess(p_value, 8);
+	}
 
-        // ----------------------------------------------------------------------
-        double Storage::readDouble( ) throw (std::invalid_argument)
+
+	// ----------------------------------------------------------------------
+	double Storage::readDouble( ) throw (std::invalid_argument)
 	{
-                double value = 0;
-                unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
-                if (bigEndian_)
-                {
-                        // network is big endian
-                        for (int i=0; i<8; ++i)
-		        {
-                                p_value[i] = readChar();
-                        }
-                } else {
-                        // network is big endian
-                        for (int i=7; i>=0; --i) {
-                                p_value[i] = readChar();
-                        }
-                }
-                return value;
-        }
+		double value = 0;
+		unsigned char *p_value = reinterpret_cast<unsigned char*>(&value);
+		readByEndianess(p_value, 8);
+		return value;
+	}
 
-        // ----------------------------------------------------------------------
 
-		void Storage::writePacket(unsigned char* packet, int length)
+	// ----------------------------------------------------------------------
+	void Storage::writePacket(unsigned char* packet, int length)
+	{
+		store.insert(store.end(), &(packet[0]), &(packet[length]));
+		iter_ = store.begin();   // reserve() invalidates iterators
+	}
+
+
+	// ----------------------------------------------------------------------
+	void Storage::writeStorage(tcpip::Storage& other)
+	{
+		// the compiler cannot deduce to use a const_iterator as source
+		store.insert<StorageType::const_iterator>(store.end(), other.iter_, other.store.end());
+		iter_ = store.begin();
+	}
+
+
+	// ----------------------------------------------------------------------
+	void Storage::checkReadSafe(unsigned int num) const  throw(std::invalid_argument)
+	{
+		if (std::distance(iter_, store.end()) < num)
 		{
-			store.reserve(length);
-			for(int i = 0; i < length; ++i) store.push_back(packet[i]);
-			//init();
+			std::ostringstream msg;
+			msg << "tcpip::Storage::readIsSafe: want to read "  << num << " bytes from Storage, "
+				<< "but only " << std::distance(iter_, store.end()) << " remaining";
+			throw std::invalid_argument(msg.str());
 		}
+	}
 
-        // ----------------------------------------------------------------------
 
-		void Storage::writeStorage(tcpip::Storage& store)
+	// ----------------------------------------------------------------------
+	unsigned char Storage::readCharUnsafe()
+	{
+		char hb = *iter_;
+		++iter_;
+		return hb;
+	}
+
+
+	// ----------------------------------------------------------------------
+	void Storage::writeByEndianess(const unsigned char * begin, unsigned int size)
+	{
+		const unsigned char * end = &(begin[size]);
+		if (bigEndian_)
+			store.insert(store.end(), begin, end);
+		else
+			store.insert(store.end(), std::reverse_iterator<const unsigned char *>(end), std::reverse_iterator<const unsigned char *>(begin));
+		iter_ = store.begin();
+	}
+
+
+	// ----------------------------------------------------------------------
+	void Storage::readByEndianess(unsigned char * array, int size)
+	{
+		checkReadSafe(size);
+		if (bigEndian_)
 		{
-			while (store.valid_pos())
-				writeChar( store.readChar() );
+			for (int i = 0; i < size; ++i)
+				array[i] = readCharUnsafe();
 		}
+		else
+		{
+			for (int i = size - 1; i >= 0; --i)
+				array[i] = readCharUnsafe();
+		}
+	}
+
 }
 
 #endif // BUILD_TCPIP

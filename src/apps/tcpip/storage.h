@@ -7,6 +7,7 @@
  ************************************************************************
  **                                                                    **
  ** \author Axel Wegener <wegener@itm.uni-luebeck.de>                  **
+ ** \author Bjoern Hendriks <hendriks@ibr.cs.tu-bs.de>                 **
  **                                                                    **
  ************************************************************************/
 #ifndef __SHAWN_APPS_TCPIP_STORAGE_H
@@ -40,21 +41,23 @@ public:
 
 private:
 	StorageType store;
-
-	unsigned int pos_;
-	bool iterValid_;
-//	std::list<unsigned char>::const_iterator iter_;
-	bool iterEndValid_;
-//	std::list<unsigned char>::const_iterator iterEnd_;
-
 	StorageType::const_iterator iter_;
-	StorageType::const_iterator iterEnd_;
 
 	// sortation of bytes forwards or backwards?
 	bool bigEndian_;
-	
+
 	/// Used in constructors to initialize local variables
 	void init();
+
+	/// Check if the next \p num bytes can be read safely
+	void checkReadSafe(unsigned int num) const throw(std::invalid_argument);
+	/// Read a byte \em without validity check
+	unsigned char readCharUnsafe();
+	/// Write \p size elements of array \p begin according to endianess
+	void writeByEndianess(const unsigned char * begin, unsigned int size);
+	/// Read \p size elements into \p array according to endianess
+	void readByEndianess(unsigned char * array, int size);
+
 
 public:
 
@@ -83,12 +86,12 @@ public:
 	virtual void writeUnsignedByte(int) throw(std::invalid_argument);
 
 	virtual std::string readString() throw(std::invalid_argument);
-	virtual void writeString(std::string s) throw();
+	virtual void writeString(const std::string& s) throw();
 
-    virtual std::vector<std::string> readStringList() throw(std::invalid_argument);
-    virtual void writeStringList(const std::vector<std::string> &s) throw();
+	virtual std::vector<std::string> readStringList() throw(std::invalid_argument);
+	virtual void writeStringList(const std::vector<std::string> &s) throw();
 
-    virtual int readShort() throw(std::invalid_argument);
+	virtual int readShort() throw(std::invalid_argument);
 	virtual void writeShort(int) throw(std::invalid_argument);
 
 	virtual int readInt() throw(std::invalid_argument);
@@ -97,15 +100,15 @@ public:
 	virtual float readFloat() throw(std::invalid_argument);
 	virtual void writeFloat( float ) throw();
 
-    virtual double readDouble() throw(std::invalid_argument);
-    virtual void writeDouble( double ) throw();
+	virtual double readDouble() throw(std::invalid_argument);
+	virtual void writeDouble( double ) throw();
 
 	virtual void writePacket(unsigned char* packet, int length);
 
 	virtual void writeStorage(tcpip::Storage& store);
 
 	// Some enabled functions of the underlying std::list
-	size_t size() const { return store.size(); }
+	StorageType::size_type size() const { return store.size(); }
 
 	StorageType::const_iterator begin() const { return store.begin(); }
 	StorageType::const_iterator end() const { return store.end(); }
