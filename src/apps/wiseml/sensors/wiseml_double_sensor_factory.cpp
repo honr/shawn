@@ -18,7 +18,7 @@ namespace wiseml
    name( void )
       const throw()
    {
-      return "wiseml_string_sensor";
+      return "wiseml_double_sensor";
    }
    // ----------------------------------------------------------------------
    std::string
@@ -26,7 +26,7 @@ namespace wiseml
    description( void )
       const throw()
    {
-      return "Base class for creating WiseML string sensors";
+      return "Base class for creating WiseML double sensors";
    }
    // ----------------------------------------------------------------------
    WisemlDoubleSensor*

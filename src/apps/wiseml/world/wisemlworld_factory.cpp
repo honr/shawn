@@ -36,7 +36,11 @@ namespace wiseml
    {
       shawn::SimulationController &sc = w.simulation_controller_w();
       // Add Wiseml<type>SensorFactories here:
-      if(sc.keeper_by_name_w<reading::SensorKeeper>("SensorKeeper")->find("wiseml_string_sensor") == NULL)
+      try
+      {
+         sc.keeper_by_name_w<reading::SensorKeeper>("SensorKeeper")->find("wiseml_string_sensor");
+      }
+      catch(std::runtime_error e)
       {
          sc.keeper_by_name_w<reading::SensorKeeper>("SensorKeeper")->add( new WisemlStringSensorFactory );
          sc.keeper_by_name_w<reading::SensorKeeper>("SensorKeeper")->add( new WisemlDoubleSensorFactory );
