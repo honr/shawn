@@ -11,6 +11,9 @@
 #include "sys/taggings/group_tag.h"
 #include "sys/taggings/basic_tags.h"
 #include "apps/wiseml/timestamps/wiseml_timestamps.h"
+#include "apps/wiseml/sensors/wiseml_string_sensor_factory.h"
+#include "apps/wiseml/sensors/wiseml_double_sensor_factory.h"
+#include "apps/wiseml/sensors/wiseml_int_sensor_factory.h"
 using namespace shawn;
 
 namespace wiseml
@@ -31,6 +34,15 @@ namespace wiseml
    // *********************************************************************
    void WiseMLWorldFactory::fill_world(World &w) throw()
    {
+      shawn::SimulationController &sc = w.simulation_controller_w();
+      // Add Wiseml<type>SensorFactories here:
+      if(sc.keeper_by_name_w<reading::SensorKeeper>("SensorKeeper")->find("wiseml_string_sensor") == NULL)
+      {
+         sc.keeper_by_name_w<reading::SensorKeeper>("SensorKeeper")->add( new WisemlStringSensorFactory );
+         sc.keeper_by_name_w<reading::SensorKeeper>("SensorKeeper")->add( new WisemlDoubleSensorFactory );
+         sc.keeper_by_name_w<reading::SensorKeeper>("SensorKeeper")->add( new WisemlIntSensorFactory );
+      }
+
       world_ = &w;
       // Load and apply world setup data:
       set_state(WML_DEFAULTSNODE);

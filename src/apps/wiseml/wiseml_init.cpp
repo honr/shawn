@@ -25,8 +25,11 @@ extern "C" void init_wiseml( shawn::SimulationController& sc )
    sc.simulation_task_keeper_w().add( new wiseml::SimulationTaskWiseMLWorldFactory );
    sc.simulation_task_keeper_w().add( new wiseml::WisemlWriterTask );
    sc.communication_model_keeper_w().add( new wiseml::WiseMlCommModelFactory );
-   sc.keeper_by_name_w<reading::SensorKeeper>("SensorKeeper")->add( new wiseml::WisemlStringSensorFactory );
    wiseml::WisemlExampleProcessorFactory::register_factory(sc);
+   /**
+    * For adding Wiseml<type>SensorFactories, see 
+    * Wiseml::WiseMLWorldFactory::fillworld(...) method
+    */
 }
 
 #endif
