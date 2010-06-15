@@ -21,16 +21,28 @@
 
 // Enable none or one of the two following defines:
 //#define SYS_MISC_OS_SYSTEM_TIME_WINDOWS
+//#define SYS_MISC_OS_SYSTEM_TIME_UNIX
+
+/** Should work this way */
+
+#ifdef _WINDOWS					//Windows case
+#ifndef CYGWIN					//Not using Cygwin
+#define SYS_MISC_OS_SYSTEM_TIME_WINDOWS
+#elif defined CYGWIN			//Using Cygwin
 #define SYS_MISC_OS_SYSTEM_TIME_UNIX
+#endif
+#endif
 
-
+#ifndef _WINDOWS				//Unix case
+#define SYS_MISC_OS_SYSTEM_TIME_UNIX
+#endif
 
 #ifdef SYS_MISC_OS_SYSTEM_TIME_UNIX
 	#include <unistd.h>
 	#include <sys/time.h>
 #else
-	//#include <windows.h>
-	//#include <winbase.h>
+	#include <windows.h>
+	#include <winbase.h>
 #endif
 
 

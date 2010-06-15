@@ -337,7 +337,6 @@ endif(COMMAND cmake_policy)
 	
 	add_definitions( -DHAVE_EXPAT_CONFIG_H )
 	add_definitions( -DXML_STATIC )
-	add_definitions( -DNOMINMAX )
 
 
 #=============
@@ -438,6 +437,8 @@ endif(COMMAND cmake_policy)
 
 	if ( WIN32 AND NOT CYGWIN  )
 		set ( SYSTEM_LIBS ws2_32.lib )
+		add_definitions( -DNOMINMAX )
+		add_definitions( -DNOGDI )
 
 		if ( OPT_ENABLE_CGAL )
 			set ( LIB_CGAL CGAL.lib )

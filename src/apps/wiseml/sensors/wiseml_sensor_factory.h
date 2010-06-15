@@ -22,6 +22,9 @@
 
 namespace wiseml
 {
+   /** 
+    * Base class for all WiseML sensor factories.
+    */
    class WisemlSensorFactory
          : public reading::SensorFactory
    {

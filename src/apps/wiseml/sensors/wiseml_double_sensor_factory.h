@@ -22,6 +22,9 @@
 
 namespace wiseml
 {
+   /**
+    * Factory for creating and managing double sensors.
+    */
    class WisemlDoubleSensorFactory
          : public WisemlSensorFactory
    {

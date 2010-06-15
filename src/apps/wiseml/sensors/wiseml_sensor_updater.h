@@ -19,21 +19,38 @@ using namespace std;
 namespace wiseml
 {
    /** \brief Updates attached sensors
+    * This class is not used directly, but inherited by WiseMlTimestamps.
     */
    class WisemlSensorUpdater
    {
    public:
       WisemlSensorUpdater();
       virtual ~WisemlSensorUpdater();
-      
+      /**
+       * Iterates all WiseML sensor factories that are already on the sensor keeper
+       * and registers itself as updating service.
+       */
       void register_updater(SimulationController &sc);
-
+      /**
+       * Removes the raw sensor with the given id.
+       */
       void remove_sensor( string sensor_id );
+      /**
+       * Updates the raw sensor <id> with the given value.
+       */
       void update_sensor( string sensor_id, string value );
-
+      /**
+       * Returns the raw sensor with the given id. If not existing, a new raw
+       * sensor ist created and returned.
+       */
       WisemlRawSensor* operator[](string sensor_id);
-
+      /**
+       * Returns wether a sensor with given id exists or not.
+       */
       bool sensor_exists(string sensor_id);
+      /**
+       * A map containing all raw sensors sorted by their id string.
+       */
 	   map<string, WisemlRawSensor*> reg_sensors_;
 
    protected:

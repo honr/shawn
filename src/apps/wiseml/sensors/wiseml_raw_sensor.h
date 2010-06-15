@@ -15,6 +15,7 @@ using namespace std;
 namespace wiseml
 {
    /** \brief Sensor helper class
+    * Internally used by WiseML sensors.
     */
    class WisemlRawSensor
    {

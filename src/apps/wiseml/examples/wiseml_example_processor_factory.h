@@ -22,7 +22,9 @@ namespace shawn
 
 namespace wiseml
 {
-
+   /**
+    * A factory for creating WiseML example processors.
+    */
    class WisemlExampleProcessorFactory
       : public shawn::ProcessorFactory
    {

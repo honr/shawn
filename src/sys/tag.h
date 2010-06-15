@@ -91,7 +91,7 @@ namespace shawn
 			///
 			virtual const std::string& type_identifier(void) const throw() = 0;
 			///
-			virtual std::string encoded_content(void) const throw(std::runtime_error ) = 0;
+			virtual std::string encoded_content(void) const throw() = 0;
 			///
 			virtual void set_persistency(bool) throw();
 			///

@@ -20,7 +20,9 @@ using namespace std;
 
 namespace wiseml
 {
-
+   /**
+    * An example processor which shows how to use WiseML sensors.
+    */
    class WisemlExampleProcessor
        : public helloworld::HelloworldProcessor
    {
