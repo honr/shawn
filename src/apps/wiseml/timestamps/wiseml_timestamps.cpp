@@ -379,6 +379,14 @@ namespace wiseml
          {
             nodes_[attribute("id", parent3.atts)]->posz = atof(content.c_str());
          }
+         // Sensor data (capabilities):
+         else if(parent2.name == "node" && parent1.name == "data")
+         {
+            // sensor_id = <node id>:<capability key>
+            string sensor_id = attribute("id", parent2.atts);
+            sensor_id += ":" + attribute("key", parent1.atts);
+            update_sensor(sensor_id, content);
+         }
       }
    }
    // *********************************************************************
