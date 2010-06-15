@@ -12,13 +12,14 @@ namespace wiseml
 {
    WisemlDynamicsKeeper::WisemlDynamicsKeeper(shawn::SimulationController &sc)
       :  HandleKeeper<WisemlDataCollector>("DynamicsKeeper", "wiseml"),
-         sc_(sc),
-         setup_(sc)
+         sc_(sc)
    {
-      
+      setup_ = new WisemlSetupCollector(sc);
+      add(setup_);
    }
    WisemlDynamicsKeeper::~WisemlDynamicsKeeper()
-   {}
+   {
+   }
 }
 
 #endif

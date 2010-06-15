@@ -40,9 +40,14 @@ namespace wiseml
 
       //virtual void add_trace(std::string trace_id);
       //virtual void add_scenario(std::string trace_id);
+      //virtual WisemlSetupCollector& setup();
+      //virtual WisemlTraceCollector& trace(std::string id);
+      //virtual WisemlScenarioCollector& scenario(std::string id);
+      //virtual std::list<WisemlTraceCollector*> traces();
+      //virtual std::list<WisemlScenarioCollector*> scenarios();
    protected:
       shawn::SimulationController &sc_;
-      WisemlSetupCollector setup_;
+      WisemlSetupCollector *setup_;
    };
 }
 
