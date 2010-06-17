@@ -20,6 +20,8 @@
 #include "sys/simulation/simulation_controller.h"
 #include "apps/wiseml/writer/wiseml_data_collector.h"
 #include "apps/wiseml/writer/wiseml_setup_collector.h"
+#include "apps/wiseml/writer/wiseml_trace_collector.h"
+#include "apps/wiseml/writer/wiseml_scenario_collector.h"
  
 namespace wiseml
 {
@@ -38,8 +40,8 @@ namespace wiseml
       virtual ~WisemlDataKeeper();
       ///@}
 
-      //virtual void add_trace(std::string trace_id);
-      //virtual void add_scenario(std::string trace_id);
+      virtual void add_trace(std::string trace_id);
+      virtual void add_scenario(std::string trace_id);
       //virtual WisemlSetupCollector& setup();
       //virtual WisemlTraceCollector& trace(std::string id);
       //virtual WisemlScenarioCollector& scenario(std::string id);

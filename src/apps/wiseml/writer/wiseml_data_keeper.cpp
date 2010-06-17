@@ -20,6 +20,27 @@ namespace wiseml
    WisemlDataKeeper::~WisemlDataKeeper()
    {
    }
+   // ----------------------------------------------------------------------
+   // ----------------------------------------------------------------------
+   void WisemlDataKeeper::add_trace(std::string trace_id)
+   {
+      if(!has(trace_id))
+      {
+         WisemlTraceCollector *trace = new WisemlTraceCollector(
+            sc_, trace_id);
+         add(trace);         
+      }
+   }
+   // ----------------------------------------------------------------------
+   void WisemlDataKeeper::add_scenario(std::string scenario_id)
+   {
+      if(!has(scenario_id))
+      {
+         WisemlScenarioCollector *scen = new WisemlScenarioCollector(
+            sc_, scenario_id);
+         add(scen);         
+      }
+   }
 }
 
 #endif
