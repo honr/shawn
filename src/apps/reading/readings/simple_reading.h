@@ -25,12 +25,11 @@ namespace reading
         : public Reading
     {
     public:
-       	///@name construction / destruction
-	///@{
+    ///@name construction / destruction
+	 ///@{
        IntegerReading();
-       ///
        virtual ~IntegerReading(){}
-       ///@}
+    ///@}
        virtual int value( const shawn::Vec& v ) const throw() = 0;
     };
    DECLARE_HANDLES(IntegerReading);

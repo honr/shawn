@@ -10,6 +10,11 @@
 #ifdef ENABLE_WISEML
 #include "apps/wiseml/world/wisemlworld_task.h"
 #include "apps/wiseml/writer/wiseml_writer_task.h"
+#include "apps/wiseml/writer/wiseml_setup_task.h"
+#include "apps/wiseml/writer/wiseml_writer_test.h"
+#include "apps/wiseml/writer/wiseml_node_defaults_task.h"
+#include "apps/wiseml/writer/wiseml_link_defaults_task.h"
+#include "apps/wiseml/writer/wiseml_default_capability_task.h"
 #include "apps/wiseml/communication/wiseml_comm_model_factory.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task_keeper.h"
@@ -26,6 +31,11 @@ extern "C" void init_wiseml( shawn::SimulationController& sc )
    sc.add_keeper( new wiseml::WisemlDataKeeper(sc) );
    sc.simulation_task_keeper_w().add( new wiseml::SimulationTaskWiseMLWorldFactory );
    sc.simulation_task_keeper_w().add( new wiseml::WisemlWriterTask );
+   sc.simulation_task_keeper_w().add( new wiseml::WisemlWriterTest );
+   sc.simulation_task_keeper_w().add( new wiseml::WisemlSetupTask );
+   sc.simulation_task_keeper_w().add( new wiseml::WisemlNodeDefaultsTask );
+   sc.simulation_task_keeper_w().add( new wiseml::WisemlLinkDefaultsTask );
+   sc.simulation_task_keeper_w().add( new wiseml::WisemlDefaultCapabilityTask );
    sc.communication_model_keeper_w().add( new wiseml::WiseMlCommModelFactory );
    wiseml::WisemlExampleProcessorFactory::register_factory(sc);
    /**

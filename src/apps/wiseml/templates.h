@@ -32,10 +32,15 @@ namespace wiseml
     */
    struct Capability
    {
+      Capability()
+      {
+         changed=false;
+      }
       string name;
       string datatype;
       string unit;
       string def_value;
+      bool changed;
    };
 
    typedef std::list<Capability> CapList;
@@ -60,13 +65,22 @@ namespace wiseml
       NodeTemplate();
 
       NodeTemplate(const NodeTemplate &cpy);
-
+      
       /// Creates a template based on an existing node
       NodeTemplate(shawn::Node &src);
+   protected:
+      std::list<std::string> make_list(std::string str); 
    };
 
    struct LinkInfo
    {
+      LinkInfo()
+      {
+         is_encrypted = false;
+         is_virtual = false;
+      }
+      string source;
+      string target;
       bool is_encrypted;
       bool is_virtual;
       CapList capabilities;

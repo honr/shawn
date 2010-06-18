@@ -29,8 +29,14 @@ namespace wiseml
 
       virtual std::string name( void ) const throw();
       virtual std::string description( void ) const throw();
+      virtual double next_timestamp_after(double time);
+      virtual void node_movement(std::string node);
+      virtual void capability_value(std::string node, 
+         std::string capability, std::string value);
+
+      virtual std::string generate_xml() const;
    protected:
-      std::string id_;
+      virtual std::string generate_timestamp_xml(double timestamp) const;
    };
    DECLARE_HANDLES(WisemlTraceCollector);
 }

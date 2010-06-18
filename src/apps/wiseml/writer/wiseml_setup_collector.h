@@ -30,10 +30,34 @@ namespace wiseml
       virtual std::string name( void ) const throw();
       virtual std::string description( void ) const throw();
       
-      //NodeTemplate* default_node_w();
-      //NodeTemplate* default_node() const;
-      //void add_node();
-      //void add_link();
+      virtual double next_timestamp_after(double time);
+
+      virtual void set_origin(shawn::Vec pos, double phi, double theta);
+      virtual void set_timeinfo_start(std::string start);
+      virtual void set_timeinfo_end(std::string end);
+      virtual void set_interpolation(std::string mode);
+      virtual void set_description(std::string desc);
+      virtual void set_node_defaults(NodeTemplate &defaults);
+      virtual void set_default_node_capability(Capability &cap);
+      virtual void set_link_defaults(LinkInfo &defaults);
+      virtual void set_default_link_capability(Capability &cap);
+      virtual void gather_topology();
+      virtual void add_node(NodeTemplate &node);
+      virtual void add_link(LinkInfo &link);
+      //virtual void set_link_defaults(LinkInfo &defaults);
+      //virtual void set_default_link_capability(Capability &cap);
+
+      virtual std::string generate_xml() const;
+   protected:
+      shawn::Vec origin_position_;
+      double origin_phi_, origin_theta_;
+      std::string start_, end_;
+      std::string interpolation_;
+      std::string desc_;
+      NodeTemplate node_defaults_;
+      std::list<NodeTemplate> nodes_;
+      LinkInfo link_defaults_;
+      std::list<LinkInfo> links_;
    };
    DECLARE_HANDLES(WisemlSetupCollector);
 }

@@ -1,11 +1,11 @@
 /************************************************************************
  ** This file is part of the network simulator Shawn.                  **
- ** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
+ ** Copyright (C) 2004-2010 by the SwarmNet (www.swarmnet.de) project  **
  ** Shawn is free software; you can redistribute it and/or modify it   **
  ** under the terms of the BSD License. Refer to the shawn-licence.txt **
  ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-#include "apps/wiseml/writer/wiseml_writer_task.h"
+#include "apps/wiseml/writer/wiseml_default_capability_task.h"
 #ifdef ENABLE_WISEML
 #include <iostream>
 #include <fstream>
@@ -13,38 +13,40 @@
 #include "apps/wiseml/writer/wiseml_data_keeper.h"
 namespace wiseml
 {
-   WisemlWriterTask::WisemlWriterTask()
+   WisemlDefaultCapabilityTask::WisemlDefaultCapabilityTask()
    {
    }
    // ----------------------------------------------------------------------
-   WisemlWriterTask::~WisemlWriterTask()
+   WisemlDefaultCapabilityTask::~WisemlDefaultCapabilityTask()
    {
    }
    // ----------------------------------------------------------------------
    // ----------------------------------------------------------------------
-   std::string WisemlWriterTask::name() const throw()
+   std::string WisemlDefaultCapabilityTask::name() const throw()
    {
-      return "wiseml_writer";
+      return "wiseml_default_capability";
    }
    // ----------------------------------------------------------------------
-   std::string WisemlWriterTask::description() const throw()
+   std::string WisemlDefaultCapabilityTask::description() const throw()
    {
-      return "A task for generating WiseML files of the current topology.";
+      return "Gathers data for the setup section of a WiseML file.";
    }
    // ----------------------------------------------------------------------
    // ----------------------------------------------------------------------
-   void WisemlWriterTask::run(SimulationController &sc) throw()
+   void WisemlDefaultCapabilityTask::run(SimulationController &sc) throw()
    {
-      std::string filename = sc.environment().optional_string_param("filename", "simulation.wiseml");
-      std::ofstream file;
-      file.open(filename.c_str());
-
-      std::string wml;
       WisemlDataKeeper *keeper = 
          sc.keeper_by_name_w<WisemlDataKeeper>("wiseml_data_keeper");
-      wml = keeper->generate_xml();
-      file << wml;
-      file.close();
+      WisemlSetupCollector &setup = keeper->setup();
+
+      Capability cap;
+      cap.name = sc.environment().required_string_param("name");
+      cap.datatype = sc.environment().required_string_param("datatype");
+      cap.unit = sc.environment().required_string_param("unit");
+      cap.def_value = sc.environment().required_string_param("value");
+
+      setup.set_default_node_capability(cap);
+
    }
 }
 #endif

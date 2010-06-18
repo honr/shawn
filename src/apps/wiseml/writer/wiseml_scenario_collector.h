@@ -13,6 +13,7 @@
 #include "apps/wiseml/writer/wiseml_data_collector.h"
 #include "apps/wiseml/templates.h"
 #include "sys/simulation/simulation_controller.h"
+#include <iostream>
 using namespace shawn;
 
 namespace wiseml
@@ -24,14 +25,37 @@ namespace wiseml
       : public WisemlDataCollector
    {
    public:
+   ///@name Constructor/Destructor
+   ///@{
       WisemlScenarioCollector(shawn::SimulationController &sc, std::string id);
       virtual ~WisemlScenarioCollector();
+   ///@}
 
+   ///@name KeeperManaged implementations
+   ///@{
       virtual std::string name( void ) const throw();
       virtual std::string description( void ) const throw();
-      
+   ///@}
+
+   ///@name WisemlDataCollector implementations
+   ///@{
+      virtual double next_timestamp_after(double time);
+   ///@}
+
+   ///@name Data collection methods
+   ///@{
+      virtual void enable_node(std::string node);
+      virtual void disable_node(std::string node);
+      virtual void enable_link(std::string src, std::string dst);
+      virtual void disable_link(std::string src, std::string dst);
+      virtual void node_movement(std::string node);
+      virtual void capability_value(std::string node, 
+         std::string capability, std::string value);
+   ///@}
+
+      virtual std::string generate_xml() const;
    protected:
-      std::string id_;
+      virtual std::string generate_timestamp_xml(double timestamp) const;
    };
    DECLARE_HANDLES(WisemlScenarioCollector);
 }

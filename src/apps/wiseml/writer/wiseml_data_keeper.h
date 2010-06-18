@@ -40,13 +40,15 @@ namespace wiseml
       virtual ~WisemlDataKeeper();
       ///@}
 
-      virtual void add_trace(std::string trace_id);
-      virtual void add_scenario(std::string trace_id);
-      //virtual WisemlSetupCollector& setup();
-      //virtual WisemlTraceCollector& trace(std::string id);
-      //virtual WisemlScenarioCollector& scenario(std::string id);
-      //virtual std::list<WisemlTraceCollector*> traces();
-      //virtual std::list<WisemlScenarioCollector*> scenarios();
+      virtual WisemlTraceCollector* add_trace(std::string trace_id);
+      virtual WisemlScenarioCollector* add_scenario(std::string trace_id);
+      virtual WisemlSetupCollector& setup();
+      virtual WisemlTraceCollector& trace(std::string id) throw(std::runtime_error);
+      virtual WisemlScenarioCollector& scenario(std::string id) throw(std::runtime_error);
+      virtual std::list<WisemlTraceCollector*> traces();
+      virtual std::list<WisemlScenarioCollector*> scenarios();
+      virtual double next_timestamp_after(double time);
+      virtual std::string generate_xml();
    protected:
       shawn::SimulationController &sc_;
       WisemlSetupCollector *setup_;

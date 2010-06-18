@@ -56,6 +56,32 @@ namespace wiseml
       description = "";
       capabilities = CapList();
    }
+   // ----------------------------------------------------------------------
+   std::list<std::string> NodeTemplate::make_list(std::string str)
+   {
+      std::list<std::string> out;
+      int next_seperator = str.find_first_of(',', 0);
+      int last_seperator = 0;
+
+      while(last_seperator != std::string::npos)
+      {
+         std::string cut = "";
+
+         if(next_seperator != std::string::npos)
+         {
+            cut = str.substr(last_seperator+1, next_seperator - 1);
+         }
+         else
+         {
+            cut = str.substr(last_seperator+1, str.length() - 1);
+         }
+         out.push_back(cut);
+         last_seperator = next_seperator;
+         next_seperator = str.find_first_of(',', last_seperator + 1);
+      }
+
+      return out;
+   }
 
 }
 

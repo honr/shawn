@@ -12,6 +12,8 @@
 #ifdef	ENABLE_WISEML
 #include "sys/util/keeper_managed.h"
 #include "sys/simulation/simulation_controller.h"
+#include "sys/world.h"
+#include <list>
 using namespace shawn;
 
 namespace wiseml
@@ -24,10 +26,17 @@ namespace wiseml
       : public KeeperManaged
    {
    public:
-      WisemlDataCollector(shawn::SimulationController &sc);
+      WisemlDataCollector(shawn::SimulationController &sc, std::string id);
       virtual ~WisemlDataCollector();
+
+      virtual double next_timestamp_after(double time) = 0;
+      virtual std::string generate_xml() const = 0;
    protected:
       shawn::SimulationController &sc_;
+      std::multimap<double,std::string> items_;
+      std::string id_;
+      double current_time();
+      std::list<std::string> make_list(std::string str) const; 
    };
    DECLARE_HANDLES(WisemlDataCollector);
 }
