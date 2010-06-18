@@ -44,8 +44,6 @@ namespace wiseml
       virtual void gather_topology();
       virtual void add_node(NodeTemplate &node);
       virtual void add_link(LinkInfo &link);
-      //virtual void set_link_defaults(LinkInfo &defaults);
-      //virtual void set_default_link_capability(Capability &cap);
 
       virtual std::string generate_xml() const;
    protected:
