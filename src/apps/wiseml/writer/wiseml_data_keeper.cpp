@@ -29,20 +29,20 @@ namespace wiseml
       {
          WisemlTraceCollector *trace = new WisemlTraceCollector(
             sc_, trace_id);
-         add(trace);  
+         add(trace);
          return trace;
       }
       return dynamic_cast<WisemlTraceCollector*> (find_w(trace_id).get());
    }
    // ----------------------------------------------------------------------
-   WisemlScenarioCollector* 
+   WisemlScenarioCollector*
       WisemlDataKeeper::add_scenario(std::string scenario_id)
    {
       if(!has(scenario_id))
       {
          WisemlScenarioCollector *scen = new WisemlScenarioCollector(
             sc_, scenario_id);
-         add(scen);    
+         add(scen);
          return scen;
       }
       return dynamic_cast<WisemlScenarioCollector*> (
@@ -62,7 +62,7 @@ namespace wiseml
    {
       if(has(id))
       {
-         WisemlTraceCollector* trace = 
+         WisemlTraceCollector* trace =
             dynamic_cast<WisemlTraceCollector*>(find_w(id).get());
          if(trace != NULL)
          {
@@ -90,7 +90,7 @@ namespace wiseml
    {
       if(has(id))
       {
-         WisemlScenarioCollector* trace = 
+         WisemlScenarioCollector* trace =
             dynamic_cast<WisemlScenarioCollector*>(find_w(id).get());
          if(trace != NULL)
          {
@@ -117,12 +117,12 @@ namespace wiseml
    {
       std::list<WisemlTraceCollector*> traceslist;
 
-      for(std::map<std::string,RefcntPointer<WisemlDataCollector>>::iterator
+      for(std::map<std::string,RefcntPointer<WisemlDataCollector> >::iterator
          it = begin_handles_w();
          it != end_handles_w();
          ++it)
       {
-         WisemlTraceCollector* trace = 
+         WisemlTraceCollector* trace =
             dynamic_cast<WisemlTraceCollector*>(it->second.get());
          if(trace!=NULL)
          {
@@ -136,12 +136,12 @@ namespace wiseml
    std::list<WisemlScenarioCollector*> WisemlDataKeeper::scenarios()
    {
       std::list<WisemlScenarioCollector*> scenariolist;
-      for(std::map<std::string,RefcntPointer<WisemlDataCollector>>::iterator
+      for(std::map<std::string,RefcntPointer<WisemlDataCollector> >::iterator
          it = begin_handles_w();
          it != end_handles_w();
          ++it)
       {
-         WisemlScenarioCollector* scenario = 
+         WisemlScenarioCollector* scenario =
             dynamic_cast<WisemlScenarioCollector*>(it->second.get());
          if(scenario!=NULL)
          {
@@ -155,7 +155,7 @@ namespace wiseml
    double WisemlDataKeeper::next_timestamp_after(double time)
    {
       double next_ts = -1.0;
-      for(std::map<std::string,RefcntPointer<WisemlDataCollector>>::iterator
+      for(std::map<std::string,RefcntPointer<WisemlDataCollector> >::iterator
          it = begin_handles_w();
          it != end_handles_w();
          ++it)
@@ -178,14 +178,14 @@ namespace wiseml
       wml << setup_->generate_xml();
 
       std::list<WisemlScenarioCollector*> scens = scenarios();
-      for(list<WisemlScenarioCollector*>::iterator sit = 
+      for(list<WisemlScenarioCollector*>::iterator sit =
          scens.begin(); sit != scens.end(); ++sit)
       {
          wml << (*sit)->generate_xml() << std::endl;
       }
 
       std::list<WisemlTraceCollector*> tracs = traces();
-      for(list<WisemlTraceCollector*>::iterator tit = 
+      for(list<WisemlTraceCollector*>::iterator tit =
          tracs.begin(); tit != tracs.end(); ++tit)
       {
          wml << (*tit)->generate_xml() << std::endl;
