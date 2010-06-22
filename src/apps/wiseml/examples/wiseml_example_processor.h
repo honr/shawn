@@ -37,6 +37,8 @@ namespace wiseml
       WisemlStringSensor* some_sensor_;
       SimulationController* sim_controller_;
       reading::SensorKeeper* sensor_keeper_;
+      WisemlStringSensor* get_string_sensor(std::string capability); 
+      void value_changed(std::string capability);
    };
 
 

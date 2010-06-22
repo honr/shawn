@@ -14,6 +14,8 @@
 #include "sys/node.h"
 #include "apps/wiseml/sensors/wiseml_string_sensor_factory.h"
 #include "sys/simulation/simulation_controller.h"
+#include "apps/wiseml/writer/wiseml_data_keeper.h"
+#include "apps/wiseml/writer/wiseml_trace_collector.h"
 #include <iostream>
 
 
@@ -43,16 +45,8 @@ namespace wiseml
       send( new helloworld::HelloworldMessage );
       
       sim_controller_ = &owner_w().world_w().simulation_controller_w();
-      sensor_keeper_ = sim_controller_->
-         keeper_by_name_w<reading::SensorKeeper>("SensorKeeper");
 
-      reading::SensorFactory *factory = 
-         sensor_keeper_->find_w("wiseml_string_sensor").get();
-
-      WisemlStringSensorFactory *string_factory = 
-         dynamic_cast<WisemlStringSensorFactory*>(factory);
-
-      some_sensor_ = string_factory->create("battery", owner_w());
+      some_sensor_ = get_string_sensor("battery");
       old_value_ = some_sensor_->value();
 
    }
@@ -67,6 +61,45 @@ namespace wiseml
       {
          old_value_ = cur_value;
          cout << owner().label() << ":Battery = " << cur_value << endl;
+         value_changed("battery");
+      }
+   }
+   // ----------------------------------------------------------------------
+   WisemlStringSensor* 
+   WisemlExampleProcessor::get_string_sensor(std::string capability)
+   {
+      sensor_keeper_ = sim_controller_->
+         keeper_by_name_w<reading::SensorKeeper>("SensorKeeper");
+
+      reading::SensorFactory *factory = 
+         sensor_keeper_->find_w("wiseml_string_sensor").get();
+
+      WisemlStringSensorFactory *string_factory = 
+         dynamic_cast<WisemlStringSensorFactory*>(factory);
+
+      WisemlStringSensor* sensor = 
+         string_factory->create(capability, owner_w());
+
+      return sensor;
+   }
+   // ----------------------------------------------------------------------
+   void
+   WisemlExampleProcessor::value_changed(std::string capability)
+   {
+      WisemlDataKeeper *keeper = 
+         sim_controller_->keeper_by_name_w<WisemlDataKeeper>(
+         "wiseml_data_keeper");
+      if(keeper != NULL)
+      {
+         try
+         {
+            WisemlTraceCollector &trace = keeper->trace("example_trace");
+            trace.capability_value(owner().label(), capability, 
+               "" + old_value_);
+         }
+         catch(std::runtime_error er)
+         {
+         }
       }
    }
    // ----------------------------------------------------------------------
