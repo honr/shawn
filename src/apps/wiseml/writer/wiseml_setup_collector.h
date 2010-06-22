@@ -46,6 +46,7 @@ namespace wiseml
       virtual void add_link(LinkInfo &link);
 
       virtual std::string generate_xml() const;
+      virtual void clear();
    protected:
       shawn::Vec origin_position_;
       double origin_phi_, origin_theta_;

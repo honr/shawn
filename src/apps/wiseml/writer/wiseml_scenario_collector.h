@@ -56,6 +56,7 @@ namespace wiseml
       virtual std::string generate_xml() const;
    protected:
       virtual std::string generate_timestamp_xml(double timestamp) const;
+      virtual void clear();
    };
    DECLARE_HANDLES(WisemlScenarioCollector);
 }

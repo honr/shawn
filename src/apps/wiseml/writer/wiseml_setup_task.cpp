@@ -10,7 +10,6 @@
 #include <iostream>
 #include <fstream>
 #include "apps/wiseml/writer/wiseml_generator.h"
-#include "apps/wiseml/writer/wiseml_data_keeper.h"
 namespace wiseml
 {
    WisemlSetupTask::WisemlSetupTask()
@@ -35,8 +34,7 @@ namespace wiseml
    // ----------------------------------------------------------------------
    void WisemlSetupTask::run(SimulationController &sc) throw()
    {
-      WisemlDataKeeper *keeper = 
-         sc.keeper_by_name_w<WisemlDataKeeper>("wiseml_data_keeper");
+      WisemlDataKeeper *keeper = data_keeper(sc);
       WisemlSetupCollector &setup = keeper->setup();
 
       //Origin:
@@ -99,6 +97,18 @@ namespace wiseml
       wml << ts->tm_sec << "Z";           //second
 
       return wml.str();
+   }
+   // ----------------------------------------------------------------------
+   WisemlDataKeeper* WisemlSetupTask::data_keeper(SimulationController &sc)
+   {
+      WisemlDataKeeper *keeper = sc.keeper_by_name_w<WisemlDataKeeper>(
+         "wiseml_data_keeper");
+      if(keeper == NULL)
+      {
+         sc.add_keeper(keeper = new WisemlDataKeeper(sc));
+      }
+
+      return keeper;
    }
 }
 #endif

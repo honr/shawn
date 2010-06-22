@@ -238,5 +238,10 @@ namespace wiseml
       
       return wml.str();
    }
+   // ----------------------------------------------------------------------
+   void WisemlScenarioCollector::clear()
+   {
+      items_.clear();
+   }
 }
 #endif

@@ -35,6 +35,7 @@ namespace wiseml
          std::string capability, std::string value);
 
       virtual std::string generate_xml() const;
+      virtual void clear();
    protected:
       virtual std::string generate_timestamp_xml(double timestamp) const;
    };

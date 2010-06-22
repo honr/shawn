@@ -346,15 +346,21 @@ namespace wiseml
          }
       }
    }
+   // ----------------------------------------------------------------------
    void WisemlSetupCollector::add_node(NodeTemplate &node)
    {
       nodes_.push_back(node);
    }
+   // ----------------------------------------------------------------------
    void WisemlSetupCollector::add_link(LinkInfo &link)
    {
       links_.push_back(link);
    }
+   // ----------------------------------------------------------------------
+   void WisemlSetupCollector::clear()
+   {
 
+   }
 
 
 }

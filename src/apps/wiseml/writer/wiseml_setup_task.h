@@ -14,6 +14,7 @@
 #include "sys/simulation/simulation_task.h"
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_environment.h"
+#include "apps/wiseml/writer/wiseml_data_keeper.h"
 #include <iostream>
 #include <time.h>
 using namespace shawn;
@@ -39,6 +40,7 @@ namespace wiseml
       virtual void run( SimulationController &) throw();
    protected:
       virtual std::string generate_timestring();
+      virtual WisemlDataKeeper* data_keeper(SimulationController &);
    };
 }
 #endif

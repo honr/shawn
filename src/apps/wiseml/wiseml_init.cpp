@@ -28,7 +28,6 @@
 
 extern "C" void init_wiseml( shawn::SimulationController& sc )
 {
-   sc.add_keeper( new wiseml::WisemlDataKeeper(sc) );
    sc.simulation_task_keeper_w().add( new wiseml::SimulationTaskWiseMLWorldFactory );
    sc.simulation_task_keeper_w().add( new wiseml::WisemlWriterTask );
    sc.simulation_task_keeper_w().add( new wiseml::WisemlWriterTest );

@@ -163,5 +163,10 @@ namespace wiseml
       
       return wml.str();
    }
+   // ----------------------------------------------------------------------
+   void WisemlTraceCollector::clear()
+   {
+      items_.clear();
+   }
 }
 #endif

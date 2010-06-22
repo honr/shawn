@@ -31,6 +31,7 @@ namespace wiseml
 
       virtual double next_timestamp_after(double time) = 0;
       virtual std::string generate_xml() const = 0;
+      virtual void clear() = 0;
    protected:
       shawn::SimulationController &sc_;
       std::multimap<double,std::string> items_;
