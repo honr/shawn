@@ -149,6 +149,7 @@ namespace wiseml
       wml << "\t\t\t</links>" << std::endl;
       wml << "\t\t</defaults>" << std::endl;
 
+      //Nodes
       for(std::list<NodeTemplate>::const_iterator nit = nodes_.begin();
          nit != nodes_.end(); ++nit)
       {
@@ -174,16 +175,19 @@ namespace wiseml
                wml << "false" << "</gateway>" << std::endl;
             }
          }
-         if(nit->image!= node_defaults_.image)
+         if(nit->image!= node_defaults_.image 
+            && !nit->image.empty())
          {
             wml << "\t\t\t<image>" << nit->image << "</image>" << std::endl;
          }
-         if(nit->nodetype != node_defaults_.nodetype)
+         if(nit->nodetype != node_defaults_.nodetype 
+            && !nit->nodetype.empty())
          {
             wml << "\t\t\t<nodetype>" << nit->nodetype << "</nodetype>"
                << std::endl;
          }
-         if(nit->description != node_defaults_.description)
+         if(nit->description != node_defaults_.description
+            && !nit->description.empty())
          {
             wml << "\t\t\t<description>" << nit->description << 
                "</description>" << std::endl;
