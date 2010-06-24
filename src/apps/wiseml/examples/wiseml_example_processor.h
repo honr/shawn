@@ -34,11 +34,12 @@ namespace wiseml
       virtual void work( void ) throw();
    protected:
       string old_value_;
+      int writer_battery_;
       WisemlStringSensor* some_sensor_;
       SimulationController* sim_controller_;
       reading::SensorKeeper* sensor_keeper_;
       WisemlStringSensor* get_string_sensor(std::string capability); 
-      void value_changed(std::string capability);
+      void value_changed();
    };
 
 

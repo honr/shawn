@@ -16,6 +16,8 @@
 #include "sys/simulation/simulation_controller.h"
 #include "apps/wiseml/writer/wiseml_data_keeper.h"
 #include "apps/wiseml/writer/wiseml_trace_collector.h"
+#include "sys/misc/random/basic_random.h"
+#include "sys/logging/logging.h"
 #include <iostream>
 
 
@@ -27,7 +29,8 @@ namespace wiseml
    WisemlExampleProcessor::
    WisemlExampleProcessor()
    :  old_value_(""),
-      some_sensor_(NULL)
+      some_sensor_(NULL),
+      writer_battery_(100)
    {
    }
    // ----------------------------------------------------------------------
@@ -47,7 +50,9 @@ namespace wiseml
       sim_controller_ = &owner_w().world_w().simulation_controller_w();
 
       some_sensor_ = get_string_sensor("battery");
-      old_value_ = some_sensor_->value();
+
+      if(some_sensor_ != NULL)
+         old_value_ = some_sensor_->value();
 
    }
    // ----------------------------------------------------------------------
@@ -56,35 +61,58 @@ namespace wiseml
    work( void )
       throw()
    {
-      string cur_value = some_sensor_->value();
-      if(cur_value != old_value_)
+      // Wiseml trace writer example:
+      bool worked = (shawn::uniform_random_0i_1i() >= 0.5);
+      if(worked && writer_battery_ > 0)
       {
-         old_value_ = cur_value;
-         cout << owner().label() << ":Battery = " << cur_value << endl;
-         value_changed("battery");
+         writer_battery_--;
+         value_changed();
+      }
+
+      // Wiseml sensor example:
+      if(some_sensor_ != NULL)
+      {
+         string cur_value = some_sensor_->value();
+
+         if(cur_value != old_value_)
+         {
+            old_value_ = cur_value;
+            cout << owner().label() << ":Battery = " << cur_value << endl;
+         }
       }
    }
    // ----------------------------------------------------------------------
    WisemlStringSensor* 
    WisemlExampleProcessor::get_string_sensor(std::string capability)
    {
+      
       sensor_keeper_ = sim_controller_->
          keeper_by_name_w<reading::SensorKeeper>("SensorKeeper");
 
-      reading::SensorFactory *factory = 
-         sensor_keeper_->find_w("wiseml_string_sensor").get();
+      try
+      {
+         reading::SensorFactory *factory = 
+            sensor_keeper_->find_w("wiseml_string_sensor").get();
 
-      WisemlStringSensorFactory *string_factory = 
-         dynamic_cast<WisemlStringSensorFactory*>(factory);
+         WisemlStringSensorFactory *string_factory = 
+            dynamic_cast<WisemlStringSensorFactory*>(factory);
 
-      WisemlStringSensor* sensor = 
-         string_factory->create(capability, owner_w());
+         WisemlStringSensor* sensor = 
+            string_factory->create(capability, owner_w());
 
-      return sensor;
+         return sensor;
+      }
+      catch(std::runtime_error e)
+      {
+         WARN("WisemlExampleProcessor",
+            "wiseml_string_sensor not registered?");
+      }
+
+      return NULL;
    }
    // ----------------------------------------------------------------------
    void
-   WisemlExampleProcessor::value_changed(std::string capability)
+   WisemlExampleProcessor::value_changed()
    {
       WisemlDataKeeper *keeper = 
          sim_controller_->keeper_by_name_w<WisemlDataKeeper>(
@@ -93,12 +121,17 @@ namespace wiseml
       {
          try
          {
+            std::stringstream valstr;
+            valstr << writer_battery_;
+            // Getting the Trace
             WisemlTraceCollector &trace = keeper->trace("example_trace");
-            trace.capability_value(owner().label(), capability, 
-               "" + old_value_);
+            // Committing the value change to the trace
+            trace.capability_value(owner().label(), "battery", valstr.str());
          }
          catch(std::runtime_error er)
          {
+            WARN("WisemlExampleProcessor", 
+               "WisemlTraceCollector not found!");
          }
       }
    }
