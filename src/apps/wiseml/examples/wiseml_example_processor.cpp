@@ -54,6 +54,19 @@ namespace wiseml
       if(some_sensor_ != NULL)
          old_value_ = some_sensor_->value();
 
+      // //Add capability test:
+      //WisemlDataKeeper *keeper = 
+      //   sim_controller_->keeper_by_name_w<WisemlDataKeeper>(
+      //   "wiseml_data_keeper");
+      //if(keeper != NULL)
+      //{
+      //   Capability cap;
+      //   cap.datatype = "double";
+      //   cap.unit = "degree";
+      //   cap.name = "temperature";
+      //   cap.def_value = "22.0";
+      //   keeper->setup().add_capability(owner().label(), cap);
+      //}
    }
    // ----------------------------------------------------------------------
    void

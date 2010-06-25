@@ -220,16 +220,16 @@ namespace wiseml
          for(CapList::const_iterator cit = nit->capabilities.begin();
             cit != nit->capabilities.end(); ++cit)
          {
-            wml << "\t\t\t\t<capability>" << std::endl;
-            wml << "\t\t\t\t\t<name>" << cit->name << "</name>" << 
+            wml << "\t\t\t<capability>" << std::endl;
+            wml << "\t\t\t\t<name>" << cit->name << "</name>" << 
                std::endl;
-            wml << "\t\t\t\t\t<datatype>" << cit->datatype << 
+            wml << "\t\t\t\t<datatype>" << cit->datatype << 
                "</datatype>" << std::endl;
-            wml << "\t\t\t\t\t<unit>" << cit->unit << "</unit>" << 
+            wml << "\t\t\t\t<unit>" << cit->unit << "</unit>" << 
                std::endl;
-            wml << "\t\t\t\t\t<default>" << cit->def_value << 
+            wml << "\t\t\t\t<default>" << cit->def_value << 
                "</default>" << std::endl;
-            wml << "\t\t\t\t</capability>" << std::endl;
+            wml << "\t\t\t</capability>" << std::endl;
          }
          wml << "\t\t</node>" << std::endl;
       }
@@ -391,6 +391,34 @@ namespace wiseml
       }
 
       duration_start_ = sc_.world().current_time();
+   }
+   // ----------------------------------------------------------------------
+   void WisemlSetupCollector::
+      add_capability(std::string node, Capability &cap)
+   {
+      for(list<NodeTemplate>::iterator it = nodes_.begin();
+         it!=nodes_.end(); ++it)
+      {
+         if(it->label == node)
+         {
+            it->capabilities.push_back(cap);
+            break;
+         }
+      }
+   }
+   // ----------------------------------------------------------------------
+   void WisemlSetupCollector::
+      add_capability(std::string src, std::string tgt, Capability &cap)
+   {
+      for(list<LinkInfo>::iterator it = links_.begin();
+         it!=links_.end(); ++it)
+      {
+         if(it->source == src && it->target==tgt)
+         {
+            it->capabilities.push_back(cap);
+            break;
+         }
+      }
    }
    // ----------------------------------------------------------------------
    void WisemlSetupCollector::add_node(NodeTemplate &node)

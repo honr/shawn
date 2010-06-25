@@ -50,6 +50,8 @@ namespace wiseml
       virtual void set_default_link_capability(Capability &cap);
 
       virtual void gather_topology();
+      virtual void add_capability(std::string node, Capability &cap);
+      virtual void add_capability(std::string src, std::string tgt, Capability &cap);
       virtual void add_node(NodeTemplate &node);
       virtual void add_link(LinkInfo &link);
 
