@@ -49,6 +49,10 @@ namespace wiseml
       virtual void set_link_defaults(LinkInfo &defaults);
       virtual void set_default_link_capability(Capability &cap);
 
+      virtual void set_bool_param(std::string param, bool value, std::string node);
+      virtual void set_bool_param(std::string param, bool value, std::string src, std::string tgt);
+      virtual void set_string_param(std::string param, std::string value, std::string node);
+
       virtual void gather_topology();
       virtual void add_capability(std::string node, Capability &cap);
       virtual void add_capability(std::string src, std::string tgt, Capability &cap);
@@ -59,6 +63,8 @@ namespace wiseml
       virtual void clear();
       std::string generate_timestring() const;
    protected:
+      NodeTemplate* find_node(std::string node);
+      LinkInfo* find_link(std::string src, std::string tgt);
       // <Origin>
       shawn::Vec origin_position_;
       double origin_phi_, origin_theta_;

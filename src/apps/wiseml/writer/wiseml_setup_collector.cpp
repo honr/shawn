@@ -396,27 +396,84 @@ namespace wiseml
    void WisemlSetupCollector::
       add_capability(std::string node, Capability &cap)
    {
-      for(list<NodeTemplate>::iterator it = nodes_.begin();
-         it!=nodes_.end(); ++it)
+      NodeTemplate *nodetmp = find_node(node);
+      if(nodetmp!=NULL)
       {
-         if(it->label == node)
-         {
-            it->capabilities.push_back(cap);
-            break;
-         }
+         nodetmp->capabilities.push_back(cap);
       }
    }
    // ----------------------------------------------------------------------
    void WisemlSetupCollector::
       add_capability(std::string src, std::string tgt, Capability &cap)
    {
-      for(list<LinkInfo>::iterator it = links_.begin();
-         it!=links_.end(); ++it)
+      LinkInfo *info = find_link(src, tgt);
+      if(info!=NULL)
       {
-         if(it->source == src && it->target==tgt)
+         info->capabilities.push_back(cap);
+      }
+   }
+   // ----------------------------------------------------------------------
+   void WisemlSetupCollector::
+      set_bool_param(std::string param, bool value, std::string node)
+   {
+      if(param=="gateway")
+      {
+         NodeTemplate *tmp = find_node(node);
+         if(tmp!=NULL)
          {
-            it->capabilities.push_back(cap);
-            break;
+            tmp->gateway = value;
+         }
+      }
+   }
+   // ----------------------------------------------------------------------
+   void WisemlSetupCollector::
+      set_bool_param(std::string param, bool value, std::string src, 
+      std::string tgt)
+   {
+      if(param=="virtual")
+      {
+         LinkInfo *info = find_link(src, tgt);
+         if(info!=NULL)
+         {
+            info->is_virtual = value;
+         }
+      }
+      else if(param=="encrypted")
+      {
+         LinkInfo *info = find_link(src, tgt);
+         if(info!=NULL)
+         {
+            info->is_encrypted = value;
+         }
+      }
+   }
+   // ----------------------------------------------------------------------
+   void WisemlSetupCollector::
+      set_string_param(std::string param, std::string value, 
+      std::string node)
+   {
+      if(param=="programDetails")
+      {
+         NodeTemplate *tmp = find_node(node);
+         if(tmp!=NULL)
+         {
+            tmp->image = value;
+         }
+      }
+      else if(param=="nodetype")
+      {
+         NodeTemplate *tmp = find_node(node);
+         if(tmp!=NULL)
+         {
+            tmp->nodetype = value;
+         }
+      }
+      else if(param=="description")
+      {
+         NodeTemplate *tmp = find_node(node);
+         if(tmp!=NULL)
+         {
+            tmp->description = value;
          }
       }
    }
@@ -481,7 +538,33 @@ namespace wiseml
       unit_ = unit;
    }
    // ----------------------------------------------------------------------
-
+   NodeTemplate* WisemlSetupCollector::
+      find_node(std::string node)
+   {
+      for(list<NodeTemplate>::iterator it = nodes_.begin();
+         it!=nodes_.end(); ++it)
+      {
+         if(it->label == node)
+         {
+            return &(*it);
+         }
+      }
+      return NULL;
+   }
+   // ----------------------------------------------------------------------
+   LinkInfo* WisemlSetupCollector::
+      find_link(std::string src, std::string tgt)
+   {
+      for(list<LinkInfo>::iterator it = links_.begin();
+         it!=links_.end(); ++it)
+      {
+         if(it->source == src && it->target==tgt)
+         {
+            return &(*it);
+         }
+      }
+      return NULL;
+   }
 
 }
 #endif
