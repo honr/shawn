@@ -122,6 +122,7 @@ namespace wiseml
    {
       std::stringstream wml;
       std::map<string, NodeTemplate*> nodes;
+      std::map<string, pair<LinkInfo*, bool> > links;
       std::multimap<double, std::string>::const_iterator ts_begin = 
          items_.lower_bound(timestamp);
       std::multimap<double, std::string>::const_iterator ts_end = 
@@ -209,6 +210,60 @@ namespace wiseml
             cap.def_value = dit->c_str();
             tmp->capabilities.push_back(cap);
          }
+         /// Item syntax: lrssi;source_node;target_node;rssi_value
+         else if(datatype == "lrssi")
+         {
+            ++dit;
+            std::string src = dit->c_str();
+            ++dit;
+            std::string dst = dit->c_str();
+            ++dit;
+            std::string value = dit->c_str();
+            LinkInfo *info;
+            if(links.find(src + dst) != links.end())
+            {
+               info = links.find(src + dst)->second.first;
+               links.find(src + dst)->second.second = true;
+            }
+            else
+            {
+               info = new LinkInfo();
+               links.insert(pair<string, pair<LinkInfo*, bool> >(src+dst,
+                  pair<LinkInfo*, bool>(info, true)));
+            }
+            info->source = src;
+            info->target = dst;
+            info->rssi = value;
+
+         }
+         /// Item syntax: 
+         /// lc;source_node;target_node;capability_name;capability_value
+         else if(datatype == "lc")
+         {
+            ++dit;
+            std::string src = dit->c_str();
+            ++dit;
+            std::string dst = dit->c_str();
+            LinkInfo *info;
+            if(links.find(src + dst) != links.end())
+            {
+               info = links.find(src + dst)->second.first;
+            }
+            else
+            {
+               info = new LinkInfo();
+               links.insert(pair<string, pair<LinkInfo*, bool> >(src+dst,
+                  pair<LinkInfo*, bool>(info, false)));
+            }
+            info->source = src;
+            info->target = dst;
+            Capability cap;
+            ++dit;
+            cap.name = dit->c_str();;
+            ++dit;
+            cap.def_value = dit->c_str();
+            info->capabilities.push_back(cap);
+         }
 
          
       }
@@ -234,6 +289,27 @@ namespace wiseml
                   cit->def_value << "</data>" << std::endl;
          }
          wml << "\t\t</node>" << std::endl;
+      }
+
+      for(map<string, pair<LinkInfo*,bool> >::iterator it = links.begin();
+         it != links.end(); ++it)
+      {
+         wml << "\t\t<link source=\"" << it->second.first->source << "\" "
+            << "target=\"" << it->second.first->target << "\">"
+            << std::endl;
+         if(it->second.second)
+         {
+            wml << "\t\t\t<rssi>" << it->second.first->rssi << "</rssi>"
+               << std::endl;
+         }
+
+         for(CapList::iterator cit = it->second.first->capabilities.begin();
+            cit != it->second.first->capabilities.end(); ++cit)
+         {
+            wml << "\t\t\t<data key=\"" << cit->name << "\">" << 
+               cit->def_value << "</data>" << std::endl;
+         }
+         wml << "\t\t</link>" << std::endl;
       }
       
       return wml.str();
