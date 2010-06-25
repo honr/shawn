@@ -41,12 +41,23 @@ namespace wiseml
          "is_encrypted", false);
       linkdef.is_virtual = sc.environment().optional_bool_param(
          "is_virtual", false);
+
+      bool set_type=false, set_unit=false, 
+         set_value=false;
+
       linkdef.rssi_datatype = sc.environment().optional_string_param(
-         "rssi_datatype", "");
+         "rssi_datatype", "", &set_type);
       linkdef.rssi_unit = sc.environment().optional_string_param(
-         "rssi_unit", "");
+         "rssi_unit", "", &set_unit);
       linkdef.rssi = sc.environment().optional_string_param(
-         "rssi_default", "0");
+         "rssi_default", "0", &set_value);
+      if(!(set_type && set_unit && set_value))
+      {
+         linkdef.rssi_datatype = "";
+         linkdef.rssi_unit = "";
+         linkdef.rssi = "";
+      }
+
       setup.set_link_defaults(linkdef);
    }
 

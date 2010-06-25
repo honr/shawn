@@ -264,6 +264,18 @@ namespace wiseml
                wml << "false" << "</virtual>" << std::endl;
             }
          }
+         if(!(lit->rssi_datatype.empty()
+            || lit->rssi_unit.empty()
+            || lit->rssi.empty())
+            && (lit->rssi_datatype != link_defaults_.rssi_datatype
+            || lit->rssi_unit != link_defaults_.rssi_unit
+            || lit->rssi != link_defaults_.rssi))
+         {
+            wml << "\t\t\t<rssi datatype=\""
+               << lit->rssi_datatype << "\" "
+               << "unit=\"" << lit->rssi_unit << "\" "
+               << "default=\"" << lit->rssi << "\"/>" << std::endl;
+         }
          for(CapList::const_iterator cit = lit->capabilities.begin();
             cit != lit->capabilities.end(); ++cit)
          {
