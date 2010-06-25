@@ -41,7 +41,7 @@ namespace wiseml
       nodedef.gateway = sc.environment().optional_bool_param(
          "is_gateway", false);
       nodedef.image = sc.environment().optional_string_param(
-         "image", "");
+         "programDetails", "");
       nodedef.nodetype = sc.environment().optional_string_param(
          "nodetype", "");
       nodedef.description = replace_underline(

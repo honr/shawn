@@ -96,7 +96,7 @@ namespace wiseml
          wml << "true</gateway>" << std::endl;
       else
          wml << "false</gateway>" << std::endl;
-      wml << "\t\t\t\t<image>" << node_defaults_.image << "</image>" << 
+      wml << "\t\t\t\t<programDetails>" << node_defaults_.image << "</programDetails>" << 
          std::endl;
       wml << "\t\t\t\t<nodetype>" << node_defaults_.nodetype << 
          "</nodetype>" << std::endl;
