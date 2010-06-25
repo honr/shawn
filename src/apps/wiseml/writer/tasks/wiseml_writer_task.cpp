@@ -40,6 +40,8 @@ namespace wiseml
       std::string wml;
       WisemlDataKeeper *keeper = 
          sc.keeper_by_name_w<WisemlDataKeeper>("wiseml_data_keeper");
+      WisemlSetupCollector &setup = keeper->setup();
+      setup.set_timeinfo_duration(sc.world().current_time());
       wml = keeper->generate_xml();
       file << wml;
       file.close();

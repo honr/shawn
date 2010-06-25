@@ -13,7 +13,10 @@ namespace wiseml
       :  WisemlDataCollector(sc, "wiseml_setup"),
          origin_position_(0.0,0.0,0.0),
          origin_phi_(0.0),
-         origin_theta_(0.0)
+         origin_theta_(0.0),
+         duration_(0),
+         duration_factor_(1.0),
+         unit_("rounds")
    {
       
    }
@@ -56,8 +59,18 @@ namespace wiseml
       //Timeinfo
       wml << "\t\t<timeinfo>" << std::endl;
       wml << "\t\t\t<start>" << start_ << "</start>" << std::endl;
-      wml << "\t\t\t<end>" << end_ << "</end>" << std::endl;
+      if(end_.empty())
+      {
+         wml << "\t\t\t<duration>" << duration_factor_ * duration_ << 
+            "</duration>" << std::endl;
+         wml << "\t\t\t<unit>" << unit_ << "</unit>" << std::endl;
+      }
+      else
+      {
+         wml << "\t\t\t<end>" << end_ << "</end>" << std::endl;
+      }
       wml << "\t\t</timeinfo>" << std::endl;
+      // General information
       if(interpolation_.empty())
       {
          wml << "\t\t<interpolation/>" <<  std::endl;
@@ -69,8 +82,9 @@ namespace wiseml
       }
       wml << "\t\t<description>" << desc_ << 
          "</description>" << std::endl;
-      //Defaults
+      // Defaults
       wml << "\t\t<defaults>" << std::endl;
+      // Defaults.Node
       wml << "\t\t\t<nodes>" << std::endl;
       wml << "\t\t\t\t<position>" << std::endl;
       wml << "\t\t\t\t\t<x>" << node_defaults_.posx << "</x>" << std::endl;
@@ -108,6 +122,7 @@ namespace wiseml
          }
       }
       wml << "\t\t\t</nodes>" << std::endl;
+      // Default.Links
       wml << "\t\t\t<links>" << std::endl;
       wml << "\t\t\t\t<encrypted>";
          if(link_defaults_.is_encrypted)
@@ -209,7 +224,7 @@ namespace wiseml
          wml << "\t\t</node>" << std::endl;
       }
 
-
+      // Links
       for(std::list<LinkInfo>::const_iterator lit = links_.begin();
          lit != links_.end(); ++lit)
       {
@@ -365,6 +380,52 @@ namespace wiseml
    {
 
    }
+   // ----------------------------------------------------------------------
+   std::string WisemlSetupCollector::generate_timestring() const
+   {
+      std::stringstream wml;
+
+      //Current time
+      time_t t = time(NULL);
+      tm *ts = localtime(&t);
+
+      
+      wml << ts->tm_year + 1900 << "-" ;  //year
+      if(ts->tm_mon + 1 < 10)
+         wml << "0";
+      wml << ts->tm_mon + 1 << "-";       //month
+      if(ts->tm_mday < 10)
+         wml << "0";
+      wml << ts->tm_mday << "T";          //day
+      if(ts->tm_hour < 10)
+         wml << "0";
+      wml << ts->tm_hour << ":";          //hour
+      if(ts->tm_min < 10)
+         wml << "0";
+      wml << ts->tm_min << ":";           //minute
+      if(ts->tm_sec < 10)
+         wml << "0";
+      wml << ts->tm_sec << "Z";           //second
+
+      return wml.str();
+   }
+
+   // ----------------------------------------------------------------------
+   void WisemlSetupCollector::set_timeinfo_duration(double rounds)
+   {
+      duration_ = rounds;
+   }
+   // ----------------------------------------------------------------------
+   void WisemlSetupCollector::set_timeinfo_factor(double factor)
+   {
+      duration_factor_ = factor;
+   }
+   // ----------------------------------------------------------------------
+   void WisemlSetupCollector::set_timeinfo_unit(std::string unit)
+   {
+      unit_ = unit;
+   }
+   // ----------------------------------------------------------------------
 
 
 }

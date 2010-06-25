@@ -46,7 +46,7 @@ namespace wiseml
 
       //Timeinfo:
       std::string start = sc.environment().optional_string_param(
-         "start", generate_timestring());
+         "start", setup.generate_timestring());
       setup.set_timeinfo_start(start);
 
       //Interpolation:
@@ -67,35 +67,7 @@ namespace wiseml
       setup.gather_topology();
    }
    
-   // ----------------------------------------------------------------------
-   std::string WisemlSetupTask::generate_timestring()
-   {
-      std::stringstream wml;
-
-      //Current time
-      time_t t = time(NULL);
-      tm *ts = localtime(&t);
-
-      
-      wml << ts->tm_year + 1900 << "-" ;  //year
-      if(ts->tm_mon + 1 < 10)
-         wml << "0";
-      wml << ts->tm_mon + 1 << "-";       //month
-      if(ts->tm_mday < 10)
-         wml << "0";
-      wml << ts->tm_mday << "T";          //day
-      if(ts->tm_hour < 10)
-         wml << "0";
-      wml << ts->tm_hour << ":";          //hour
-      if(ts->tm_min < 10)
-         wml << "0";
-      wml << ts->tm_min << ":";           //minute
-      if(ts->tm_sec < 10)
-         wml << "0";
-      wml << ts->tm_sec << "Z";           //second
-
-      return wml.str();
-   }
+   
    // ----------------------------------------------------------------------
    WisemlDataKeeper* WisemlSetupTask::data_keeper(SimulationController &sc)
    {

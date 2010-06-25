@@ -39,7 +39,6 @@ namespace wiseml
       /// SimulationTest implementations:
       virtual void run( SimulationController &) throw();
    protected:
-      virtual std::string generate_timestring();
       virtual WisemlDataKeeper* data_keeper(SimulationController &);
    };
 }
