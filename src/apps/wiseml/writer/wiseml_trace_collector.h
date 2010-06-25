@@ -33,6 +33,7 @@ namespace wiseml
       virtual void node_movement(std::string node);
       virtual void capability_value(std::string node, 
          std::string capability, std::string value);
+      virtual void rssi(std::string src, std::string dst, std::string value);
 
       virtual std::string generate_xml() const;
       virtual void clear();

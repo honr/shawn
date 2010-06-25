@@ -39,13 +39,24 @@ namespace wiseml
          sc.keeper_by_name_w<WisemlDataKeeper>("wiseml_data_keeper");
       WisemlSetupCollector &setup = keeper->setup();
 
+      // Link or node capability?
+      bool forlink = 
+         sc.environment().optional_bool_param("forlink", false);
+
       Capability cap;
       cap.name = sc.environment().required_string_param("name");
       cap.datatype = sc.environment().required_string_param("datatype");
       cap.unit = sc.environment().required_string_param("unit");
       cap.def_value = sc.environment().required_string_param("value");
 
-      setup.set_default_node_capability(cap);
+      if(!forlink)
+      {
+         setup.set_default_node_capability(cap);
+      }
+      else
+      {
+         setup.set_default_link_capability(cap);
+      }
 
    }
 }

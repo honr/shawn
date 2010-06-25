@@ -93,8 +93,8 @@ namespace wiseml
          wml << "true</gateway>" << std::endl;
       else
          wml << "false</gateway>" << std::endl;
-      wml << "\t\t\t\t<programDetails>" << node_defaults_.image << "</programDetails>" << 
-         std::endl;
+      wml << "\t\t\t\t<programDetails>" << node_defaults_.image << 
+         "</programDetails>" << std::endl;
       wml << "\t\t\t\t<nodetype>" << node_defaults_.nodetype << 
          "</nodetype>" << std::endl;
       wml << "\t\t\t\t<description>" << node_defaults_.description << 
@@ -121,24 +121,37 @@ namespace wiseml
       wml << "\t\t\t</nodes>" << std::endl;
       // Default.Links
       wml << "\t\t\t<links>" << std::endl;
+
       wml << "\t\t\t\t<encrypted>";
-         if(link_defaults_.is_encrypted)
-         {
-            wml << "true" << "</encrypted>" << std::endl;
-         }
-         else
-         {
-            wml << "false" << "</encrypted>" << std::endl;
-         }
-         wml << "\t\t\t\t<virtual>";
-         if(link_defaults_.is_virtual)
-         {
-            wml << "true" << "</virtual>" << std::endl;
-         }
-         else
-         {
-            wml << "false" << "</virtual>" << std::endl;
-         }
+      if(link_defaults_.is_encrypted)
+      {
+         wml << "true" << "</encrypted>" << std::endl;
+      }
+      else
+      {
+         wml << "false" << "</encrypted>" << std::endl;
+      }
+
+      wml << "\t\t\t\t<virtual>";
+      if(link_defaults_.is_virtual)
+      {
+         wml << "true" << "</virtual>" << std::endl;
+      }
+      else
+      {
+         wml << "false" << "</virtual>" << std::endl;
+      }
+
+      if(!link_defaults_.rssi_datatype.empty()
+         && !link_defaults_.rssi_unit.empty()
+         && !link_defaults_.rssi.empty())
+      {
+         wml << "\t\t\t\t<rssi datatype=\"" << link_defaults_.rssi_datatype
+            << "\" unit=\"" << link_defaults_.rssi_unit
+            << "\" default=\"" << link_defaults_.rssi << "\"/>" 
+            << std::endl;
+      }
+
       if(link_defaults_.capabilities.size() > 0)
       {
          for(CapList::const_iterator cit = 
@@ -146,16 +159,16 @@ namespace wiseml
             cit != link_defaults_.capabilities.end();
             ++cit)
          {
-            wml << "\t\t\t\t\t<capability>" << std::endl;
-            wml << "\t\t\t\t\t\t<name>" << cit->name << "</name>" << 
+            wml << "\t\t\t\t<capability>" << std::endl;
+            wml << "\t\t\t\t\t<name>" << cit->name << "</name>" << 
                std::endl;
-            wml << "\t\t\t\t\t\t<datatype>" << cit->datatype << 
+            wml << "\t\t\t\t\t<datatype>" << cit->datatype << 
                "</datatype>" << std::endl;
-            wml << "\t\t\t\t\t\t<unit>" << cit->unit << "</unit>" << 
+            wml << "\t\t\t\t\t<unit>" << cit->unit << "</unit>" << 
                std::endl;
-            wml << "\t\t\t\t\t\t<default>" << cit->def_value << 
+            wml << "\t\t\t\t\t<default>" << cit->def_value << 
                "</default>" << std::endl;
-            wml << "\t\t\t\t\t</capability>" << std::endl;
+            wml << "\t\t\t\t</capability>" << std::endl;
          }
       }
       wml << "\t\t\t</links>" << std::endl;
@@ -327,6 +340,9 @@ namespace wiseml
       link_defaults_.capabilities = defaults.capabilities;
       link_defaults_.is_encrypted = defaults.is_encrypted;
       link_defaults_.is_virtual = defaults.is_virtual;
+      link_defaults_.rssi = defaults.rssi;
+      link_defaults_.rssi_datatype = defaults.rssi_datatype;
+      link_defaults_.rssi_unit = defaults.rssi_unit;
    }
    // ----------------------------------------------------------------------
    void WisemlSetupCollector::set_default_link_capability(Capability &cap)
