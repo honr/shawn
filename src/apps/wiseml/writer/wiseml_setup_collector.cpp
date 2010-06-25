@@ -16,6 +16,7 @@ namespace wiseml
          origin_theta_(0.0),
          duration_(0),
          duration_factor_(1.0),
+         duration_start_(0.0),
          unit_("rounds")
    {
       
@@ -71,11 +72,7 @@ namespace wiseml
       }
       wml << "\t\t</timeinfo>" << std::endl;
       // General information
-      if(interpolation_.empty())
-      {
-         wml << "\t\t<interpolation/>" <<  std::endl;
-      }
-      else
+      if(!interpolation_.empty())
       {
          wml << "\t\t<interpolation>" << interpolation_ << 
             "</interpolation>" << std::endl;
@@ -364,6 +361,8 @@ namespace wiseml
             links_.push_back(ltempl);
          }
       }
+
+      duration_start_ = sc_.world().current_time();
    }
    // ----------------------------------------------------------------------
    void WisemlSetupCollector::add_node(NodeTemplate &node)
@@ -413,7 +412,7 @@ namespace wiseml
    // ----------------------------------------------------------------------
    void WisemlSetupCollector::set_timeinfo_duration(double rounds)
    {
-      duration_ = rounds;
+      duration_ = rounds - duration_start_;
    }
    // ----------------------------------------------------------------------
    void WisemlSetupCollector::set_timeinfo_factor(double factor)

@@ -83,6 +83,9 @@ namespace wiseml
       string target;
       bool is_encrypted;
       bool is_virtual;
+      string rssi;
+      string rssi_unit;
+      string rssi_datatype;
       CapList capabilities;
    };
 

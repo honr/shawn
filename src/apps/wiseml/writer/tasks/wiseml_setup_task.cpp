@@ -47,7 +47,17 @@ namespace wiseml
       //Timeinfo:
       std::string start = sc.environment().optional_string_param(
          "start", setup.generate_timestring());
+      std::string end = sc.environment().optional_string_param(
+         "end", "");
+      std::string unit = sc.environment().optional_string_param(
+         "timeinfo_unit", "rounds");
+      double factor = sc.environment().optional_double_param(
+         "timeinfo_factor", 1.0);
       setup.set_timeinfo_start(start);
+      setup.set_timeinfo_end(end);
+      setup.set_timeinfo_unit(unit);
+      setup.set_timeinfo_factor(factor);
+
 
       //Interpolation:
       setup.set_interpolation(sc.environment().optional_string_param(

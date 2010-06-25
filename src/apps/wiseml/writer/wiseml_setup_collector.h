@@ -62,6 +62,7 @@ namespace wiseml
       double origin_phi_, origin_theta_;
       // <Timeinfo>
       std::string start_, end_;
+      double duration_start_;
       double duration_;
       double duration_factor_;
       std::string unit_;
