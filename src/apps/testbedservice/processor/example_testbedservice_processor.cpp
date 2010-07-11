@@ -30,7 +30,8 @@ namespace testbedservice
       throw()
    {
       // important to call boot of parent!
-      TestbedServiceProcessor::boot();
+      set_node( owner_w() );
+      TestbedServiceProcessor::testbedservice_proc_boot();
 
       std::cout << "ExampleTestbedServiceProcessor::boot" << std::endl;
    }

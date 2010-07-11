@@ -101,8 +101,11 @@ namespace testbedservice
       bm.timestamp = time(0);
       bm.size = len;
       bm.buffer = bytes;
-      // send to remote wsn api
-      info.wsnapi_client->send_binary_message( dests, bm );
+      // send to remote wsn api and socket connection - if they exist
+      if ( info.wsnapi_client )
+         info.wsnapi_client->send_binary_message( dests, bm );
+      if ( info.socket_client )
+         info.socket_client->send_binary_data( info.shawn_node_urn, info.virtual_node_urn, bytes, len );
 
       delete bytes;
    }
@@ -136,32 +139,57 @@ namespace testbedservice
    // ----------------------------------------------------------------------
    void
    VirtualLinkTransmissionModel::
-   add_virtual_link( std::string shawn_node, std::string virtual_node, std::string remote_uri )
+   add_virtual_link( const std::string& shawn_node, const std::string& virtual_node,
+                     const std::string& remote_uri,
+                     const std::string& remote_socket_host,
+                     const std::string& remote_socket_port )
       throw()
    {
       if ( find_virtual_link_w( shawn_node, virtual_node ) != virtual_links_.end() )
          return;
 
+      std::string remote_socket = remote_socket_host + ":" + remote_socket_port;
       VirtualLinkInfo *link = new VirtualLinkInfo();
       link->shawn_node_urn = shawn_node;
       link->virtual_node_urn = virtual_node;
       link->shawn_node_id = node_id_from_urn( shawn_node );
       link->virtual_node_id = node_id_from_urn( virtual_node );
       link->remote_uri = remote_uri;
-
+      link->remote_socket = remote_socket;
       std::cout << "add vlink from " << link->shawn_node_urn << " to " << link->virtual_node_urn << std::endl;
-      if ( wsnapis_clients_.find( remote_uri ) == wsnapis_clients_.end() )
+
+      if ( remote_uri != "" )
       {
-         std::cout << "create new wsn api to " << remote_uri << std::endl;
-         WsnApiClient *client = new WsnApiClient();
-         client->init( remote_uri );
-         wsnapis_clients_[remote_uri] = client;
-         link->wsnapi_client = client;
+         if ( wsnapis_clients_.find( remote_uri ) == wsnapis_clients_.end() )
+         {
+            std::cout << "create new wsn api to " << remote_uri << std::endl;
+            WsnApiClient *client = new WsnApiClient();
+            client->init( remote_uri );
+            wsnapis_clients_[remote_uri] = client;
+            link->wsnapi_client = client;
+         }
+         else
+         {
+            std::cout << "use existing wsn api to " << remote_uri << std::endl;
+            link->wsnapi_client = wsnapis_clients_[remote_uri];
+         }
       }
-      else
+
+      if ( remote_socket != ":" )
       {
-         std::cout << "use existing wsn api to " << remote_uri << std::endl;
-         link->wsnapi_client = wsnapis_clients_[remote_uri];
+         if ( socket_clients_.find( remote_socket ) == socket_clients_.end() )
+         {
+            std::cout << "create new socket client to " << remote_uri << std::endl;
+            SocketClient *client = new SocketClient();
+            client->init( world().simulation_controller(), remote_socket_host, remote_socket_port );
+            socket_clients_[remote_socket] = client;
+            link->socket_client = client;
+         }
+         else
+         {
+            std::cout << "use existing socket client to " << remote_socket << std::endl;
+            link->socket_client = socket_clients_[remote_socket];
+         }
       }
 
       virtual_links_.push_back( link );

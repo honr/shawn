@@ -9,6 +9,8 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/sockets/socket_server.h"
+#include "apps/testbedservice/sockets/proto/Messages.pb.h"
+#include "apps/testbedservice/sockets/proto/WSNAppMessages.pb.h"
 #include "apps/testbedservice/ws_handler/virtual_link_control.h"
 #include "sys/simulation/simulation_environment.h"
 #include "sys/node.h"
@@ -22,7 +24,11 @@
 
 
 using boost::asio::ip::tcp;
+using de::uniluebeck::itm::gtr::messaging::Msg;
+using namespace de::uniluebeck::itm::tr::runtime::wsnapp;
 
+typedef Msg TestbedRuntimeMessage;
+typedef Message WsnAppMessage;
 
 namespace testbedservice
 {
@@ -39,6 +45,8 @@ namespace testbedservice
    SocketServer::
    start_server( const shawn::SimulationController& sc )
    {
+//       GOOGLE_PROTOBUF_VERIFY_VERSION;
+
       port_ = sc.environment().required_int_param( "socket_server_port" );
       runner_ = new boost::thread( boost::bind( &WorkerThread::run, &worker_, port_ ) );
 
@@ -64,7 +72,8 @@ namespace testbedservice
       {
          for (;;)
          {
-            unsigned char data[0xff];
+            // data buffer of 1024 bytes
+            unsigned char data[0x400];
 
             boost::system::error_code error;
             size_t length = sock->read_some(boost::asio::buffer(data), error);
@@ -73,6 +82,10 @@ namespace testbedservice
             else if (error)
                throw boost::system::system_error(error); // Some other error.
 
+//             /*std::cout << "Received new message" << std::endl;
+//             std::cout << "  -> " << length << " bytes" << std::endl;*/
+//             TestbedRuntimeMessage tr_message;
+//             tr_message
 // TODO: inject_message no longer available
 //             inject_message( length, data );
             // uncomment to enable echo test!

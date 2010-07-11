@@ -20,7 +20,8 @@ namespace testbedservice
 {
    TestbedServiceProcessor::
    TestbedServiceProcessor()
-      : controller_ ( 0 )
+      : controller_ ( 0 ),
+         node_      ( 0 )
    {}
    // ----------------------------------------------------------------------
    TestbedServiceProcessor::
@@ -29,11 +30,11 @@ namespace testbedservice
    // ----------------------------------------------------------------------
    void
    TestbedServiceProcessor::
-   boot()
+   testbedservice_proc_boot()
       throw()
    {
       shawn::SimulationTaskKeeper& stk =
-         owner_w().world_w().simulation_controller_w().simulation_task_keeper_w();
+         node_w().world_w().simulation_controller_w().simulation_task_keeper_w();
 
       TestbedServiceTask *tst = dynamic_cast<TestbedServiceTask*>(
                                     stk.find_w( "testbedservice" ).get() );
@@ -73,7 +74,10 @@ namespace testbedservice
    send_text_message( std::string& message, MessageLevel level )
       throw()
    {
-      std::string source = owner().label();
+//       std::string source = node().label();
+      std::stringstream ss;
+      ss << "urn:wisebed:uzl:" << 500 + node().id();
+      std::string source = ss.str();
       controller().send_text_message( source, message, int(level) );
    }
    // ----------------------------------------------------------------------
@@ -82,7 +86,7 @@ namespace testbedservice
    send_binary_message( int length, uint8_t *buffer )
       throw()
    {
-      std::string source = owner().label();
+      std::string source = node().label();
       controller().send_binary_message( source, length, buffer );
    }
    // ----------------------------------------------------------------------

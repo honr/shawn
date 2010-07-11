@@ -14,6 +14,7 @@
 #include "sys/simulation/simulation_controller.h"
 #include "sys/simulation/simulation_task.h"
 #include "apps/testbedservice/sockets/socket_server.h"
+#include "apps/testbedservice/sockets/socket_client.h"
 
 namespace testbedservice
 {
@@ -33,6 +34,7 @@ namespace testbedservice
 
    private:
       SocketServer socket_server_;
+      SocketClient socket_client_;
    };
 
 }

@@ -9,7 +9,6 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/sockets/socket_task.h"
-#include "apps/testbedservice/sockets/socket_client.h"
 #include "sys/processors/processor_keeper.h"
 #include "sys/worlds/processor_world_factory.h"
 #include "sys/misc/random/basic_random.h"
@@ -53,7 +52,8 @@ namespace testbedservice
       throw( std::runtime_error )
    {
       require_world( sc );
-      socket_server_.start_server( sc );
+//       socket_server_.start_server( sc );
+//       socket_client_.start_client( sc );
    }
 
 }

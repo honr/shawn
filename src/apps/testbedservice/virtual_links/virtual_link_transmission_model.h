@@ -30,14 +30,22 @@ namespace testbedservice
       : public shawn::ChainableTransmissionModel,
          public shawn::EventScheduler::EventHandler
    {
-      struct VirtualLinkInfo
+      class VirtualLinkInfo
       {
+      public:
+         VirtualLinkInfo()
+            : wsnapi_client ( 0 ),
+               socket_client( 0 )
+         {}
+         // -----------------------------------------------------------------
          int shawn_node_id;            /// Node ID in Shawn
          int virtual_node_id;          /// Node ID at another portal server
          std::string shawn_node_urn;   /// Node URN in Shawn
          std::string virtual_node_urn; /// Node URN at another portal server
          std::string remote_uri;       /// URI of remote WSN API
          WsnApiClient *wsnapi_client;  /// Remote WSN API webservice
+         std::string remote_socket;    /// "host:port" of remote socket connection
+         SocketClient *socket_client;  /// Remote Socket Server
       };
 
       typedef std::list<VirtualLinkInfo*> VirtualLinkList;
@@ -47,6 +55,10 @@ namespace testbedservice
       typedef std::map<std::string, WsnApiClient*> WsnApiClientMap;
       typedef WsnApiClientMap::iterator WsnApiClientMapIterator;
       typedef WsnApiClientMap::const_iterator ConstWsnApiClientMapIterator;
+
+      typedef std::map<std::string, SocketClient*> SocketClientMap;
+      typedef SocketClientMap::iterator SocketClientMapIterator;
+      typedef SocketClientMap::const_iterator ConstSocketClientMapIterator;
 
    public:
       typedef wiselib::ExtIfaceProcessor::ExtIfaceWiselibMessage WiselibMessage;
@@ -78,7 +90,10 @@ namespace testbedservice
                             shawn::EventScheduler::EventTagHandle& ) throw();
       ///@}
       // --------------------------------------------------------------------
-      void add_virtual_link( std::string shawn_node, std::string virtual_node, std::string remote_uri ) throw();
+      void add_virtual_link( const std::string& shawn_node, const std::string& virtual_node,
+                             const std::string& remote_uri,
+                             const std::string& remote_socket_host = "",
+                             const std::string& remote_socket_port = "" ) throw();
       void remove_virtual_link( std::string shawn_node, std::string virtual_node ) throw();
       // --------------------------------------------------------------------
       int node_id_from_urn( std::string urn ) const throw();
@@ -96,6 +111,7 @@ namespace testbedservice
 
       VirtualLinkList virtual_links_;
       WsnApiClientMap wsnapis_clients_;
+      SocketClientMap socket_clients_;
    };
 
 }

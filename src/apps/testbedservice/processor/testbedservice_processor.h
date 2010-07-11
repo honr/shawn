@@ -24,7 +24,6 @@ namespace testbedservice
    /**
     */
    class TestbedServiceProcessor
-      : public shawn::Processor
    {
    public:
 
@@ -38,7 +37,7 @@ namespace testbedservice
 
       ///@name Inherited from Processor
       ///@{
-      virtual void boot() throw();
+      void testbedservice_proc_boot() throw();
       ///@}
 
       ///@name Message Reception
@@ -53,9 +52,22 @@ namespace testbedservice
       void send_binary_message( int length, uint8_t *buffer ) throw();
       ///@}
 
-      ///@name Promming/Configuration
+      ///@name Programming/Configuration
       ///@{
       void flash_program( FlashProgram& program ) throw();
+      ///@}
+
+   protected:
+      ///@name access to node
+      ///@{
+      void set_node( shawn::Node& node ) throw()
+      { node_ = &node; }
+      // --------------------------------------------------------------------
+      shawn::Node& node_w( void ) throw()
+      { assert(node_); return *node_; }
+      // --------------------------------------------------------------------
+      const shawn::Node& node( void ) const throw()
+      { assert(node_); return *node_; }
       ///@}
 
       // --------------------------------------------------------------------
@@ -64,6 +76,7 @@ namespace testbedservice
 
    private:
       TestbedServiceClient *controller_;
+      shawn::Node *node_;
    };
 
 

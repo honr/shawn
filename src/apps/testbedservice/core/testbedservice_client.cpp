@@ -134,7 +134,6 @@ namespace testbedservice
 
       ts_text->msg = allocate_string( msg );
       ts_text->messageLevel = new ns2__messageLevel( (ns2__messageLevel)level );
-
       boost::lock_guard<boost::mutex> pool_lock( pool_mutex_ );
       pool_.schedule( boost::bind( &TestbedServiceClient::call_receive_message, this, ts_receive ) );
    }

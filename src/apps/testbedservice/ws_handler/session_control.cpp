@@ -9,6 +9,7 @@
 #ifdef ENABLE_TESTBEDSERVICE
 
 #include "apps/testbedservice/ws_handler/session_control.h"
+#include "apps/testbedservice/util/ws_helpers.h"
 #include "apps/testbedservice/core/session_managementH.h"
 #include "sys/processors/processor_keeper.h"
 #include "sys/worlds/processor_world_factory.h"
@@ -81,7 +82,7 @@ namespace session_management
    // -----------------------------------------------------------------------
    // ------------- Web Service Calls Session Control -----------------------
    // -----------------------------------------------------------------------
-   SOAP_FMAC5 int SOAP_FMAC6 __shawnts__getInstance( struct soap*,
+   SOAP_FMAC5 int SOAP_FMAC6 __shawnts__getInstance( struct soap* soap,
             shawnts__getInstance *shawnts__getInstance_,
             char *&shawnts__getInstanceResponse_ )
    {
@@ -103,6 +104,8 @@ namespace session_management
       std::cerr << "  -> Controller URI: " << controller_uri << std::endl;
 
       testbedservice::session_control_->controller().set_controller_uri( controller_uri );
+
+      shawnts__getInstanceResponse_ = testbedservice::allocate_string( soap, uri );
 
       return SOAP_OK;
    }

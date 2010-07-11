@@ -20,7 +20,8 @@ namespace testbedservice
    /**
     */
    class ExampleTestbedServiceProcessor
-      : public TestbedServiceProcessor
+      : public shawn::Processor,
+         public TestbedServiceProcessor
    {
    public:
 
