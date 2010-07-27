@@ -180,7 +180,7 @@ namespace wsnapi_server
             shawnts__enablePhysicalLinkResponse *shawnts__enablePhysicalLinkResponse_)
    {
       // TODO !
-      std::cout << "shawn::testbedservice::enableVirtualLink" << std::endl;
+      std::cout << "shawn::testbedservice::enablePhysicalLink" << std::endl;
       return SOAP_OK;
    }
    // -----------------------------------------------------------------------
@@ -189,7 +189,7 @@ namespace wsnapi_server
             shawnts__disablePhysicalLinkResponse *shawnts__disablePhysicalLinkResponse_)
    {
       // TODO !
-      std::cout << "shawn::testbedservice::disableVirtualLink" << std::endl;
+      std::cout << "shawn::testbedservice::disablePhysicalLink" << std::endl;
       return SOAP_OK;
    }
    // -----------------------------------------------------------------------

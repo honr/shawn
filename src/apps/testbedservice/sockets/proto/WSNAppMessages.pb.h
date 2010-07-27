@@ -4,6 +4,9 @@
 #ifndef PROTOBUF_WSNAppMessages_2eproto__INCLUDED
 #define PROTOBUF_WSNAppMessages_2eproto__INCLUDED
 
+#include "../buildfiles/_apps_enable_cmake.h"
+#ifdef ENABLE_TESTBEDSERVICE
+
 #include <string>
 
 #include <google/protobuf/stubs/common.h>
@@ -2312,5 +2315,7 @@ inline const EnumDescriptor* GetEnumDescriptor< ::de::uniluebeck::itm::tr::runti
 #endif  // SWIG
 
 // @@protoc_insertion_point(global_scope)
+
+#endif // ENABLE_TESTBEDSERVICE
 
 #endif  // PROTOBUF_WSNAppMessages_2eproto__INCLUDED

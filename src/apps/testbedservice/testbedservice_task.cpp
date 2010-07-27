@@ -57,7 +57,7 @@ namespace testbedservice
    {
       require_world( sc );
 
-      service_client_.init(sc);
+      service_client_.init( sc );
 
       // search for virtual link transmission model
       VirtualLinkTransmissionModel *vltm = 0;
@@ -73,7 +73,7 @@ namespace testbedservice
          ctm = dynamic_cast<shawn::ChainableTransmissionModel*>(
                                  &ctm->next_transm_model_w() );
          if (ctm)
-            break;
+            continue;
       } while ( ctm->has_next_transm_model() );
 
       if ( vltm )
