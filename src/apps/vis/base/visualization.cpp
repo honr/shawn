@@ -26,6 +26,9 @@ namespace vis
    Visualization::
    ~Visualization()
    {
+      /*shawn::World *w = const_cast<shawn::World*>(&(world()));
+      if(w!=NULL)
+         w->remove_node_change_listener(*this);*/
       std::cout << "~Visualization " << name_ << " (" << elements_.size()
          << " elems)" << std::endl;
    }
@@ -99,12 +102,14 @@ namespace vis
                     endit = drawables_.end();
                  it != endit; ++it )
       {
+
          Drawable * dable = (*it).get();
          DrawableNode * dnode = dynamic_cast<DrawableNode *>(dable);
+         std::string dnode_name = dnode->name();
          if(dnode != NULL && dnode->node() == node)
          {
             // Remove from global element list:
-            elements_.erase(dnode->name());
+            elements_.erase(dnode_name);
             // Remove from drawable element list:
             drawables_.erase(drawables_.begin() + e_index);
             // Remove from "all.nodes" group:
@@ -112,13 +117,13 @@ namespace vis
                (elements_.find("all.nodes")->second.get());
             nodes->remove_element(*dnode);
 
-            std::cout << "Vis: DrawableNode removed: " << dnode->name()
+            std::cout << "Vis: DrawableNode removed: " << dnode_name
                << std::endl;
 
-            delete(dnode);
             break;
          }
          e_index++;
+
       }
    }
    // ----------------------------------------------------------------------
@@ -150,7 +155,7 @@ namespace vis
    // ----------------------------------------------------------------------
    bool Visualization::invalidate( void ) throw()
    {
-      return true;
+      return false;
    }
    // ----------------------------------------------------------------------
    class PriorityDescOrder
