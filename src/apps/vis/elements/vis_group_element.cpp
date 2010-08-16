@@ -12,7 +12,7 @@
 
 namespace vis
 {
-   
+
    GroupElement::
    GroupElement( const std::string& n )
       : Element( n ),
@@ -33,15 +33,15 @@ namespace vis
    // ----------------------------------------------------------------------
    void
    GroupElement::
-   add_property( const std::string& n, 
+   add_property( const std::string& n,
                  const ConstPropertyHandle& cph )
       throw( std::runtime_error )
-   { 
+   {
       if( in_adding_ )
          throw std::runtime_error("Loop in GroupElement setup -- aborting");
 
       in_adding_ = true;
-      for( ElementList::iterator 
+      for( ElementList::iterator
               it    = elements_.begin(),
               endit = elements_.end();
            it != endit; ++it )
@@ -57,7 +57,15 @@ namespace vis
       elements_.push_back(&e);
    }
    // ----------------------------------------------------------------------
-   const PropertySet& 
+   void
+   GroupElement::
+   remove_element( Element& e )
+      throw()
+   {
+      elements_.remove(&e);
+   }
+   // ----------------------------------------------------------------------
+   const PropertySet&
    GroupElement::
    properties( void )
       const throw()

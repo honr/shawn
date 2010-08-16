@@ -55,6 +55,7 @@ namespace vis
       DrawableNodeFactoryHandle dnfh = sc.keeper_by_name_w<DrawableNodeKeeper>("DrawableNodeKeeper")
 		   ->find_w(sc.environment().optional_string_param("drawable_nodes", "default"));
 
+      sc.world_w().add_node_change_listener(*vis);
       vis->set_world( sc.world() );
       vis->init();
 

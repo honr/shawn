@@ -9,6 +9,9 @@
 #ifdef ENABLE_VIS
 
 #include "apps/vis/base/visualization.h"
+#include "apps/vis/elements/vis_drawable_node_factory.h"
+#include "apps/vis/elements/vis_drawable_node_keeper.h"
+#include "apps/vis/elements/vis_drawable_node_default.h"
 #include <sstream>
 #include <algorithm>
 
@@ -23,7 +26,8 @@ namespace vis
    Visualization::
    ~Visualization()
    {
-      std::cout << "~Visualization " << name_ << " (" << elements_.size() << " elems)" << std::endl;
+      std::cout << "~Visualization " << name_ << " (" << elements_.size()
+         << " elems)" << std::endl;
    }
    // ----------------------------------------------------------------------
    std::string
@@ -71,10 +75,11 @@ namespace vis
       throw( std::runtime_error )
    {
       if( elements_.find(eh->name()) != elements_.end() )
-         throw std::runtime_error( std::string("duplicate visualization elements with name ") +
+         throw std::runtime_error( std::string(
+               "duplicate visualization elements with name ") +
                                    eh->name() );
       elements_[eh->name()] = eh;
-      
+
       Drawable* d = dynamic_cast<Drawable*>(eh.get());
       if( d != NULL )
          drawables_.push_back(d);
@@ -82,16 +87,83 @@ namespace vis
       eh->set_visualization(*this);
    }
    // ----------------------------------------------------------------------
-class PriorityDescOrder
-{
-public:
-   PriorityDescOrder( double t ):t_(t){};
-   ~PriorityDescOrder(){};
-   bool operator() ( const DrawableHandle& d1,
-                     const DrawableHandle& d2 )
-   { return d1->priority(t_) < d2->priority(t_); }
-   double t_;
-};
+   // NodeChangeListener Implementation
+   // ----------------------------------------------------------------------
+   void Visualization::node_removed(shawn::Node &node) throw()
+   {
+      std::cout << "Vis: Removing node: " << node.label() << std::endl;
+
+      int e_index = 0;
+      for( DrawableList::const_iterator
+                    it    = drawables_.begin(),
+                    endit = drawables_.end();
+                 it != endit; ++it )
+      {
+         Drawable * dable = (*it).get();
+         DrawableNode * dnode = dynamic_cast<DrawableNode *>(dable);
+         if(dnode != NULL && dnode->node() == node)
+         {
+            // Remove from global element list:
+            elements_.erase(dnode->name());
+            // Remove from drawable element list:
+            drawables_.erase(drawables_.begin() + e_index);
+            // Remove from "all.nodes" group:
+            GroupElement *nodes = dynamic_cast<GroupElement*>
+               (elements_.find("all.nodes")->second.get());
+            nodes->remove_element(*dnode);
+
+            std::cout << "Vis: DrawableNode removed: " << dnode->name()
+               << std::endl;
+
+            delete(dnode);
+            break;
+         }
+         e_index++;
+      }
+   }
+   // ----------------------------------------------------------------------
+   void Visualization::node_added(shawn::Node &node) throw()
+   {
+      std::cout << "Vis: Adding node: " << node.label() << std::endl;
+      shawn::SimulationController &sc =
+         const_cast<shawn::SimulationController &>(
+               world().simulation_controller());
+
+      DrawableNodeFactoryHandle dnfh = sc.
+         keeper_by_name_w<DrawableNodeKeeper>("DrawableNodeKeeper")
+         ->find_w(sc.environment().optional_string_param(
+         "drawable_nodes", "default"));
+
+      GroupElement *nodes = dynamic_cast<GroupElement*>
+                     (elements_.find("all.nodes")->second.get());
+
+      DrawableNode *dn = dnfh->create(node);
+      dn->init();
+      add_element(dn);
+      nodes->add_element(*dn);
+   }
+   // ----------------------------------------------------------------------
+   void Visualization::id_changed(int oldid, int newid) throw()
+   {
+      // Vis doesn't use IDs
+   }
+   // ----------------------------------------------------------------------
+   bool Visualization::invalidate( void ) throw()
+   {
+      return true;
+   }
+   // ----------------------------------------------------------------------
+   class PriorityDescOrder
+   {
+   public:
+      PriorityDescOrder( double t ):t_(t){};
+      ~PriorityDescOrder(){};
+      bool operator() ( const DrawableHandle& d1,
+                        const DrawableHandle& d2 )
+      { return d1->priority(t_) < d2->priority(t_); }
+      double t_;
+   };
+   // ----------------------------------------------------------------------
    void
    Visualization::
    draw( cairo_t* cr,
@@ -110,9 +182,9 @@ public:
          }
          catch( std::runtime_error& re ) {
             std::ostringstream oss;
-            oss << "cannot draw '" 
+            oss << "cannot draw '"
                 << (**it).name()
-                << "' at time " 
+                << "' at time "
                 << t
                 << ": " << re.what();
             throw std::runtime_error(oss.str());

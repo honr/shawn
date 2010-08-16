@@ -14,7 +14,9 @@
 #include "sys/util/handle_keeper.h"
 #include "apps/vis/elements/vis_element.h"
 #include "apps/vis/elements/vis_drawable.h"
+#include "apps/vis/elements/vis_drawable_node.h"
 #include "apps/vis/elements/vis_camera.h"
+#include "apps/vis/elements/vis_group_element.h"
 #include "apps/vis/base/vis_needs_cairo.h"
 #include "apps/vis/base/vis_context.h"
 #include <map>
@@ -34,7 +36,7 @@ namespace vis
     * which manages all visualization issues.
     */
    class Visualization
-      : public shawn::KeeperManaged
+      : public shawn::KeeperManaged, public shawn::NodeChangeListener
    {
    public:
       typedef std::map<std::string,ElementHandle> ElementMap;
@@ -79,7 +81,7 @@ namespace vis
        * \param n Element name.
        */
       inline ElementHandle element_w( const std::string& n ) throw()
-      { 
+      {
          ElementMap::const_iterator it = elements_.find(n);
          return it==elements_.end()
             ? NULL
@@ -91,7 +93,7 @@ namespace vis
        * \param n Element name.
        */
       inline ConstElementHandle element( const std::string& n ) const throw()
-      { 
+      {
          ElementMap::const_iterator it = elements_.find(n);
          return it==elements_.end()
             ? NULL
@@ -104,9 +106,9 @@ namespace vis
        */
       inline const shawn::World& world( void ) const throw()
       { assert( world_ != NULL ); return *world_; }
-     
+
       /**
-       * Returns a map of all Vis elements, that are derived from the 
+       * Returns a map of all Vis elements, that are derived from the
        * vis::Element class.
        */
       inline ElementMap& elements( void ) throw()
@@ -121,14 +123,20 @@ namespace vis
       /**
        * Adds a new element to the visualization.
        */
-      virtual void add_element( const ElementHandle& ) 
+      virtual void add_element( const ElementHandle& )
          throw( std::runtime_error );
 
       /**
        * Starts the drawing process. Draws all drawable elements iteratively.
        */
-      virtual void draw( cairo_t*, double, const Context& ) 
+      virtual void draw( cairo_t*, double, const Context& )
          const throw( std::runtime_error );
+
+      /// NodeChangeListener implementations
+      virtual void node_added(shawn::Node &) throw();
+      virtual void node_removed(shawn::Node &) throw();
+      virtual void id_changed(int,int) throw();
+      virtual bool invalidate(void) throw();
 
    protected:
       /**

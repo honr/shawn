@@ -60,7 +60,7 @@ namespace vis
        */
       virtual void add_element( Element& ) throw();
 
-       
+      virtual void remove_element( Element& ) throw();
    private:
       /// Name of this group.
       std::string name_;
