@@ -12,6 +12,7 @@
 #include "apps/vis/elements/vis_drawable_node_factory.h"
 #include "apps/vis/elements/vis_drawable_node_keeper.h"
 #include "apps/vis/elements/vis_drawable_node_default.h"
+#include "sys/logging/logger.h"
 #include <sstream>
 #include <algorithm>
 
@@ -102,28 +103,19 @@ namespace vis
                     endit = drawables_.end();
                  it != endit; ++it )
       {
-         std::cout << "Vis: Removing node: 0" << std::endl;
          Drawable * dable = (*it).get();
-         std::cout << "Vis: Removing node: 0.333" << std::endl;
          DrawableNode * dnode = dynamic_cast<DrawableNode *>(dable);
-         std::cout << "Vis: Removing node: 0.666" << std::endl;
-
-         std::cout << "Vis: Removing node: 0.9" << std::endl;
          if(dnode != NULL && dnode->node() == node)
          {
             std::string dnode_name = dnode->name();
-            std::cout << "Vis: Removing node: 1" << std::endl;
             // Remove from global element list:
             elements_.erase(dnode_name);
-            std::cout << "Vis: Removing node: 2" << std::endl;
             // Remove from drawable element list:
             drawables_.erase(drawables_.begin() + e_index);
-            std::cout << "Vis: Removing node: 3" << std::endl;
             // Remove from "all.nodes" group:
             GroupElement *nodes = dynamic_cast<GroupElement*>
                (elements_.find("all.nodes")->second.get());
             nodes->remove_element(*dnode);
-            std::cout << "Vis: Removing node: 4" << std::endl;
 
             std::cout << "Vis: DrawableNode removed: " << dnode_name
                << std::endl;
