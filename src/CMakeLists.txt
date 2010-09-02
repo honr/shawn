@@ -84,6 +84,9 @@ endif(COMMAND cmake_policy)
 	file( GLOB_RECURSE shawnSpyglassCPP apps/spyglass/*.cpp )
 	file( GLOB_RECURSE shawnSpyglassH apps/spyglass/*.h )
 
+    file( GLOB_RECURSE shawnSumoCPP apps/sumo/*.cpp )
+    file( GLOB_RECURSE shawnSumoH apps/sumo/*.h )
+
 	file( GLOB_RECURSE shawnTestbedserviceCPP apps/testbedservice/*.cpp )
 	file( GLOB_RECURSE shawnTestbedserviceH apps/testbedservice/*.h )
 
@@ -186,6 +189,10 @@ endif(COMMAND cmake_policy)
 	# shawnSpyglass - Source for Spyglass library build
 		set( shawnSpyglass ${shawnSpyglass} ${shawnSpyglassCPP} )
 		set( shawnSpyglass ${shawnSpyglass} ${shawnSpyglassH} )
+
+    # shawnSpyglass - Source for Spyglass library build
+        set( shawnSumo ${shawnSumo} ${shawnSumoCPP} )
+        set( shawnSumo ${shawnSumo} ${shawnSumoH} )
 
    # shawnTcpip - Source for Testbedservice library build
 	set( shawnTestbedservice ${shawnTestbedservice} ${shawnTestbedserviceCPP} )
@@ -422,6 +429,7 @@ endif(COMMAND cmake_policy)
 	add_library( apps_readinglib ${shawnReading} )
 	add_library( apps_routinglib ${shawnRouting} )
 	add_library( apps_spyglasslib ${shawnSpyglass} )
+    add_library( apps_sumolib ${shawnSumo} )
 	add_library( apps_testbedservicelib ${shawnTestbedservice} )
 	add_library( apps_tcpiplib ${shawnTcpip} )
 	add_library( apps_topologylib ${shawnTopology} )
@@ -507,13 +515,13 @@ endif(COMMAND cmake_policy)
 	IF(NOT BUILD_LIB_WITH_MAIN)
 		target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
 			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
-			apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_traciclientlib
+			apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_sumolib apps_traciclientlib
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
 			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
 	ELSEIF(NOT BUILD_LIB_WITH_MAIN)
 		target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
 			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
-			apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_traciclientlib
+			apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_sumolib apps_traciclientlib
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
 			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
 	ENDIF(NOT BUILD_LIB_WITH_MAIN)

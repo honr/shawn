@@ -17,6 +17,7 @@
 #include "sys/event_scheduler.h"
 #include "sys/simulation/simulation_task_keeper.h"
 #include "apps/traci_client/traci_node_movement_creator.h"
+#include "apps/sumo/sumo_node_movement.h"
 #include <string>
 
 namespace shawn
@@ -70,6 +71,17 @@ namespace shawn
 		  abort();
 #endif
 	  }
+          else if(sc.environment_w().optional_string_param("mode","")=="sumo")
+          {
+#ifdef ENABLE_SUMO
+                  std::cout << "Start node movement from SUMO dump file" << std::endl;
+                  SumoNodeMovementCreator * sumonmc =new SumoNodeMovementCreator(sc);
+                  sc.world_w().movement_controller_w().set_node_movement_creator(sumonmc);
+                  sc.world_w().movement_controller_w().start();
+#else
+                  std::cerr << "SUMO app not built!" << std::endl;
+#endif
+          }
 		else
 		{
         WARN(sc.logger(), "No NodeMovementCreator Set");
