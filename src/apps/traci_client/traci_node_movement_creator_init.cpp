@@ -14,7 +14,7 @@
 
 extern "C" void init_traciclient( shawn::SimulationController& sc )
 {
-   std::cout << "TraCIClient init" << std::endl;
+    std::cout << "TraCIClient init" << std::endl;
 }
 
 

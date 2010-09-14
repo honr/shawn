@@ -4,12 +4,12 @@
 
 # Name of this module
 
-	set ( moduleName  TRACICLIENT )
+set( moduleName  TRACICLIENT )
 
 # Default status (ON/OFF)
 
-	set ( moduleStatus OFF )
+set( moduleStatus OFF )
 
 # List of libraries needed by this module, seperated by white space
 
-	set ( moduleLibs  )
+set( moduleLibs )

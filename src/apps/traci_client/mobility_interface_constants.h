@@ -1,215 +1,319 @@
-/****************************************************************************/
-/// @file    TraCIConstants.h
-/// @author  Axel Wegener <wegener@itm.uni-luebeck.de>
-/// @date    2007/10/24
-///
-/// holds codes used for TraCI
-/****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo.sourceforge.net/
-// copyright : (C) 2001-2007
-//  by DLR (http://www.dlr.de/) and ZAIK (http://www.zaik.uni-koeln.de/AFS)
-/****************************************************************************/
-//
-//   This program is free software; you can redistribute it and/or modify
-//   it under the terms of the GNU General Public License as published by
-//   the Free Software Foundation; either version 2 of the License, or
-//   (at your option) any later version.
-//
-/****************************************************************************/
+/** \file
+ *  Definitions of constants for TraCI
+ *
+ *  \author Axel Wegener <wegener@itm.uni-luebeck.de>
+ *  \author Björn Hendriks
+ */
+
 /************************************************************************
- ** This file is part of the network simulator ns-2.                   **
- ** Copyright (C) 2006 by AutoNomos (www.auto-nomos.de)                **
- ** This part of ns-2 is free software; you can redistribute it and/or **
- ** modify it under the terms of the GNU General Public License,       **
- ** version 2.                                                         **
- **                                                                    **
- ** \author Axel Wegener <wegener@itm.uni-luebeck.de>                  **
- **                                                                    **
+ ** This file is part of the network simulator Shawn.                  **
+ ** Copyright (C) 2004-2007 by the SwarmNet (www.swarmnet.de) project  **
+ ** Shawn is free software; you can redistribute it and/or modify it   **
+ ** under the terms of the BSD License. Refer to the shawn-licence.txt **
+ ** file in the root of the Shawn source tree for further details.     **
  ************************************************************************/
-/*-----------------------------------------------------------------------
- * Source  $URL: svn+ssh://cvs.itm.uni-luebeck.de/svn/ns/trunk/ns-2/traci-client/TraCIConstants.h $
- * Version $Revision: 432 $
- * Date    $Date: 2008-03-26 10:21:10 +0100 (Mi, 26 Mär 2008) $
- *-----------------------------------------------------------------------*/
+
 #ifndef TRACICONSTANTS_H
 #define TRACICONSTANTS_H
 
 
-// ****************************************
-// COMMANDS
-// ****************************************
+namespace traci
+{
 
-// command: simulation step
-#define CMD_SIMSTEP 0x01
+struct TraciConstants
+{
+    enum Command
+    {
+        /// command: simulation step
+        CmdSimstep = 0x01,
 
-// command: set maximum speed
-#define CMD_SETMAXSPEED 0x11
+        /// command: set maximum speed
+        CmdSetmaxspeed = 0x11,
 
-// command: stop node
-#define CMD_STOP 0x12
+        /// command: stop node
+        CmdStop = 0x12,
 
-// command: set lane
-#define CMD_CHANGELANE 0x13
+        /// command: set lane
+        CmdChangelane = 0x13,
 
-// command: slow down
-#define CMD_SLOWDOWN 0x14
+        /// command: slow down
+        CmdSlowdown = 0x14,
 
-// command: change route
-#define CMD_CHANGEROUTE 0x30
+        /// command: change route
+        CmdChangeroute = 0x30,
 
-// command: change target
-#define CMD_CHANGETARGET 0x31
+        /// command: change target
+        CmdChangetarget = 0x31,
 
-// command: Simulation Parameter
-#define CMD_SIMPARAMETER 0x70
+        /// command: simulation parameter
+        CmdSimparameter = 0x70,
 
-// command: Position Conversion
-#define CMD_POSITIONCONVERSION 0x71
+        /// command: position conversion
+        CmdPositionconversion = 0x71,
 
-// command: Distance Request
-#define CMD_DISTANCEREQUEST 0x72
+        /// command: distance request
+        CmdDistancerequest = 0x72,
 
-// command: Scenario
-#define CMD_SCENARIO 0x73
+        /// command: scenario
+        CmdScenario = 0x73,
 
-// command: move node
-#define CMD_MOVENODE 0x80
+        /// command: move node
+        CmdMovenode = 0x80,
 
-// command: close sumo
-#define CMD_CLOSE   0x7F
+        /// command: close sumo
+        CmdClose = 0x7f,
 
-// command:
-#define CMD_UPDATECALIBRATOR 0x50
+        /// command:
+        CmdUpdatecalibrator = 0x50,
 
-// command: get all traffic light ids
-#define CMD_GETALLTLIDS 0x40
+        /// command: get all traffic light ids
+        CmdGetalltlids = 0x40,
 
-// command: get traffic light status
-#define CMD_GETTLSTATUS 0x41
+        /// command: get traffic light status
+        CmdGettlstatus = 0x41,
 
-// command: report traffic light id
-#define CMD_TLIDLIST 0x90
+        /// command: report traffic light id
+        CmdTlidlist = 0x90,
 
-// command: report traffic light status switch
-#define CMD_TLSWITCH 0x91
+        /// command: report traffic light status switch
+        CmdTlswitch = 0x91,
 
-// ****************************************
-// POSITION REPRESENTATIONS
-// ****************************************
-
-// Omit position
-#define POSITION_NONE    0x00
-// 2D Cartesian coordinates
-#define POSITION_2D      0x01
-// 2.5D Cartesian coordinates
-#define POSITION_2_5D    0x02
-// 3D Cartesian coordinates
-#define POSITION_3D      0x03
-// Position on road map
-#define POSITION_ROADMAP 0x04
-
-// ****************************************
-// DATA TYPES
-// ****************************************
-
-// Boundary Box
-#define TYPE_BOUNDINGBOX 0x05
-// Polygon
-#define TYPE_POLYGON 0x06
-// unsigned byte
-#define TYPE_UBYTE 0x07
-// signed byte
-#define TYPE_BYTE 0x08
-// 32 bit integer
-#define TYPE_INTEGER 0x09
-// float
-#define TYPE_FLOAT 0x0A
-// double
-#define TYPE_DOUBLE 0x0B
-// 8 bit ASCII string
-#define TYPE_STRING 0x0C
-// list of traffic light phases
-#define TYPE_TLPHASELIST 0x0D
+        /// command: get lane variable
+        CmdGetLaneVariable = 0xa3,
+        /// command: get vehicle variable
+        CmdGetVehicleVariable = 0xa4,
+        /// response command: get lane variable
+        CmdGetLaneVariableResponse = 0xb3,
+        /// command: change vehicle state
+        CmdChangeVehicleState = 0xc4
+    };
 
 
-// ****************************************
-// RESULT TYPES
-// ****************************************
+    enum DataType
+    {
+        /// omit position
+        PositionNone    = 0x00,
+        /// 2d Cartesian coordinates
+        Position2d      = 0x01,
+        /// 2.5d Cartesian coordinates
+        Position25d    = 0x02,
+        /// 3d Cartesian coordinates
+        Position3d      = 0x03,
+        /// position on road map
+        PositionRoadmap = 0x04,
+        /// boundary box
+        TypeBoundingbox = 0x05,
+        /// polygon
+        TypePolygon = 0x06,
+        /// unsigned byte
+        TypeUbyte = 0x07,
+        /// signed byte
+        TypeByte = 0x08,
+        /// 32 bit integer
+        TypeInteger = 0x09,
+        /// color
+        TypeColor = 0x11,
+        /// float
+        TypeFloat = 0x0a,
+        /// double
+        TypeDouble = 0x0b,
+        /// 8 bit ascii string
+        TypeString = 0x0c,
+        /// list of traffic light phases
+        TypeTlphaselist = 0x0d,
+        /// list of strings
+        TypeStringlist = 0x0e,
+        /// compound object
+        TypeCompound = 0x0f
+    };
 
-// result type: OK
-#define RTYPE_OK    0x00
-// result type: not implemented
-#define RTYPE_NOTIMPLEMENTED  0x01
-// result type: error
-#define RTYPE_ERR   0xFF
 
-// ****************************************
-// DOMAIN IDs (FOR SCENARIO COMMAND)
-// ****************************************
+    /// Domain IDs for scenario command
+    enum DomainIdScenario
+    {
+        /// road map domain
+        DomRoadmap = 0x00,
+        /// vehicle domain
+        DomVehicle = 0x01,
+        /// traffic lights domain
+        DomTrafficlights = 0x02,
+        /// points of interest domain
+        DomPoi = 0x03,
+        /// polygon domain
+        DomPolygon = 0x04
+    };
 
-// road map domain
-#define DOM_ROADMAP 0x00
-// vehicle domain
-#define DOM_VEHICLE 0x01
-// traffic lights domain
-#define DOM_TRAFFICLIGHTS 0x02
-// points of interest domain
-#define DOM_POI 0x03
-// polygon domain
-#define DOM_POLYGON 0x04
 
-// ****************************************
-// VARIABLE IDs (FOR SCENARIO COMMAND)
-// ****************************************
+    /// Scenario Command Variable IDs
+    enum ScenarioVariableId
+    {
+        /// count of domain objects
+        DomvarCount = 0x01,
+        /// position of a domain object
+        DomvarPosition = 0x02,
+        /// boundaries of simulation net
+        DomvarBoundingbox = 0x03,
+        /// speed of a node
+        DomvarSpeed = 0x04,
+        /// actual phase of a traffic light
+        DomvarCurtlphase = 0x05,
+        /// next phase of a traffic light
+        DomvarNexttlphase = 0x06,
+        /// type of a domain object (POI, polygon)
+        DomvarType = 0x07,
+        /// layer a domain object is located at (POI, polygon)
+        DomvarLayer = 0x08,
+        /// shape of a polygon
+        DomvarPolyshape = 0x09,
+        /// max count of vehicles
+        DomvarMaxcount = 0x0a,
+        /// count of TraCI vehicles
+        DomvarEquippedcount = 0x0b,
+        /// max count of TraCI vehicles
+        DomvarEquippedcountmax = 0x0c,
+        /// ID string of a domain object
+        DomvarName = 0x0d,
+        /// route, a car plans to drive
+        DomvarRoute = 0x0e,
+        /// distance from a certain object to a position
+        DomvarAirdistance = 0x10,
+        /// distance from a certain object to a position
+        DomvarDrivingdistance = 0x11
+    };
 
-// count of domain objects
-#define DOMVAR_COUNT 0x01
-// position of a domain object
-#define DOMVAR_POSITION 0x02
-// boundaries of simulation net
-#define DOMVAR_BOUNDINGBOX 0x03
-// speed of a node
-#define DOMVAR_SPEED 0x04
-// actual phase of a traffic light
-#define DOMVAR_CURTLPHASE 0x05
-// next phase of a traffic light
-#define DOMVAR_NEXTTLPHASE 0x06
-// type of a domain object (poi, polygon)
-#define DOMVAR_TYPE 0x07
-// layer a domain object is located at (poi, polygon)
-#define DOMVAR_LAYER 0x08
-// shape of a polygon
-#define DOMVAR_POLYSHAPE 0x09
-// max count of vehicles
-#define DOMVAR_MAXCOUNT 0x0A
-// count of TraCI vehicles
-#define DOMVAR_EQUIPPEDCOUNT 0x0B
-// max count of TraCI vehicles
-#define DOMVAR_EQUIPPEDCOUNTMAX 0x0C
-// id string of a domain object
-#define DOMVAR_NAME 0x0D
-// route, a car plans to drive
-#define DOMVAR_ROUTE 0x0E
-// distance from a certain object to a position
-#define DOMVAR_AIRDISTANCE 0x10
-#define DOMVAR_DRIVINGDISTANCE 0x11
+    /** General Value Retrieval Variable IDs
+     *
+     *  These variable IDs are common for several value retrieval commands.
+     */
+    enum GenValueRetrievalVariable
+    {
+        /// variable id list for value retrieval commands
+        VarIdList = 0x00,
+        /// variable CO2 emissions
+        VarCo2Emissions = 0x60,
+        /// variable CO emissions
+        VarCoEmissions = 0x61,
+        /// variable HC emissions
+        VarHcEmissions = 0x62,
+        /// variable PMx emissions
+        VarPmxEmissions = 0x63,
+        /// variable NOx emissions
+        VarNoxEmissions = 0x64,
+        /// variable fuel consumption
+        VarFuelConsumption = 0x65,
+        /// variable noise emission
+        VarNoiseEmission = 0x66,
+        /// variable last step vehicle number
+        VarLastStepVehicleNumber = 0x10,
+        /// variable last step mean speed
+        VarLastStepMeanSpeed = 0x11,
+        /// variable last step vehicle IDs
+        VarLastStepVehicleIds = 0x12,
+        /// variable last step vehicle occupancy
+        VarLastStepOccupancy = 0x13,
+        /// variable last step mean vehicle length
+        VarLastStepMeanVehicleLength = 0x15
+    };
 
-// ****************************************
-// TRAFFIC LIGHT PHASES
-// ****************************************
+    /// Lane Value Retrieval Variable IDs
+    enum LaneValueRetrievalVariable
+    {
+        /// lane variable link number
+        VarLaneLinkNumber = 0x30,
+        /// lane variable edge id
+        VarLaneEdge = 0x31,
+        /// lane variable links
+        VarLaneLinks = 0x33,
+        /// lane variable allowed vehicle classes
+        VarLaneAllowedVehicleClasses = 0x34,
+        /// lane variable disallowed vehicle classes
+        VarLaneDisallowedVehicleClasses = 0x35,
+        /// lane variable length
+        VarLaneLength = 0x44,
+        /// lane variable vmax
+        VarLaneVmax = 0x41,
+        /// lane variable shape
+        VarLaneShape = 0x4e
+    };
 
-// red phase
-#define TLPHASE_RED 0x01
-// yellow phase
-#define TLPHASE_YELLOW 0x02
-// green phase 
-#define TLPHASE_GREEN 0x03
-// tl is blinking
-#define TLPHASE_BLINKING 0x04
-// tl is off and not blinking
-#define TLPHASE_NOSIGNAL 0x05
+    /// Vehicle Value Retrieval Variable IDs
+    enum VehicleValueRetrievalVariable
+    {
+        /// vehicle variable speed
+        VarVehicleSpeed = 0x40,
+        /// speed without TraCI influence
+        VarVehicleSpeedWithoutTraci = 0x41,
+        /// vehicle variable position
+        VarVehiclePosition = 0x42,
+        /// vehicle variable angle
+        VarVehicleAngle = 0x43,
+        /// vehicle variable road ID
+        VarVehicleRoadId = 0x50,
+        /// vehicle variable lane id
+        VarVehicleLaneId = 0x51,
+        /// vehicle variable lane index
+        VarVehicleLaneIndex = 0x52,
+        /// vehicle variable type id
+        VarVehicleTypeId = 0x4f,
+        /// vehicle variable route ID
+        VarVehicleRouteId = 0x53,
+        /// vehicle variable edges
+        VarVehicleEdges = 0x54,
+        /// vehicle variable color
+        VarVehicleColor = 0x45,
+        /// vehicle variable lane position
+        VarVehicleLanePosition = 0x56
+    };
 
-#endif
+    /// Change Vehicle State Variable IDs
+    enum ChangeVehicleStateVariable
+    {
+        /// set vehicle state max speed
+        VarVehicleSetMaxSpeed = 0x11,
+        /// set vehicle state stop
+        VarVehicleSetStop = 0x12,
+        /// set vehicle state change lane
+        VarVehicleSetLane = 0x13,
+        /// set vehicle state slow down
+        VarVehicleSetSlowDown = 0x14,
+        /// set vehicle state change target
+        VarVehicleSetTarget = 0x31,
+        /// set vehicle state change route by id
+        VarVehicleSetRouteId = 0x54,
+        /// set vehicle state change route
+        VarVehicleSetRoute = 0x57,
+        /// set vehicle state change edge travel time information
+        VarVehicleSetEdgeTravelTime = 0x58,
+        /// set vehicle state change edge effort information
+        VarVehicleSetEdgeEffort = 0x59,
+        /// set vehicle state reroute by travel time
+        VarVehicleSetRerouteTravelTime = 0x90,
+        /// set vehicle state reroute by effort
+        VarVehicleSetRerouteEffort = 0x91
+    };
+
+
+    /// Traffic Light Phases
+    enum TrafficLightPhase
+    {
+        /// red phase
+        TlphaseRed = 0x01,
+        /// yellow phase
+        TlphaseYellow = 0x02,
+        /// green phase
+        TlphaseGreen = 0x03,
+        /// TL is blinking
+        TlphaseBlinking = 0x04,
+        /// TL is off and not blinking
+        TlphaseNosignal = 0x05
+    };
+
+};
+
+
+}   // namespace traci
+
+#endif  // #ifndef TRACICONSTANTS_H
 
 
 

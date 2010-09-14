@@ -13,7 +13,9 @@
 #ifdef ENABLE_TRACICLIENT
 
 namespace shawn
-{ class SimulationController; }
+{
+class SimulationController;
+}
 
 
 extern "C" void init_tracinodemvementcreator( shawn::SimulationController& );
