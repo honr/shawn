@@ -19,6 +19,7 @@
 
 #include "sys/shawn_sys_init.h"
 #include "apps/apps_init.h"
+#include "revision.h"
 
 #ifdef HAVE_LEGACYAPPS
 	#include "legacyapps/legacyapps_init.h"
@@ -165,6 +166,7 @@ bool parse_args( int argc, char **argv,
 		    {
 				//Do nothin, but accept the command line option
 		    }
+
          else
             {
                cerr << "ERROR: undefined argument '" << argv[arg] << "'" << endl;
@@ -182,8 +184,16 @@ int main( int argc, char *argv[] )
 
    bool jshawn_support = false;
    for(int i = 1; i < argc; ++i)
+      {
 	if( strcmp(argv[i], "-jshawn") == 0 )
 		jshawn_support = true;
+
+	if( strcmp(argv[i], "--git-version") == 0 )
+	{
+		cout << git::revision << endl;
+		return 0;    // no further execution
+	}
+      }
 
    shawn::ShawnSimulationController* sc = master_init(jshawn_support);
 

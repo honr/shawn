@@ -143,6 +143,7 @@ endif(COMMAND cmake_policy)
 		set( shawnSources ${shawnSources} shawn_config.h )
 		set( shawnSources ${shawnSources} apps/apps_init.h )
 		set( shawnSources ${shawnSources} apps/apps_init.cpp )
+                set( shawnSources ${shawnSources} revision.h )
 
 	# shawnSourcesLib - Sources for library build
 
@@ -525,3 +526,13 @@ endif(COMMAND cmake_policy)
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
 			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
 	ENDIF(NOT BUILD_LIB_WITH_MAIN)
+
+
+#=============
+# Git revision information
+#=============
+
+	include(FindPythonInterp)
+	if ( PYTHONINTERP_FOUND )
+		add_custom_command( OUTPUT revision.h COMMAND ${PYTHON_EXECUTABLE} ARGS ${CMAKE_SOURCE_DIR}/generateRevisionHeader.py ${CMAKE_SOURCE_DIR}/revision.h revision git COMMENT "Generating git revision header" VERBATIM )
+	endif ( PYTHONINTERP_FOUND )
