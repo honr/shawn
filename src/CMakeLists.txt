@@ -411,34 +411,50 @@ endif(COMMAND cmake_policy)
 # Build target
 #=============
 
-	IF(BUILD_LIB_WITH_MAIN)
-		add_library( shawnlib ${shawnSources} ${shawnSourcesLib} )
-	ELSE(BUILD_LIB_WITH_MAIN)
-		add_library( shawnlib ${shawnSourcesLib} )
-		add_executable( shawn ${shawnSources} )
-	ENDIF(BUILD_LIB_WITH_MAIN)
-
-	if( LEGACYAPPS_PATH )	
-		add_library( legacyapps ${shawnLegacyLib} )
-	endif( LEGACYAPPS_PATH )
-	add_library( apps_autocastlib ${shawnAutocast} )
-	add_library( apps_distestlib ${shawnDistest} )
-	add_library( apps_exampleslib ${shawnExamples} )
-	add_library( apps_isenselib ${shawnIsense} )
-	add_library( apps_localizationlib ${shawnLocalization} )
-	add_library( apps_motioneventtasklib ${shawnMotionEventTask} )
-	add_library( apps_readinglib ${shawnReading} )
-	add_library( apps_routinglib ${shawnRouting} )
-	add_library( apps_spyglasslib ${shawnSpyglass} )
-    add_library( apps_sumolib ${shawnSumo} )
-	add_library( apps_testbedservicelib ${shawnTestbedservice} )
-	add_library( apps_tcpiplib ${shawnTcpip} )
-	add_library( apps_topologylib ${shawnTopology} )
-	add_library( apps_traciclientlib ${shawnTraciClient} )
-	add_library( apps_vislib ${shawnVis} )
-	add_library( apps_wisemllib ${shawnWiseMl} )
-	add_library( apps_externalapplib ${shawnExternalApp} )
-
+	IF(BUILD_SINGLE_LIB)
+		IF(BUILD_LIB_WITH_MAIN)
+			add_library( shawnlib ${shawnSources} ${shawnSourcesLib} ${shawnAutocast} ${shawnDistest} 
+				${shawnExamples} ${shawnIsense} ${shawnLocalization} ${shawnMotionEventTask} 
+				${shawnReading} ${shawnRouting} ${shawnSpyglass} ${shawnTestbedservice} ${shawnSumo} 
+				${shawnTcpip} ${shawnTopology} ${shawnTraciClient} ${shawnVis} ${shawnWiseMl} 
+				${shawnExternalApp} ${shawnLegacyLib} )
+		ELSE(BUILD_LIB_WITH_MAIN)
+			add_library( shawnlib ${shawnSourcesLib} ${shawnAutocast} ${shawnDistest} 
+				${shawnExamples} ${shawnIsense} ${shawnLocalization} ${shawnMotionEventTask} 
+				${shawnReading} ${shawnRouting} ${shawnSpyglass} ${shawnTestbedservice} ${shawnSumo} 
+				${shawnTcpip} ${shawnTopology} ${shawnTraciClient} ${shawnVis} ${shawnWiseMl} 
+				${shawnExternalApp} ${shawnLegacyLib} )
+			add_executable( shawn ${shawnSources} )
+		ENDIF(BUILD_LIB_WITH_MAIN)
+	ELSE(BUILD_SINGLE_LIB)
+		IF(BUILD_LIB_WITH_MAIN)
+			add_library( shawnlib ${shawnSources} ${shawnSourcesLib} )
+		ELSE(BUILD_LIB_WITH_MAIN)
+			add_library( shawnlib ${shawnSourcesLib} )
+			add_executable( shawn ${shawnSources} )
+		ENDIF(BUILD_LIB_WITH_MAIN)
+	
+		if( LEGACYAPPS_PATH )	
+			add_library( legacyapps ${shawnLegacyLib} )
+		endif( LEGACYAPPS_PATH )
+		add_library( apps_autocastlib ${shawnAutocast} )
+		add_library( apps_distestlib ${shawnDistest} )
+		add_library( apps_exampleslib ${shawnExamples} )
+		add_library( apps_isenselib ${shawnIsense} )
+		add_library( apps_localizationlib ${shawnLocalization} )
+		add_library( apps_motioneventtasklib ${shawnMotionEventTask} )
+		add_library( apps_readinglib ${shawnReading} )
+		add_library( apps_routinglib ${shawnRouting} )
+		add_library( apps_spyglasslib ${shawnSpyglass} )
+	    	add_library( apps_sumolib ${shawnSumo} )
+		add_library( apps_testbedservicelib ${shawnTestbedservice} )
+		add_library( apps_tcpiplib ${shawnTcpip} )
+		add_library( apps_topologylib ${shawnTopology} )
+		add_library( apps_traciclientlib ${shawnTraciClient} )
+		add_library( apps_vislib ${shawnVis} )
+		add_library( apps_wisemllib ${shawnWiseMl} )
+		add_library( apps_externalapplib ${shawnExternalApp} )
+	ENDIF(BUILD_SINGLE_LIB)
 
 #=============
 # Link libraries to the shawn target
@@ -513,20 +529,25 @@ endif(COMMAND cmake_policy)
 		set ( LIB_LEGACYAPPS )
 	ENDIF ( LEGACYAPPS_PATH )
 
-	IF(NOT BUILD_LIB_WITH_MAIN)
-		target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
-			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
-			apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_sumolib apps_traciclientlib
+	IF(BUILD_SINGLE_LIB)
+		target_link_libraries( shawn shawnlib 
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
-			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
-	ELSEIF(NOT BUILD_LIB_WITH_MAIN)
-		target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
-			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
-			apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_sumolib apps_traciclientlib
-			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
-			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
-	ENDIF(NOT BUILD_LIB_WITH_MAIN)
-
+			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS})
+	ELSE(BUILD_SINGLE_LIB)
+		IF(NOT BUILD_LIB_WITH_MAIN)
+			target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
+				apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
+				apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_sumolib apps_traciclientlib
+				${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
+				${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
+		ELSEIF(NOT BUILD_LIB_WITH_MAIN)
+			target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
+				apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
+				apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_sumolib apps_traciclientlib
+				${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
+				${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
+		ENDIF(NOT BUILD_LIB_WITH_MAIN)
+	ENDIF(BUILD_SINGLE_LIB)
 
 #=============
 # Git revision information
