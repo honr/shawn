@@ -31,6 +31,7 @@ endif(COMMAND cmake_policy)
 # Options
 #=============
 
+	OPTION(BUILD_SINGLE_LIB "Disable to build apps into their own libs" ON)
 	OPTION(OPT_ENABLE_CGAL "Enable CGAL library support" OFF)
 	OPTION(OPT_ENABLE_CAIRO "Enable Cairo library support" OFF)
 	OPTION(OPT_ENABLE_BOOST "Enable boost library support" OFF)
@@ -534,19 +535,11 @@ endif(COMMAND cmake_policy)
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
 			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS})
 	ELSE(BUILD_SINGLE_LIB)
-		IF(NOT BUILD_LIB_WITH_MAIN)
-			target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
-				apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
-				apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_sumolib apps_traciclientlib
-				${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
-				${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
-		ELSEIF(NOT BUILD_LIB_WITH_MAIN)
-			target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
-				apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
-				apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_sumolib apps_traciclientlib
-				${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
-				${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
-		ENDIF(NOT BUILD_LIB_WITH_MAIN)
+		target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
+			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
+			apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_sumolib apps_traciclientlib
+			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
+			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
 	ENDIF(BUILD_SINGLE_LIB)
 
 #=============
