@@ -420,7 +420,7 @@ endif(COMMAND cmake_policy)
 				${shawnTcpip} ${shawnTopology} ${shawnTraciClient} ${shawnVis} ${shawnWiseMl} 
 				${shawnExternalApp} ${shawnLegacyLib} )
 		ELSE(BUILD_LIB_WITH_MAIN)
-			add_library( shawnlib ${shawnSourcesLib} ${shawnAutocast} ${shawnDistest} 
+			add_library( shawnlib ${shawnSources} ${shawnSourcesLib} ${shawnAutocast} ${shawnDistest} 
 				${shawnExamples} ${shawnIsense} ${shawnLocalization} ${shawnMotionEventTask} 
 				${shawnReading} ${shawnRouting} ${shawnSpyglass} ${shawnTestbedservice} ${shawnSumo} 
 				${shawnTcpip} ${shawnTopology} ${shawnTraciClient} ${shawnVis} ${shawnWiseMl} 
@@ -531,15 +531,29 @@ endif(COMMAND cmake_policy)
 	ENDIF ( LEGACYAPPS_PATH )
 
 	IF(BUILD_SINGLE_LIB)
-		target_link_libraries( shawn shawnlib 
+	  IF(BUILD_LIB_WITH_MAIN)
+		target_link_libraries( shawnlib 
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
 			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS})
+	  ELSE(BUILD_LIB_WITH_MAIN)
+	    target_link_libraries( shawn shawnlib 
+			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
+			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS})
+	  ENDIF(BUILD_LIB_WITH_MAIN)
 	ELSE(BUILD_SINGLE_LIB)
-		target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
+	  IF(BUILD_LIB_WITH_MAIN)
+		target_link_libraries( ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
 			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
 			apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_sumolib apps_traciclientlib
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
 			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
+	  ELSE(BUILD_LIB_WITH_MAIN)
+	    target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
+			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
+			apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_sumolib apps_traciclientlib
+			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
+			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
+	  ENDIF(BUILD_LIB_WITH_MAIN)
 	ENDIF(BUILD_SINGLE_LIB)
 
 #=============
