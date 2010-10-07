@@ -12,6 +12,7 @@
 #include "apps/vis/properties/vec/vis_property_constant_vec.h"
 #include "apps/vis/properties/vec/vis_property_real_node_position.h"
 #include "apps/vis/properties/vis_node_property_set.h"
+#include "sys/taggings/basic_tags.h"
 
 #include <string>
 #include <cmath>
@@ -27,7 +28,8 @@ namespace vis
    DrawableLabel( const std::string& lname,
                      const DrawableNode *node )
       : Drawable( lname ),
-        node_ (node)
+        node_ (node),
+        tagname_("")
    {
    }
    // ----------------------------------------------------------------------
@@ -64,13 +66,32 @@ namespace vis
             double size = nps->size(t);
             cairo_save(cr);
 
+            std::string label_text = node_->name();
+            if(tagname_!="")
+            {
+               const shawn::StringTag *stag = NULL;
+
+               shawn::ConstTagHandle taghandle = node_->node().find_tag(tagname_);
+               if(taghandle != NULL)
+               {
+                  stag = dynamic_cast<const shawn::StringTag*>(taghandle.get());
+               }
+
+               if(stag!=NULL)
+               {
+                  label_text = stag->value();
+                  std::cout << label_text << std::endl;
+               }
+            }
+
+
 
             cairo_text_extents_t te;
-            
+
             cairo_select_font_face (cr, "serif",
                 CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
             cairo_set_font_size (cr, 0.4);
-            cairo_text_extents (cr, node_->name().c_str(), &te);
+            cairo_text_extents (cr, label_text.c_str(), &te);
             cairo_rectangle(cr, position.x() - te.width/2.0, position.y() - te.height*2,
                te.width, te.height);
             cairo_set_source_rgb (cr, 0.8, 0.8, 0.8);
@@ -79,8 +100,8 @@ namespace vis
             cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
             cairo_move_to (cr, position.x() - te.width/2.0, position.y() - te.height*2);
             cairo_scale(cr,1.0,-1.0);
-            cairo_show_text (cr, node_->name().c_str());
-            
+            cairo_show_text (cr, label_text.c_str());
+
             cairo_restore(cr);
          }
    }
@@ -94,13 +115,19 @@ namespace vis
       return *props_;
    }
    // ----------------------------------------------------------------------
-   PropertySet& 
+   PropertySet&
    DrawableLabel::
    properties_w( void )
       throw()
    {
       assert( props_.is_not_null() );
       return *props_;
+   }
+
+   // ----------------------------------------------------------------------
+   void DrawableLabel::use_tag(std::string tagname)
+   {
+      tagname_.assign(tagname);
    }
 }
 

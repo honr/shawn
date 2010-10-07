@@ -44,14 +44,17 @@ namespace vis
       throw()
    {
       last_time_of_receive_ = simulation_round();
-	  //Creates an event to the event_scheduler  
-	  event_handle_ = owner_w().world_w().scheduler_w().new_event(*this,sending_time_ ,NULL);    
+	  //Creates an event to the event_scheduler
+	  event_handle_ = owner_w().world_w().scheduler_w().new_event(*this,sending_time_ ,NULL);
 	  this->owner_w().add_tag(new shawn::DoubleTag("VisBattery", 1.0));
+
+      std::string labelvalue = "LabelTest";
+      this->owner_w().add_tag(new shawn::StringTag("VisLabel", labelvalue));
    }
    // ----------------------------------------------------------------------
    bool
    VisEnergyProcessor::
-   process_message( const ConstMessageHandle& mh ) 
+   process_message( const ConstMessageHandle& mh )
       throw()
    {
 	   const helloworld::HelloworldMessage* hmsg =
@@ -83,7 +86,7 @@ namespace vis
                  << " DONE: "
                  << (unsigned int)neighbours_.size()
                  << " neighbours: ";
-            
+
             for( std::set<const Node*>::const_iterator
                     it    = neighbours_.begin(),
                     first = it,
@@ -101,10 +104,10 @@ namespace vis
 
 	void VisEnergyProcessor::timeout(shawn::EventScheduler & event_scheduler, shawn::EventScheduler::EventHandle event_handle, double time, shawn::EventScheduler::EventTagHandle & event_tag_handle) throw()
 	{
-		send( new helloworld::HelloworldMessage((int)random(1,10)) );	
+		send( new helloworld::HelloworldMessage((int)random(1,10)) );
 	}
 
-	double 
+	double
 		VisEnergyProcessor::random(double lowerBound, double upperBound) throw(){
 		return (lowerBound + shawn::uniform_random_0i_1i()*(upperBound - lowerBound));
     }

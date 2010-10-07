@@ -46,6 +46,8 @@ namespace vis
       std::string node_prefix =
          sc.environment().
          optional_string_param("node_prefix",DrawableNodeDefault::PREFIX);
+      std::string tagname = sc.environment().optional_string_param("tag", "");
+
       //double range = sc.environment().optional_double_param("range",1.0);
       //DrawableComradius *dcr = new DrawableComradius("comradius", range);
       //dcr->init();
@@ -60,9 +62,12 @@ namespace vis
          const DrawableNode* dsrc = drawable_node(*it,node_prefix);
          std::string prefix("label.");
          DrawableLabel *dl = new DrawableLabel(prefix + it->label(), dsrc);
+         dl->use_tag(tagname);
+
          dl->init();
+
          visualization_w().add_element(dl);
-         
+
       }
 
    }
@@ -74,7 +79,7 @@ namespace vis
       throw( std::runtime_error )
    {
       std::string n = nprefix+std::string(".")+v.label();
-      ConstElementHandle eh = 
+      ConstElementHandle eh =
          visualization().element( n );
       if( eh.is_null() )
          throw std::runtime_error(std::string("no such element: ")+n);

@@ -17,7 +17,7 @@
 
 namespace vis
 {
-	
+
    class DrawableLabel
       : public Drawable
    {
@@ -37,7 +37,7 @@ namespace vis
 	   /**
        * Draws the image onto the given cairo surface.
        */
-      virtual void draw( cairo_t*, double, const Context& ) 
+      virtual void draw( cairo_t*, double, const Context& )
          const throw(std::runtime_error);
 
       /**
@@ -48,13 +48,18 @@ namespace vis
        * Returns the property set.
        */
       virtual PropertySet& properties_w( void ) throw();
-
+      /**
+       * Specifies which tag to use as label tag.
+       * If not specified, the node's label is used.
+       */
+      virtual void use_tag(std::string tagname);
    private:
       /// Cairo surface to draw on.
       //cairo_surface_t* image_;
       /// The node, this label is attached to:
       const DrawableNode *node_;
       shawn::RefcntPointer<ComradiusPropertySet> props_;
+      std::string tagname_;
    };
 
 
