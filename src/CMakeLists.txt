@@ -37,6 +37,7 @@ endif(COMMAND cmake_policy)
 	OPTION(OPT_ENABLE_BOOST "Enable boost library support" OFF)
 	OPTION(OPT_CONFIGURE_LOGGING "Configure logging system" OFF)
 	OPTION(OPT_ENABLE_GLUT "Enable GLUT library used by vis Liveview" OFF)
+	OPTION(OPT_ENABLE_PROTOBUF "Enable Protobuf library support" OFF)
 
 #=============
 # Set the default paths for binary and lib build
@@ -266,7 +267,15 @@ endif(COMMAND cmake_policy)
 		set ( INCLUDE_PATH_GLUT   CACHE PATH "Path to GLUT includes" )
 		link_directories( ${LIB_PATH_GLUT} )
 		include_directories ( ${INCLUDE_PATH_GLUT} )
-	endif ( OPT_ENABLE_GLUT )	
+	endif ( OPT_ENABLE_GLUT )
+
+   if ( OPT_ENABLE_PROTOBUF )
+      set ( INCLUDE_PATH_GOOGLE_PROTOBUF CACHE PATH "Path to Protobuf 2.3.0 includes" )
+      set ( LIB_PATH_GOOGLE_PROTOBUF CACHE PATH "Path to Protobuf 2.3.0 libs" )
+      include_directories ( ${INCLUDE_PATH_GOOGLE_PROTOBUF} )
+      link_directories( ${LIB_PATH_GOOGLE_PROTOBUF} )
+   endif ( OPT_ENABLE_PROTOBUF )
+
 
 #=============
 # Configure logging libraries
@@ -332,6 +341,10 @@ endif(COMMAND cmake_policy)
 	if( OPT_ENABLE_GLUT )
 		add_definitions( -DHAVE_GLUT )
 	endif ( OPT_ENABLE_GLUT )
+
+   if ( OPT_ENABLE_PROTOBUF )
+      add_definitions( -DHAVE_PROTOBUF )
+   endif ( OPT_ENABLE_PROTOBUF )
 
 	if( LEGACYAPPS_PATH )
 		add_definitions( -DHAVE_LEGACYAPPS )
@@ -521,6 +534,10 @@ endif(COMMAND cmake_policy)
 		if ( OPT_ENABLE_GLUT AND NOT APPLE)
 			set ( LIB_GLUT GL glut GLU )
 		endif ( OPT_ENABLE_GLUT AND NOT APPLE )
+		
+   if ( OPT_ENABLE_PROTOBUF )
+      set ( LIB_PROTOBUF protobuf )
+   endif ( OPT_ENABLE_PROTOBUF )
 
 	endif ( WIN32 AND NOT CYGWIN  )
 
@@ -546,13 +563,13 @@ endif(COMMAND cmake_policy)
 			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
 			apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_sumolib apps_traciclientlib
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
-			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
+			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${LIB_PROTOBUF} ${SHAWN_LINK_LIBS} )
 	  ELSE(BUILD_LIB_WITH_MAIN)
 	    target_link_libraries( shawn ${LIB_LEGACYAPPS} apps_externalapplib apps_exampleslib apps_autocastlib apps_distestlib 
 			apps_isenselib apps_localizationlib apps_motioneventtasklib apps_topologylib apps_readinglib apps_routinglib
 			apps_spyglasslib apps_testbedservicelib apps_tcpiplib apps_vislib apps_wisemllib shawnlib apps_sumolib apps_traciclientlib
 			${SYSTEM_LIBS} ${LIB_CGAL} ${LIB_LOGGING} 
-			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${SHAWN_LINK_LIBS} )
+			${LIB_CAIRO} ${LIB_BOOST} ${LIB_GLUT} ${LIB_PROTOBUF} ${SHAWN_LINK_LIBS} )
 	  ENDIF(BUILD_LIB_WITH_MAIN)
 	ENDIF(BUILD_SINGLE_LIB)
 
