@@ -219,7 +219,7 @@ throw( runtime_error )
         // CommandID
         out.writeChar( TraciConstants::CmdSimstep );
         // Target time
-        out.writeDouble( target_time_ );
+        out.writeInt( static_cast<int>(1000.0 * target_time_) );
         // Result type (Position representation)
         out.writeChar( TraciConstants::Position2d );
 
@@ -288,7 +288,7 @@ throw( runtime_error )
     }
 
     node_id = in_.readInt();
-    dest_time = in_.readDouble();
+    dest_time = static_cast<double>(in_.readInt()) / 1000.0;
 
     // PositionType
     if ( in_.readByte() != TraciConstants::Position2d )
@@ -947,7 +947,7 @@ bool TraCIClient::command_roadmap_position( const Node& node, double targetTime,
     // CommandID
     out.writeChar( TraciConstants::CmdSimstep );
     // TargetTime
-    out.writeDouble( targetTime );
+    out.writeInt( static_cast<int>(1000.0 * targetTime) );
     // ResultType (Position representation)
     out.writeChar( TraciConstants::PositionRoadmap );
 
@@ -1004,7 +1004,7 @@ bool TraCIClient::command_roadmap_position( const Node& node, double targetTime,
 
         // Read node address, end time and destination position (road)
         id = in.readInt();
-        destTime = in.readDouble();
+        destTime = static_cast<double>(in.readInt()) / 1000.0;
 
         // PositionType
         if ( in.readByte() == TraciConstants::PositionRoadmap )
